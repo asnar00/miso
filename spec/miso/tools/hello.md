@@ -6,4 +6,4 @@
 Example:
 
     >hello
-    hello world!
+    ohai miso ᕦ(ツ)ᕤ

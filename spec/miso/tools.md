@@ -20,3 +20,7 @@ For each implementation, `run/hello/` should contain a folder named after the la
 `run/hello/cpp` would contain the C+ code;
 
 and so on.
+
+## invocation
+
+When invoking a tool, the agent should run the most recent code implementation if one exists. If not, the agent should follow the instructions in `pseudocode.md`.

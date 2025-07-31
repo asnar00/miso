@@ -30,14 +30,46 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `spec/miso/tools.md` - Tool structure and organization
 - `spec/miso/tools/hello.md` - Example tool specification
 
+## Tool Invocation System
+
+**IMPORTANT**: When the user types a tool name (like `miso` or `hello`), follow these invocation rules:
+
+1. Check `run/[tool]/` for code implementations (py/, sh/, cpp/, etc.)
+2. If code implementation exists, run the most recent one
+3. If no code exists, execute the instructions in `run/[tool]/pseudocode.md`
+
+### Examples:
+- User types `hello` → Check `run/hello/py/hello.py` exists → Run: `python3 run/hello/py/hello.py`
+- User types `miso` → No code in `run/miso/py/` → Execute steps from `run/miso/pseudocode.md`
+
+This creates a seamless experience where tools can exist as pseudocode, compiled code, or transition between states.
+
+## The Miso System in Action
+
+This repository demonstrates a complete specification-to-implementation pipeline:
+
+1. **Specifications drive everything** - Tools exist first as natural language descriptions in `spec/miso/tools/`
+2. **Miso compiles specs to working code** - The `miso` tool reads specifications and generates both pseudocode and implementations
+3. **Self-hosting and self-improving** - Miso follows its own specification system and can evolve itself
+4. **Testing ensures quality** - Generated tools are validated against their specifications and refined until they work correctly
+
+The system creates a feedback loop where:
+- Natural language specifications become executable tools
+- Tools can be refined by updating their specifications
+- The system documents its own evolution and bug fixes
+- Everything remains traceable from intent to implementation
+
 ## Development Workflow
 
-The project currently exists as a specification-only system. When working with this codebase:
+When working with this codebase:
 
 1. Follow the established snippet naming and storage conventions
-2. Keep specifications concise and focused on functionality summaries
+2. Keep specifications concise and focused on functionality summaries  
 3. Use child snippets to add detail rather than editing parent snippets
 4. Tool implementations should be organized by language/platform in the `run/` directory
+5. Use the tool invocation system above when users request tool execution
+6. **Run `miso` after specification changes** - Let the system regenerate and test implementations
+7. **Verify tools work correctly** - The system will test tools but always validate the results match expectations
 
 ## File Conventions
 - All snippet titles and headings use lowercase
