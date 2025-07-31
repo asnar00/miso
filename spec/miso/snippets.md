@@ -1,7 +1,7 @@
 # snippets
 *snippet conventions*
 
-We refer to *features* and *snippets* interchangeably, by name, eg. `miso`, `miso\snippets`.
+We refer to *features* and *snippets* interchangeably, by name, eg. `miso`, `miso/snippets`.
 
 ## storage
 
