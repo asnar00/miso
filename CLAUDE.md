@@ -74,4 +74,4 @@ When working with this codebase:
 ## File Conventions
 - All snippet titles and headings use lowercase
 - Snippets start with `#` title and *emphasized* summary line
-- Features and snippets are referenced interchangeably by name (e.g., `miso`, `miso\snippets`)
+- Features and snippets are referenced interchangeably by name (e.g., `miso`, `miso/snippets`)
