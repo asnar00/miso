@@ -1,4 +1,4 @@
-# miso pseudocode
+# build pseudocode
 
 ## parsing phase
 - recursively scan all `.md` files in `spec/` directory tree
@@ -78,7 +78,7 @@
 
 ## bugfix handling
 - implement special-case handling to prevent self-overwriting issues
-- skip regenerating miso tool itself during normal processing to maintain system stability
+- skip regenerating build tool itself during normal processing to maintain system stability
 - preserve working implementations when specifications are updated
 - handle bootstrap challenges gracefully in self-hosting system
 

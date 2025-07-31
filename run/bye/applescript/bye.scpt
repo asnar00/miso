@@ -1,4 +1,4 @@
--- save-chat: save agent conversation for future reference
+-- bye: save agent conversation for future reference
 
 -- Get the frontmost application name for targeting
 tell application "System Events"
@@ -53,12 +53,12 @@ try
 	set fileRef to open for access file newFilePath with write permission
 	write chatContent to fileRef
 	close access fileRef
-	display notification "Saved to " & newFileName with title "save-chat"
+	display notification "Saved to " & newFileName with title "bye"
 	return "Chat saved to " & newFileName
 on error errMsg
 	try
 		close access file newFilePath
 	end try
-	display notification "Error: " & errMsg with title "save-chat"
+	display notification "Error: " & errMsg with title "bye"
 	return "Error saving chat: " & errMsg
 end try

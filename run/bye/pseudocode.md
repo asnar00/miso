@@ -1,4 +1,4 @@
-# save-chat pseudocode
+# bye pseudocode
 
 - find the frontmost application (Claude Code or Terminal)
 - select all content using Cmd-A

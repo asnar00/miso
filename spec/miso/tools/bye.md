@@ -1,7 +1,7 @@
-# save-chat
+# bye
 *save agent conversation for future reference*
 
-The `save-chat` tool saves the current agent terminal (Claude Code, for now) into a file `chat/chat-xxx.md` where `xxx` increases monotonically.
+The `bye` tool saves the current agent terminal (Claude Code, for now) into a file `chat/chat-xxx.md` where `xxx` increases monotonically.
 
 ## implementation
 
