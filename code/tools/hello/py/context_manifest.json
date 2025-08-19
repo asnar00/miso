@@ -1,0 +1,8 @@
+{
+  "included": [
+    "specs/tools/hello.md"
+  ],
+  "missing_ancestors": [
+    "specs/tools.md"
+  ]
+}

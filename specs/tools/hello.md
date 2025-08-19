@@ -1,0 +1,9 @@
+# hello
+*the traditional greeting*
+
+The `hello` tool greets the user in the time-honoured manner.
+
+Usage:
+
+    >hello
+    ohai miso ᕦ(ツ)ᕤ

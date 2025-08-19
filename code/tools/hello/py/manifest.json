@@ -1,0 +1,28 @@
+{
+  "spec_path": "/Users/asnaroo/Desktop/experiments/miso/specs/tools/hello.md",
+  "spec_title": "hello",
+  "spec_summary": "the traditional greeting",
+  "spec_commit_sha": "583b2790cc0dae6de4cfc755a2307133791c7513",
+  "build_timestamp": "2025-08-19T15:32:11.947323+00:00",
+  "build_tool_version": "0.1.0",
+  "template_catalog_version": "builtin-0.1",
+  "impl_key": "py",
+  "template_name": "builtin/echo",
+  "entrypoints": {
+    "cli": "main.py",
+    "library": "execute"
+  },
+  "context_files": {
+    "manifest": "context_manifest.json",
+    "bundle": "context_bundle.txt"
+  },
+  "context_digests": {
+    "included": [
+      "specs/tools/hello.md"
+    ],
+    "file_sha256": {
+      "specs/tools/hello.md": "f319c86d23da159af6e2f40ffa73547b57f3e79d3126b7d9d44c8d1888e7fe9d"
+    },
+    "overall_sha256": "5fa0e92424acd264f38a9464bb498b449cc3023a23b068fa28140b2d17f63a17"
+  }
+}
