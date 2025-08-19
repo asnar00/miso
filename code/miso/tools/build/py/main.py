@@ -208,6 +208,138 @@ def sh_quote(text: str) -> str:
     return "'" + text.replace("'", "'\\''") + "'"
 
 
+def generate_web_impl(dest_dir: Path, spec: SpecSummary) -> None:
+    ensure_directory(dest_dir)
+    # Basic static scaffold following viewer specs choices (light theme, resizable pane)
+    index_html = f'''<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{spec.title} — viewer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" data-self-spec="specs/{spec.tool_id}.md">
+      <aside id="pane" aria-label="Viewer pane">
+        <div id="breadcrumbs"></div>
+        <article id="markdown"></article>
+        <div id="children"></div>
+      </aside>
+      <div id="handle" tabindex="0" aria-label="Resize"></div>
+      <main id="main">Target application area</main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+  </html>
+'''
+    styles_css = '''*{box-sizing:border-box}body{margin:0;font:14px/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1f2328;background:#fff}#app{display:flex;min-height:100vh}#pane{width:280px;min-width:240px;max-width:480px;border-right:1px solid #d0d7de;padding:12px 12px 0 12px;overflow:auto}#handle{width:8px;cursor:col-resize;background:transparent}#handle:focus{outline:2px solid #0969da}#breadcrumbs{font-size:12px;color:#57606a;margin-bottom:8px}#markdown{padding-bottom:12px;border-bottom:1px solid #d0d7de}#children{padding-top:8px}#children .row{display:flex;gap:8px;padding:6px 4px;border-radius:6px;cursor:pointer}#children .row:hover{background:#f6f8fa}#children .title{font-weight:600}#children .summary{color:#57606a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}pre,code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}pre{background:#f6f8fa;border:1px solid #d0d7de;border-radius:6px;padding:8px;overflow:auto}table{border-collapse:collapse}th,td{border:1px solid #d0d7de;padding:4px 6px}#main{flex:1;padding:16px}
+'''
+    app_js = '''(function(){
+  const app = document.getElementById('app');
+  const pane = document.getElementById('pane');
+  const handle = document.getElementById('handle');
+  const mdEl = document.getElementById('markdown');
+  const childrenEl = document.getElementById('children');
+  const crumbsEl = document.getElementById('breadcrumbs');
+  const selfSpec = app.getAttribute('data-self-spec');
+
+  // Resize behavior
+  let dragging = false; let startX = 0; let startW = 280;
+  handle.addEventListener('mousedown', (e)=>{ dragging = true; startX = e.clientX; startW = pane.offsetWidth; document.body.style.userSelect='none'; });
+  window.addEventListener('mouseup', ()=>{ dragging=false; document.body.style.userSelect=''; });
+  window.addEventListener('mousemove', (e)=>{ if(!dragging) return; const dx = e.clientX - startX; let w = startW + dx; w = Math.max(240, Math.min(480, w)); pane.style.width = w + 'px'; });
+  handle.addEventListener('dblclick', ()=>{ pane.style.width = '280px'; });
+  handle.addEventListener('keydown', (e)=>{ if(e.key==='ArrowLeft'){ adjust(-16); } if(e.key==='ArrowRight'){ adjust(16); } if(e.shiftKey && e.key==='ArrowLeft'){ adjust(-32);} if(e.shiftKey && e.key==='ArrowRight'){ adjust(32);} function adjust(dx){ let w = pane.offsetWidth + dx; w = Math.max(240, Math.min(480,w)); pane.style.width = w + 'px'; }});
+
+  // Very small Markdown renderer for headings/paragraphs/code fences
+  function renderMarkdown(text){
+    const esc = (s)=>s.replace(/[&<>]/g, c=>({"&":"&amp;","<":"&lt;",
+      ">":"&gt;"}[c]));
+    const lines = text.split(/\r?\n/);
+    let out = [];
+    let inCode = false; let codeBuf = [];
+    for(const line of lines){
+      if(line.startsWith('```')){ if(inCode){ out.push('<pre><code>'+esc(codeBuf.join('\n'))+'</code></pre>'); codeBuf=[]; inCode=false; } else { inCode=true; } continue; }
+      if(inCode){ codeBuf.push(line); continue; }
+      if(line.startsWith('# ')){ out.push('<h1>'+esc(line.slice(2).trim())+'</h1>'); continue; }
+      if(line.startsWith('## ')){ out.push('<h2>'+esc(line.slice(3).trim())+'</h2>'); continue; }
+      if(line.trim()===''){ out.push('<p></p>'); continue; }
+      out.push('<p>'+esc(line)+'</p>');
+    }
+    return out.join('\n');
+  }
+
+  function parseBundle(text){
+    const files = {}; let current = null; let buf = [];
+    const beginRe = /^--- BEGIN (.+) ---$/; const endRe = /^--- END (.+) ---$/;
+    for(const raw of text.split(/\r?\n/)){
+      const m1 = raw.match(beginRe); const m2 = raw.match(endRe);
+      if(m1){ current = m1[1]; buf=[]; continue; }
+      if(m2){ if(current){ files[current]=buf.join('\n'); current=null; buf=[]; } continue; }
+      if(current){ buf.push(raw); }
+    }
+    return files;
+  }
+
+  function updateBreadcrumbs(specPath){
+    const path = specPath.replace(/^specs\//,'').replace(/\.md$/, '');
+    const parts = path.split('/');
+    let acc = [];
+    crumbsEl.innerHTML = parts.map((p,i)=>{ acc.push(p); const id = acc.join('/'); return '<a href="#'+id+'">'+p+'</a>'; }).join(' \u203A ');
+  }
+
+  function renderChildren(files, specPath){
+    const base = specPath.replace(/\.md$/,'');
+    const folder = 'specs/'+base+'/';
+    const children = Object.keys(files).filter(k=> k.startsWith(folder) && k!==specPath ).sort();
+    if(children.length===0){ childrenEl.innerHTML = '<div style="color:#57606a">No child snippets yet.</div>'; return; }
+    childrenEl.innerHTML = children.map(k=>{
+      const title = (files[k].split(/\r?\n/).find(l=>l.startsWith('# '))||'# Untitled').slice(2);
+      const sumLine = files[k].split(/\r?\n/).find(l=>/^\*.*\*$/.test(l.trim()));
+      const summary = sumLine? sumLine.trim().replace(/^\*/,'').replace(/\*$/,'') : '';
+      return '<div class="row" data-spec="'+k+'"><div class="title">'+title+'</div><div class="summary">'+summary+'</div></div>';
+    }).join('');
+    for(const row of childrenEl.querySelectorAll('.row')){
+      row.addEventListener('click', ()=> navigate(row.getAttribute('data-spec')));
+    }
+  }
+
+  function navigate(specPath){
+    location.hash = '#'+specPath.replace(/^specs\//,'').replace(/\.md$/,'');
+    load(specPath);
+  }
+
+  async function load(specPath){
+    updateBreadcrumbs(specPath);
+    const bundle = await fetch('context_bundle.txt').then(r=>r.text()).catch(()=> '');
+    const files = parseBundle(bundle);
+    let md = files[specPath];
+    if(md == null){
+      // Fallback: fetch the markdown directly from the server (absolute path from repo root)
+      const url = specPath.startsWith('/') ? specPath : ('/' + specPath);
+      try {
+        md = await fetch(url).then(r=> r.ok ? r.text() : '# Missing\n');
+      } catch(_e){
+        md = '# Missing\n';
+      }
+    }
+    mdEl.innerHTML = renderMarkdown(md);
+    renderChildren(files, specPath);
+  }
+
+  // Initial: default to specs/miso.md if no deep-link hash is present
+  const initial = (location.hash? 'specs/'+location.hash.slice(1)+'.md' : 'specs/miso.md');
+  load(initial);
+})();
+'''
+    write_if_changed(dest_dir / "index.html", index_html)
+    write_if_changed(dest_dir / "styles.css", styles_css)
+    write_if_changed(dest_dir / "app.js", app_js)
+    generate_pseudocode(dest_dir, spec)
+    # Manifest is generated later once context is assembled
+
+
 def build(spec_path: Path, impl_key: str) -> Path:
     spec = summarize_spec(spec_path)
     dest_dir = Path("code") / spec.tool_id / impl_key
@@ -218,8 +350,10 @@ def build(spec_path: Path, impl_key: str) -> Path:
         generate_python_impl(dest_dir, spec)
     elif impl_key == "sh":
         generate_shell_impl(dest_dir, spec)
+    elif impl_key == "web":
+        generate_web_impl(dest_dir, spec)
     else:
-        raise SystemExit(f"Unsupported --impl {impl_key!r}. Try one of: py, sh")
+        raise SystemExit(f"Unsupported --impl {impl_key!r}. Try one of: py, sh, web")
     # Assemble context files alongside implementation and compute digests
     ctx = assemble_and_write_context(dest_dir, spec.spec_path)
     # If previous manifest exists and digests match and tool/template versions match, mark as up-to-date
@@ -229,7 +363,7 @@ def build(spec_path: Path, impl_key: str) -> Path:
             dest_dir,
             spec,
             impl_key=impl_key,
-            template_name="builtin/echo",
+            template_name=("builtin/web-viewer" if impl_key == "web" else "builtin/echo"),
             context_included=ctx["included"],
             context_file_digests=ctx["file_sha256"],
             context_overall_digest=ctx["overall_sha256"],
@@ -241,7 +375,7 @@ def build(spec_path: Path, impl_key: str) -> Path:
         dest_dir,
         spec,
         impl_key=impl_key,
-        template_name="builtin/echo",
+        template_name=("builtin/web-viewer" if impl_key == "web" else "builtin/echo"),
         context_included=ctx["included"],
         context_file_digests=ctx["file_sha256"],
         context_overall_digest=ctx["overall_sha256"],
@@ -252,7 +386,7 @@ def build(spec_path: Path, impl_key: str) -> Path:
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="miso-build", description="Generate code from a miso tool spec")
     parser.add_argument("spec", type=str, help="Path to spec markdown, e.g., specs/tools/hello.md")
-    parser.add_argument("--impl", type=str, required=True, help="Implementation key: py or sh")
+    parser.add_argument("--impl", type=str, required=True, help="Implementation key: py, sh, or web")
     parser.add_argument("--force", action="store_true", help="Force regeneration even if inputs unchanged")
     return parser.parse_args(argv)
 

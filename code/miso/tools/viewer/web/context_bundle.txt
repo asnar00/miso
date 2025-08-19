@@ -1,0 +1,246 @@
+--- BEGIN specs/miso.md ---
+# miso
+*a system for end-user natural language programming*
+
+`miso` is a system that lets laypersons (domain experts) write and maintain their own software tools, using natural language.
+
+`miso` represents programs as a tree of small markdown documents (like this one!) called *snippets* that specify behaviour. To add detail to a snippet, we create child snippets rather than edit the original.
+
+`miso`'s goal is to allow users to create programs that are easy to read, understand, and maintain.
+
+--- END specs/miso.md ---
+
+--- BEGIN specs/miso/tools.md ---
+# tools
+*executable code*
+
+`tools` are pieces of executable code (command-line utilities, python programs, client/server apps, or native apps) that can be invoked by users or agents to perform repeatable, efficient work.
+
+Tools can call agents, but are always code-first.
+
+Tools live in the code/ folder; a tool implementing feature `A/B/C` will be stored in `code/A/B/C`.
+
+Each tool is described by a natural-language document `pseudocode.md` (in the tool's root folder) that can be run by an agent, by following its instructions precisely.
+
+A tool can contain multiple code implementations; these are stored in subfolders of the tool's code folder, eg. `code/A/B/C/py` or `code/A/B/C/sh`. 
+
+--- END specs/miso/tools.md ---
+
+--- BEGIN specs/miso/tools/viewer.md ---
+# viewer
+*elegant viewer for spec trees*
+
+The `viewer` tool allows the user to read snippets and navigate through the snippet tree.
+
+The viewer is designed to sit at the left edge of the screen (where a standard IDE's tree-view would go); it shows the markdown content, nicely rendered, and a clickable list of children snippets below it (each showing title and summary).
+
+Navigation is done through clickable breadcrumbs at the top of the display.
+
+The viewer is designed to work well in a narrow width, leaving lots of space for the actual target application.
+
+--- END specs/miso/tools/viewer.md ---
+
+--- BEGIN specs/miso/tools/viewer/breadcrumbs.md ---
+# breadcrumbs
+*simple A > B > C*
+
+Display a single-line breadcrumb at the top: root → ancestors → current snippet.
+
+Behavior
+
+- Segments are clickable; hovering shows the full segment title
+- Root segment returns to the top-level `specs/` view for the current tree
+- No collapsing; wrap to a second line if needed
+
+Keyboard
+
+- Backspace or Delete navigates one level up
+
+
+
+--- END specs/miso/tools/viewer/breadcrumbs.md ---
+
+--- BEGIN specs/miso/tools/viewer/children-list.md ---
+# children list
+*compact rows with title and 1-line summary*
+
+Below the current snippet, show its children as a compact, scrollable list.
+
+Row layout
+
+- Title in bold; single-line summary truncated with ellipsis
+- Secondary metadata (optional): child count badge, warning icon if missing file
+- Click anywhere on the row to navigate
+
+Ordering
+
+- Default: lexicographic by path; numeric prefixes like `01-` control order
+- Keep stable across refreshes for consistent navigation
+
+Empty state
+
+- Show “No child snippets yet.” with a hint about adding `specs/<path>/.../*.md`
+
+
+
+--- END specs/miso/tools/viewer/children-list.md ---
+
+--- BEGIN specs/miso/tools/viewer/keyboard-shortcuts.md ---
+# keyboard shortcuts
+*arrows navigate; Enter opens; Backspace up*
+
+Active when the viewer pane is focused.
+
+Bindings
+
+- Up/Down: move selection in the children list
+- Enter/Space: open selected child
+- Backspace/Delete: navigate up one level (breadcrumb parent)
+- Esc: clear selection, focus the markdown view
+
+Notes
+
+- Provide visible focus outline; announce selection changes to screen readers
+
+
+
+--- END specs/miso/tools/viewer/keyboard-shortcuts.md ---
+
+--- BEGIN specs/miso/tools/viewer/link-behavior.md ---
+# link behavior
+*intra-spec in-pane; external in new tab*
+
+Link handling rules:
+
+- Links to other snippets within `specs/` open in the viewer pane
+- Absolute URLs or non-spec links open in a new browser tab/window
+- Show external-link icon for out-of-spec links
+
+Safety
+
+- Apply URL sanitization; block javascript: and data: links
+
+
+
+--- END specs/miso/tools/viewer/link-behavior.md ---
+
+--- BEGIN specs/miso/tools/viewer/markdown-rendering.md ---
+# markdown rendering
+*GitHub-flavored markdown, sanitized*
+
+Render snippet markdown using GitHub-flavored Markdown.
+
+Supported
+
+- Headings, paragraphs, emphasis, strong, inline code
+- Lists, blockquotes, code blocks with fenced syntax highlighting
+- Tables, autolinks, task list checkboxes (read-only)
+
+Rules
+
+- Sanitize output: strip or escape raw HTML; no script execution
+- Links follow Link Behavior; code blocks show a copy button
+- Preserve hard line breaks present in the source
+
+Performance
+
+- Pre-render and memoize by file digest; re-render only on content change
+
+
+
+--- END specs/miso/tools/viewer/markdown-rendering.md ---
+
+--- BEGIN specs/miso/tools/viewer/navigation-history.md ---
+# navigation and history
+*deep-link via URL with back/forward*
+
+Each snippet selection maps to a shareable URL (hash or query parameter).
+
+Behavior
+
+- Update the URL on navigation; browser Back/Forward restores prior selection
+- Copy Link action copies the current deep-link
+- On load, parse the URL and open the referenced snippet; fallback to home
+
+Stability
+
+- Use canonical spec paths (e.g., `tools/hello`) to form the link target
+
+
+
+--- END specs/miso/tools/viewer/navigation-history.md ---
+
+--- BEGIN specs/miso/tools/viewer/pane.md ---
+# pane width and behavior
+*resizable 240–480px with drag handle*
+
+The viewer appears as a left-side pane that the user can resize between 240px and 480px using a vertical drag handle.
+
+Behavior
+
+- Default width: 280px
+- Bounds: min 240px, max 480px
+- Handle: 8px wide, shows a hover cursor; double-click snaps to default
+- Persistence: remember the last width for the session
+- Layout: the main application area expands/contracts as the pane is resized
+
+Accessibility
+
+- Keyboard alternative: when the handle is focused, Left/Right arrows adjust width by 16px; Shift+Arrow adjusts by 32px
+- High-contrast focus ring on the handle
+
+
+
+--- END specs/miso/tools/viewer/pane.md ---
+
+--- BEGIN specs/miso/tools/viewer/refresh.md ---
+# refresh
+*auto-refresh on change (native: watch; web: websocket)*
+
+Keep the view in sync with spec changes automatically.
+
+Modes
+
+- Native (desktop): watch the `specs/` directory using filesystem events; debounce 200ms
+- Web: subscribe to a WebSocket that publishes spec change events; fallback to polling every 2s if unavailable
+
+Behavior
+
+- On change of any included file for the current snippet, re-render markdown and children list
+- Preserve scroll position and selection when possible
+
+
+
+--- END specs/miso/tools/viewer/refresh.md ---
+
+--- BEGIN specs/miso/tools/viewer/search.md ---
+# search
+*none for now; reserved for later*
+
+Search and filtering are intentionally out of scope for the first version.
+
+Future work may add level filter (titles/summaries) and global fuzzy find.
+
+
+
+--- END specs/miso/tools/viewer/search.md ---
+
+--- BEGIN specs/miso/tools/viewer/theming.md ---
+# theming
+*light theme only*
+
+Provide a clean, readable light theme.
+
+Design
+
+- Background: #ffffff, Text: #1f2328, Muted text: #57606a
+- Borders/dividers: #d0d7de; Focus ring: #0969da at 2px
+- Code blocks: mono font, subtle background (#f6f8fa), 1px border
+
+Behavior
+
+- Respect OS text scaling; do not auto-switch to dark mode
+
+
+
+--- END specs/miso/tools/viewer/theming.md ---
