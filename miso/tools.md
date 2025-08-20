@@ -7,4 +7,4 @@ Tools are allowed to do anything on your computer, *except* call out to external
 
 However, they *can* be called by agents.
 
-A tool implementing feature `A/B/C` stores its code and build artefacts in a folder under `A/B/C~/imp/**` where `**` is the name of the platform.
+A tool implementing code for platform `X` should store the code in the tool's metafolder, under the `imp/X/` subfolder.
