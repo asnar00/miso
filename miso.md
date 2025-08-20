@@ -1,4 +1,3 @@
-ᕦ(ツ)ᕤ
 # miso
 
 `miso` ("make it so") is a line of experiments exploring the idea of "modular specifications" - trees of short natural-language text snippets describing a program.
