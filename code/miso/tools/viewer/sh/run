@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-set -eu
-echo 'elegant viewer for spec trees'

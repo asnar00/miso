@@ -1,6 +1,40 @@
 # scribbles
 *stupid ideas / thoughts*
 
+OK, random afternoon* background-level thoughts and feelings.
+1- putting the experiments out on youtube is good.
+2- we actually got somewhere with the previous experiments
+3- we need tighter control over the low-level.
+
+So what things do we know?
+
+- it's possible to author apps across platforms
+- need platform experts
+- for sure, we need multiple communicating micro-agents
+
+so here the ideas of *actions*, *tools* and *tasks* need to be clarified.
+
+So I think rather than reifying the term "feature-modular", let's just call them snippets, and we're done.
+
+We DO need to sort out the annoying list/ thing. I think the way we do it is:
+
+    miso/tools.md                       # tools overview
+    miso/tools/determinism.md           # sub-detail about tools
+    misol/tools/all/hello.md            # hello world tool
+
+action= "do a thing". these are natural-language-specified howtos.
+tool= "bit of code". deterministic code, repeatable.
+task= "a specific goal to be achieved."
+plan= steps we're going to undertake
+
+can tools call external APIs?
+I think there should be a category difference. So I'd say, "no".
+
+tools
+actions
+
+----------------------------------
+
 definitely needs to be some work on "visibility"
 -> seeing what the browser is doing
 -> seeing console

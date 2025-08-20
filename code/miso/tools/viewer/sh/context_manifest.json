@@ -1,8 +1,0 @@
-{
-  "included": [
-    "specs/miso.md",
-    "specs/miso/tools.md",
-    "specs/miso/tools/viewer.md"
-  ],
-  "missing_ancestors": []
-}
