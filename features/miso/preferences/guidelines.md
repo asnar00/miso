@@ -1,7 +1,7 @@
 # guidelines
 *how users and agents should conduct themselves*
 
-These guidelines are there to help collaboration between users and agents go smoothly.
+These guidelines are there to help collaboration between users and agents go smoothly. They should be followed by humans and agents alike. These guidelines should constantly evolve.
 
 - keep language simple and focused
 - praise is nice, but avoid sycophancy
