@@ -1,5 +1,6 @@
 # miso
-*make it so*
+*"make it so"*
+
 `miso` is a line of experiments exploring the idea of "modular specifications" - trees of short natural-language text snippets describing a program.
 
 Each new experiment starts "from scratch" or builds on a previous experiment; previous experiments are stored in branches and the main branch is always cleared for new experiments.
