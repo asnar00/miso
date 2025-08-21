@@ -5,7 +5,7 @@ The `build` action, invoked on a specific snippet defining a tool (i.e. a snippe
 
 - detect which files have changed
 - identify which tool needs building
-- assemble correct context (parent snippets, all child snippets, and all cross-cutting concerns)
+- `assemble context`
 - assemble platform context
 - resolve any ambiguities with the user
 - make a plan for changing the code

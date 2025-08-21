@@ -5,4 +5,5 @@
 - keep things clean and elegant
 - use visual space to make things legible
 - avoid lots of small buttons or visual clutter
+- light mode, but gentle, not harsh
 
