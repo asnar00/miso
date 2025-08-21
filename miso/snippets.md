@@ -1,4 +1,4 @@
-# snippet
+# snippets
 *small natural-language specifications*
 
 A `snippet` is a small natural-language markdown document (like this one!) describing something about the system.

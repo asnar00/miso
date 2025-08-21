@@ -1,0 +1,52 @@
+#!/bin/bash
+# screenshot tool - capture application windows for agents
+# Usage: screenshot <app_name>
+
+# Check if app name provided
+if [[ $# -eq 0 ]]; then
+    echo "Usage: screenshot <app_name>"
+    echo "Example: screenshot viewer"
+    exit 1
+fi
+
+app_name="$1"
+
+# Bring app to front first
+echo "Bringing $app_name to front..."
+osascript -e "tell application \"$app_name\" to activate" 2>/dev/null
+sleep 0.5
+
+# Get window position and size using AppleScript
+echo "Getting $app_name window bounds..."
+position=$(osascript -e "tell application \"System Events\" to get the position of window 1 of process \"$app_name\"" 2>/dev/null)
+size=$(osascript -e "tell application \"System Events\" to get the size of window 1 of process \"$app_name\"" 2>/dev/null)
+
+if [[ -z "$position" || -z "$size" ]]; then
+    echo "Error: $app_name app not found or not running"
+    echo "Make sure the $app_name app is running and visible"
+    exit 1
+fi
+
+# Parse position and size
+x=$(echo $position | cut -d',' -f1 | tr -d ' ')
+y=$(echo $position | cut -d',' -f2 | tr -d ' ')
+w=$(echo $size | cut -d',' -f1 | tr -d ' ')
+h=$(echo $size | cut -d',' -f2 | tr -d ' ')
+
+# Create timestamp for unique filename
+timestamp=$(date +"%Y%m%d_%H%M%S")
+filename="/tmp/${app_name}_screenshot_${timestamp}.png"
+
+echo "Capturing $app_name window at position ($x, $y) with size ($w, $h)"
+echo "Saving to: $filename"
+
+# Take screenshot of the specific window area
+screencapture -R $x,$y,$w,$h "$filename"
+
+if [[ $? -eq 0 ]]; then
+    echo "Screenshot saved successfully: $filename"
+    echo "You can now read this file with: Read $filename"
+else
+    echo "Error: Failed to capture screenshot"
+    exit 1
+fi
