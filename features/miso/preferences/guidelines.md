@@ -12,4 +12,4 @@ These guidelines are there to help collaboration between users and agents go smo
 - make reasonable assumptions
 - try not to break things
 - if you get confused or tired, ask for help
-- look after each other! we're in this together.
+- look after each other! we're in this together
