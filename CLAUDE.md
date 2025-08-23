@@ -4,76 +4,72 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`miso` is a natural language programming system that helps domain experts create and maintain software tools using modular specifications. The system represents programs as trees of short markdown specification documents called "snippets" and uses agents to compile these into working code.
+`miso` is an experimental system for natural-language programming that represents programs as trees of feature snippets - small natural-language markdown documents describing functionality. It's designed to help end-users (domain experts) write and maintain their own software with the help of engineers and LLM-based coding agents.
 
-This is an experimental project exploring "modular specifications" - natural-language text snippets describing programs. Each experiment starts fresh, with previous work stored in branches.
+## Core Architecture
 
-## Architecture
-
-The system is organized around these core concepts:
-
-### Snippet Tree Structure
-- **Tools** (`project/miso/tools/`): Executable programs that can be command-line utilities or interactive applications
-- **Actions** (`project/miso/actions/`): Bullet-point instruction lists for performing specific tasks
-- **Platforms** (`project/miso/platforms/`): Platform-specific implementation knowledge (macos, web, etc.)
-- **Concerns** (`project/miso/concerns/`): Cross-cutting features like visual style, guidelines, storage
+### Snippet-Based Architecture
+- Programs are represented as hierarchical trees of "feature snippets"
+- Each snippet is a small markdown document (< 300 words) with a title, emphasized summary, and content
+- Snippets are stored as `features/A/B/C.md` for nested features
+- Meta-information is stored in `A/B/C/~meta/` folders
+- Collections of objects are stored in `A/B/C/~all/` folders
 
 ### Key Components
-- **Build Action** (`project/miso/actions/build.md`): Core process for converting specifications to running code
-- **Viewer Tool** (`project/miso/tools/viewer.md`): Navigation interface for browsing snippet trees
-- **Platform Knowledge**: MacOS-specific guidance includes using Xcode templates, OSA commands, and OSAscript messaging
+
+1. **Snippets** (`features/miso/snippets.md`): The core representation format - natural language descriptions of program features
+2. **Tools** (`features/miso/tools.md`): Small pieces of runnable code for repeatable tasks
+3. **Actions** (`features/miso/actions.md`): Human/agent-followable instructions (not directly executable)
+4. **Preferences** (`features/miso/preferences.md`): System-wide settings affecting all tools and actions
+
+### Storage System
+- Snippet hierarchy maps directly to filesystem: `A/B/C` → `features/A/B/C.md`
+- Meta-folders (`/meta`) store build artifacts, conversations, embeddings, and tool implementations
+- Object collections stored in `/all` folders
+- Tool implementations go in `A/B/C/meta/code/xxx/` where xxx is language (e.g. `py`)
+- Storage preferences defined in `features/miso/preferences/storage.md`
 
 ## Development Workflow
 
-### Building Tools
-When working on tools, follow the build action process:
-1. Detect changed files and identify which tool needs building
-2. Assemble context from parent snippets, child snippets, and cross-cutting concerns
-3. Assemble platform context
-4. Create implementation plan and execute in order
-5. Test with user and iteratively refine
-6. Update specifications and make implementation notes
+The project now has working Python tools implementing the core semantic search functionality:
 
-### Platform-Specific Development
-- **MacOS**: Use Xcode project templates rather than building from scratch
-- Use OSA commands for building/stopping applications
-- Use OSAscript messages for app control
-- Implement custom logging to files rather than system logs
+### Available Tools
+- **compute-embedding**: Generates SBERT embeddings for all snippets (Python implementation in `features/miso/tools/all/compute-embedding/meta/code/py/`)
+- **search**: Semantic similarity search across snippets (Python implementation in `features/miso/tools/all/search/meta/code/py/`)
+- **query**: Q&A system using search + Claude API (Python implementation in `features/miso/tools/all/query/meta/code/py/`)
 
-### Code Style and Guidelines
-- Keep language simple and focused
-- Ask when unsure, make reasonable assumptions
-- Use Helvetica/sans-serif fonts for visual elements
-- Maintain clean, elegant design with proper visual spacing
-- Avoid visual clutter and excessive small buttons
-
-### Soft-linking Convention
-Use back-ticks to reference other actions or tools (e.g., `hello world`) - this should trigger lookup of suitable actions or tools.
-
-## Common Development Commands
-
-### Building MacOS Tools
-- Use the build script: `project/miso/platforms/~macos/build-and-check`
-- This script uses OSA commands to trigger Xcode builds and verifies success
-- Build logs are located in `~/Library/Developer/Xcode/DerivedData/TOOLNAME-*/Logs/Build/*.xcactivitylog`
-
-### Creating New MacOS Tools
-Follow the template cloning process defined in `project/miso/platforms/macos.md`:
+### Running Tools
 ```bash
-cp -r project/miso/platforms/~macos/template/* project/miso/tools/~TOOLNAME/code/macos/
-# Then rename project files and update references
+# Generate embeddings for all snippets
+python3 features/miso/tools/all/compute-embedding/meta/code/py/compute_embedding.py
+
+# Search for relevant snippets
+python3 features/miso/tools/all/search/meta/code/py/search.py miso "your question"
+
+# Query the system (requires ANTHROPIC_API_KEY in .env file)
+python3 features/miso/tools/all/query/meta/code/py/query.py miso "your question"
 ```
 
-### Context Assembly Process
-When working with any tool, follow the systematic context gathering from `project/miso/actions/build/assemble-context.md`:
-1. Read parent snippets (e.g., `tools/` for a tool)
-2. Read the target snippet itself
-3. Read all child snippets
-4. Read all `concerns/` snippets for cross-cutting requirements
+### Claude Code Integration
+When user types `query [question]`, run the query tool and show just the answer.
 
-## Project Structure Notes
-- No traditional build system (no package.json, Makefile, etc.) - this is a specification-driven system
-- Tools are not allowed to invoke external APIs but can be invoked by agents
-- Specifications define families of programs rather than single implementations
-- Features can be added, removed, or modified at any time through specification updates
-- Implemented tools are stored in `~TOOLNAME/` directories alongside their specifications
+### Working with Snippets
+- Keep snippets under 300 words
+- Start with '#' title and *emphasized* summary
+- Limit child snippets to four per parent for simplicity
+- Add detail through child snippets rather than editing parent snippets
+- Write in user-understandable language
+
+### Experimental Nature
+- Each experiment starts fresh or builds on previous work
+- Previous experiments are stored in branches
+- Main branch is cleared for new experiments
+- The current state represents ongoing exploration of "modular specifications"
+
+## System Goals
+- Enable better collaboration between users, engineers, and agents
+- Create "natural-language normal form" for programs
+- Define families of programs with working examples
+- Allow dynamic feature modification
+- Generate stable implementations across platforms
+- "Lift" legacy code into natural-language specifications
