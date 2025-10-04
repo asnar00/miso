@@ -3,6 +3,10 @@
 
 Complete knowledge base for iOS development from the command line, capturing everything needed to create, build, and deploy iOS applications.
 
+## Template
+
+A minimal iOS SwiftUI template app is available in `ios/template/` - copy it to start new projects.
+
 ## Contents
 
 - **create-app** - Creating iOS applications from scratch with Xcode project structure
