@@ -1,11 +1,7 @@
-# App Icon
-*Visual branding for the Firefly application*
+# App Icon Implementation
+*Technical details for icon assets across platforms*
 
-The Firefly app uses a distinctive nøøb character as its app icon.
-
-## Icon Design
-
-The icon features the nøøb character:
+## Character
 
 ```
 ᕦ(ツ)ᕤ
@@ -20,13 +16,11 @@ The icon features the nøøb character:
 
 The icon presents:
 - **Character**: ᕦ(ツ)ᕤ in black
-- **Background**: Solid turquoise (#40E0D0) when connected
+- **Background**: Solid turquoise (#40E0D0)
 - **Style**: Minimalist, bold, distinctive
 - **Emotion**: Playful, energetic, friendly
 
 ## Icon Sizes
-
-Both iOS and Android require multiple icon sizes:
 
 ### iOS Requirements
 - **App Store**: 1024×1024px (no alpha channel)
@@ -44,22 +38,22 @@ Both iOS and Android require multiple icon sizes:
 - **mdpi**: 48×48px (1x)
 - **Google Play**: 512×512px
 
-## Implementation
+## Platform Integration
 
 Icons are generated from a master design and placed in:
 - **iOS**: `Assets.xcassets/AppIcon.appiconset/`
 - **Android**: `res/mipmap-*/ic_launcher.png`
 
 See platform-specific icon generation documentation:
-- `ide/miso/platforms/ios/icon-generation.md`
-- `ide/miso/platforms/eos/icon-generation.md`
+- `miso/platforms/ios/icon-generation.md`
+- `miso/platforms/eos/icon-generation.md`
 
 ## Branding Consistency
 
 The nøøb character appears in:
-1. **App Icon**: Device home screen
-2. **Launch Screen**: App startup (future)
-3. **In-App Logo**: Currently displayed in app center with large font
+1. **App Icon**: Device home screen (this feature)
+2. **In-App Logo**: Main screen display
+3. **Launch Screen**: App startup (future)
 4. **Marketing**: App Store/Play Store screenshots
 
 ## Future Considerations
