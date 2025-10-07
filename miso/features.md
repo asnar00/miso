@@ -17,7 +17,9 @@ To keep things manageable, a feature should have no more than four or six childr
 
 Implementation details for a feature `A/B/C` are stored in the folder `A/B/C/imp`, and should contain:
 
-- natural-language pseudocode describing additional functions, and where they should be called from
-- platform-specific code in subfolders eg `imp/py` or `imp/eos`
-- any other artefacts like tests, debugging, etc.
+- `imp/pseudocode.md` : natural-language definition of new functions, and patching instructions (where in the product they should be called from, or what they should replace)
 
+platform-specific versions of this, eg.
+- `imp/ios.md` : actual code for new functions, and patching instructions referring to specific products.
+
+- any other useful artefacts we might want to generate, such as tests, logs, debugging issues, and so on.

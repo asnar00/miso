@@ -4,55 +4,115 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-`miso` ("make it so") is an experimental system for natural-language programming. It explores "modular specifications" - trees of short natural-language markdown files ("snippets") that describe programs.
+`miso` is an experimental system for natural language programming. It allows non-programmers to create and maintain software by specifying programs as trees of short natural-language markdown documents called "features" (or "snippets").
 
-This is an experimental repository where:
-- Each experiment starts from scratch or builds on previous work
-- Previous experiments are stored in branches
-- The main branch is cleared for new experiments
+**Key philosophy**: This is a line of experiments. Each new experiment may start from scratch or build on previous work. Previous experiments are stored in branches, and the main branch is cleared for new experiments.
 
-## Architecture
+## Core Concepts
 
-### Specification Structure
+### Features
+- Programs are specified as trees of markdown files in the `miso/` directory
+- Each feature is a short (<300 words) natural-language specification
+- Format: `#` title, followed by an *emphasized* one-line summary, then plain-language description
+- Avoid technical jargon - should be understandable by domain experts without programming knowledge
+- Features are nested: `A.md` → `A/B.md` → `A/B/C.md`
+- Keep features manageable (4-6 children max)
 
-Programs are represented as **feature modular specifications** - hierarchical trees of markdown snippet files.
+### Products
+- Executable applications assembled from features
+- Stored in `apps/` directory
+- Follow the same markdown tree convention as features
+- Their `imp/` folders contain actual executables
 
-**Snippet Naming Convention:**
-- Every snippet has a unique identifier following the pattern `A/B/C` (subfeature C of subfeature B of feature A)
-- Snippet `A/B/C` is stored as file `A/B/C.md`
-- Each snippet contains:
-  - Title (H1 header)
-  - Italicized subtitle/tagline
-  - Natural language description (typically under 300 words)
+### Implementation Details
+- For feature `A/B/C`, implementations go in `A/B/C/imp/`
+- `imp/pseudocode.md`: Natural-language function definitions and patching instructions
+- Platform-specific versions: `imp/ios.md`, `imp/android.md`, etc.
+- Contains actual code, tests, logs, and debugging artifacts
 
-**Implementation Storage:**
-- Implementation details for snippet `A/B/C` are stored in `A/B/C/imp/` (reserved folder name)
-- Platform-specific code goes in subfolders like `A/B/C/imp/ios/`, `A/B/C/imp/py/`, `A/B/C/imp/android/`
-- The `imp` folder can also contain notes, change histories, and other implementation artifacts
+## Platform Support
 
-### Directory Structure
+Three platforms currently supported: **iOS**, **Android/e/OS**, and **Python**
 
-- `ide/` - Contains the miso tooling specifications
-  - `ide/miso.md` - Main specification for the miso system
-  - `ide/miso/specifications.md` - Details on how miso represents program specifications
-- `apps/` - Contains application specifications built with miso
-  - `apps/firefly.md` - Specification for Firefly (semantic search social media)
-  - `apps/firefly/test/` - Example test application with iOS implementation structure
+### iOS Platform (`miso/platforms/ios/`)
 
-## Goals
+Template app: `miso/platforms/ios/template/`
 
-The miso project aims to:
-- Find better ways for users, engineers, and agents to collaborate to build software
-- Create a "natural-language normal form" representation of programs
-- Define a *family of programs* with working examples
-- Allow features to be added, removed, or modified by users at any time
-- Output stable, predictable implementations on any platform
-- "Lift" existing legacy code into normal form specifications
+**Key topics**:
+- `create-app.md`: Creating Xcode projects from command line
+- `build.md`: Building with xcodebuild
+- `simulator.md`: Running iOS simulators
+- `usb-deploy.md`: Fast USB deployment (~8 seconds)
+- `testflight.md`: TestFlight cloud distribution
+- `code-signing.md`: Certificates and provisioning profiles
+- `screen-capture.md`: Screen recording from device
 
-## Working with Specifications
+**Critical build issue**: Homebrew linker conflict
+- If builds fail with `ld: unknown option: -platform_version`, use: `xcodebuild ... LD="clang" build`
+- This forces clang as the linker instead of Homebrew's `/opt/homebrew/bin/ld`
 
-When working with this codebase:
-1. Specifications are the source of truth, not implementation code
-2. Code should be regenerated from specifications using Claude Code workflows
-3. Specifications should remain platform-agnostic
-4. Keep specifications up-to-date so code can be rebuilt from scratch or ported to new platforms
+**Build command structure**:
+```bash
+xcodebuild -project MyApp.xcodeproj \
+    -scheme MyApp \
+    -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+    LD="clang" \
+    build
+```
+
+### Android/e/OS Platform (`miso/platforms/eos/`)
+
+Template app: `miso/platforms/eos/template/`
+
+**Technologies**: Kotlin, Jetpack Compose, Material 3, Gradle Kotlin DSL
+
+**Key topics**:
+- `create-app.md`: Android project structure with Gradle
+- `build.md`: Building with Gradle
+- `usb-deploy.md`: USB deployment to devices
+- `setup.md`: Android SDK setup
+
+**Build command**:
+```bash
+./gradlew assembleDebug
+```
+
+### Python Platform (`miso/platforms/py/`)
+
+Template app: `miso/platforms/py/template/`
+
+**Technologies**: Flask, pip, virtualenv
+
+**Key topics**:
+- `create-app.md`: Creating Flask applications
+- `flask-deployment.md`: Server deployment
+
+## Repository Structure
+
+```
+miso/
+├── miso/                    # Feature specifications
+│   ├── platforms/           # Platform-specific knowledge
+│   │   ├── ios/            # iOS development
+│   │   ├── eos/            # Android/e/OS development
+│   │   └── py/             # Python/Flask development
+│   ├── platforms.md        # Platform overview
+│   ├── features.md         # Feature system specification
+│   └── products.md         # Product system specification
+├── apps/                    # Executable products
+│   └── firefly/            # Example: semantic search social media app
+├── miso.md                 # System overview
+└── readme.md               # Project description
+```
+
+## Working with this Repository
+
+1. **Understanding the codebase**: Start by reading `miso.md` and the relevant platform docs in `miso/platforms/`
+2. **Creating new features**: Add markdown files following the feature format in `miso/features.md`
+3. **Implementation**: Store working code in `imp/` subdirectories
+4. **Testing platform code**: Each platform has template apps and working implementations in `imp/` directories
+5. **Building**: Use platform-specific build commands (see platform docs)
+
+## Current Application
+
+**firefly** (`apps/firefly.md`): A social media platform based on semantic search, storing markdown snippets in a vector database for natural-language queries.
