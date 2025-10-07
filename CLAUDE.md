@@ -43,6 +43,7 @@ Template app: `miso/platforms/ios/template/`
 - `build.md`: Building with xcodebuild
 - `simulator.md`: Running iOS simulators
 - `usb-deploy.md`: Fast USB deployment (~8 seconds)
+- `build-and-deploy.md`: Complete build and USB deployment workflow
 - `testflight.md`: TestFlight cloud distribution
 - `code-signing.md`: Certificates and provisioning profiles
 - `screen-capture.md`: Screen recording from device
@@ -51,13 +52,35 @@ Template app: `miso/platforms/ios/template/`
 - If builds fail with `ld: unknown option: -platform_version`, use: `xcodebuild ... LD="clang" build`
 - This forces clang as the linker instead of Homebrew's `/opt/homebrew/bin/ld`
 
-**Build command structure**:
+**Build for simulator**:
 ```bash
 xcodebuild -project MyApp.xcodeproj \
     -scheme MyApp \
     -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
     LD="clang" \
     build
+```
+
+**Build and deploy to USB device**:
+```bash
+# Find device ID
+DEVICE_ID=$(xcodebuild -project MyApp.xcodeproj -scheme MyApp -showdestinations 2>&1 | \
+    grep "platform:iOS," | grep -v "Simulator" | grep -v "placeholder" | \
+    sed -n 's/.*id:\([^,]*\).*/\1/p' | head -1)
+
+# Build for device
+xcodebuild -project MyApp.xcodeproj \
+    -scheme MyApp \
+    -destination "id=$DEVICE_ID" \
+    -allowProvisioningUpdates \
+    LD="clang" \
+    build
+
+# Find built app
+APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/MyApp-*/Build/Products/Debug-iphoneos/MyApp.app -type d | head -1)
+
+# Install
+xcrun devicectl device install app --device "$DEVICE_ID" "$APP_PATH"
 ```
 
 ### Android/e/OS Platform (`miso/platforms/eos/`)
@@ -70,11 +93,28 @@ Template app: `miso/platforms/eos/template/`
 - `create-app.md`: Android project structure with Gradle
 - `build.md`: Building with Gradle
 - `usb-deploy.md`: USB deployment to devices
+- `build-and-deploy.md`: Complete build and USB deployment workflow
 - `setup.md`: Android SDK setup
 
-**Build command**:
+**Critical requirement**: Set JAVA_HOME before any Gradle commands:
 ```bash
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
+```
+
+**Build and deploy to USB device**:
+```bash
+# Check device connected
+adb devices
+
+# Build APK
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
 ./gradlew assembleDebug
+
+# Install (output at: app/build/outputs/apk/debug/app-debug.apk)
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# Launch (replace package name)
+adb shell am start -n com.package.name/.MainActivity
 ```
 
 ### Python Platform (`miso/platforms/py/`)
@@ -86,6 +126,22 @@ Template app: `miso/platforms/py/template/`
 **Key topics**:
 - `create-app.md`: Creating Flask applications
 - `flask-deployment.md`: Server deployment
+- `build-and-deploy.md`: Complete deployment workflow to remote server
+
+**Deploy to remote server** (example for Firefly server at `192.168.1.76`):
+```bash
+# Stop running server
+curl -X POST http://192.168.1.76:8080/api/shutdown
+
+# Copy files
+scp *.py *.txt *.sh microserver@192.168.1.76:~/firefly-server/
+
+# Start server
+ssh microserver@192.168.1.76 "cd ~/firefly-server && ./start.sh"
+
+# Verify
+curl http://192.168.1.76:8080/api/ping
+```
 
 ## Repository Structure
 

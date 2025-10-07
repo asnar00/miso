@@ -10,22 +10,47 @@ Before you can build Android/e/OS apps, you need to install the Android SDK, Jav
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-## 1. Install Java Development Kit (JDK) 17
+## 1. Install Java Development Kit (JDK)
 
-Android development requires Java. Install OpenJDK 17:
+Android development requires Java. You can install either a specific version or the latest:
 
 ```bash
+# Option 1: Latest OpenJDK (recommended for simplicity)
+brew install openjdk
+
+# Option 2: Specific version (OpenJDK 17)
 brew install openjdk@17
 ```
 
-**Configure Java environment:**
+**⚠️ Critical: Configure JAVA_HOME environment variable**
+
+Gradle requires `JAVA_HOME` to be set, even if Java is installed:
 
 ```bash
+# If you installed openjdk (latest)
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# If you installed openjdk@17
 export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 ```
 
-Add these lines to your shell profile (`~/.zshrc` or `~/.bash_profile`) to persist across sessions.
+**Find your Java installation:**
+```bash
+ls -la /opt/homebrew/opt/ | grep java
+```
+
+**Add to shell profile permanently:**
+
+Add these lines to your shell profile (`~/.zshrc` or `~/.bash_profile`):
+
+```bash
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
+export PATH="$JAVA_HOME/bin:$PATH"
+```
+
+Then reload: `source ~/.zshrc`
 
 ## 2. Install Gradle Build System
 
@@ -100,14 +125,14 @@ Save this as `setup-android.sh` and run once:
 echo "🔧 Setting up Android development environment..."
 
 # Install packages
-brew install openjdk@17
+brew install openjdk
 brew install gradle
 brew install --cask android-commandlinetools
 
 # Set environment variables
-export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
 export ANDROID_HOME="/opt/homebrew/share/android-commandlinetools"
-export PATH="/opt/homebrew/opt/openjdk@17/bin:$ANDROID_HOME/platform-tools:$PATH"
+export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"
 
 # Accept SDK license
 mkdir -p $ANDROID_HOME/licenses
@@ -119,17 +144,20 @@ sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-35" "bui
 echo "✅ Android development environment ready!"
 echo ""
 echo "Add these lines to ~/.zshrc:"
-echo 'export JAVA_HOME="/opt/homebrew/opt/openjdk@17"'
+echo 'export JAVA_HOME="/opt/homebrew/opt/openjdk"'
 echo 'export ANDROID_HOME="/opt/homebrew/share/android-commandlinetools"'
-echo 'export PATH="/opt/homebrew/opt/openjdk@17/bin:$ANDROID_HOME/platform-tools:$PATH"'
+echo 'export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"'
 ```
 
 ## Verify Installation
 
 **Check Java:**
 ```bash
+echo $JAVA_HOME
+# Should show: /opt/homebrew/opt/openjdk
+
 java -version
-# Should show: openjdk version "17.0.16"
+# Should show: openjdk version (17 or higher)
 ```
 
 **Check Gradle:**
@@ -168,9 +196,12 @@ These are typically git-ignored and created automatically or manually per projec
 
 ## Troubleshooting
 
-**"Unable to locate a Java Runtime"**
-- Ensure `JAVA_HOME` is set: `export JAVA_HOME="/opt/homebrew/opt/openjdk@17"`
-- Verify Java is in PATH: `which java`
+**"Unable to locate a Java Runtime" or "The operation couldn't be completed"**
+- This error occurs when `JAVA_HOME` is not set, even if Java is installed
+- Find your Java: `ls -la /opt/homebrew/opt/ | grep java`
+- Set JAVA_HOME: `export JAVA_HOME="/opt/homebrew/opt/openjdk"` (adjust path if needed)
+- Add to shell profile permanently (see section 1 above)
+- Verify it works: `java -version` should succeed after setting JAVA_HOME
 
 **"SDK location not found"**
 - Create `local.properties` in project root with `sdk.dir=` path

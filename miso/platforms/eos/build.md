@@ -8,10 +8,36 @@ Android apps are built using Gradle, a build automation tool. The Gradle Wrapper
 - Android SDK installed
 - Gradle wrapper present in project root (automatically created when project is initialized)
 - Java Development Kit (JDK) 17 or higher
+- **JAVA_HOME environment variable set**
+
+## Critical: Set JAVA_HOME Before Building
+
+Even if Java is installed via Homebrew, Gradle requires `JAVA_HOME` to be set:
+
+```bash
+# If you have openjdk (latest version)
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
+
+# If you have openjdk@17 specifically
+export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+```
+
+**Find your Java installation:**
+```bash
+ls -la /opt/homebrew/opt/ | grep java
+```
+
+**Verify JAVA_HOME is set:**
+```bash
+echo $JAVA_HOME
+java -version
+```
 
 ## Building Debug APK
 
 ```bash
+# Set JAVA_HOME first, then build
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
 ./gradlew assembleDebug
 ```
 
@@ -95,11 +121,18 @@ Subsequent builds are much faster due to caching.
 
 ## Troubleshooting
 
+**"Unable to locate a Java Runtime" or "The operation couldn't be completed"**
+- This means JAVA_HOME is not set, even if Java is installed
+- Solution: `export JAVA_HOME="/opt/homebrew/opt/openjdk"`
+- Find your installation: `ls -la /opt/homebrew/opt/ | grep java`
+- Verify it works: `java -version` should succeed after setting JAVA_HOME
+
 **"Command not found: gradlew"**
 - The Gradle wrapper wasn't created. Initialize with: `gradle wrapper`
 
 **"JAVA_HOME not set"**
 - Set JAVA_HOME environment variable to your JDK installation path
+- Use the commands in "Critical: Set JAVA_HOME" section above
 
 **"SDK location not found"**
 - Create `local.properties` with: `sdk.dir=/path/to/android/sdk`
