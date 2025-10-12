@@ -22,4 +22,4 @@ Implementation details for a feature `A/B/C` are stored in the folder `A/B/C/imp
 platform-specific versions of this, eg.
 - `imp/ios.md` : actual code for new functions, and patching instructions referring to specific products.
 
-- any other useful artefacts we might want to generate, such as tests, logs, debugging issues, and so on.
+- any other useful artefacts we might want to generate, such as logs, debugging issues, and so on.

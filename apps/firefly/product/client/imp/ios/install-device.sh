@@ -38,8 +38,8 @@ xcodebuild -project "${PROJECT_DIR}/${PROJECT_NAME}.xcodeproj" \
 
 echo "✅ Build complete"
 
-# Install to device
-APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData/NoobTest-*/Build/Products/Debug-iphoneos/NoobTest.app -type d | head -1)
+# Install to device - find the NEWEST build by modification time
+APP_PATH=$(ls -td ~/Library/Developer/Xcode/DerivedData/NoobTest-*/Build/Products/Debug-iphoneos/NoobTest.app 2>/dev/null | head -1)
 
 if [ -z "$APP_PATH" ]; then
     echo "❌ Could not find built app"

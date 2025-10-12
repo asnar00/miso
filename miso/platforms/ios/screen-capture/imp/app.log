@@ -94,3 +94,487 @@
 [8:05:25 PM] Created preview layer
 [8:05:25 PM] Starting capture session...
 [8:05:25 PM] Capture session started: true
+[8:10:21 PM] Enabled iOS screen capture devices
+[8:10:21 PM] App started
+[8:10:21 PM] Starting capture...
+[8:10:21 PM] Video devices: 2
+[8:10:21 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[8:10:21 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[8:10:21 PM] Muxed devices: 1
+[8:10:21 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[8:10:21 PM] Default muxed device: ashphone16
+[8:10:21 PM] Found iPhone device: ashphone16
+[8:10:21 PM] Created capture input
+[8:10:21 PM] Created capture session with preset: low
+[8:10:21 PM] Added input to session
+[8:10:21 PM] Created preview layer
+[8:10:21 PM] Starting capture session...
+[8:10:21 PM] Capture session started: true
+[8:10:43 PM] Enabled iOS screen capture devices
+[8:10:43 PM] App started
+[8:10:43 PM] Starting capture...
+[8:10:43 PM] Video devices: 2
+[8:10:43 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[8:10:43 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[8:10:43 PM] Muxed devices: 1
+[8:10:43 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[8:10:43 PM] Default muxed device: ashphone16
+[8:10:43 PM] Found iPhone device: ashphone16
+[8:10:43 PM] Created capture input
+[8:10:43 PM] Created capture session with preset: low
+[8:10:43 PM] Added input to session
+[8:10:43 PM] Created preview layer
+[8:10:43 PM] Starting capture session...
+[8:10:43 PM] Capture session started: true
+[8:15:26 PM] Enabled iOS screen capture devices
+[8:15:26 PM] App started
+[8:15:26 PM] Starting capture...
+[8:15:26 PM] Video devices: 2
+[8:15:26 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[8:15:26 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[8:15:26 PM] Muxed devices: 1
+[8:15:26 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[8:15:26 PM] Default muxed device: ashphone16
+[8:15:26 PM] Found iPhone device: ashphone16
+[8:15:26 PM] Created capture input
+[8:15:26 PM] Created capture session with preset: low
+[8:15:26 PM] Added input to session
+[8:15:26 PM] Created preview layer
+[8:15:26 PM] Starting capture session...
+[8:15:26 PM] Capture session started: true
+[8:16:26 PM] Capture session runtime error
+[8:16:26 PM] Error: Recording Stopped
+[8:16:26 PM] Cleaning up capture session
+[8:37:43 PM] Enabled iOS screen capture devices
+[8:37:43 PM] App started
+[8:37:54 PM] Starting capture...
+[8:37:54 PM] Video devices: 2
+[8:37:54 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[8:37:54 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[8:37:54 PM] Muxed devices: 1
+[8:37:54 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[8:37:54 PM] Default muxed device: ashphone16
+[8:37:54 PM] Found iPhone device: ashphone16
+[8:37:54 PM] Created capture input
+[8:37:54 PM] Created capture session with preset: low
+[8:37:54 PM] Added input to session
+[8:37:56 PM] Starting capture...
+[8:37:56 PM] Video devices: 2
+[8:37:56 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[8:37:56 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[8:37:56 PM] Muxed devices: 1
+[8:37:56 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[8:37:56 PM] Default muxed device: ashphone16
+[8:37:56 PM] Found iPhone device: ashphone16
+[8:37:56 PM] Created capture input
+[8:37:56 PM] Created capture session with preset: low
+[8:37:56 PM] Added input to session
+[8:37:56 PM] Created preview layer
+[8:37:56 PM] Starting capture session...
+[8:37:56 PM] Capture session started: true
+[8:40:41 PM] Enabled iOS screen capture devices
+[8:40:41 PM] App started
+[8:40:41 PM] Starting capture...
+[8:40:41 PM] Video devices: 2
+[8:40:41 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[8:40:41 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[8:40:41 PM] Muxed devices: 1
+[8:40:41 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[8:40:41 PM] Default muxed device: ashphone16
+[8:40:41 PM] Found iPhone device: ashphone16
+[8:40:41 PM] Created capture input
+[8:40:41 PM] Created capture session with preset: low
+[8:40:41 PM] Added input to session
+[8:40:41 PM] Created preview layer
+[8:40:41 PM] Starting capture session...
+[8:40:41 PM] Capture session started: true
+[9:12:42 PM] Enabled iOS screen capture devices
+[9:12:42 PM] App started
+[9:12:42 PM] Starting capture...
+[9:12:42 PM] Video devices: 2
+[9:12:42 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:12:42 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:12:42 PM] Muxed devices: 1
+[9:12:42 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:12:42 PM] Default muxed device: ashphone16
+[9:12:42 PM] Found iPhone device: ashphone16
+[9:12:42 PM] Created capture input
+[9:12:42 PM] Created capture session with preset: low
+[9:12:42 PM] Added input to session
+[9:12:42 PM] Created preview layer
+[9:12:42 PM] Starting capture session...
+[9:12:42 PM] Capture session started: true
+[9:13:21 PM] Enabled iOS screen capture devices
+[9:13:21 PM] App started
+[9:13:21 PM] Starting capture...
+[9:13:21 PM] Video devices: 2
+[9:13:21 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:13:21 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:13:21 PM] Muxed devices: 1
+[9:13:21 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:13:21 PM] Default muxed device: ashphone16
+[9:13:21 PM] Found iPhone device: ashphone16
+[9:13:21 PM] Created capture input
+[9:13:21 PM] Created capture session with preset: low
+[9:13:21 PM] Added input to session
+[9:13:21 PM] Created preview layer
+[9:13:21 PM] Starting capture session...
+[9:13:21 PM] Capture session started: true
+[9:14:03 PM] Enabled iOS screen capture devices
+[9:14:03 PM] App started
+[9:14:03 PM] Starting capture...
+[9:14:03 PM] Video devices: 2
+[9:14:03 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:14:03 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:14:03 PM] Muxed devices: 1
+[9:14:03 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:14:03 PM] Default muxed device: ashphone16
+[9:14:03 PM] Found iPhone device: ashphone16
+[9:14:03 PM] Created capture input
+[9:14:03 PM] Created capture session with preset: low
+[9:14:03 PM] Added input to session
+[9:14:03 PM] Created preview layer
+[9:14:03 PM] Starting capture session...
+[9:14:03 PM] Capture session started: true
+[9:14:47 PM] Enabled iOS screen capture devices
+[9:14:47 PM] App started
+[9:14:47 PM] Starting capture...
+[9:14:47 PM] Video devices: 2
+[9:14:47 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:14:47 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:14:47 PM] Muxed devices: 1
+[9:14:47 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:14:47 PM] Default muxed device: ashphone16
+[9:14:47 PM] Found iPhone device: ashphone16
+[9:14:47 PM] Created capture input
+[9:14:47 PM] Created capture session with preset: low
+[9:14:47 PM] Added input to session
+[9:14:47 PM] Created preview layer
+[9:14:47 PM] Starting capture session...
+[9:14:47 PM] Capture session started: true
+[9:15:40 PM] Enabled iOS screen capture devices
+[9:15:40 PM] App started
+[9:15:41 PM] Starting capture...
+[9:15:41 PM] Video devices: 2
+[9:15:41 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:15:41 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:15:41 PM] Muxed devices: 1
+[9:15:41 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:15:41 PM] Default muxed device: ashphone16
+[9:15:41 PM] Found iPhone device: ashphone16
+[9:15:41 PM] Created capture input
+[9:15:41 PM] Created capture session with preset: low
+[9:15:41 PM] Added input to session
+[9:15:41 PM] Created preview layer
+[9:15:41 PM] Starting capture session...
+[9:15:41 PM] Capture session started: true
+[9:16:05 PM] Capture session runtime error
+[9:16:05 PM] Error: Recording Stopped
+[9:16:05 PM] Cleaning up capture session
+[9:16:11 PM] Starting capture...
+[9:16:11 PM] Video devices: 2
+[9:16:11 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:16:11 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:16:11 PM] Muxed devices: 1
+[9:16:11 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:16:11 PM] Default muxed device: ashphone16
+[9:16:11 PM] Found iPhone device: ashphone16
+[9:16:11 PM] Created capture input
+[9:16:11 PM] Created capture session with preset: low
+[9:16:11 PM] Added input to session
+[9:16:11 PM] Created preview layer
+[9:16:11 PM] Starting capture session...
+[9:16:11 PM] Capture session started: true
+[1:20:17 AM] Enabled iOS screen capture devices
+[1:20:17 AM] App started
+[1:20:55 AM] Starting capture...
+[1:20:55 AM] Video devices: 2
+[1:20:55 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[1:20:55 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[1:20:55 AM] Muxed devices: 0
+[1:20:55 AM] Could not find iPhone capture device yet, will retry...
+[1:20:57 AM] Starting capture...
+[1:20:57 AM] Video devices: 2
+[1:20:57 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[1:20:57 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[1:20:57 AM] Muxed devices: 0
+[1:20:57 AM] Could not find iPhone capture device yet, will retry...
+[1:20:59 AM] Starting capture...
+[1:20:59 AM] Video devices: 2
+[1:20:59 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[1:20:59 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[1:20:59 AM] Muxed devices: 1
+[1:20:59 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[1:20:59 AM] Default muxed device: ashphone16
+[1:20:59 AM] Found iPhone device: ashphone16
+[1:20:59 AM] Created capture input
+[1:20:59 AM] Created capture session with preset: low
+[1:20:59 AM] Added input to session
+[1:20:59 AM] Created preview layer
+[1:20:59 AM] Starting capture session...
+[1:20:59 AM] Capture session started: true
+[1:23:54 AM] Capture session runtime error
+[1:23:54 AM] Error: Recording Stopped
+[1:23:54 AM] Cleaning up capture session
+[6:47:54 PM] Enabled iOS screen capture devices
+[6:47:55 PM] App started
+[6:47:55 PM] Starting capture...
+[6:47:55 PM] Video devices: 2
+[6:47:55 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[6:47:55 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[6:47:55 PM] Muxed devices: 1
+[6:47:55 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[6:47:55 PM] Default muxed device: ashphone16
+[6:47:55 PM] Found iPhone device: ashphone16
+[6:47:55 PM] Created capture input
+[6:47:55 PM] Created capture session with preset: low
+[6:47:55 PM] Added input to session
+[6:47:55 PM] Created preview layer
+[6:47:55 PM] Starting capture session...
+[6:47:55 PM] Capture session started: true
+[7:45:30 PM] Capture session runtime error
+[7:45:30 PM] Error: Recording Stopped
+[7:45:30 PM] Cleaning up capture session
+[7:55:25 PM] Starting capture...
+[7:55:25 PM] Video devices: 2
+[7:55:25 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[7:55:25 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[7:55:25 PM] Muxed devices: 1
+[7:55:25 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[7:55:25 PM] Default muxed device: ashphone16
+[7:55:25 PM] Found iPhone device: ashphone16
+[7:55:25 PM] Created capture input
+[7:55:25 PM] Created capture session with preset: low
+[7:55:25 PM] Added input to session
+[7:55:25 PM] Created preview layer
+[7:55:25 PM] Starting capture session...
+[7:55:25 PM] Capture session started: true
+[10:08:56 AM] Enabled iOS screen capture devices
+[10:08:56 AM] App started
+[10:08:56 AM] Starting capture...
+[10:08:56 AM] Video devices: 2
+[10:08:56 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:08:56 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:08:56 AM] Muxed devices: 1
+[10:08:56 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[10:08:56 AM] Default muxed device: ashphone16
+[10:08:56 AM] Found iPhone device: ashphone16
+[10:08:56 AM] Created capture input
+[10:08:56 AM] Created capture session with preset: low
+[10:08:56 AM] Added input to session
+[10:08:56 AM] Created preview layer
+[10:08:56 AM] Starting capture session...
+[10:08:56 AM] Capture session started: true
+[10:09:22 AM] Enabled iOS screen capture devices
+[10:09:22 AM] App started
+[10:09:23 AM] Starting capture...
+[10:09:23 AM] Video devices: 2
+[10:09:23 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:09:23 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:09:23 AM] Muxed devices: 1
+[10:09:23 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[10:09:23 AM] Default muxed device: ashphone16
+[10:09:23 AM] Found iPhone device: ashphone16
+[10:09:23 AM] Created capture input
+[10:09:23 AM] Created capture session with preset: low
+[10:09:23 AM] Added input to session
+[10:09:23 AM] Created preview layer
+[10:09:23 AM] Starting capture session...
+[10:09:23 AM] Capture session started: true
+[10:12:15 AM] Enabled iOS screen capture devices
+[10:12:20 AM] App started
+[10:12:20 AM] Starting capture...
+[10:12:20 AM] Video devices: 2
+[10:12:20 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:12:20 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:12:20 AM] Muxed devices: 0
+[10:12:20 AM] Could not find iPhone capture device yet, will retry...
+[10:12:22 AM] Starting capture...
+[10:12:22 AM] Video devices: 2
+[10:12:22 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:12:22 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:12:22 AM] Muxed devices: 1
+[10:12:22 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[10:12:22 AM] Default muxed device: ashphone16
+[10:12:22 AM] Found iPhone device: ashphone16
+[10:12:22 AM] Created capture input
+[10:12:22 AM] Created capture session with preset: low
+[10:12:22 AM] Added input to session
+[10:12:22 AM] Created preview layer
+[10:12:22 AM] Starting capture session...
+[10:12:22 AM] Capture session started: true
+[10:15:58 AM] Enabled iOS screen capture devices
+[10:15:58 AM] App started
+[10:15:58 AM] Starting capture...
+[10:15:58 AM] Video devices: 2
+[10:15:58 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:15:58 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:15:58 AM] Muxed devices: 0
+[10:15:58 AM] Could not find iPhone capture device yet, will retry...
+[10:16:00 AM] Starting capture...
+[10:16:00 AM] Video devices: 2
+[10:16:00 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:16:00 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:16:00 AM] Muxed devices: 1
+[10:16:00 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[10:16:00 AM] Default muxed device: ashphone16
+[10:16:00 AM] Found iPhone device: ashphone16
+[10:16:00 AM] Created capture input
+[10:16:00 AM] Created capture session with preset: low
+[10:16:00 AM] Added input to session
+[10:16:00 AM] Created preview layer
+[10:16:00 AM] Starting capture session...
+[10:16:00 AM] Capture session started: true
+[10:17:12 AM] Enabled iOS screen capture devices
+[10:17:12 AM] App started
+[10:17:12 AM] Starting capture...
+[10:17:12 AM] Video devices: 2
+[10:17:12 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:17:12 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:17:12 AM] Muxed devices: 1
+[10:17:12 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[10:17:12 AM] Default muxed device: ashphone16
+[10:17:12 AM] Found iPhone device: ashphone16
+[10:17:12 AM] Created capture input
+[10:17:12 AM] Created capture session with preset: low
+[10:17:12 AM] Added input to session
+[10:17:12 AM] Created preview layer
+[10:17:12 AM] Starting capture session...
+[10:17:12 AM] Capture session started: true
+[10:17:25 AM] Enabled iOS screen capture devices
+[10:17:25 AM] App started
+[10:17:25 AM] Starting capture...
+[10:17:25 AM] Video devices: 2
+[10:17:25 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:17:25 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:17:25 AM] Muxed devices: 0
+[10:17:25 AM] Could not find iPhone capture device yet, will retry...
+[10:17:27 AM] Starting capture...
+[10:17:27 AM] Video devices: 2
+[10:17:27 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:17:27 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:17:27 AM] Muxed devices: 1
+[10:17:27 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[10:17:27 AM] Default muxed device: ashphone16
+[10:17:27 AM] Found iPhone device: ashphone16
+[10:17:27 AM] Created capture input
+[10:17:27 AM] Created capture session with preset: low
+[10:17:27 AM] Added input to session
+[10:17:27 AM] Created preview layer
+[10:17:27 AM] Starting capture session...
+[10:17:27 AM] Capture session started: true
+[10:23:18 AM] Enabled iOS screen capture devices
+[10:23:18 AM] App started
+[10:23:19 AM] Starting capture...
+[10:23:19 AM] Video devices: 2
+[10:23:19 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:23:19 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:23:19 AM] Muxed devices: 0
+[10:23:19 AM] Could not find iPhone capture device yet, will retry...
+[10:23:21 AM] Starting capture...
+[10:23:21 AM] Video devices: 2
+[10:23:21 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[10:23:21 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[10:23:21 AM] Muxed devices: 1
+[10:23:21 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[10:23:21 AM] Default muxed device: ashphone16
+[10:23:21 AM] Found iPhone device: ashphone16
+[10:23:21 AM] Created capture input
+[10:23:21 AM] Created capture session with preset: low
+[10:23:21 AM] Added input to session
+[10:23:21 AM] Created preview layer
+[10:23:21 AM] Starting capture session...
+[10:23:21 AM] Capture session started: true
+[12:47:31 PM] Capture session runtime error
+[12:47:31 PM] Error: Recording Stopped
+[12:47:31 PM] Cleaning up capture session
+[9:23:29 AM] Starting capture...
+[9:23:29 AM] Video devices: 2
+[9:23:29 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:23:29 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:23:29 AM] Muxed devices: 1
+[9:23:29 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:23:29 AM] Default muxed device: ashphone16
+[9:23:29 AM] Found iPhone device: ashphone16
+[9:23:29 AM] Created capture input
+[9:23:29 AM] Created capture session with preset: low
+[9:23:29 AM] Added input to session
+[9:23:29 AM] Created preview layer
+[9:23:29 AM] Starting capture session...
+[9:23:29 AM] Capture session started: true
+[9:57:15 AM] Capture session runtime error
+[9:57:15 AM] Error: Recording Stopped
+[9:57:15 AM] Cleaning up capture session
+[9:57:17 AM] Starting capture...
+[9:57:17 AM] Video devices: 2
+[9:57:17 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:57:17 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:57:17 AM] Muxed devices: 1
+[9:57:17 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:57:17 AM] Default muxed device: ashphone16
+[9:57:17 AM] Found iPhone device: ashphone16
+[9:57:17 AM] Created capture input
+[9:57:17 AM] Created capture session with preset: low
+[9:57:17 AM] Added input to session
+[9:57:17 AM] Created preview layer
+[9:57:17 AM] Starting capture session...
+[9:57:17 AM] Capture session started: true
+[9:57:25 AM] Capture session runtime error
+[9:57:25 AM] Error: Recording Stopped
+[9:57:25 AM] Cleaning up capture session
+[9:57:27 AM] Starting capture...
+[9:57:27 AM] Video devices: 2
+[9:57:27 AM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[9:57:27 AM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[9:57:27 AM] Muxed devices: 1
+[9:57:27 AM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[9:57:27 AM] Default muxed device: ashphone16
+[9:57:27 AM] Found iPhone device: ashphone16
+[9:57:27 AM] Created capture input
+[9:57:27 AM] Created capture session with preset: low
+[9:57:27 AM] Added input to session
+[9:57:27 AM] Created preview layer
+[9:57:27 AM] Starting capture session...
+[9:57:27 AM] Capture session started: true
+[11:32:15 AM] Capture session runtime error
+[11:32:15 AM] Error: Recording Stopped
+[11:32:15 AM] Cleaning up capture session
+[4:08:20 PM] Enabled iOS screen capture devices
+[4:08:20 PM] App started
+[4:08:20 PM] Starting capture...
+[4:08:20 PM] Video devices: 2
+[4:08:20 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[4:08:20 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[4:08:20 PM] Muxed devices: 0
+[4:08:20 PM] Could not find iPhone capture device yet, will retry...
+[4:08:22 PM] Starting capture...
+[4:08:22 PM] Video devices: 2
+[4:08:22 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[4:08:22 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[4:08:22 PM] Muxed devices: 1
+[4:08:22 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[4:08:22 PM] Default muxed device: ashphone16
+[4:08:22 PM] Found iPhone device: ashphone16
+[4:08:22 PM] Created capture input
+[4:08:22 PM] Created capture session with preset: low
+[4:08:22 PM] Added input to session
+[4:08:22 PM] Created preview layer
+[4:08:22 PM] Starting capture session...
+[4:08:22 PM] Capture session started: true
+[4:58:51 PM] Capture session runtime error
+[4:58:51 PM] Error: Recording Stopped
+[4:58:51 PM] Cleaning up capture session
+[5:05:18 PM] Starting capture...
+[5:05:18 PM] Video devices: 2
+[5:05:18 PM]   - OBS Virtual Camera (type: AVCaptureDeviceTypeExternal)
+[5:05:18 PM]   - FaceTime HD Camera (type: AVCaptureDeviceTypeBuiltInWideAngleCamera)
+[5:05:18 PM] Muxed devices: 1
+[5:05:18 PM]   - ashphone16 (type: AVCaptureDeviceTypeExternal)
+[5:05:18 PM] Default muxed device: ashphone16
+[5:05:18 PM] Found iPhone device: ashphone16
+[5:05:18 PM] Created capture input
+[5:05:18 PM] Created capture session with preset: low
+[5:05:18 PM] Added input to session
+[5:05:18 PM] Created preview layer
+[5:05:18 PM] Starting capture session...
+[5:05:18 PM] Capture session started: true

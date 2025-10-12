@@ -1,8 +1,12 @@
 import SwiftUI
+import OSLog
 
 struct ContentView: View {
     // Server configuration
-    let serverURL = "http://192.168.1.76:8080"
+    let serverURL = "http://185.96.221.52:8080"
+
+    // Logger
+    let logger = Logger.shared
 
     // State variables for ping and background features
     @State private var backgroundColor = Color.gray
@@ -27,6 +31,8 @@ struct ContentView: View {
     }
 
     func startPeriodicCheck() {
+        logger.info("App started, beginning periodic connection checks")
+
         // Check immediately on startup
         testConnection()
 
@@ -37,7 +43,10 @@ struct ContentView: View {
     }
 
     func testConnection() {
+        logger.info("------------ ping")
+
         guard let url = URL(string: "\(serverURL)/api/ping") else {
+            logger.error("Invalid server URL: \(serverURL)")
             backgroundColor = Color.gray
             return
         }
@@ -46,6 +55,7 @@ struct ContentView: View {
             DispatchQueue.main.async {
                 if let error = error {
                     // Connection failed - gray background
+                    logger.warning("Connection failed: \(error.localizedDescription)")
                     backgroundColor = Color.gray
                     return
                 }
@@ -53,9 +63,11 @@ struct ContentView: View {
                 if let httpResponse = response as? HTTPURLResponse {
                     if httpResponse.statusCode == 200 {
                         // Connection successful - turquoise background
+                        logger.debug("Connection successful - status 200")
                         backgroundColor = Color(red: 64/255, green: 224/255, blue: 208/255)
                     } else {
                         // Server returned error - gray background
+                        logger.warning("Unexpected status code: \(httpResponse.statusCode)")
                         backgroundColor = Color.gray
                     }
                 }

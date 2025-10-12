@@ -143,3 +143,85 @@ fi
 - Installation: ~1-2 seconds
 
 Total deployment time: **~8-10 seconds**
+
+## Restarting App Remotely
+
+You can restart an already-installed app from the Mac without rebuilding:
+
+```bash
+#!/bin/bash
+# restart-app.sh
+
+BUNDLE_ID="com.miso.noobtest"
+
+# Get device ID
+DEVICE_ID=$(xcodebuild -project NoobTest.xcodeproj -scheme NoobTest -showdestinations 2>&1 | \
+    grep "platform:iOS," | grep -v "Simulator" | grep -v "placeholder" | \
+    sed -n 's/.*id:\([^,}]*\).*/\1/p' | head -1 | tr -d ' ')
+
+# Launch app, terminating existing instance first
+xcrun devicectl device process launch \
+    --device "$DEVICE_ID" \
+    --terminate-existing \
+    --activate \
+    "$BUNDLE_ID"
+```
+
+**Useful for:**
+- Testing after code changes were deployed
+- Verifying app behavior on fresh launch
+- Remote debugging without physically accessing the phone
+
+**What it does:**
+- Terminates any running instance of the app
+- Launches the app in the foreground
+- Returns immediately (doesn't wait for app to exit)
+
+## Stopping App Remotely
+
+You can stop a running app from the Mac without physically interacting with the phone:
+
+```bash
+#!/bin/bash
+# stop-app.sh
+
+BUNDLE_ID="com.miso.noobtest"
+
+# Get device ID
+DEVICE_ID=$(xcodebuild -project NoobTest.xcodeproj -scheme NoobTest -showdestinations 2>&1 | \
+    grep "platform:iOS," | grep -v "Simulator" | grep -v "placeholder" | \
+    sed -n 's/.*id:\([^,}]*\).*/\1/p' | head -1 | tr -d ' ')
+
+# Find the process ID (pymobiledevice3 outputs to stderr)
+PID_LINE=$(pymobiledevice3 processes pgrep NoobTest 2>&1 | grep "INFO" | grep "NoobTest" | head -1)
+
+if [ -z "$PID_LINE" ]; then
+    echo "⚠️  NoobTest is not running"
+    exit 0
+fi
+
+# Extract PID from the output (format: "INFO 3526 NoobTest")
+PID=$(echo "$PID_LINE" | awk '{print $(NF-1)}')
+
+# Send SIGTERM to the process
+xcrun devicectl device process signal \
+    --device "$DEVICE_ID" \
+    --pid "$PID" \
+    --signal SIGTERM
+```
+
+**Useful for:**
+- Stopping app to examine logs at a specific point
+- Clearing app state between test runs
+- Remote debugging without phone access
+
+**What it does:**
+- Finds the running process ID using `pymobiledevice3`
+- Sends SIGTERM (graceful termination signal) to the process
+- Allows app to clean up before exiting
+
+**Safe for debugging:**
+- SIGTERM is the standard Unix graceful termination signal
+- Safe to call repeatedly during development
+- Each app launch is isolated - no state corruption between runs
+- iOS cleans up resources (memory, connections) after process terminates

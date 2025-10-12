@@ -1,0 +1,15 @@
+18:53:21 [INFO] App started, beginning periodic connection checks
+18:53:21 [INFO] ------------ ping
+18:53:21 [DEBUG] Connection successful - status 200
+18:53:21 [INFO] ------------ ping
+18:53:22 [DEBUG] Connection successful - status 200
+18:53:22 [INFO] ------------ ping
+18:53:23 [DEBUG] Connection successful - status 200
+18:53:23 [INFO] ------------ ping
+18:53:24 [DEBUG] Connection successful - status 200
+18:53:24 [INFO] ------------ ping
+18:53:25 [DEBUG] Connection successful - status 200
+18:53:26 [INFO] ------------ ping
+18:53:26 [DEBUG] Connection successful - status 200
+18:53:26 [INFO] ------------ ping
+18:53:27 [DEBUG] Connection successful - status 200

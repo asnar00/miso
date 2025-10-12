@@ -19,13 +19,26 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class MainActivity : ComponentActivity() {
-    private val serverURL = "http://192.168.1.76:8080"
+    private val serverURL = "http://185.96.221.52:8080"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize logger
+        Logger.init(this)
+        Logger.log("📱 NoobTest app starting (Android)")
+        Logger.log("Device ID: ${Logger.getDeviceID()}")
+
+        // Initialize test server
+        Logger.log("🚀 Initializing TestServer...")
+        TestServer.start(this)
+        Logger.log("✓ TestServer initialized")
+
         setContent {
             FireflyApp()
         }
+
+        Logger.log("✓ App initialization complete")
     }
 
     @Composable
@@ -35,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
         // Periodic ping check
         LaunchedEffect(Unit) {
+            Logger.log("⏱️ Starting periodic server check")
             while (true) {
                 val isConnected = withContext(Dispatchers.IO) {
                     testConnection()

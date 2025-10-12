@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, jsonify
+from flask import Flask, render_template_string, jsonify, request
 import os
 import signal
 
@@ -72,5 +72,6 @@ if __name__ == '__main__':
     # Run on all interfaces so it's accessible from network
     # Port 8080 as specified
     print("Starting Firefly server on http://0.0.0.0:8080")
-    print(f"Server IP: http://192.168.1.76:8080")
+    print(f"Local IP: http://192.168.1.76:8080")
+    print(f"Public IP: http://185.96.221.52:8080")
     app.run(host='0.0.0.0', port=8080, debug=False)
