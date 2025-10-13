@@ -1,181 +1,90 @@
 # build-and-deploy
-*complete workflow to build and deploy Android/e/OS apps to connected device*
+*compiling Android/e/OS apps and deploying to devices*
 
-This document describes the complete process to build and deploy an Android/e/OS app to a USB-connected device.
+This section covers building Android applications with Gradle and deploying them to USB-connected devices via ADB (Android Debug Bridge).
 
-## Prerequisites
+## Topics
 
-- Android device connected via USB
-- USB debugging enabled on device
-- Device authorized for debugging
-- Java (OpenJDK) installed via Homebrew
-- ADB (Android Debug Bridge) installed
+### [build](build-and-deploy/build.md)
+Compiling Android apps using Gradle, managing dependencies, and understanding the build system (Gradle Kotlin DSL).
 
-## Critical: Set JAVA_HOME
+### [usb-deploy](build-and-deploy/usb-deploy.md)
+Deploying apps directly to USB-connected Android/e/OS devices using ADB.
 
-**This is mandatory before any Gradle commands:**
+### [complete-workflow](build-and-deploy/complete-workflow.md)
+End-to-end guide: build, install, and launch in one workflow.
 
-```bash
-export JAVA_HOME="/opt/homebrew/opt/openjdk"
-```
+## Quick Workflow
 
-Find your Java installation:
-```bash
-ls -la /opt/homebrew/opt/ | grep java
-```
-
-Without JAVA_HOME set, you'll get: `Unable to locate a Java Runtime`
-
-## Steps
-
-### 1. Check Connected Device
+The fastest development cycle for USB-connected devices:
 
 ```bash
-adb devices
-```
-
-Should show:
-```
-List of devices attached
-DEVICE_ID    device
-```
-
-If device shows as "unauthorized", accept the prompt on the device.
-
-### 2. Build Debug APK
-
-```bash
-cd /path/to/project
+# 1. Build and deploy
 export JAVA_HOME="/opt/homebrew/opt/openjdk"
 ./gradlew assembleDebug
-```
-
-Output APK location:
-```
-app/build/outputs/apk/debug/app-debug.apk
-```
-
-### 3. Install to Device
-
-```bash
 adb install -r app/build/outputs/apk/debug/app-debug.apk
-```
-
-The `-r` flag replaces existing installation.
-
-### 4. Launch App
-
-```bash
-adb shell am start -n com.package.name/.MainActivity
-```
-
-Replace `com.package.name` with your app's package name.
-
-### 5. Verify Installation
-
-The app should appear in the device's app launcher and launch successfully.
-
-## Complete Example Script
-
-For the Firefly Android client at `apps/firefly/product/client/imp/eos/`:
-
-```bash
-#!/bin/bash
-
-cd /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos
-
-echo "📱 Checking for connected Android device..."
-
-DEVICE_ID=$(adb devices | grep "device$" | awk '{print $1}' | head -1)
-
-if [ -z "$DEVICE_ID" ]; then
-    echo "❌ No Android device connected"
-    echo "   Enable USB debugging and connect device"
-    exit 1
-fi
-
-echo "✅ Found device: $DEVICE_ID"
-echo "🔨 Building APK..."
-
-export JAVA_HOME="/opt/homebrew/opt/openjdk"
-./gradlew assembleDebug -q
-
-if [ $? -ne 0 ]; then
-    echo "❌ Build failed"
-    exit 1
-fi
-
-echo "✅ Build complete"
-echo "📲 Installing to device..."
-
-adb install -r app/build/outputs/apk/debug/app-debug.apk
-
-if [ $? -ne 0 ]; then
-    echo "❌ Installation failed"
-    exit 1
-fi
-
-echo "🚀 Launching app..."
-
 adb shell am start -n com.miso.noobtest/.MainActivity
 
-echo "✅ Deployment complete!"
+# 2. Or use the convenience script
+./install-device.sh        # ~2-5 seconds after first build
 ```
 
-## Troubleshooting
+## Key Concepts
 
-**"Unable to locate a Java Runtime"**
-- Set JAVA_HOME: `export JAVA_HOME="/opt/homebrew/opt/openjdk"`
-- Verify: `echo $JAVA_HOME && java -version`
+**Gradle**: The build system for Android. Uses Kotlin DSL for build configuration (`build.gradle.kts`).
 
-**"device unauthorized"**
-- Check device screen for authorization prompt
-- Accept "Allow USB debugging"
-- Try: `adb kill-server && adb start-server`
+**APK Location**: Built apps are in `app/build/outputs/apk/debug/app-debug.apk` after `assembleDebug`.
 
-**"no devices found"**
-- Check USB cable supports data (not just charging)
-- Enable USB debugging in Developer options
-- Try different USB port
+**ADB**: Android Debug Bridge - command-line tool for communicating with Android devices.
 
-**"INSTALL_FAILED_UPDATE_INCOMPATIBLE"**
-- Uninstall existing app: `adb uninstall com.miso.noobtest`
-- Try installation again
+**JAVA_HOME**: **Critical** - must be set before any Gradle commands or you'll get "Unable to locate a Java Runtime" error.
 
-**Build succeeds but APK not found**
-- Check path: `ls app/build/outputs/apk/debug/`
-- Ensure you ran `assembleDebug` not just `build`
+**Package Name**: Used to identify and launch your app (e.g., `com.miso.noobtest`).
 
-## Typical Build Time
+## Typical Timeline
 
-- First build: ~15-20 seconds (downloads dependencies)
-- Incremental builds: ~1-2 seconds
-- Installation: ~1-2 seconds
-- Launch: <1 second
+- **First build**: ~15-20 seconds (downloads dependencies)
+- **Incremental builds**: ~1-2 seconds
+- **APK installation**: ~1-2 seconds
+- **App launch**: <1 second
 
-Total deployment time: **~2-5 seconds** (after first build)
+Total USB deployment: **~2-5 seconds** from code change to running on device (after initial setup).
+
+## Essential Commands
+
+```bash
+# Check connected devices
+adb devices
+
+# Build debug APK
+./gradlew assembleDebug
+
+# Install (replace existing)
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# Launch app
+adb shell am start -n PACKAGE_NAME/.MainActivity
+
+# Restart app
+adb shell am force-stop PACKAGE_NAME && adb shell am start -n PACKAGE_NAME/.MainActivity
+
+# Stop app
+adb shell am force-stop PACKAGE_NAME
+```
 
 ## Environment Setup
 
-For permanent setup, add to `~/.zshrc`:
-
+**Always set before Gradle commands:**
 ```bash
 export JAVA_HOME="/opt/homebrew/opt/openjdk"
-export PATH="$JAVA_HOME/bin:$PATH"
 ```
 
-Then reload: `source ~/.zshrc`
-
-## Build Variants
-
-**Debug build** (for development):
+Add to shell profile permanently:
 ```bash
-./gradlew assembleDebug
+echo 'export JAVA_HOME="/opt/homebrew/opt/openjdk"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
-**Release build** (for distribution):
-```bash
-./gradlew assembleRelease
-```
+## Detailed Guides
 
-Debug builds are signed with debug keystore automatically. Release builds require signing configuration.
+See the subtopics above for complete documentation on each aspect of building and deployment. For troubleshooting build and deployment issues, see `troubleshooting.md`.

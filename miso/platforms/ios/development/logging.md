@@ -167,11 +167,15 @@ log collect --device --output /path/to/output.logarchive
 
 ### Custom Real-Time Log Viewer (Recommended)
 
-For development with Claude Code, use the included `watch-logs.py` script which filters to show only YOUR app's log messages and writes to a file that Claude can monitor.
+For development with Claude Code, use the `watch-logs.py` script which filters to show only YOUR app's log messages and writes to a file that Claude can monitor.
 
 **Setup**:
 ```bash
-# From your iOS app directory (e.g., apps/firefly/product/client/imp/ios/)
+# Copy the tool from miso/platforms/ios/development/tools/ to your iOS app directory
+cp miso/platforms/ios/development/tools/watch-logs.py .
+
+# Edit APP_NAME at the top of the file to match your app
+# Then run:
 ./watch-logs.py
 ```
 

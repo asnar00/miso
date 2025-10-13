@@ -26,19 +26,11 @@ class MainActivity : ComponentActivity() {
 
         // Initialize logger
         Logger.init(this)
-        Logger.log("📱 NoobTest app starting (Android)")
-        Logger.log("Device ID: ${Logger.getDeviceID()}")
-
-        // Initialize test server
-        Logger.log("🚀 Initializing TestServer...")
-        TestServer.start(this)
-        Logger.log("✓ TestServer initialized")
+        Logger.log("App started, beginning periodic connection checks")
 
         setContent {
             FireflyApp()
         }
-
-        Logger.log("✓ App initialization complete")
     }
 
     @Composable
@@ -77,6 +69,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun testConnection(): Boolean {
+        Logger.log("------------ ping")
         return try {
             val url = URL("$serverURL/api/ping")
             val connection = url.openConnection() as HttpURLConnection
@@ -87,8 +80,15 @@ class MainActivity : ComponentActivity() {
             val responseCode = connection.responseCode
             connection.disconnect()
 
-            responseCode == 200
+            val success = responseCode == 200
+            if (success) {
+                Logger.log("Connection successful - status $responseCode")
+            } else {
+                Logger.log("Connection failed - status $responseCode")
+            }
+            success
         } catch (e: Exception) {
+            Logger.log("Connection error: ${e.message}")
             false
         }
     }

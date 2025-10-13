@@ -49,9 +49,11 @@ object Logger {
 
     /**
      * Log a message - writes locally and sends to server
+     * Uses [APP] prefix for easy filtering in logcat
      */
     fun log(message: String) {
-        Log.d(TAG, "log() called: $message")
+        // Use [APP] prefix for filtering, just like iOS
+        Log.i(TAG, "[APP] $message")
         val timestamp = System.currentTimeMillis() / 1000.0
         val formattedTime = dateFormat.format(Date())
         val entry = "$formattedTime | $message\n"
