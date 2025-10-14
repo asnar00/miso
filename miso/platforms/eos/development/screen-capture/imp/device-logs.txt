@@ -1,90 +1,11 @@
 # Android logs from com.miso.noobtest
-# Started at 2025-10-13 13:08:36
+# Started at 2025-10-13 16:48:45
 
-13:08:36 Started monitoring logs from com.miso.noobtest
-13:08:36 Writing to: /Users/asnaroo/Desktop/experiments/miso/miso/platforms/eos/development/screen-capture/imp/device-logs.txt
-13:08:36 [INFO] ------------ ping
-13:08:36 [INFO] Connection successful - status 200
-13:08:37 [INFO] ------------ ping
-13:08:37 [INFO] Connection successful - status 200
-13:08:38 [INFO] ------------ ping
-13:08:39 [INFO] Connection successful - status 200
-13:08:40 [INFO] ------------ ping
-13:08:40 [INFO] Connection successful - status 200
-13:08:41 [INFO] ------------ ping
-13:08:41 [INFO] Connection successful - status 200
-13:08:42 [INFO] ------------ ping
-13:08:43 [INFO] Connection successful - status 200
-13:08:44 [INFO] ------------ ping
-13:08:44 [INFO] Connection successful - status 200
-13:08:45 [INFO] ------------ ping
-13:08:45 [INFO] Connection successful - status 200
-13:08:46 [INFO] ------------ ping
-13:08:46 [INFO] Connection successful - status 200
-13:08:47 [INFO] ------------ ping
-13:08:48 [INFO] Connection successful - status 200
-13:08:49 [INFO] ------------ ping
-13:08:49 [INFO] Connection successful - status 200
-13:08:50 [INFO] ------------ ping
-13:08:50 [INFO] Connection successful - status 200
-13:08:51 [INFO] ------------ ping
-13:08:51 [INFO] Connection successful - status 200
-13:08:53 [INFO] ------------ ping
-13:08:53 [INFO] Connection successful - status 200
-13:08:54 [INFO] ------------ ping
-13:08:54 [INFO] Connection successful - status 200
-13:08:55 [INFO] ------------ ping
-13:08:55 [INFO] Connection successful - status 200
-13:08:56 [INFO] ------------ ping
-13:08:57 [INFO] Connection successful - status 200
-13:08:58 [INFO] ------------ ping
-13:08:58 [INFO] Connection successful - status 200
-13:08:59 [INFO] ------------ ping
-13:08:59 [INFO] Connection successful - status 200
-13:09:00 [INFO] ------------ ping
-13:09:01 [INFO] Connection successful - status 200
-13:09:02 [INFO] ------------ ping
-13:09:02 [INFO] Connection successful - status 200
-13:09:03 [INFO] ------------ ping
-13:09:03 [INFO] Connection successful - status 200
-13:09:04 [INFO] ------------ ping
-13:09:05 [INFO] Connection successful - status 200
-13:09:06 [INFO] ------------ ping
-13:09:06 [INFO] Connection successful - status 200
-13:09:07 [INFO] ------------ ping
-13:09:07 [INFO] Connection successful - status 200
-13:09:08 [INFO] ------------ ping
-13:09:08 [INFO] Connection successful - status 200
-13:09:09 [INFO] ------------ ping
-13:09:10 [INFO] Connection successful - status 200
-13:09:11 [INFO] ------------ ping
-13:09:11 [INFO] Connection successful - status 200
-13:09:12 [INFO] ------------ ping
-13:09:12 [INFO] Connection successful - status 200
-13:09:13 [INFO] ------------ ping
-13:09:13 [INFO] Connection successful - status 200
-13:09:14 [INFO] ------------ ping
-13:09:15 [INFO] Connection successful - status 200
-13:09:16 [INFO] ------------ ping
-13:09:16 [INFO] Connection successful - status 200
-13:09:17 [INFO] ------------ ping
-13:09:17 [INFO] Connection successful - status 200
-13:09:18 [INFO] ------------ ping
-13:09:18 [INFO] Connection successful - status 200
-13:09:19 [INFO] ------------ ping
-13:09:20 [INFO] Connection successful - status 200
-13:09:21 [INFO] ------------ ping
-13:09:21 [INFO] Connection successful - status 200
-13:09:22 [INFO] ------------ ping
-13:09:22 [INFO] Connection successful - status 200
-13:09:23 [INFO] ------------ ping
-13:09:23 [INFO] Connection successful - status 200
-13:09:24 [INFO] ------------ ping
-13:09:25 [INFO] Connection successful - status 200
-13:09:26 [INFO] ------------ ping
-13:09:26 [INFO] Connection successful - status 200
-13:09:27 [INFO] ------------ ping
-13:09:27 [INFO] Connection successful - status 200
-13:09:28 [INFO] ------------ ping
-13:09:28 [INFO] Connection successful - status 200
-13:09:29 [INFO] ------------ ping
+16:48:45 Started monitoring logs from com.miso.noobtest
+16:48:45 Writing to: /Users/asnaroo/Desktop/experiments/miso/miso/platforms/eos/development/screen-capture/imp/device-logs.txt
+16:52:03 [INFO] TestServer: Attempting to start on port 8081
+16:52:03 [INFO] TestServer: Server started successfully
+16:52:26 [INFO] TestServer: Received request for /test/ping
+16:52:26 [INFO] TestServer: Test result for ping: succeeded
+16:52:33 [INFO] TestServer: Received request for /test/nonexistent
+16:52:33 [INFO] TestServer: Test result for nonexistent: failed because No test found for feature 'nonexistent'

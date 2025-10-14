@@ -26,7 +26,14 @@ class MainActivity : ComponentActivity() {
 
         // Initialize logger
         Logger.init(this)
-        Logger.log("App started, beginning periodic connection checks")
+
+        // Start test server
+        TestServer.start()
+
+        // Register ping test
+        TestRegistry.register("ping") {
+            testPingFeature()
+        }
 
         setContent {
             FireflyApp()
@@ -40,7 +47,6 @@ class MainActivity : ComponentActivity() {
 
         // Periodic ping check
         LaunchedEffect(Unit) {
-            Logger.log("⏱️ Starting periodic server check")
             while (true) {
                 val isConnected = withContext(Dispatchers.IO) {
                     testConnection()
@@ -69,7 +75,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun testConnection(): Boolean {
-        Logger.log("------------ ping")
         return try {
             val url = URL("$serverURL/api/ping")
             val connection = url.openConnection() as HttpURLConnection
@@ -80,16 +85,31 @@ class MainActivity : ComponentActivity() {
             val responseCode = connection.responseCode
             connection.disconnect()
 
-            val success = responseCode == 200
-            if (success) {
-                Logger.log("Connection successful - status $responseCode")
-            } else {
-                Logger.log("Connection failed - status $responseCode")
-            }
-            success
+            responseCode == 200
         } catch (e: Exception) {
-            Logger.log("Connection error: ${e.message}")
             false
+        }
+    }
+
+    // Test function for ping feature
+    private fun testPingFeature(): TestResult {
+        return try {
+            val url = URL("$serverURL/api/ping")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
+            connection.connectTimeout = 2000
+            connection.readTimeout = 2000
+
+            val responseCode = connection.responseCode
+            connection.disconnect()
+
+            if (responseCode == 200) {
+                TestResult(success = true)
+            } else {
+                TestResult(success = false, error = "Server returned status $responseCode")
+            }
+        } catch (e: Exception) {
+            TestResult(success = false, error = "Connection failed: ${e.message}")
         }
     }
 }

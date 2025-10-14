@@ -3,6 +3,26 @@
 
 iOS provides a unified logging system via OSLog that is low-overhead, privacy-aware, and integrates with system debugging tools.
 
+## Quick Start: Using the Logger Singleton
+
+For Firefly apps, use the custom `Logger` singleton wrapper that combines OSLog with file logging:
+
+```swift
+// Available everywhere - no imports needed
+Logger.shared.info("Server started on port 8081")
+Logger.shared.debug("Processing request")
+Logger.shared.warning("Unexpected response code")
+Logger.shared.error("Failed to connect: \(error.localizedDescription)")
+```
+
+**Key functions**:
+- `Logger.shared.info()` - General information (default level)
+- `Logger.shared.debug()` - Detailed debugging (development only)
+- `Logger.shared.warning()` - Potential issues
+- `Logger.shared.error()` - Error conditions
+
+All messages are automatically prefixed with `[APP]` for filtering and logged both to OSLog (viewable in Console.app) and a local file.
+
 ## Modern iOS Logging (iOS 14+)
 
 Apple's recommended approach uses the `Logger` API from the `OSLog` framework.

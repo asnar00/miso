@@ -30,5 +30,11 @@
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>This app needs to accept test commands from your Mac</string>
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_test._tcp</string>
+    </array>
 </dict>
 </plist>

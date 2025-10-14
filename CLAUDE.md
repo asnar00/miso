@@ -114,18 +114,75 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 
 ### Implemented Features
 
-**ping** (`apps/firefly/features/ping.md`):
-- HTTP health check endpoint
-- Implementations: `imp/ios.md`, `imp/eos.md`, `imp/py.md`
+**infrastructure** (`apps/firefly/features/infrastructure.md`):
+- Foundation systems for development and deployment
+- **ping**: HTTP health check endpoint
+- **logging**: Multi-level logging (local, USB, remote)
+- **email**: Send verification codes for passwordless login
+- **testing**: Remote feature testing from Mac to device
+- **storage**: Local data persistence (login state, cache, media)
 
-**logging** (`apps/firefly/features/logging.md`):
-- Timestamped console logging
-- iOS: `Logger.swift` (OSLog wrapper)
-- Android: `Logger.kt`
-- Python: Standard logging
+**users** (`apps/firefly/features/users.md`):
+- User accounts with email-based authentication
+- Device association
+
+**posts** (`apps/firefly/features/posts.md`):
+- User-generated content with hierarchical structure
+- Vector embeddings for semantic search
 
 **background** (`apps/firefly/features/background.md`):
-- UI background color (iOS: dark blue)
+- UI background color
+
+## Testing Infrastructure
+
+**testing** (`apps/firefly/features/infrastructure/testing.md`):
+- Remote feature testing from Mac to device via USB
+- Tests run in real app environment, not simulator
+
+**Quick Test** (requires port forwarding):
+```bash
+# Setup once (keep running)
+pymobiledevice3 usbmux forward 8081 8081 &
+
+# Run test
+cd apps/firefly/features/infrastructure/testing/imp
+./test-feature.sh ping  # Tests any registered feature
+```
+
+**Manual Test**:
+```bash
+curl http://localhost:8081/test/ping
+# Returns: "succeeded" or "failed because XXX"
+```
+
+**Add New Test**: Register in platform code:
+```swift
+// iOS
+TestRegistry.shared.register(feature: "myfeature") {
+    return TestResult(success: true)  // or false with error
+}
+```
+```kotlin
+// Android
+TestRegistry.register("myfeature") {
+    TestResult(success = true)  // or false with error
+}
+```
+
+## Development Utilities
+
+**iOS App Management** (from `apps/firefly/product/client/imp/ios/`):
+```bash
+./restart-app.sh  # Restart app on device
+./stop-app.sh     # Stop app on device
+./get-logs.sh     # Download app.log from device
+```
+
+**Android App Management** (from `apps/firefly/product/client/imp/eos/`):
+```bash
+adb shell am force-stop com.miso.noobtest          # Stop app
+adb shell am start -n com.miso.noobtest/.MainActivity  # Start app
+```
 
 ## Working with This Repository
 
@@ -133,6 +190,7 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 2. **Create features**: Follow format in `miso/features.md`
 3. **Implement**: Add code to `imp/` subdirectories with platform-specific files
 4. **Deploy**: Use platform-specific scripts (`install-device.sh`, etc.)
+5. **Test**: Use `./test-feature.sh <feature>` to verify functionality
 
 ## Repository Structure
 
@@ -144,7 +202,8 @@ miso/
 │   └── products.md          # Product system specification
 ├── apps/                    # Executable products
 │   └── firefly/             # Current app: semantic search social media
-│       ├── features/        # Feature specs (ping, logging, background)
+│       ├── features/        # Feature specs (infrastructure, users, posts, etc.)
+│       │   └── infrastructure/  # Foundational systems (ping, logging, email, testing)
 │       └── product/         # Actual implementation
 │           ├── client/imp/  # iOS and Android clients
 │           └── server/imp/  # Python Flask server

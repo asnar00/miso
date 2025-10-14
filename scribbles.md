@@ -1,6 +1,40 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+been thinking we need a refactor.
+
+features/
+    infrastructure/
+        build/
+            imp.md: all code together! one file!
+        deploy/
+        restart/
+        logging/
+        control/
+        testing/
+products/
+    client/
+        ios/
+        eos/
+    server/
+        flask/
+        postgresql/
+    tools/
+        build/
+        deploy/
+        stop/
+        start/
+        capture/
+        log/
+        test/
+
+------------------
+Second most important thing: concept of ACTIONS.
+
+Actions are hierarchical natural-language instructions for LLMs to follow.
+
+------------------------------------------------
+
 thoughts on firefly.
 
 - each user has a tree of snippets

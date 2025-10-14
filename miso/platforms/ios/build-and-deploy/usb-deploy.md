@@ -77,3 +77,30 @@ Always use `xcodebuild -showdestinations` to get the correct device ID.
 ## Implementation
 
 See `usb-deploy/imp/install-device.sh` - copied from working implementation in `apps/firefly/test/imp/ios/install-device.sh`.
+
+## Troubleshooting
+
+### Device Shows "connecting" State
+
+If `xcrun devicectl list devices` shows:
+```
+State: connecting
+```
+
+Instead of:
+```
+State: available (paired)
+```
+
+And builds fail with "Device is busy (Connecting to [device name])", the issue is often:
+
+**VPN Interference**: VPN software on the Mac can interfere with USB device communication. Disable VPN and restart the iPhone to restore proper device pairing.
+
+**Recovery Steps**:
+1. Disable VPN on Mac
+2. Restart iPhone
+3. Reconnect USB cable
+4. Trust computer when prompted on iPhone
+5. Verify device shows `available (paired)` with `xcrun devicectl list devices`
+
+The device may show "connecting" indefinitely if VPN is active during device pairing or build attempts.
