@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
                 })
             }
             else -> {
-                MainContentView()
+                PostsView()
             }
         }
     }

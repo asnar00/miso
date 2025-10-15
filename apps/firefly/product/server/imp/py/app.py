@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, jsonify, request
+from flask import Flask, render_template_string, jsonify, request, send_from_directory
 import os
 import signal
 import random
@@ -6,9 +6,20 @@ from datetime import datetime, timedelta
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from werkzeug.utils import secure_filename
+import uuid
 from db import db
 
 app = Flask(__name__)
+
+# Configure upload folder
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+
+# Create uploads directory if it doesn't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # In-memory storage for verification codes
 # Structure: {email: {"code": "1234", "timestamp": datetime}}
@@ -237,6 +248,131 @@ def verify_code():
         'email': user['email'],
         'is_new_user': is_new_user
     })
+
+def allowed_file(filename):
+    """Check if uploaded file has an allowed extension"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/uploads/<filename>')
+def serve_upload(filename):
+    """Serve uploaded files"""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/api/posts/create', methods=['POST'])
+def create_post():
+    """Create a new post with optional image upload"""
+    try:
+        # Get form data
+        email = request.form.get('email', '').strip().lower()
+        title = request.form.get('title', '').strip()
+        summary = request.form.get('summary', '').strip()
+        body = request.form.get('body', '').strip()
+        timezone = request.form.get('timezone', 'UTC')
+        location_tag = request.form.get('location_tag', '').strip() or None
+        ai_generated = request.form.get('ai_generated', 'false').lower() == 'true'
+
+        # Validate required fields
+        if not email or not title or not summary or not body:
+            return jsonify({
+                'status': 'error',
+                'message': 'email, title, summary, and body are required'
+            }), 400
+
+        # Look up user by email
+        user = db.get_user_by_email(email)
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': f'User not found: {email}'
+            }), 404
+
+        user_id = user['id']
+
+        # Handle image upload if present
+        image_url = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename and allowed_file(file.filename):
+                # Generate unique filename
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                filename = f"{uuid.uuid4().hex}.{ext}"
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                image_url = f"/uploads/{filename}"
+                print(f"Uploaded image: {filename}")
+
+        # Create post in database
+        post_id = db.create_post(
+            user_id=user_id,
+            title=title,
+            summary=summary,
+            body=body,
+            timezone=timezone,
+            image_url=image_url,
+            location_tag=location_tag,
+            ai_generated=ai_generated
+        )
+
+        if not post_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'Failed to create post'
+            }), 500
+
+        print(f"Created post {post_id} by user {email} (ID: {user_id})")
+
+        return jsonify({
+            'status': 'success',
+            'post_id': post_id,
+            'image_url': image_url
+        })
+
+    except Exception as e:
+        print(f"Error creating post: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/posts/recent', methods=['GET'])
+def get_recent_posts():
+    """Get recent posts"""
+    try:
+        limit = request.args.get('limit', 50, type=int)
+        posts = db.get_recent_posts(limit=limit)
+
+        return jsonify({
+            'status': 'success',
+            'posts': posts
+        })
+    except Exception as e:
+        print(f"Error getting recent posts: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/posts/<int:post_id>', methods=['GET'])
+def get_post(post_id):
+    """Get a specific post by ID"""
+    try:
+        post = db.get_post_by_id(post_id)
+        if not post:
+            return jsonify({
+                'status': 'error',
+                'message': 'Post not found'
+            }), 404
+
+        return jsonify({
+            'status': 'success',
+            'post': post
+        })
+    except Exception as e:
+        print(f"Error getting post: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
 
 @app.route('/api/shutdown', methods=['POST'])
 def shutdown():

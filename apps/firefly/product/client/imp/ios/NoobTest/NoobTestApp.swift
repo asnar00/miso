@@ -9,6 +9,12 @@ struct NoobTestApp: App {
     init() {
         Logger.shared.info("[APP] NoobTestApp init() called")
 
+        // Configure larger URLCache for images
+        let memoryCapacity = 50 * 1024 * 1024  // 50 MB
+        let diskCapacity = 100 * 1024 * 1024   // 100 MB
+        let cache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity)
+        URLCache.shared = cache
+
         // Check login state on startup
         let (email, isLoggedIn) = Storage.shared.getLoginState()
         _isAuthenticated = State(initialValue: isLoggedIn && email != nil)
@@ -36,7 +42,7 @@ struct NoobTestApp: App {
                 let (email, _) = Storage.shared.getLoginState()
                 NewUserView(email: email ?? "unknown", hasSeenWelcome: $hasSeenWelcome)
             } else {
-                ContentView()
+                PostsView()
             }
         }
     }

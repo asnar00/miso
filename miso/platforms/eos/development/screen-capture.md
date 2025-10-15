@@ -142,6 +142,47 @@ scrcpy
 
 scrcpy works perfectly with e/OS devices as it uses standard Android debugging protocols. No special configuration needed.
 
+## Console Window with Live Logs
+
+For development, use `android_screencap.py` which launches both scrcpy and a console window showing live filtered logs:
+
+```bash
+cd screen-capture/imp
+python3 android_screencap.py
+```
+
+This provides:
+- **scrcpy window**: Screen mirroring positioned at (100, 100)
+- **Console window**: Live logs positioned at (800, 100) to the right
+- **Log filtering**: Only shows `[APP]` prefixed logs from your app
+- **File output**: Writes logs to `device-logs.txt` for Claude Code monitoring
+
+The console window filters `adb logcat` to show only logs with `[APP]` prefix from your app's package, matching the iOS Logger behavior.
+
+**Configuration**: Edit `PACKAGE_NAME` at the top of `android_screencap.py` to match your app.
+
+## Screenshot Utility
+
+Capture just the device screen from the scrcpy window:
+
+```bash
+cd screen-capture/imp
+./screenshot.sh [output_filename]
+```
+
+This uses AppleScript to:
+1. Find the scrcpy window
+2. Bring it to front
+3. Calculate the device display area (excluding title bar and chrome)
+4. Capture just the device screen with `screencapture -R`
+
+Default filename: `android_screenshot_YYYYMMDD_HHMMSS.png`
+
+The script automatically handles window positioning and only captures the actual device display, not the window chrome.
+
 ## Implementation
 
-Working mirror script in `screen-capture/imp/mirror.sh`
+Working scripts in `screen-capture/imp/`:
+- `android_screencap.py` - Screen mirror + console with live logs
+- `screenshot.sh` - Capture device screen from scrcpy window
+- `mirror.sh` - Simple scrcpy wrapper

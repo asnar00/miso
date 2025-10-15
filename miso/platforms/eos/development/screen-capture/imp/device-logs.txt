@@ -1,13 +1,40 @@
 # Android logs from com.miso.noobtest
-# Started at 2025-10-14 16:30:46
+# Started at 2025-10-15 17:42:02
 
-16:30:46 Started monitoring logs from com.miso.noobtest
-16:30:46 Writing to: /Users/asnaroo/Desktop/experiments/miso/miso/platforms/eos/development/screen-capture/imp/device-logs.txt
-16:31:13 [INFO] TestServer: Attempting to start on port 8081
-16:31:13 [INFO] TestServer: Server started successfully
-16:31:52 [INFO] [Storage] Generated new device ID: 9d380524-8b4c-47da-918f-6118f6e0c968
-16:31:52 [INFO] [Storage] Saved login state: email=test2@example.com, isLoggedIn=true
-16:31:52 [INFO] [SignIn] User authenticated: test2@example.com (new_user: true)
-16:31:59 [INFO] [NewUser] User tapped Get Started
-16:33:13 [INFO] TestServer: Attempting to start on port 8081
-16:33:13 [INFO] TestServer: Server started successfully
+17:42:02 Started monitoring logs from com.miso.noobtest
+17:42:02 Writing to: /Users/asnaroo/Desktop/experiments/miso/miso/platforms/eos/development/screen-capture/imp/device-logs.txt
+17:49:04 [INFO] TestServer: Attempting to start on port 8081
+17:49:04 [INFO] TestServer: Server started successfully
+17:49:04 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+17:49:04 [INFO] [PostsAPI] Successfully fetched 2 posts
+17:49:05 [INFO] [ImageCache] Preloaded image: http://185.96.221.52:8080/uploads/17b983e3e16840389919c454c447aeab.png (3346KB)
+18:31:12 [INFO] TestServer: Attempting to start on port 8081
+18:31:12 [INFO] TestServer: Server started successfully
+18:31:13 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:31:13 [INFO] [PostsAPI] Successfully fetched 2 posts
+18:31:14 [INFO] [ImageCache] Preloaded image: http://185.96.221.52:8080/uploads/17b983e3e16840389919c454c447aeab.png (3346KB)
+18:33:05 [INFO] TestServer: Attempting to start on port 8081
+18:33:05 [INFO] TestServer: Server started successfully
+18:33:05 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:33:05 [INFO] [PostsAPI] Successfully fetched 2 posts
+18:33:06 [INFO] [ImageCache] Preloaded image: http://185.96.221.52:8080/uploads/17b983e3e16840389919c454c447aeab.png (3346KB)
+18:34:11 [INFO] TestServer: Attempting to start on port 8081
+18:34:11 [INFO] TestServer: Server started successfully
+18:34:12 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:34:12 [INFO] [PostsAPI] Successfully fetched 2 posts
+18:34:12 [INFO] [ImageCache] Preloaded image: http://185.96.221.52:8080/uploads/17b983e3e16840389919c454c447aeab.png (3346KB)
+18:36:54 [INFO] TestServer: Attempting to start on port 8081
+18:36:54 [INFO] TestServer: Server started successfully
+18:36:54 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:36:55 [INFO] [PostsAPI] Successfully fetched 2 posts
+18:36:55 [INFO] [ImageCache] Preloaded image: http://185.96.221.52:8080/uploads/17b983e3e16840389919c454c447aeab.png (3346KB)
+18:37:56 [INFO] TestServer: Attempting to start on port 8081
+18:37:56 [INFO] TestServer: Server started successfully
+18:37:56 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:37:56 [INFO] [PostsAPI] Successfully fetched 2 posts
+18:37:57 [INFO] [ImageCache] Preloaded image: http://185.96.221.52:8080/uploads/17b983e3e16840389919c454c447aeab.png (3346KB)
+18:40:31 [INFO] TestServer: Attempting to start on port 8081
+18:40:31 [INFO] TestServer: Server started successfully
+18:40:31 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:40:32 [INFO] [PostsAPI] Successfully fetched 2 posts
+18:40:32 [INFO] [ImageCache] Preloaded image: http://185.96.221.52:8080/uploads/17b983e3e16840389919c454c447aeab.png (3346KB)

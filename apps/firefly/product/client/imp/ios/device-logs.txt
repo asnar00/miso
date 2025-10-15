@@ -1,0 +1,376 @@
+16:42:23 [INFO] [APP] NoobTestApp init() called
+16:42:23 [INFO] <private>
+16:42:23 [INFO] [APP] About to start TestServer
+16:42:23 [INFO] <private>
+16:42:23 [INFO] [TESTSERVER] About to register tests
+16:42:23 [INFO] TestServer: Registered tests: storage, clear-login
+16:42:23 [INFO] [TESTSERVER] Tests registered
+16:42:23 [INFO] <private>
+16:42:23 [INFO] [TESTSERVER] Creating TCP parameters
+16:42:23 [INFO] [TESTSERVER] TCP parameters created
+16:42:23 [INFO] [TESTSERVER] Creating NWListener
+16:42:23 [INFO] [TESTSERVER] NWListener created successfully
+16:42:23 [INFO] [TESTSERVER] About to start listener
+16:42:23 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+16:42:23 [INFO] <private>
+16:42:23 [INFO] [TESTSERVER] Listener is ready and accepting connections
+16:42:23 [INFO] [APP] TestServer.start() returned
+16:49:00 [INFO] [APP] NoobTestApp init() called
+16:49:00 [INFO] <private>
+16:49:00 [INFO] [APP] About to start TestServer
+16:49:00 [INFO] <private>
+16:49:00 [INFO] [TESTSERVER] About to register tests
+16:49:00 [INFO] TestServer: Registered tests: storage, clear-login
+16:49:00 [INFO] [TESTSERVER] Tests registered
+16:49:00 [INFO] <private>
+16:49:00 [INFO] [TESTSERVER] Creating TCP parameters
+16:49:00 [INFO] [TESTSERVER] TCP parameters created
+16:49:00 [INFO] [TESTSERVER] Creating NWListener
+16:49:00 [INFO] [TESTSERVER] NWListener created successfully
+16:49:00 [INFO] [TESTSERVER] About to start listener
+16:49:00 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+16:49:00 [INFO] <private>
+16:49:00 [INFO] [TESTSERVER] Listener is ready and accepting connections
+16:49:00 [INFO] [APP] TestServer.start() returned
+16:52:48 [INFO] [APP] NoobTestApp init() called
+16:52:48 [INFO] <private>
+16:52:48 [INFO] [APP] About to start TestServer
+16:52:48 [INFO] <private>
+16:52:48 [INFO] [TESTSERVER] About to register tests
+16:52:48 [INFO] TestServer: Registered tests: storage, clear-login
+16:52:48 [INFO] [TESTSERVER] Tests registered
+16:52:48 [INFO] <private>
+16:52:48 [INFO] [TESTSERVER] Creating TCP parameters
+16:52:48 [INFO] [TESTSERVER] TCP parameters created
+16:52:48 [INFO] [TESTSERVER] Creating NWListener
+16:52:48 [INFO] [TESTSERVER] NWListener created successfully
+16:52:48 [INFO] [TESTSERVER] About to start listener
+16:52:48 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+16:52:48 [INFO] <private>
+16:52:48 [INFO] [TESTSERVER] Listener is ready and accepting connections
+16:52:48 [INFO] [APP] TestServer.start() returned
+16:52:49 [INFO] <private>
+16:52:49 [INFO] <private>
+17:01:52 [INFO] [APP] NoobTestApp init() called
+17:01:52 [INFO] <private>
+17:01:52 [INFO] [APP] About to start TestServer
+17:01:52 [INFO] <private>
+17:01:52 [INFO] [TESTSERVER] About to register tests
+17:01:52 [INFO] TestServer: Registered tests: storage, clear-login
+17:01:52 [INFO] [TESTSERVER] Tests registered
+17:01:52 [INFO] <private>
+17:01:52 [INFO] [TESTSERVER] Creating TCP parameters
+17:01:52 [INFO] [TESTSERVER] TCP parameters created
+17:01:52 [INFO] [TESTSERVER] Creating NWListener
+17:01:52 [INFO] [TESTSERVER] NWListener created successfully
+17:01:52 [INFO] [TESTSERVER] About to start listener
+17:01:52 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:01:52 [INFO] <private>
+17:01:52 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:01:52 [INFO] [APP] TestServer.start() returned
+17:01:52 [INFO] <private>
+17:01:52 [INFO] <private>
+17:02:45 [INFO] [APP] NoobTestApp init() called
+17:02:45 [INFO] <private>
+17:02:45 [INFO] [APP] About to start TestServer
+17:02:45 [INFO] <private>
+17:02:45 [INFO] [TESTSERVER] About to register tests
+17:02:45 [INFO] TestServer: Registered tests: storage, clear-login
+17:02:45 [INFO] [TESTSERVER] Tests registered
+17:02:45 [INFO] <private>
+17:02:45 [INFO] [TESTSERVER] Creating TCP parameters
+17:02:45 [INFO] [TESTSERVER] TCP parameters created
+17:02:45 [INFO] [TESTSERVER] Creating NWListener
+17:02:45 [INFO] [TESTSERVER] NWListener created successfully
+17:02:45 [INFO] [TESTSERVER] About to start listener
+17:02:45 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:02:45 [INFO] <private>
+17:02:45 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:02:45 [INFO] [APP] TestServer.start() returned
+17:02:45 [INFO] <private>
+17:02:45 [INFO] <private>
+17:04:10 [INFO] [APP] NoobTestApp init() called
+17:04:10 [INFO] <private>
+17:04:10 [INFO] [APP] About to start TestServer
+17:04:10 [INFO] <private>
+17:04:10 [INFO] [TESTSERVER] About to register tests
+17:04:10 [INFO] TestServer: Registered tests: storage, clear-login
+17:04:10 [INFO] [TESTSERVER] Tests registered
+17:04:10 [INFO] <private>
+17:04:10 [INFO] [TESTSERVER] Creating TCP parameters
+17:04:10 [INFO] [TESTSERVER] TCP parameters created
+17:04:10 [INFO] [TESTSERVER] Creating NWListener
+17:04:10 [INFO] [TESTSERVER] NWListener created successfully
+17:04:10 [INFO] [TESTSERVER] About to start listener
+17:04:10 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:04:10 [INFO] <private>
+17:04:10 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:04:10 [INFO] [APP] TestServer.start() returned
+17:04:10 [INFO] <private>
+17:04:10 [INFO] <private>
+17:05:39 [INFO] [APP] NoobTestApp init() called
+17:05:39 [INFO] <private>
+17:05:39 [INFO] [APP] About to start TestServer
+17:05:39 [INFO] <private>
+17:05:39 [INFO] [TESTSERVER] About to register tests
+17:05:39 [INFO] TestServer: Registered tests: storage, clear-login
+17:05:39 [INFO] [TESTSERVER] Tests registered
+17:05:39 [INFO] <private>
+17:05:39 [INFO] [TESTSERVER] Creating TCP parameters
+17:05:39 [INFO] [TESTSERVER] TCP parameters created
+17:05:39 [INFO] [TESTSERVER] Creating NWListener
+17:05:39 [INFO] [TESTSERVER] NWListener created successfully
+17:05:39 [INFO] [TESTSERVER] About to start listener
+17:05:39 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:05:39 [INFO] <private>
+17:05:39 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:05:39 [INFO] [APP] TestServer.start() returned
+17:05:39 [INFO] <private>
+17:05:39 [INFO] <private>
+17:06:42 [INFO] [APP] NoobTestApp init() called
+17:06:42 [INFO] <private>
+17:06:42 [INFO] [APP] About to start TestServer
+17:06:42 [INFO] <private>
+17:06:42 [INFO] [TESTSERVER] About to register tests
+17:06:42 [INFO] TestServer: Registered tests: storage, clear-login
+17:06:42 [INFO] [TESTSERVER] Tests registered
+17:06:42 [INFO] <private>
+17:06:42 [INFO] [TESTSERVER] Creating TCP parameters
+17:06:42 [INFO] [TESTSERVER] TCP parameters created
+17:06:42 [INFO] [TESTSERVER] Creating NWListener
+17:06:42 [INFO] [TESTSERVER] NWListener created successfully
+17:06:42 [INFO] [TESTSERVER] About to start listener
+17:06:42 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:06:42 [INFO] <private>
+17:06:42 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:06:42 [INFO] [APP] TestServer.start() returned
+17:06:42 [INFO] <private>
+17:06:42 [INFO] <private>
+17:07:57 [INFO] [APP] NoobTestApp init() called
+17:07:57 [INFO] <private>
+17:07:57 [INFO] [APP] About to start TestServer
+17:07:57 [INFO] <private>
+17:07:57 [INFO] [TESTSERVER] About to register tests
+17:07:57 [INFO] TestServer: Registered tests: storage, clear-login
+17:07:57 [INFO] [TESTSERVER] Tests registered
+17:07:57 [INFO] <private>
+17:07:57 [INFO] [TESTSERVER] Creating TCP parameters
+17:07:57 [INFO] [TESTSERVER] TCP parameters created
+17:07:57 [INFO] [TESTSERVER] Creating NWListener
+17:07:57 [INFO] [TESTSERVER] NWListener created successfully
+17:07:57 [INFO] [TESTSERVER] About to start listener
+17:07:57 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:07:57 [INFO] <private>
+17:07:57 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:07:57 [INFO] [APP] TestServer.start() returned
+17:07:57 [INFO] <private>
+17:07:57 [INFO] <private>
+17:10:18 [INFO] [APP] NoobTestApp init() called
+17:10:18 [INFO] <private>
+17:10:18 [INFO] [APP] About to start TestServer
+17:10:18 [INFO] <private>
+17:10:18 [INFO] [TESTSERVER] About to register tests
+17:10:18 [INFO] TestServer: Registered tests: storage, clear-login
+17:10:18 [INFO] [TESTSERVER] Tests registered
+17:10:18 [INFO] <private>
+17:10:18 [INFO] [TESTSERVER] Creating TCP parameters
+17:10:18 [INFO] [TESTSERVER] TCP parameters created
+17:10:18 [INFO] [TESTSERVER] Creating NWListener
+17:10:18 [INFO] [TESTSERVER] NWListener created successfully
+17:10:18 [INFO] [TESTSERVER] About to start listener
+17:10:18 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:10:18 [INFO] <private>
+17:10:18 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:10:18 [INFO] [APP] TestServer.start() returned
+17:10:18 [INFO] <private>
+17:10:18 [INFO] <private>
+17:18:45 [INFO] [APP] NoobTestApp init() called
+17:18:45 [INFO] <private>
+17:18:45 [INFO] [APP] About to start TestServer
+17:18:45 [INFO] <private>
+17:18:45 [INFO] [TESTSERVER] About to register tests
+17:18:45 [INFO] TestServer: Registered tests: storage, clear-login
+17:18:45 [INFO] [TESTSERVER] Tests registered
+17:18:45 [INFO] <private>
+17:18:45 [INFO] [TESTSERVER] Creating TCP parameters
+17:18:45 [INFO] [TESTSERVER] TCP parameters created
+17:18:45 [INFO] [TESTSERVER] Creating NWListener
+17:18:45 [INFO] [TESTSERVER] NWListener created successfully
+17:18:45 [INFO] [TESTSERVER] About to start listener
+17:18:45 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:18:45 [INFO] <private>
+17:18:45 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:18:45 [INFO] [APP] TestServer.start() returned
+17:18:45 [INFO] <private>
+17:18:45 [INFO] <private>
+17:21:04 [INFO] [APP] NoobTestApp init() called
+17:21:04 [INFO] <private>
+17:21:04 [INFO] [APP] About to start TestServer
+17:21:04 [INFO] <private>
+17:21:04 [INFO] [TESTSERVER] About to register tests
+17:21:04 [INFO] TestServer: Registered tests: storage, clear-login
+17:21:04 [INFO] [TESTSERVER] Tests registered
+17:21:04 [INFO] <private>
+17:21:04 [INFO] [TESTSERVER] Creating TCP parameters
+17:21:04 [INFO] [TESTSERVER] TCP parameters created
+17:21:04 [INFO] [TESTSERVER] Creating NWListener
+17:21:04 [INFO] [TESTSERVER] NWListener created successfully
+17:21:04 [INFO] [TESTSERVER] About to start listener
+17:21:04 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:21:04 [INFO] <private>
+17:21:04 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:21:04 [INFO] [APP] TestServer.start() returned
+17:21:04 [INFO] <private>
+17:21:05 [INFO] <private>
+17:23:26 [INFO] [APP] NoobTestApp init() called
+17:23:26 [INFO] <private>
+17:23:26 [INFO] [APP] About to start TestServer
+17:23:26 [INFO] <private>
+17:23:26 [INFO] [TESTSERVER] About to register tests
+17:23:26 [INFO] TestServer: Registered tests: storage, clear-login
+17:23:26 [INFO] [TESTSERVER] Tests registered
+17:23:26 [INFO] <private>
+17:23:26 [INFO] [TESTSERVER] Creating TCP parameters
+17:23:26 [INFO] [TESTSERVER] TCP parameters created
+17:23:26 [INFO] [TESTSERVER] Creating NWListener
+17:23:26 [INFO] [TESTSERVER] NWListener created successfully
+17:23:26 [INFO] [TESTSERVER] About to start listener
+17:23:26 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:23:26 [INFO] <private>
+17:23:26 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:23:26 [INFO] [APP] TestServer.start() returned
+17:23:27 [INFO] <private>
+17:23:27 [INFO] <private>
+17:25:17 [INFO] [APP] NoobTestApp init() called
+17:25:17 [INFO] <private>
+17:25:17 [INFO] [APP] About to start TestServer
+17:25:17 [INFO] <private>
+17:25:17 [INFO] [TESTSERVER] About to register tests
+17:25:17 [INFO] TestServer: Registered tests: storage, clear-login
+17:25:17 [INFO] [TESTSERVER] Tests registered
+17:25:17 [INFO] <private>
+17:25:17 [INFO] [TESTSERVER] Creating TCP parameters
+17:25:17 [INFO] [TESTSERVER] TCP parameters created
+17:25:17 [INFO] [TESTSERVER] Creating NWListener
+17:25:17 [INFO] [TESTSERVER] NWListener created successfully
+17:25:17 [INFO] [TESTSERVER] About to start listener
+17:25:17 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:25:17 [INFO] <private>
+17:25:17 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:25:17 [INFO] [APP] TestServer.start() returned
+17:25:17 [INFO] <private>
+17:25:17 [INFO] <private>
+17:27:12 [INFO] [APP] NoobTestApp init() called
+17:27:12 [INFO] <private>
+17:27:12 [INFO] [APP] About to start TestServer
+17:27:12 [INFO] <private>
+17:27:12 [INFO] [TESTSERVER] About to register tests
+17:27:12 [INFO] TestServer: Registered tests: storage, clear-login
+17:27:12 [INFO] [TESTSERVER] Tests registered
+17:27:12 [INFO] <private>
+17:27:12 [INFO] [TESTSERVER] Creating TCP parameters
+17:27:12 [INFO] [TESTSERVER] TCP parameters created
+17:27:12 [INFO] [TESTSERVER] Creating NWListener
+17:27:12 [INFO] [TESTSERVER] NWListener created successfully
+17:27:12 [INFO] [TESTSERVER] About to start listener
+17:27:12 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:27:12 [INFO] <private>
+17:27:12 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:27:12 [INFO] [APP] TestServer.start() returned
+17:27:12 [INFO] <private>
+17:27:12 [INFO] <private>
+17:29:22 [INFO] [APP] NoobTestApp init() called
+17:29:22 [INFO] <private>
+17:29:22 [INFO] [APP] About to start TestServer
+17:29:22 [INFO] <private>
+17:29:22 [INFO] [TESTSERVER] About to register tests
+17:29:22 [INFO] TestServer: Registered tests: storage, clear-login
+17:29:22 [INFO] [TESTSERVER] Tests registered
+17:29:22 [INFO] <private>
+17:29:22 [INFO] [TESTSERVER] Creating TCP parameters
+17:29:22 [INFO] [TESTSERVER] TCP parameters created
+17:29:22 [INFO] [TESTSERVER] Creating NWListener
+17:29:22 [INFO] [TESTSERVER] NWListener created successfully
+17:29:22 [INFO] [TESTSERVER] About to start listener
+17:29:22 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:29:22 [INFO] <private>
+17:29:22 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:29:22 [INFO] [APP] TestServer.start() returned
+17:29:22 [INFO] <private>
+17:29:22 [INFO] <private>
+17:29:46 [INFO] [APP] NoobTestApp init() called
+17:29:46 [INFO] <private>
+17:29:46 [INFO] [APP] About to start TestServer
+17:29:46 [INFO] <private>
+17:29:46 [INFO] [TESTSERVER] About to register tests
+17:29:46 [INFO] TestServer: Registered tests: storage, clear-login
+17:29:46 [INFO] [TESTSERVER] Tests registered
+17:29:46 [INFO] <private>
+17:29:46 [INFO] [TESTSERVER] Creating TCP parameters
+17:29:46 [INFO] [TESTSERVER] TCP parameters created
+17:29:46 [INFO] [TESTSERVER] Creating NWListener
+17:29:46 [INFO] [TESTSERVER] NWListener created successfully
+17:29:46 [INFO] [TESTSERVER] About to start listener
+17:29:46 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:29:46 [INFO] <private>
+17:29:46 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:29:46 [INFO] [APP] TestServer.start() returned
+17:29:46 [INFO] <private>
+17:29:46 [INFO] <private>
+17:30:59 [INFO] [APP] NoobTestApp init() called
+17:30:59 [INFO] <private>
+17:30:59 [INFO] [APP] About to start TestServer
+17:30:59 [INFO] <private>
+17:30:59 [INFO] [TESTSERVER] About to register tests
+17:30:59 [INFO] TestServer: Registered tests: storage, clear-login
+17:30:59 [INFO] [TESTSERVER] Tests registered
+17:30:59 [INFO] <private>
+17:30:59 [INFO] [TESTSERVER] Creating TCP parameters
+17:30:59 [INFO] [TESTSERVER] TCP parameters created
+17:30:59 [INFO] [TESTSERVER] Creating NWListener
+17:30:59 [INFO] [TESTSERVER] NWListener created successfully
+17:30:59 [INFO] [TESTSERVER] About to start listener
+17:30:59 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:30:59 [INFO] <private>
+17:30:59 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:30:59 [INFO] [APP] TestServer.start() returned
+17:30:59 [INFO] <private>
+17:30:59 [INFO] <private>
+17:33:07 [INFO] [APP] NoobTestApp init() called
+17:33:07 [INFO] <private>
+17:33:07 [INFO] [APP] About to start TestServer
+17:33:07 [INFO] <private>
+17:33:07 [INFO] [TESTSERVER] About to register tests
+17:33:07 [INFO] TestServer: Registered tests: storage, clear-login
+17:33:07 [INFO] [TESTSERVER] Tests registered
+17:33:07 [INFO] <private>
+17:33:07 [INFO] [TESTSERVER] Creating TCP parameters
+17:33:07 [INFO] [TESTSERVER] TCP parameters created
+17:33:07 [INFO] [TESTSERVER] Creating NWListener
+17:33:07 [INFO] [TESTSERVER] NWListener created successfully
+17:33:07 [INFO] [TESTSERVER] About to start listener
+17:33:07 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:33:07 [INFO] <private>
+17:33:07 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:33:07 [INFO] [APP] TestServer.start() returned
+17:33:07 [INFO] <private>
+17:33:08 [INFO] <private>
+17:34:50 [INFO] [APP] NoobTestApp init() called
+17:34:50 [INFO] <private>
+17:34:50 [INFO] [APP] About to start TestServer
+17:34:50 [INFO] <private>
+17:34:50 [INFO] [TESTSERVER] About to register tests
+17:34:50 [INFO] TestServer: Registered tests: storage, clear-login
+17:34:50 [INFO] [TESTSERVER] Tests registered
+17:34:50 [INFO] <private>
+17:34:50 [INFO] [TESTSERVER] Creating TCP parameters
+17:34:50 [INFO] [TESTSERVER] TCP parameters created
+17:34:50 [INFO] [TESTSERVER] Creating NWListener
+17:34:50 [INFO] [TESTSERVER] NWListener created successfully
+17:34:50 [INFO] [TESTSERVER] About to start listener
+17:34:50 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:34:50 [INFO] <private>
+17:34:50 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:34:50 [INFO] [APP] TestServer.start() returned
+17:34:50 [INFO] <private>
+17:34:50 [INFO] <private>

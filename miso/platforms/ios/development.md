@@ -18,6 +18,9 @@ Ready-to-use development scripts:
 ### [screen-capture](development/screen-capture.md)
 iPhone screen mirroring app with integrated console window for viewing live logs alongside the device display.
 
+### [image-caching](development/image-caching.md)
+Fast, responsive image loading in SwiftUI using in-memory cache of decoded UIImage objects, URLCache configuration, and priority loading patterns for instant image display.
+
 ## Typical Workflow
 
 A productive iOS development session:

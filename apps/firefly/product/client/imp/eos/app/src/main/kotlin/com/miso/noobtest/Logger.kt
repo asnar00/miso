@@ -115,4 +115,18 @@ object Logger {
     fun getDeviceID(): String {
         return deviceID
     }
+
+    /**
+     * Convenience method for info-level logging
+     */
+    fun info(message: String) {
+        log(message)
+    }
+
+    /**
+     * Convenience method for error-level logging
+     */
+    fun error(message: String) {
+        log(message)
+    }
 }
