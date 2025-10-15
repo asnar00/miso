@@ -103,7 +103,27 @@ class TestServer {
             return testStorage()
         }
 
-        Logger.shared.info("TestServer: Registered tests: storage")
+        // Register clear-login test
+        TestRegistry.shared.register(feature: "clear-login") {
+            return self.testClearLogin()
+        }
+
+        Logger.shared.info("TestServer: Registered tests: storage, clear-login")
+    }
+
+    private func testClearLogin() -> TestResult {
+        Logger.shared.info("[TEST:clear-login] Clearing login state")
+        Storage.shared.clearLoginState()
+
+        // Verify it was cleared
+        let (email, isLoggedIn) = Storage.shared.getLoginState()
+        if email == nil && !isLoggedIn {
+            Logger.shared.info("[TEST:clear-login] Login state cleared successfully")
+            return TestResult(success: true)
+        } else {
+            Logger.shared.error("[TEST:clear-login] Failed to clear login state")
+            return TestResult(success: false, error: "Login state not cleared")
+        }
     }
 
     private func handleConnection(_ connection: NWConnection) {

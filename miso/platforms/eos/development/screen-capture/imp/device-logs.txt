@@ -1,11 +1,13 @@
 # Android logs from com.miso.noobtest
-# Started at 2025-10-13 16:48:45
+# Started at 2025-10-14 16:30:46
 
-16:48:45 Started monitoring logs from com.miso.noobtest
-16:48:45 Writing to: /Users/asnaroo/Desktop/experiments/miso/miso/platforms/eos/development/screen-capture/imp/device-logs.txt
-16:52:03 [INFO] TestServer: Attempting to start on port 8081
-16:52:03 [INFO] TestServer: Server started successfully
-16:52:26 [INFO] TestServer: Received request for /test/ping
-16:52:26 [INFO] TestServer: Test result for ping: succeeded
-16:52:33 [INFO] TestServer: Received request for /test/nonexistent
-16:52:33 [INFO] TestServer: Test result for nonexistent: failed because No test found for feature 'nonexistent'
+16:30:46 Started monitoring logs from com.miso.noobtest
+16:30:46 Writing to: /Users/asnaroo/Desktop/experiments/miso/miso/platforms/eos/development/screen-capture/imp/device-logs.txt
+16:31:13 [INFO] TestServer: Attempting to start on port 8081
+16:31:13 [INFO] TestServer: Server started successfully
+16:31:52 [INFO] [Storage] Generated new device ID: 9d380524-8b4c-47da-918f-6118f6e0c968
+16:31:52 [INFO] [Storage] Saved login state: email=test2@example.com, isLoggedIn=true
+16:31:52 [INFO] [SignIn] User authenticated: test2@example.com (new_user: true)
+16:31:59 [INFO] [NewUser] User tapped Get Started
+16:33:13 [INFO] TestServer: Attempting to start on port 8081
+16:33:13 [INFO] TestServer: Server started successfully

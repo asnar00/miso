@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `miso` is an experimental system for natural language programming. It enables non-programmers to create and maintain software by specifying programs as trees of short natural-language markdown documents called "features".
 
-**Key philosophy**: This is a line of experiments. Each new experiment may start from scratch or build on previous work. Previous experiments are stored in branches, and the main branch is cleared for new experiments.
+**Key philosophy**: This is a line of experiments. Each new experiment may start from scratch or build on previous work. Previous experiments are stored in branches, and the main branch is cleared for new experiments. When working in this repo, be aware that the current state may represent work-in-progress on the latest experiment.
 
 ## Core Architecture
 
@@ -125,6 +125,8 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 **users** (`apps/firefly/features/users.md`):
 - User accounts with email-based authentication
 - Device association
+- **sign-in**: Email-based login with 4-digit one-time codes (10-minute validity)
+- **sign-up**: New user onboarding with profile setup and tutorial
 
 **posts** (`apps/firefly/features/posts.md`):
 - User-generated content with hierarchical structure
@@ -182,6 +184,19 @@ TestRegistry.register("myfeature") {
 ```bash
 adb shell am force-stop com.miso.noobtest          # Stop app
 adb shell am start -n com.miso.noobtest/.MainActivity  # Start app
+```
+
+**Debugging with Device Logs**:
+```bash
+# iOS: Download logs from device
+cd apps/firefly/product/client/imp/ios/
+./get-logs.sh  # Downloads app.log to device-logs.txt
+
+# View logs
+cat device-logs.txt
+
+# iOS: Stream live logs (requires device ID)
+log stream --device <DEVICE_ID> --predicate 'subsystem == "com.miso.noobtest"'
 ```
 
 ## Working with This Repository

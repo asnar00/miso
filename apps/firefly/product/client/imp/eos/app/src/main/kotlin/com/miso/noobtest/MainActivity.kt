@@ -24,15 +24,26 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize logger
+        // Initialize storage and logger
+        Storage.init(this)
         Logger.init(this)
 
         // Start test server
         TestServer.start()
 
-        // Register ping test
+        // Register tests
         TestRegistry.register("ping") {
             testPingFeature()
+        }
+
+        TestRegistry.register("clear-login") {
+            Storage.clearLoginState()
+            val (email, isLoggedIn) = Storage.getLoginState()
+            if (email == null && !isLoggedIn) {
+                TestResult(success = true)
+            } else {
+                TestResult(success = false, error = "Login state not cleared")
+            }
         }
 
         setContent {
@@ -42,21 +53,46 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun FireflyApp() {
-        // State for background color (gray = disconnected, turquoise = connected)
+        // Check initial authentication state
+        val (email, isLoggedIn) = Storage.getLoginState()
+        var isAuthenticated by remember { mutableStateOf(isLoggedIn && email != null) }
+        var isNewUser by remember { mutableStateOf(false) }
+        var hasSeenWelcome by remember { mutableStateOf(isLoggedIn) } // Existing users skip welcome
+
+        when {
+            !isAuthenticated -> {
+                SignInView(onAuthenticated = { newUser ->
+                    isNewUser = newUser
+                    isAuthenticated = true
+                })
+            }
+            isNewUser && !hasSeenWelcome -> {
+                val (currentEmail, _) = Storage.getLoginState()
+                NewUserView(email = currentEmail ?: "unknown", onGetStarted = {
+                    hasSeenWelcome = true
+                })
+            }
+            else -> {
+                MainContentView()
+            }
+        }
+    }
+
+    @Composable
+    fun MainContentView() {
         var backgroundColor by remember { mutableStateOf(Color.Gray) }
 
-        // Periodic ping check
         LaunchedEffect(Unit) {
             while (true) {
                 val isConnected = withContext(Dispatchers.IO) {
                     testConnection()
                 }
                 backgroundColor = if (isConnected) {
-                    Color(0xFF40E0D0) // Turquoise when connected
+                    Color(0xFF40E0D0)
                 } else {
-                    Color.Gray // Gray when disconnected
+                    Color.Gray
                 }
-                delay(1000) // Check every 1 second
+                delay(1000)
             }
         }
 
