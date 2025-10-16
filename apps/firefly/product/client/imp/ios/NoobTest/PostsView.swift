@@ -43,11 +43,9 @@ struct PostsView: View {
                                                     // Collapse all other posts
                                                     expandedPostIds.removeAll()
                                                     expandedPostIds.insert(post.id)
-                                                    // Scroll to the expanded post with slight delay for animation
-                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                                                        withAnimation {
-                                                            proxy.scrollTo(post.id, anchor: .center)
-                                                        }
+                                                    // Scroll to top of expanded post concurrently with animation
+                                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                                        proxy.scrollTo(post.id, anchor: .top)
                                                     }
                                                 } else {
                                                     expandedPostIds.remove(post.id)
@@ -130,6 +128,10 @@ struct PostCardView: View {
     @Binding var isExpanded: Bool
     let serverURL = "http://185.96.221.52:8080"
 
+    @State private var isAnimatingCollapse = false
+    @State private var collapseHeight: CGFloat? = nil
+    @State private var measuredCompactHeight: CGFloat = 110
+
     // Strip image markdown references and process body text
     func processBodyText(_ text: String) -> AttributedString {
         // Remove image markdown: ![alt](url)
@@ -145,9 +147,9 @@ struct PostCardView: View {
             let trimmedLine = line.trimmingCharacters(in: .whitespaces)
 
             if trimmedLine.isEmpty {
-                // Empty line - add spacing
-                if index > 0 {
-                    result.append(AttributedString("\n"))
+                // Empty line - add paragraph break only if we have content
+                if !result.characters.isEmpty {
+                    result.append(AttributedString("\n\n"))
                 }
             } else if trimmedLine.hasPrefix("## ") {
                 // H2 heading - bold and slightly larger
@@ -187,8 +189,11 @@ struct PostCardView: View {
 
     var body: some View {
         Group {
-            if isExpanded {
+            if isExpanded || isAnimatingCollapse {
                 fullView
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(height: collapseHeight, alignment: .top)
+                    .clipped()
             } else {
                 compactView
             }
@@ -198,21 +203,28 @@ struct PostCardView: View {
         .cornerRadius(12)
         .shadow(radius: 2)
         .onTapGesture {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                isExpanded = true
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isExpanded.toggle()
             }
         }
-        .gesture(
-            MagnificationGesture()
-                .onEnded { scale in
-                    // Pinch/zoom out to collapse
-                    if scale < 0.95 && isExpanded {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            isExpanded = false
-                        }
-                    }
+        .onChange(of: isExpanded) { oldValue, newValue in
+            if oldValue && !newValue {
+                // Started collapsing - animate height down first
+                isAnimatingCollapse = true
+                collapseHeight = nil  // Start at full height
+
+                // Animate height down to compact size
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    collapseHeight = measuredCompactHeight
                 }
-        )
+
+                // After animation completes, switch to compact view
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    isAnimatingCollapse = false
+                    collapseHeight = nil  // Reset for next time
+                }
+            }
+        }
     }
 
     var compactView: some View {
@@ -260,6 +272,13 @@ struct PostCardView: View {
                 }
             }
         }
+        .background(
+            GeometryReader { geometry in
+                Color.clear.onAppear {
+                    measuredCompactHeight = geometry.size.height
+                }
+            }
+        )
     }
 
     var fullView: some View {
@@ -286,7 +305,7 @@ struct PostCardView: View {
                         .frame(maxWidth: .infinity)
                         .cornerRadius(12)
                         .padding(.top, 8)
-                        .padding(.bottom, -2)
+                        .padding(.bottom, 8)
                 } else {
                     // Fallback to AsyncImage if cache doesn't have it (was evicted)
                     AsyncImage(url: URL(string: fullUrl)) { phase in
@@ -298,7 +317,7 @@ struct PostCardView: View {
                                 .frame(maxWidth: .infinity)
                                 .cornerRadius(12)
                                 .padding(.top, 8)
-                                .padding(.bottom, -2)
+                                .padding(.bottom, 8)
                         case .failure(_):
                             EmptyView()
                         case .empty:
@@ -315,42 +334,37 @@ struct PostCardView: View {
             Text(processBodyText(post.body))
                 .foregroundColor(.black)
                 .lineLimit(nil)
+                .padding(.bottom, 8)
 
             // Metadata
-            HStack {
-                if let location = post.locationTag {
-                    Label(location, systemImage: "location")
+            VStack(alignment: .leading, spacing: 4) {
+                // Author or librarian badge
+                if post.aiGenerated {
+                    Text("👓 librarian")
+                        .font(.caption)
+                        .foregroundColor(.black.opacity(0.6))
+                } else if let authorName = post.authorName {
+                    Text(authorName)
                         .font(.caption)
                         .foregroundColor(.black.opacity(0.6))
                 }
 
-                Spacer()
+                // Location and date on same line
+                HStack {
+                    if let location = post.locationTag {
+                        Label(location, systemImage: "location")
+                            .font(.caption)
+                            .foregroundColor(.black.opacity(0.6))
+                    }
 
-                Text(formatDate(post.createdAt))
-                    .font(.caption)
-                    .foregroundColor(.black.opacity(0.6))
-            }
+                    Spacer()
 
-            if post.aiGenerated {
-                Label("AI Generated", systemImage: "sparkles")
-                    .font(.caption)
-                    .foregroundColor(.purple)
+                    Text(post.createdAt)
+                        .font(.caption)
+                        .foregroundColor(.black.opacity(0.6))
+                }
             }
         }
-    }
-
-    func formatDate(_ dateString: String) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
-        if let date = formatter.date(from: dateString) {
-            let displayFormatter = DateFormatter()
-            displayFormatter.dateStyle = .medium
-            displayFormatter.timeStyle = .short
-            return displayFormatter.string(from: date)
-        }
-
-        return dateString
     }
 }
 

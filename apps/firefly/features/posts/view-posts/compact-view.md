@@ -7,6 +7,6 @@ The purpose is that we can quickly scan down a list of posts, and expand the one
 
 The view-posts page starts with the first post in normal view, with subsequent posts in compact view.
 
-Tapping on a compact-view expands it into a full view, using animation; conversely, swiping "inwards" over a full-sized view animates it to the compact view.
+Tapping on a compact-view expands it into a full view, using animation; conversely, tapping on the full-size view collapses it down to compact-view.
 
 Only one post in a list can be expanded; expanding a post compacts the previous one, and scrolls to the start of the new post.

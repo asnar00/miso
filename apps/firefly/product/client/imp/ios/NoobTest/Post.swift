@@ -13,6 +13,7 @@ struct Post: Codable, Identifiable {
     let timezone: String
     let locationTag: String?
     let aiGenerated: Bool
+    let authorName: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -26,6 +27,7 @@ struct Post: Codable, Identifiable {
         case timezone
         case locationTag = "location_tag"
         case aiGenerated = "ai_generated"
+        case authorName = "author_name"
     }
 }
 
