@@ -1,7 +1,7 @@
 # view posts
-*display recent posts in a scrollable feed with images and formatted text*
+*display a list of posts in a scrollable feed with images and formatted text*
 
-When you open Firefly after signing in, you see a scrolling list of recent posts against a bright turquoise background.
+This component displays any list of posts as a scrolling feed against a bright turquoise background.
 
 Each post appears in a white card with slightly rounded corners and a subtle shadow. The cards are spaced comfortably apart so you can easily tell where one ends and the next begins.
 
@@ -18,10 +18,9 @@ Inside each card:
 
 At the bottom of each card you'll find:
 
-- Location tag (if the author added one)
-- Date and time when the post was created
-- An "AI Generated" badge with a sparkle icon if the post was created by AI
+- Author name or "👓 librarian" badge if AI-generated
+- Location tag (if the author added one) and creation date on the same line
 
-The feed automatically loads the 50 most recent posts when you open it. If there's a problem loading posts, you'll see an error message with a retry button. While posts are loading, a spinner appears.
+The component accepts a list of posts to display. If there's a problem loading posts, it shows an error message with a retry button. While posts are loading, a spinner appears.
 
 The whole design is clean and focused on readability, with generous whitespace and a careful balance between the different elements. The spacing between title, summary, image, and body text is tuned so nothing feels cramped or too spread out.

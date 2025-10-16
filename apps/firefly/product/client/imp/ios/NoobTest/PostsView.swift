@@ -1,9 +1,8 @@
 import SwiftUI
 
 struct PostsView: View {
-    @State private var posts: [Post] = []
-    @State private var isLoading = false
-    @State private var errorMessage: String?
+    let posts: [Post]
+
     @State private var expandedPostIds: Set<Int> = []
 
     var body: some View {
@@ -12,20 +11,7 @@ struct PostsView: View {
                 .ignoresSafeArea()
 
             VStack {
-                if isLoading {
-                    ProgressView("Loading posts...")
-                        .foregroundColor(.black)
-                } else if let error = errorMessage {
-                    Text("Error: \(error)")
-                        .foregroundColor(.red)
-                        .padding()
-                    Button("Retry") {
-                        loadPosts()
-                    }
-                    .padding()
-                    .background(Color.white.opacity(0.3))
-                    .cornerRadius(8)
-                } else if posts.isEmpty {
+                if posts.isEmpty {
                     Text("No posts yet")
                         .foregroundColor(.black)
                         .padding()
@@ -63,61 +49,9 @@ struct PostsView: View {
             }
         }
         .onAppear {
-            loadPosts()
-        }
-    }
-
-    func loadPosts() {
-        isLoading = true
-        errorMessage = nil
-
-        PostsAPI.shared.fetchRecentPosts { result in
-            switch result {
-            case .success(let fetchedPosts):
-                // Preload first image, then display immediately
-                // Continue loading other images in background
-                self.preloadImagesOptimized(for: fetchedPosts) {
-                    DispatchQueue.main.async {
-                        self.posts = fetchedPosts
-                        self.isLoading = false
-                        // Expand the first post by default
-                        if let firstPost = fetchedPosts.first {
-                            self.expandedPostIds.insert(firstPost.id)
-                        }
-                    }
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.errorMessage = error.localizedDescription
-                    self.isLoading = false
-                }
-            }
-        }
-    }
-
-    func preloadImagesOptimized(for posts: [Post], completion: @escaping () -> Void) {
-        let serverURL = "http://185.96.221.52:8080"
-        let imageUrls = posts.compactMap { post -> String? in
-            guard let imageUrl = post.imageUrl else { return nil }
-            return serverURL + imageUrl
-        }
-
-        guard !imageUrls.isEmpty else {
-            completion()
-            return
-        }
-
-        // Load first image, then display
-        let firstUrl = imageUrls[0]
-        ImageCache.shared.preload(urls: [firstUrl]) {
-            completion()
-
-            // Continue loading remaining images in background
-            if imageUrls.count > 1 {
-                let remainingUrls = Array(imageUrls[1...])
-                ImageCache.shared.preload(urls: remainingUrls) {
-                    // Background loading complete
-                }
+            // Expand first post by default
+            if let firstPost = posts.first {
+                expandedPostIds.insert(firstPost.id)
             }
         }
     }
@@ -369,5 +303,5 @@ struct PostCardView: View {
 }
 
 #Preview {
-    PostsView()
+    PostsView(posts: [])
 }
