@@ -321,10 +321,17 @@ def create_post():
 
         print(f"Created post {post_id} by user {email} (ID: {user_id})")
 
+        # Fetch the created post to return it
+        post = db.get_post_by_id(post_id)
+        if not post:
+            return jsonify({
+                'status': 'error',
+                'message': 'Post created but failed to retrieve'
+            }), 500
+
         return jsonify({
             'status': 'success',
-            'post_id': post_id,
-            'image_url': image_url
+            'post': post
         })
 
     except Exception as e:

@@ -12,7 +12,8 @@ files_to_add = [
     "SignInView.swift",
     "NewUserView.swift",
     "Post.swift",
-    "PostsView.swift"
+    "PostsView.swift",
+    "NewPostView.swift"
 ]
 
 # Generate unique IDs for each file (2 per file: build file and file reference)

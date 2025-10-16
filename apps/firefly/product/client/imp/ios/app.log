@@ -113,3 +113,1751 @@
 [2025-10-13 20:08:54.334] [INFO] [TEST:storage] All storage operations passed!
 [2025-10-13 20:08:54.334] [INFO] [TEST] ✓ Test 'storage' succeeded
 [2025-10-13 20:08:54.334] [INFO] [TESTSERVER] Sending response: succeeded
+
+=== Logger initialized at 2025-10-14 13:36:51 +0000 ===
+[2025-10-14 15:36:51.975] [INFO] [APP] NoobTestApp init() called
+[2025-10-14 15:36:51.975] [INFO] [APP] About to start TestServer
+[2025-10-14 15:36:51.975] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-14 15:36:51.975] [INFO] [TESTSERVER] About to register tests
+[2025-10-14 15:36:51.975] [INFO] TestServer: Registered tests: storage
+[2025-10-14 15:36:51.975] [INFO] [TESTSERVER] Tests registered
+[2025-10-14 15:36:51.976] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-14 15:36:51.976] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-14 15:36:51.976] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-14 15:36:51.976] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-14 15:36:51.977] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-14 15:36:51.978] [INFO] [TESTSERVER] About to start listener
+[2025-10-14 15:36:51.978] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-14 15:36:51.982] [INFO] [TESTSERVER] State changed to ready
+[2025-10-14 15:36:51.982] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-14 15:36:51.982] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-14 13:55:22 +0000 ===
+[2025-10-14 15:55:22.458] [INFO] [APP] NoobTestApp init() called
+[2025-10-14 15:55:22.458] [INFO] [APP] No user logged in, showing sign-in
+[2025-10-14 15:55:22.458] [INFO] [APP] About to start TestServer
+[2025-10-14 15:55:22.458] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-14 15:55:22.458] [INFO] [TESTSERVER] About to register tests
+[2025-10-14 15:55:22.458] [INFO] TestServer: Registered tests: storage
+[2025-10-14 15:55:22.458] [INFO] [TESTSERVER] Tests registered
+[2025-10-14 15:55:22.458] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-14 15:55:22.458] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-14 15:55:22.459] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-14 15:55:22.459] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-14 15:55:22.459] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-14 15:55:22.459] [INFO] [TESTSERVER] About to start listener
+[2025-10-14 15:55:22.459] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-14 15:55:22.462] [INFO] [TESTSERVER] State changed to ready
+[2025-10-14 15:55:22.462] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-14 15:55:22.462] [INFO] [APP] TestServer.start() returned
+[2025-10-14 15:55:40.146] [INFO] [SignIn] Code sent to ash.nehru@gmail.com
+[2025-10-14 15:55:56.608] [INFO] [SignIn] User authenticated: ash.nehru@gmail.com
+
+=== Logger initialized at 2025-10-14 13:56:17 +0000 ===
+[2025-10-14 15:56:17.944] [INFO] [APP] NoobTestApp init() called
+[2025-10-14 15:56:17.945] [INFO] [APP] User already logged in: ash.nehru@gmail.com
+[2025-10-14 15:56:17.945] [INFO] [APP] About to start TestServer
+[2025-10-14 15:56:17.945] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-14 15:56:17.945] [INFO] [TESTSERVER] About to register tests
+[2025-10-14 15:56:17.945] [INFO] TestServer: Registered tests: storage
+[2025-10-14 15:56:17.945] [INFO] [TESTSERVER] Tests registered
+[2025-10-14 15:56:17.945] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-14 15:56:17.945] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-14 15:56:17.946] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-14 15:56:17.946] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-14 15:56:17.946] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-14 15:56:17.946] [INFO] [TESTSERVER] About to start listener
+[2025-10-14 15:56:17.946] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-14 15:56:17.950] [INFO] [TESTSERVER] State changed to ready
+[2025-10-14 15:56:17.950] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-14 15:56:17.950] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-14 14:19:49 +0000 ===
+[2025-10-14 16:19:49.611] [INFO] [APP] NoobTestApp init() called
+[2025-10-14 16:19:49.611] [INFO] [APP] User already logged in: ash.nehru@gmail.com
+[2025-10-14 16:19:49.611] [INFO] [APP] About to start TestServer
+[2025-10-14 16:19:49.611] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-14 16:19:49.611] [INFO] [TESTSERVER] About to register tests
+[2025-10-14 16:19:49.611] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-14 16:19:49.611] [INFO] [TESTSERVER] Tests registered
+[2025-10-14 16:19:49.611] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-14 16:19:49.611] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-14 16:19:49.612] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-14 16:19:49.612] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-14 16:19:49.612] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-14 16:19:49.612] [INFO] [TESTSERVER] About to start listener
+[2025-10-14 16:19:49.612] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-14 16:19:49.616] [INFO] [TESTSERVER] State changed to ready
+[2025-10-14 16:19:49.616] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-14 16:19:49.616] [INFO] [APP] TestServer.start() returned
+[2025-10-14 16:19:56.631] [INFO] [TESTSERVER] New connection received
+[2025-10-14 16:19:56.631] [INFO] [TESTSERVER] Request: GET /test/clear-login HTTP/1.1
+[2025-10-14 16:19:56.632] [INFO] [TESTSERVER] Dispatching test for feature: clear-login
+[2025-10-14 16:19:56.632] [INFO] [TEST] Request to run test for feature: 'clear-login'
+[2025-10-14 16:19:56.632] [INFO] [TEST] Running test for 'clear-login'...
+[2025-10-14 16:19:56.632] [INFO] [TEST:clear-login] Clearing login state
+[2025-10-14 16:19:56.634] [INFO] [TEST:clear-login] Login state cleared successfully
+[2025-10-14 16:19:56.634] [INFO] [TEST] ✓ Test 'clear-login' succeeded
+[2025-10-14 16:19:56.634] [INFO] [TESTSERVER] Sending response: succeeded
+
+=== Logger initialized at 2025-10-14 14:20:03 +0000 ===
+[2025-10-14 16:20:03.459] [INFO] [APP] NoobTestApp init() called
+[2025-10-14 16:20:03.460] [INFO] [APP] No user logged in, showing sign-in
+[2025-10-14 16:20:03.460] [INFO] [APP] About to start TestServer
+[2025-10-14 16:20:03.460] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-14 16:20:03.460] [INFO] [TESTSERVER] About to register tests
+[2025-10-14 16:20:03.460] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-14 16:20:03.460] [INFO] [TESTSERVER] Tests registered
+[2025-10-14 16:20:03.460] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-14 16:20:03.460] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-14 16:20:03.461] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-14 16:20:03.461] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-14 16:20:03.461] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-14 16:20:03.461] [INFO] [TESTSERVER] About to start listener
+[2025-10-14 16:20:03.461] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-14 16:20:03.464] [INFO] [TESTSERVER] State changed to ready
+[2025-10-14 16:20:03.464] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-14 16:20:03.464] [INFO] [APP] TestServer.start() returned
+[2025-10-14 16:20:16.417] [INFO] [SignIn] Code sent to test@example.com
+[2025-10-14 16:20:30.683] [INFO] [SignIn] User authenticated: test@example.com (new_user: true)
+[2025-10-14 16:20:37.692] [INFO] [NewUser] User tapped Get Started
+
+=== Logger initialized at 2025-10-14 14:22:26 +0000 ===
+[2025-10-14 16:22:26.700] [INFO] [APP] NoobTestApp init() called
+[2025-10-14 16:22:26.700] [INFO] [APP] User already logged in: test@example.com
+[2025-10-14 16:22:26.700] [INFO] [APP] About to start TestServer
+[2025-10-14 16:22:26.700] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-14 16:22:26.700] [INFO] [TESTSERVER] About to register tests
+[2025-10-14 16:22:26.700] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-14 16:22:26.700] [INFO] [TESTSERVER] Tests registered
+[2025-10-14 16:22:26.700] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-14 16:22:26.700] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-14 16:22:26.700] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-14 16:22:26.700] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-14 16:22:26.701] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-14 16:22:26.701] [INFO] [TESTSERVER] About to start listener
+[2025-10-14 16:22:26.701] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-14 16:22:26.705] [INFO] [TESTSERVER] State changed to ready
+[2025-10-14 16:22:26.705] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-14 16:22:26.705] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-14 20:51:24 +0000 ===
+[2025-10-14 22:51:24.238] [INFO] [APP] NoobTestApp init() called
+[2025-10-14 22:51:24.238] [INFO] [APP] User already logged in: test@example.com
+[2025-10-14 22:51:24.238] [INFO] [APP] About to start TestServer
+[2025-10-14 22:51:24.238] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-14 22:51:24.238] [INFO] [TESTSERVER] About to register tests
+[2025-10-14 22:51:24.238] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-14 22:51:24.238] [INFO] [TESTSERVER] Tests registered
+[2025-10-14 22:51:24.238] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-14 22:51:24.238] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-14 22:51:24.239] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-14 22:51:24.239] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-14 22:51:24.239] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-14 22:51:24.240] [INFO] [TESTSERVER] About to start listener
+[2025-10-14 22:51:24.240] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-14 22:51:24.241] [INFO] [TESTSERVER] State changed to ready
+[2025-10-14 22:51:24.241] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-14 22:51:24.241] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-14 20:51:38 +0000 ===
+[2025-10-14 22:51:38.103] [INFO] [APP] NoobTestApp init() called
+[2025-10-14 22:51:38.103] [INFO] [APP] User already logged in: test@example.com
+[2025-10-14 22:51:38.103] [INFO] [APP] About to start TestServer
+[2025-10-14 22:51:38.103] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-14 22:51:38.103] [INFO] [TESTSERVER] About to register tests
+[2025-10-14 22:51:38.103] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-14 22:51:38.103] [INFO] [TESTSERVER] Tests registered
+[2025-10-14 22:51:38.103] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-14 22:51:38.103] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-14 22:51:38.104] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-14 22:51:38.104] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-14 22:51:38.104] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-14 22:51:38.104] [INFO] [TESTSERVER] About to start listener
+[2025-10-14 22:51:38.104] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-14 22:51:38.106] [INFO] [TESTSERVER] State changed to ready
+[2025-10-14 22:51:38.107] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-14 22:51:38.107] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-15 14:14:56 +0000 ===
+[2025-10-15 16:14:56.912] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 16:14:56.913] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 16:14:56.913] [INFO] [APP] About to start TestServer
+[2025-10-15 16:14:56.913] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 16:14:56.913] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 16:14:56.913] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 16:14:56.913] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 16:14:56.913] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 16:14:56.913] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 16:14:56.914] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 16:14:56.914] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 16:14:56.914] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 16:14:56.914] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 16:14:56.914] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 16:14:56.915] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 16:14:56.915] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 16:14:56.915] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-15 14:42:07 +0000 ===
+[2025-10-15 16:42:07.201] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 16:42:07.202] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 16:42:07.202] [INFO] [APP] About to start TestServer
+[2025-10-15 16:42:07.202] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 16:42:07.202] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 16:42:07.202] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 16:42:07.202] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 16:42:07.202] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 16:42:07.202] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 16:42:07.204] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 16:42:07.204] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 16:42:07.206] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 16:42:07.206] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 16:42:07.206] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 16:42:07.213] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 16:42:07.213] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 16:42:07.213] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-15 14:48:44 +0000 ===
+[2025-10-15 16:48:44.230] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 16:48:44.230] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 16:48:44.230] [INFO] [APP] About to start TestServer
+[2025-10-15 16:48:44.230] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 16:48:44.230] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 16:48:44.230] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 16:48:44.230] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 16:48:44.230] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 16:48:44.231] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 16:48:44.231] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 16:48:44.231] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 16:48:44.232] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 16:48:44.232] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 16:48:44.232] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 16:48:44.243] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 16:48:44.243] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 16:48:44.243] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-15 14:52:32 +0000 ===
+[2025-10-15 16:52:32.600] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 16:52:32.600] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 16:52:32.600] [INFO] [APP] About to start TestServer
+[2025-10-15 16:52:32.600] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 16:52:32.600] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 16:52:32.600] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 16:52:32.600] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 16:52:32.600] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 16:52:32.600] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 16:52:32.601] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 16:52:32.601] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 16:52:32.601] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 16:52:32.601] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 16:52:32.601] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 16:52:32.605] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 16:52:32.605] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 16:52:32.605] [INFO] [APP] TestServer.start() returned
+[2025-10-15 16:52:32.684] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 16:52:32.907] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:01:35 +0000 ===
+[2025-10-15 17:01:35.940] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:01:35.941] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:01:35.941] [INFO] [APP] About to start TestServer
+[2025-10-15 17:01:35.941] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:01:35.941] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:01:35.941] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:01:35.941] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:01:35.941] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:01:35.941] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:01:35.942] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:01:35.942] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:01:35.943] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:01:35.943] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:01:35.943] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:01:35.948] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:01:35.948] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:01:35.948] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:01:36.020] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:01:36.143] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:02:28 +0000 ===
+[2025-10-15 17:02:28.812] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:02:28.812] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:02:28.812] [INFO] [APP] About to start TestServer
+[2025-10-15 17:02:28.812] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:02:28.812] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:02:28.812] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:02:28.812] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:02:28.812] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:02:28.812] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:02:28.813] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:02:28.813] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:02:28.814] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:02:28.814] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:02:28.814] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:02:28.821] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:02:28.821] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:02:28.821] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:02:28.873] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:02:29.083] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:03:53 +0000 ===
+[2025-10-15 17:03:53.631] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:03:53.631] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:03:53.631] [INFO] [APP] About to start TestServer
+[2025-10-15 17:03:53.631] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:03:53.631] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:03:53.631] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:03:53.631] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:03:53.631] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:03:53.631] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:03:53.632] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:03:53.632] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:03:53.633] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:03:53.633] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:03:53.633] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:03:53.638] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:03:53.638] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:03:53.638] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:03:53.690] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:03:53.873] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:05:22 +0000 ===
+[2025-10-15 17:05:22.999] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:05:23.000] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:05:23.000] [INFO] [APP] About to start TestServer
+[2025-10-15 17:05:23.000] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:05:23.000] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:05:23.000] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:05:23.000] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:05:23.000] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:05:23.000] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:05:23.001] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:05:23.001] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:05:23.001] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:05:23.002] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:05:23.002] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:05:23.008] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:05:23.008] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:05:23.008] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:05:23.059] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:05:23.268] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:06:25 +0000 ===
+[2025-10-15 17:06:25.807] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:06:25.807] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:06:25.807] [INFO] [APP] About to start TestServer
+[2025-10-15 17:06:25.807] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:06:25.807] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:06:25.808] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:06:25.808] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:06:25.808] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:06:25.808] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:06:25.809] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:06:25.809] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:06:25.809] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:06:25.809] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:06:25.809] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:06:25.813] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:06:25.813] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:06:25.813] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:06:25.868] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:06:26.114] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:07:40 +0000 ===
+[2025-10-15 17:07:40.764] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:07:40.765] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:07:40.765] [INFO] [APP] About to start TestServer
+[2025-10-15 17:07:40.765] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:07:40.765] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:07:40.765] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:07:40.765] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:07:40.765] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:07:40.765] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:07:40.766] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:07:40.766] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:07:40.766] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:07:40.766] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:07:40.766] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:07:40.773] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:07:40.773] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:07:40.773] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:07:40.826] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:07:41.075] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:10:01 +0000 ===
+[2025-10-15 17:10:01.866] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:10:01.866] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:10:01.866] [INFO] [APP] About to start TestServer
+[2025-10-15 17:10:01.866] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:10:01.866] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:10:01.866] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:10:01.866] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:10:01.866] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:10:01.866] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:10:01.867] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:10:01.867] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:10:01.867] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:10:01.868] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:10:01.868] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:10:01.874] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:10:01.874] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:10:01.874] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:10:01.931] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:10:02.050] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:18:29 +0000 ===
+[2025-10-15 17:18:29.246] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:18:29.246] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:18:29.246] [INFO] [APP] About to start TestServer
+[2025-10-15 17:18:29.246] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:18:29.246] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:18:29.246] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:18:29.246] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:18:29.246] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:18:29.246] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:18:29.247] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:18:29.247] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:18:29.248] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:18:29.248] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:18:29.248] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:18:29.252] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:18:29.252] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:18:29.253] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:18:29.303] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:18:29.523] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:20:47 +0000 ===
+[2025-10-15 17:20:47.982] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:20:47.982] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:20:47.982] [INFO] [APP] About to start TestServer
+[2025-10-15 17:20:47.982] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:20:47.982] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:20:47.982] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:20:47.982] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:20:47.982] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:20:47.982] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:20:47.983] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:20:47.983] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:20:47.983] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:20:47.983] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:20:47.983] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:20:47.990] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:20:47.990] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:20:47.990] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:20:48.065] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:20:48.345] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:23:10 +0000 ===
+[2025-10-15 17:23:10.548] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:23:10.549] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:23:10.549] [INFO] [APP] About to start TestServer
+[2025-10-15 17:23:10.549] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:23:10.549] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:23:10.549] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:23:10.549] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:23:10.549] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:23:10.549] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:23:10.550] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:23:10.550] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:23:10.551] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:23:10.551] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:23:10.551] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:23:10.556] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:23:10.556] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:23:10.557] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:23:10.612] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:23:10.817] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:25:01 +0000 ===
+[2025-10-15 17:25:01.146] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:25:01.147] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:25:01.147] [INFO] [APP] About to start TestServer
+[2025-10-15 17:25:01.147] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:25:01.147] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:25:01.147] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:25:01.147] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:25:01.147] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:25:01.147] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:25:01.148] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:25:01.148] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:25:01.148] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:25:01.148] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:25:01.149] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:25:01.155] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:25:01.155] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:25:01.155] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:25:01.212] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:25:01.330] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:26:55 +0000 ===
+[2025-10-15 17:26:55.633] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:26:55.633] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:26:55.633] [INFO] [APP] About to start TestServer
+[2025-10-15 17:26:55.634] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:26:55.634] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:26:55.634] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:26:55.634] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:26:55.634] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:26:55.634] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:26:55.635] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:26:55.635] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:26:55.635] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:26:55.635] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:26:55.635] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:26:55.640] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:26:55.640] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:26:55.640] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:26:55.694] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:26:55.961] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:29:05 +0000 ===
+[2025-10-15 17:29:05.698] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:29:05.699] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:29:05.699] [INFO] [APP] About to start TestServer
+[2025-10-15 17:29:05.699] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:29:05.699] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:29:05.699] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:29:05.699] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:29:05.699] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:29:05.700] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:29:05.701] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:29:05.701] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:29:05.701] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:29:05.701] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:29:05.701] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:29:05.707] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:29:05.707] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:29:05.707] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:29:05.763] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:29:05.883] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:29:30 +0000 ===
+[2025-10-15 17:29:30.104] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:29:30.104] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:29:30.104] [INFO] [APP] About to start TestServer
+[2025-10-15 17:29:30.104] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:29:30.104] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:29:30.104] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:29:30.104] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:29:30.104] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:29:30.104] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:29:30.105] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:29:30.106] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:29:30.106] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:29:30.106] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:29:30.106] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:29:30.111] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:29:30.112] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:29:30.112] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:29:30.168] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:29:30.291] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:30:43 +0000 ===
+[2025-10-15 17:30:43.305] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:30:43.305] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:30:43.305] [INFO] [APP] About to start TestServer
+[2025-10-15 17:30:43.305] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:30:43.305] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:30:43.305] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:30:43.305] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:30:43.305] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:30:43.305] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:30:43.307] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:30:43.307] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:30:43.307] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:30:43.307] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:30:43.307] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:30:43.314] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:30:43.314] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:30:43.314] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:30:43.371] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:30:43.533] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:32:51 +0000 ===
+[2025-10-15 17:32:51.425] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:32:51.425] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:32:51.425] [INFO] [APP] About to start TestServer
+[2025-10-15 17:32:51.425] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:32:51.425] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:32:51.425] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:32:51.425] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:32:51.425] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:32:51.426] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:32:51.426] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:32:51.426] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:32:51.427] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:32:51.427] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:32:51.427] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:32:51.434] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:32:51.434] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:32:51.434] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:32:51.492] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:32:51.636] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:34:34 +0000 ===
+[2025-10-15 17:34:34.148] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:34:34.149] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:34:34.149] [INFO] [APP] About to start TestServer
+[2025-10-15 17:34:34.149] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:34:34.149] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:34:34.149] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:34:34.149] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:34:34.149] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:34:34.149] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:34:34.150] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:34:34.150] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:34:34.150] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:34:34.150] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:34:34.150] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:34:34.156] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:34:34.156] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:34:34.156] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:34:34.210] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:34:34.342] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 15:47:14 +0000 ===
+[2025-10-15 17:47:14.149] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 17:47:14.149] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 17:47:14.149] [INFO] [APP] About to start TestServer
+[2025-10-15 17:47:14.149] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 17:47:14.149] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 17:47:14.149] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 17:47:14.149] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 17:47:14.149] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 17:47:14.149] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 17:47:14.150] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 17:47:14.150] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 17:47:14.150] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 17:47:14.150] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 17:47:14.150] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 17:47:14.155] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 17:47:14.155] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 17:47:14.155] [INFO] [APP] TestServer.start() returned
+[2025-10-15 17:47:14.194] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 17:47:14.381] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 16:34:44 +0000 ===
+[2025-10-15 18:34:44.865] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 18:34:44.865] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 18:34:44.865] [INFO] [APP] About to start TestServer
+[2025-10-15 18:34:44.865] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 18:34:44.865] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 18:34:44.865] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 18:34:44.865] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 18:34:44.865] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 18:34:44.865] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 18:34:44.866] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 18:34:44.866] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 18:34:44.867] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 18:34:44.867] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 18:34:44.867] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 18:34:44.870] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 18:34:44.870] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 18:34:44.870] [INFO] [APP] TestServer.start() returned
+[2025-10-15 18:34:44.909] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 18:34:45.038] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 16:44:31 +0000 ===
+[2025-10-15 18:44:31.226] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 18:44:31.226] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 18:44:31.226] [INFO] [APP] About to start TestServer
+[2025-10-15 18:44:31.226] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 18:44:31.226] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 18:44:31.227] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 18:44:31.227] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 18:44:31.227] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 18:44:31.227] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 18:44:31.227] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 18:44:31.227] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 18:44:31.228] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 18:44:31.228] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 18:44:31.228] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 18:44:31.230] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 18:44:31.230] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 18:44:31.230] [INFO] [APP] TestServer.start() returned
+[2025-10-15 18:44:31.296] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 18:44:31.416] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 16:44:58 +0000 ===
+[2025-10-15 18:44:58.386] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 18:44:58.386] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 18:44:58.386] [INFO] [APP] About to start TestServer
+[2025-10-15 18:44:58.386] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 18:44:58.386] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 18:44:58.386] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 18:44:58.386] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 18:44:58.386] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 18:44:58.386] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 18:44:58.388] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 18:44:58.388] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 18:44:58.388] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 18:44:58.388] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 18:44:58.388] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 18:44:58.391] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 18:44:58.391] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 18:44:58.391] [INFO] [APP] TestServer.start() returned
+[2025-10-15 18:44:58.440] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 18:44:58.626] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-15 20:38:29 +0000 ===
+[2025-10-15 22:38:29.095] [INFO] [APP] NoobTestApp init() called
+[2025-10-15 22:38:29.095] [INFO] [APP] User already logged in: test@example.com
+[2025-10-15 22:38:29.095] [INFO] [APP] About to start TestServer
+[2025-10-15 22:38:29.095] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-15 22:38:29.095] [INFO] [TESTSERVER] About to register tests
+[2025-10-15 22:38:29.095] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-15 22:38:29.095] [INFO] [TESTSERVER] Tests registered
+[2025-10-15 22:38:29.095] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-15 22:38:29.095] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-15 22:38:29.096] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-15 22:38:29.096] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-15 22:38:29.097] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-15 22:38:29.097] [INFO] [TESTSERVER] About to start listener
+[2025-10-15 22:38:29.097] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-15 22:38:29.099] [INFO] [TESTSERVER] State changed to ready
+[2025-10-15 22:38:29.099] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-15 22:38:29.099] [INFO] [APP] TestServer.start() returned
+[2025-10-15 22:38:29.189] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 22:38:29.205] [ERROR] [PostsAPI] Error fetching posts: The Internet connection appears to be offline.
+[2025-10-15 22:38:32.102] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 22:38:32.110] [ERROR] [PostsAPI] Error fetching posts: The Internet connection appears to be offline.
+[2025-10-15 22:38:38.548] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-15 22:38:39.096] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-16 09:05:42 +0000 ===
+[2025-10-16 11:05:42.436] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:05:42.437] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:05:42.437] [INFO] [APP] About to start TestServer
+[2025-10-16 11:05:42.437] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:05:42.437] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:05:42.437] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:05:42.437] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:05:42.437] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:05:42.437] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:05:42.437] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:05:42.437] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:05:42.438] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:05:42.438] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:05:42.438] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:05:42.441] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:05:42.442] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:05:42.442] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:05:42.551] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:05:42.657] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-16 09:12:48 +0000 ===
+[2025-10-16 11:12:48.806] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:12:48.806] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:12:48.806] [INFO] [APP] About to start TestServer
+[2025-10-16 11:12:48.806] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:12:48.806] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:12:48.806] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:12:48.806] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:12:48.806] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:12:48.806] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:12:48.807] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:12:48.807] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:12:48.807] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:12:48.807] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:12:48.807] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:12:48.809] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:12:48.809] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:12:48.809] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:12:48.847] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:12:48.959] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-16 09:12:54 +0000 ===
+[2025-10-16 11:12:54.661] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:12:54.661] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:12:54.661] [INFO] [APP] About to start TestServer
+[2025-10-16 11:12:54.662] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:12:54.662] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:12:54.662] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:12:54.662] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:12:54.662] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:12:54.662] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:12:54.662] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:12:54.662] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:12:54.663] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:12:54.663] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:12:54.663] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:12:54.666] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:12:54.666] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:12:54.666] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:12:54.719] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:12:54.902] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-16 09:15:10 +0000 ===
+[2025-10-16 11:15:10.523] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:15:10.523] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:15:10.523] [INFO] [APP] About to start TestServer
+[2025-10-16 11:15:10.523] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:15:10.523] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:15:10.523] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:15:10.523] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:15:10.523] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:15:10.523] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:15:10.524] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:15:10.524] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:15:10.524] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:15:10.524] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:15:10.524] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:15:10.527] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:15:10.527] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:15:10.527] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:15:10.585] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:15:10.690] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-16 09:15:20 +0000 ===
+[2025-10-16 11:15:20.029] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:15:20.029] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:15:20.030] [INFO] [APP] About to start TestServer
+[2025-10-16 11:15:20.030] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:15:20.030] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:15:20.030] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:15:20.030] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:15:20.030] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:15:20.030] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:15:20.031] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:15:20.031] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:15:20.032] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:15:20.032] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:15:20.032] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:15:20.039] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:15:20.039] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:15:20.039] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:15:20.090] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:15:20.198] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-16 09:25:46 +0000 ===
+[2025-10-16 11:25:47.018] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:25:47.018] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:25:47.018] [INFO] [APP] About to start TestServer
+[2025-10-16 11:25:47.018] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:25:47.018] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:25:47.018] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:25:47.018] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:25:47.018] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:25:47.018] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:25:47.019] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:25:47.019] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:25:47.019] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:25:47.019] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:25:47.019] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:25:47.021] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:25:47.021] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:25:47.021] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:25:47.068] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:25:47.212] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-16 09:27:38 +0000 ===
+[2025-10-16 11:27:38.638] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:27:38.638] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:27:38.638] [INFO] [APP] About to start TestServer
+[2025-10-16 11:27:38.638] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:27:38.638] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:27:38.638] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:27:38.638] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:27:38.638] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:27:38.638] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:27:38.639] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:27:38.639] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:27:38.639] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:27:38.639] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:27:38.639] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:27:38.642] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:27:38.642] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:27:38.642] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:27:38.685] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:27:38.793] [INFO] [PostsAPI] Successfully fetched 2 posts
+
+=== Logger initialized at 2025-10-16 09:45:03 +0000 ===
+[2025-10-16 11:45:04.001] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:45:04.001] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:45:04.001] [INFO] [APP] About to start TestServer
+[2025-10-16 11:45:04.001] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:45:04.001] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:45:04.001] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:45:04.001] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:45:04.001] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:45:04.001] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:45:04.003] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:45:04.003] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:45:04.003] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:45:04.003] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:45:04.003] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:45:04.009] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:45:04.009] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:45:04.009] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:45:04.061] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:45:04.186] [INFO] [PostsAPI] Successfully fetched 3 posts
+
+=== Logger initialized at 2025-10-16 09:47:22 +0000 ===
+[2025-10-16 11:47:22.457] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:47:22.457] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:47:22.457] [INFO] [APP] About to start TestServer
+[2025-10-16 11:47:22.457] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:47:22.457] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:47:22.457] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:47:22.457] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:47:22.457] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:47:22.457] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:47:22.458] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:47:22.458] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:47:22.458] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:47:22.458] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:47:22.458] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:47:22.461] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:47:22.461] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:47:22.461] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:47:22.506] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:47:22.629] [INFO] [PostsAPI] Successfully fetched 3 posts
+
+=== Logger initialized at 2025-10-16 09:56:11 +0000 ===
+[2025-10-16 11:56:11.332] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:56:11.332] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:56:11.332] [INFO] [APP] About to start TestServer
+[2025-10-16 11:56:11.332] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:56:11.332] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:56:11.332] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:56:11.332] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:56:11.332] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:56:11.332] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:56:11.333] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:56:11.333] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:56:11.333] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:56:11.333] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:56:11.333] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:56:11.336] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:56:11.336] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:56:11.336] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:56:11.382] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:56:11.575] [INFO] [PostsAPI] Successfully fetched 3 posts
+
+=== Logger initialized at 2025-10-16 09:58:01 +0000 ===
+[2025-10-16 11:58:01.086] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 11:58:01.086] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 11:58:01.086] [INFO] [APP] About to start TestServer
+[2025-10-16 11:58:01.086] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 11:58:01.086] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 11:58:01.086] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 11:58:01.086] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 11:58:01.086] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 11:58:01.086] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 11:58:01.087] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 11:58:01.087] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 11:58:01.087] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 11:58:01.087] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 11:58:01.087] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 11:58:01.090] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 11:58:01.090] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 11:58:01.090] [INFO] [APP] TestServer.start() returned
+[2025-10-16 11:58:01.148] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 11:58:01.351] [INFO] [PostsAPI] Successfully fetched 3 posts
+
+=== Logger initialized at 2025-10-16 10:13:46 +0000 ===
+[2025-10-16 12:13:46.257] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:13:46.258] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:13:46.258] [INFO] [APP] About to start TestServer
+[2025-10-16 12:13:46.258] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:13:46.258] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:13:46.258] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:13:46.258] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:13:46.258] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:13:46.258] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:13:46.260] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:13:46.260] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:13:46.262] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:13:46.262] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:13:46.262] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:13:46.265] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:13:46.265] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:13:46.265] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:13:46.368] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:13:46.469] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:21:31 +0000 ===
+[2025-10-16 12:21:31.216] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:21:31.216] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:21:31.216] [INFO] [APP] About to start TestServer
+[2025-10-16 12:21:31.216] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:21:31.216] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:21:31.216] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:21:31.216] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:21:31.216] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:21:31.216] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:21:31.217] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:21:31.217] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:21:31.217] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:21:31.217] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:21:31.217] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:21:31.219] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:21:31.219] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:21:31.219] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:21:31.264] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:21:31.517] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:32:46 +0000 ===
+[2025-10-16 12:32:46.043] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:32:46.043] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:32:46.043] [INFO] [APP] About to start TestServer
+[2025-10-16 12:32:46.043] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:32:46.043] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:32:46.043] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:32:46.043] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:32:46.043] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:32:46.043] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:32:46.043] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:32:46.043] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:32:46.044] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:32:46.044] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:32:46.044] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:32:46.045] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:32:46.045] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:32:46.045] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:32:46.083] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:32:46.338] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:34:41 +0000 ===
+[2025-10-16 12:34:41.836] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:34:41.836] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:34:41.836] [INFO] [APP] About to start TestServer
+[2025-10-16 12:34:41.836] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:34:41.836] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:34:41.836] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:34:41.836] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:34:41.836] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:34:41.836] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:34:41.837] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:34:41.837] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:34:41.837] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:34:41.837] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:34:41.837] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:34:41.839] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:34:41.839] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:34:41.839] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:34:41.881] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:34:42.058] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:37:45 +0000 ===
+[2025-10-16 12:37:45.961] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:37:45.961] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:37:45.961] [INFO] [APP] About to start TestServer
+[2025-10-16 12:37:45.961] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:37:45.961] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:37:45.961] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:37:45.961] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:37:45.961] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:37:45.961] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:37:45.962] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:37:45.962] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:37:45.962] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:37:45.962] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:37:45.962] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:37:45.965] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:37:45.965] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:37:45.965] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:37:46.020] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:37:46.270] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:39:39 +0000 ===
+[2025-10-16 12:39:39.398] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:39:39.398] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:39:39.398] [INFO] [APP] About to start TestServer
+[2025-10-16 12:39:39.398] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:39:39.398] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:39:39.398] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:39:39.398] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:39:39.398] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:39:39.398] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:39:39.399] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:39:39.399] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:39:39.399] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:39:39.399] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:39:39.399] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:39:39.401] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:39:39.401] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:39:39.401] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:39:39.441] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:39:39.675] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:43:23 +0000 ===
+[2025-10-16 12:43:23.623] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:43:23.623] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:43:23.623] [INFO] [APP] About to start TestServer
+[2025-10-16 12:43:23.623] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:43:23.623] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:43:23.623] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:43:23.623] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:43:23.623] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:43:23.623] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:43:23.624] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:43:23.624] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:43:23.624] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:43:23.624] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:43:23.624] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:43:23.625] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:43:23.625] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:43:23.625] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:43:23.668] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:43:23.788] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:49:25 +0000 ===
+[2025-10-16 12:49:25.738] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:49:25.738] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:49:25.738] [INFO] [APP] About to start TestServer
+[2025-10-16 12:49:25.738] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:49:25.738] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:49:25.738] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:49:25.738] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:49:25.738] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:49:25.738] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:49:25.739] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:49:25.739] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:49:25.739] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:49:25.739] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:49:25.739] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:49:25.740] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:49:25.740] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:49:25.740] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:49:25.782] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:49:25.989] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:53:15 +0000 ===
+[2025-10-16 12:53:15.502] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:53:15.502] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:53:15.502] [INFO] [APP] About to start TestServer
+[2025-10-16 12:53:15.502] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:53:15.502] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:53:15.503] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:53:15.503] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:53:15.503] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:53:15.503] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:53:15.503] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:53:15.503] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:53:15.504] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:53:15.504] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:53:15.504] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:53:15.506] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:53:15.506] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:53:15.506] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:53:15.548] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:53:15.677] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:54:58 +0000 ===
+[2025-10-16 12:54:58.715] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:54:58.716] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:54:58.716] [INFO] [APP] About to start TestServer
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:54:58.716] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:54:58.716] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:54:58.718] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:54:58.718] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:54:58.718] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:54:58.761] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:54:58.934] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:55:11 +0000 ===
+[2025-10-16 12:55:11.109] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:55:11.109] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:55:11.109] [INFO] [APP] About to start TestServer
+[2025-10-16 12:55:11.109] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:55:11.109] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:55:11.109] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:55:11.109] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:55:11.109] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:55:11.109] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:55:11.111] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:55:11.111] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:55:11.111] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:55:11.111] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:55:11.111] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:55:11.114] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:55:11.114] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:55:11.114] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:55:11.167] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:55:11.293] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:56:02 +0000 ===
+[2025-10-16 12:56:02.421] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:56:02.421] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:56:02.421] [INFO] [APP] About to start TestServer
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:56:02.421] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:56:02.421] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:56:02.423] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:56:02.423] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:56:02.423] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:56:02.466] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:56:02.594] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:57:04 +0000 ===
+[2025-10-16 12:57:04.420] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:57:04.420] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:57:04.420] [INFO] [APP] About to start TestServer
+[2025-10-16 12:57:04.420] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:57:04.420] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:57:04.420] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:57:04.420] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:57:04.420] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:57:04.420] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:57:04.420] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:57:04.420] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:57:04.421] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:57:04.421] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:57:04.421] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:57:04.422] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:57:04.422] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:57:04.422] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:57:04.460] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:57:04.647] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 10:59:04 +0000 ===
+[2025-10-16 12:59:04.181] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 12:59:04.181] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 12:59:04.181] [INFO] [APP] About to start TestServer
+[2025-10-16 12:59:04.181] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 12:59:04.181] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 12:59:04.181] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 12:59:04.181] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 12:59:04.181] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 12:59:04.181] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 12:59:04.182] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 12:59:04.182] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 12:59:04.182] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 12:59:04.182] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 12:59:04.182] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 12:59:04.184] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 12:59:04.184] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 12:59:04.184] [INFO] [APP] TestServer.start() returned
+[2025-10-16 12:59:04.228] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 12:59:04.355] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:01:06 +0000 ===
+[2025-10-16 13:01:06.171] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:01:06.171] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:01:06.171] [INFO] [APP] About to start TestServer
+[2025-10-16 13:01:06.171] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:01:06.171] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:01:06.171] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:01:06.171] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:01:06.171] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:01:06.172] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:01:06.172] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:01:06.172] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:01:06.172] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:01:06.172] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:01:06.173] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:01:06.175] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:01:06.175] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:01:06.175] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:01:06.223] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:01:06.319] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:03:08 +0000 ===
+[2025-10-16 13:03:08.217] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:03:08.217] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:03:08.217] [INFO] [APP] About to start TestServer
+[2025-10-16 13:03:08.217] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:03:08.217] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:03:08.217] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:03:08.217] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:03:08.217] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:03:08.217] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:03:08.218] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:03:08.218] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:03:08.218] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:03:08.218] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:03:08.218] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:03:08.220] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:03:08.220] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:03:08.220] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:03:08.252] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:03:08.380] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:05:19 +0000 ===
+[2025-10-16 13:05:19.010] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:05:19.010] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:05:19.010] [INFO] [APP] About to start TestServer
+[2025-10-16 13:05:19.010] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:05:19.010] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:05:19.010] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:05:19.010] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:05:19.010] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:05:19.010] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:05:19.010] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:05:19.010] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:05:19.011] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:05:19.011] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:05:19.011] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:05:19.013] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:05:19.013] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:05:19.013] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:05:19.057] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:05:19.248] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:09:09 +0000 ===
+[2025-10-16 13:09:09.897] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:09:09.898] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:09:09.898] [INFO] [APP] About to start TestServer
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:09:09.898] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:09:09.898] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:09:09.900] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:09:09.900] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:09:09.900] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:09:09.940] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:09:10.060] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:10:55 +0000 ===
+[2025-10-16 13:10:55.663] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:10:55.663] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:10:55.663] [INFO] [APP] About to start TestServer
+[2025-10-16 13:10:55.663] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:10:55.663] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:10:55.663] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:10:55.663] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:10:55.663] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:10:55.663] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:10:55.664] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:10:55.664] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:10:55.664] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:10:55.664] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:10:55.664] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:10:55.666] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:10:55.666] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:10:55.666] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:10:55.716] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:10:55.847] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:12:38 +0000 ===
+[2025-10-16 13:12:38.780] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:12:38.780] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:12:38.780] [INFO] [APP] About to start TestServer
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:12:38.780] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:12:38.780] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:12:38.781] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:12:38.783] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:12:38.783] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:12:38.783] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:12:38.826] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:12:38.921] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:14:41 +0000 ===
+[2025-10-16 13:14:41.684] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:14:41.684] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:14:41.684] [INFO] [APP] About to start TestServer
+[2025-10-16 13:14:41.684] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:14:41.684] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:14:41.684] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:14:41.684] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:14:41.684] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:14:41.684] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:14:41.685] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:14:41.685] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:14:41.685] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:14:41.685] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:14:41.685] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:14:41.687] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:14:41.687] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:14:41.687] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:14:41.727] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:14:41.909] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:21:54 +0000 ===
+[2025-10-16 13:21:54.068] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:21:54.069] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:21:54.069] [INFO] [APP] About to start TestServer
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:21:54.069] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:21:54.069] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:21:54.071] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:21:54.071] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:21:54.071] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:21:54.107] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:21:54.237] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:38:35 +0000 ===
+[2025-10-16 13:38:35.767] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:38:35.767] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:38:35.767] [INFO] [APP] About to start TestServer
+[2025-10-16 13:38:35.767] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:38:35.767] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:38:35.767] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:38:35.767] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:38:35.767] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:38:35.767] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:38:35.768] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:38:35.768] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:38:35.768] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:38:35.768] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:38:35.768] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:38:35.770] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:38:35.770] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:38:35.770] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:38:35.838] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:38:35.945] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:41:40 +0000 ===
+[2025-10-16 13:41:40.594] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:41:40.594] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:41:40.594] [INFO] [APP] About to start TestServer
+[2025-10-16 13:41:40.594] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:41:40.595] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:41:40.595] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:41:40.595] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:41:40.595] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:41:40.595] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:41:40.595] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:41:40.595] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:41:40.596] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:41:40.596] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:41:40.596] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:41:40.601] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:41:40.601] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:41:40.601] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:41:40.661] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:41:40.786] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 11:44:40 +0000 ===
+[2025-10-16 13:44:40.747] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 13:44:40.747] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 13:44:40.747] [INFO] [APP] About to start TestServer
+[2025-10-16 13:44:40.747] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 13:44:40.747] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 13:44:40.747] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 13:44:40.747] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 13:44:40.747] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 13:44:40.747] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 13:44:40.748] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 13:44:40.748] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 13:44:40.749] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 13:44:40.749] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 13:44:40.749] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 13:44:40.754] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 13:44:40.755] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 13:44:40.755] [INFO] [APP] TestServer.start() returned
+[2025-10-16 13:44:40.812] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 13:44:41.086] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 12:05:56 +0000 ===
+[2025-10-16 14:05:56.111] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 14:05:56.111] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 14:05:56.111] [INFO] [APP] About to start TestServer
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 14:05:56.111] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 14:05:56.111] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 14:05:56.112] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 14:05:56.114] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 14:05:56.114] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 14:05:56.114] [INFO] [APP] TestServer.start() returned
+[2025-10-16 14:05:56.162] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 14:05:56.601] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 12:41:44 +0000 ===
+[2025-10-16 14:41:44.794] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 14:41:44.794] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 14:41:44.794] [INFO] [APP] About to start TestServer
+[2025-10-16 14:41:44.794] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 14:41:44.794] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 14:41:44.794] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 14:41:44.794] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 14:41:44.794] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 14:41:44.794] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 14:41:44.795] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 14:41:44.795] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 14:41:44.795] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 14:41:44.795] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 14:41:44.796] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 14:41:44.800] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 14:41:44.800] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 14:41:44.800] [INFO] [APP] TestServer.start() returned
+[2025-10-16 14:41:44.843] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 14:41:45.111] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 13:06:56 +0000 ===
+[2025-10-16 15:06:56.149] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:06:56.150] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:06:56.150] [INFO] [APP] About to start TestServer
+[2025-10-16 15:06:56.150] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:06:56.150] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:06:56.150] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:06:56.150] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:06:56.150] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:06:56.150] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:06:56.152] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:06:56.152] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:06:56.153] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:06:56.153] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:06:56.153] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:06:56.156] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:06:56.156] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:06:56.156] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:06:56.299] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:06:56.528] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 13:07:27 +0000 ===
+[2025-10-16 15:07:27.059] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:07:27.060] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:07:27.060] [INFO] [APP] About to start TestServer
+[2025-10-16 15:07:27.060] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:07:27.060] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:07:27.060] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:07:27.060] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:07:27.060] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:07:27.060] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:07:27.061] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:07:27.061] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:07:27.061] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:07:27.061] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:07:27.061] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:07:27.065] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:07:27.065] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:07:27.065] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:07:27.111] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:07:27.361] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 13:25:21 +0000 ===
+[2025-10-16 15:25:21.029] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:25:21.029] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:25:21.029] [INFO] [APP] About to start TestServer
+[2025-10-16 15:25:21.029] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:25:21.029] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:25:21.029] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:25:21.029] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:25:21.029] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:25:21.029] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:25:21.030] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:25:21.030] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:25:21.031] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:25:21.031] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:25:21.031] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:25:21.033] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:25:21.033] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:25:21.033] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:25:21.090] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:25:21.226] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 13:37:10 +0000 ===
+[2025-10-16 15:37:11.009] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:37:11.009] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:37:11.009] [INFO] [APP] About to start TestServer
+[2025-10-16 15:37:11.009] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:37:11.009] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:37:11.009] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:37:11.009] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:37:11.009] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:37:11.009] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:37:11.010] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:37:11.010] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:37:11.010] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:37:11.010] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:37:11.010] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:37:11.012] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:37:11.012] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:37:11.012] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:37:11.059] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:37:11.175] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 13:39:50 +0000 ===
+[2025-10-16 15:39:50.380] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:39:50.380] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:39:50.380] [INFO] [APP] About to start TestServer
+[2025-10-16 15:39:50.380] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:39:50.380] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:39:50.380] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:39:50.380] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:39:50.380] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:39:50.380] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:39:50.381] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:39:50.381] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:39:50.381] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:39:50.381] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:39:50.381] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:39:50.384] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:39:50.384] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:39:50.384] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:39:50.440] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:39:50.611] [INFO] [PostsAPI] Successfully fetched 4 posts
+
+=== Logger initialized at 2025-10-16 13:40:24 +0000 ===
+[2025-10-16 15:40:24.669] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:40:24.669] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:40:24.669] [INFO] [APP] About to start TestServer
+[2025-10-16 15:40:24.669] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:40:24.669] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:40:24.669] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:40:24.669] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:40:24.669] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:40:24.669] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:40:24.670] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:40:24.670] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:40:24.670] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:40:24.670] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:40:24.670] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:40:24.673] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:40:24.673] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:40:24.673] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:40:24.725] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:40:24.909] [INFO] [PostsAPI] Successfully fetched 4 posts
+[2025-10-16 15:41:53.528] [ERROR] [PostsAPI] No session token found
+[2025-10-16 15:41:53.550] [ERROR] [NewPost] Failed to create post: The operation couldn’t be completed. (Not authenticated error 401.)
+
+=== Logger initialized at 2025-10-16 13:44:35 +0000 ===
+[2025-10-16 15:44:35.122] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:44:35.122] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:44:35.123] [INFO] [APP] About to start TestServer
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:44:35.123] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:44:35.123] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:44:35.125] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:44:35.125] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:44:35.125] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:44:35.182] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:44:35.395] [INFO] [PostsAPI] Successfully fetched 4 posts
+[2025-10-16 15:45:40.513] [INFO] [PostsAPI] Creating new post: Planey McPlaneFace for user: test@example.com
+[2025-10-16 15:45:41.006] [INFO] [PostsAPI] Successfully created post
+[2025-10-16 15:45:41.007] [INFO] [NewPost] Post created successfully
+
+=== Logger initialized at 2025-10-16 13:45:48 +0000 ===
+[2025-10-16 15:45:48.253] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:45:48.253] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:45:48.253] [INFO] [APP] About to start TestServer
+[2025-10-16 15:45:48.253] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:45:48.253] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:45:48.253] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:45:48.253] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:45:48.253] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:45:48.253] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:45:48.254] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:45:48.254] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:45:48.254] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:45:48.254] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:45:48.254] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:45:48.257] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:45:48.257] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:45:48.257] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:45:48.313] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:45:48.486] [INFO] [PostsAPI] Successfully fetched 5 posts
+
+=== Logger initialized at 2025-10-16 13:54:37 +0000 ===
+[2025-10-16 15:54:37.604] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:54:37.604] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:54:37.604] [INFO] [APP] About to start TestServer
+[2025-10-16 15:54:37.604] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:54:37.604] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:54:37.604] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:54:37.604] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:54:37.604] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:54:37.604] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:54:37.605] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:54:37.605] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:54:37.605] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:54:37.605] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:54:37.605] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:54:37.609] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:54:37.609] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:54:37.609] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:54:37.675] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:54:37.819] [INFO] [PostsAPI] Successfully fetched 5 posts
+
+=== Logger initialized at 2025-10-16 13:58:41 +0000 ===
+[2025-10-16 15:58:41.925] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 15:58:41.926] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 15:58:41.926] [INFO] [APP] About to start TestServer
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 15:58:41.926] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 15:58:41.926] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 15:58:41.928] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 15:58:41.928] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 15:58:41.928] [INFO] [APP] TestServer.start() returned
+[2025-10-16 15:58:41.972] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 15:58:42.120] [INFO] [PostsAPI] Successfully fetched 5 posts
+
+=== Logger initialized at 2025-10-16 14:00:18 +0000 ===
+[2025-10-16 16:00:18.332] [INFO] [APP] NoobTestApp init() called
+[2025-10-16 16:00:18.332] [INFO] [APP] User already logged in: test@example.com
+[2025-10-16 16:00:18.332] [INFO] [APP] About to start TestServer
+[2025-10-16 16:00:18.332] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-16 16:00:18.332] [INFO] [TESTSERVER] About to register tests
+[2025-10-16 16:00:18.332] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-16 16:00:18.332] [INFO] [TESTSERVER] Tests registered
+[2025-10-16 16:00:18.332] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-16 16:00:18.332] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-16 16:00:18.333] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-16 16:00:18.333] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-16 16:00:18.333] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-16 16:00:18.333] [INFO] [TESTSERVER] About to start listener
+[2025-10-16 16:00:18.333] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-16 16:00:18.335] [INFO] [TESTSERVER] State changed to ready
+[2025-10-16 16:00:18.335] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-16 16:00:18.335] [INFO] [APP] TestServer.start() returned
+[2025-10-16 16:00:18.382] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 16:00:18.613] [INFO] [PostsAPI] Successfully fetched 5 posts
+[2025-10-16 16:02:44.274] [INFO] [PostsAPI] Creating new post: Vamos a la Playa for user: test@example.com
+[2025-10-16 16:02:44.786] [INFO] [PostsAPI] Successfully created post
+[2025-10-16 16:02:44.786] [INFO] [NewPost] Post created successfully
+[2025-10-16 16:02:44.786] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-16 16:02:44.869] [INFO] [PostsAPI] Successfully fetched 6 posts

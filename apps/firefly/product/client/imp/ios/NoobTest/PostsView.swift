@@ -2,8 +2,10 @@ import SwiftUI
 
 struct PostsView: View {
     let posts: [Post]
+    let onPostCreated: () -> Void
 
     @State private var expandedPostIds: Set<Int> = []
+    @State private var showNewPostEditor = false
 
     var body: some View {
         ZStack {
@@ -19,6 +21,11 @@ struct PostsView: View {
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(spacing: 8) {
+                                // New post button at the top
+                                NewPostButton {
+                                    showNewPostEditor = true
+                                }
+
                                 ForEach(posts) { post in
                                     PostCardView(
                                         post: post,
@@ -53,6 +60,9 @@ struct PostsView: View {
             if let firstPost = posts.first {
                 expandedPostIds.insert(firstPost.id)
             }
+        }
+        .sheet(isPresented: $showNewPostEditor) {
+            NewPostEditor(onPostCreated: onPostCreated)
         }
     }
 }
@@ -303,5 +313,5 @@ struct PostCardView: View {
 }
 
 #Preview {
-    PostsView(posts: [])
+    PostsView(posts: [], onPostCreated: {})
 }

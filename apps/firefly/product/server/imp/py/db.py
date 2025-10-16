@@ -205,10 +205,12 @@ class Database:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
                     """
-                    SELECT id, user_id, parent_id, title, summary, body, image_url,
-                           created_at, timezone, location_tag, ai_generated
-                    FROM posts
-                    WHERE id = %s
+                    SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           u.email as author_name
+                    FROM posts p
+                    LEFT JOIN users u ON p.user_id = u.id
+                    WHERE p.id = %s
                     """,
                     (post_id,)
                 )
@@ -312,10 +314,12 @@ class Database:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
                     """
-                    SELECT id, user_id, parent_id, title, summary, body, image_url,
-                           created_at, timezone, location_tag, ai_generated
-                    FROM posts
-                    ORDER BY created_at DESC
+                    SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           u.email as author_name
+                    FROM posts p
+                    LEFT JOIN users u ON p.user_id = u.id
+                    ORDER BY p.created_at DESC
                     LIMIT %s
                     """,
                     (limit,)
