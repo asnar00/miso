@@ -90,7 +90,37 @@ Shutdown the server remotely
 
 Server is deployed on Mac mini at **192.168.1.76** (microservers-Mac-mini.local)
 
-Access from:
+Public access: **http://185.96.221.52:8080**
+
+### SSH Config
+
+Add this to `~/.ssh/config` for easy deployment:
+```
+Host firefly
+    HostName 185.96.221.52
+    User microserver
+```
+
+### Remote Deployment
+
+```bash
+# Stop remote server
+./remote-shutdown.sh
+
+# Upload files using SSH alias
+scp *.py *.txt *.sh firefly:~/firefly-server/
+
+# Start remote server
+ssh firefly "cd ~/firefly-server && ./start.sh"
+
+# Verify
+curl http://185.96.221.52:8080/api/ping
+```
+
+**Note**: Use the SSH config alias `firefly` rather than `microserver@185.96.221.52` for better compatibility with automation tools.
+
+### Access Points
+- Public: http://185.96.221.52:8080
 - Local network: http://192.168.1.76:8080
 - Mac mini itself: http://localhost:8080
 

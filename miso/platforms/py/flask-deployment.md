@@ -161,6 +161,36 @@ sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/local/bin/python
 sudo /usr/libexec/ApplicationFirewall/socketfilterfw --unblockapp /usr/local/bin/python3
 ```
 
+## Remote Deployment with SCP
+
+### Using SSH Config Aliases
+
+When deploying to remote servers via `scp`, use SSH config aliases instead of full hostnames for better compatibility with automated tools.
+
+**SSH Config** (`~/.ssh/config`):
+```
+Host myserver
+    HostName 185.96.221.52
+    User username
+```
+
+**Deployment Commands**:
+```bash
+# Upload files using alias (works reliably in scripts/automation)
+scp *.py *.txt *.sh myserver:~/app-folder/
+
+# Start remote server
+ssh myserver "cd ~/app-folder && ./start.sh"
+
+# Verify server is running
+curl http://185.96.221.52:8080/api/ping
+```
+
+**Why use aliases?**
+- SSH config aliases work more reliably in non-interactive contexts (CI/CD, automation tools)
+- Direct hostname+user format (`user@host`) can hang in some tool environments
+- Aliases centralize server configuration in one place
+
 ## Troubleshooting
 
 ### Port already in use

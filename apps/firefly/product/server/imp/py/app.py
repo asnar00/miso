@@ -271,6 +271,18 @@ def create_post():
         location_tag = request.form.get('location_tag', '').strip() or None
         ai_generated = request.form.get('ai_generated', 'false').lower() == 'true'
 
+        # Get optional parent_id
+        parent_id = None
+        parent_id_str = request.form.get('parent_id', '').strip()
+        if parent_id_str:
+            try:
+                parent_id = int(parent_id_str)
+            except ValueError:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'parent_id must be a valid integer'
+                }), 400
+
         # Validate required fields
         if not email or not title or not summary or not body:
             return jsonify({
@@ -308,6 +320,7 @@ def create_post():
             summary=summary,
             body=body,
             timezone=timezone,
+            parent_id=parent_id,
             image_url=image_url,
             location_tag=location_tag,
             ai_generated=ai_generated
@@ -319,7 +332,7 @@ def create_post():
                 'message': 'Failed to create post'
             }), 500
 
-        print(f"Created post {post_id} by user {email} (ID: {user_id})")
+        print(f"Created post {post_id} by user {email} (ID: {user_id}), parent_id: {parent_id}")
 
         # Fetch the created post to return it
         post = db.get_post_by_id(post_id)
@@ -376,6 +389,61 @@ def get_post(post_id):
         })
     except Exception as e:
         print(f"Error getting post: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/posts/reparent', methods=['POST'])
+def reparent_post():
+    """Set the parent of a post"""
+    try:
+        data = request.get_json()
+        post_id = data.get('post_id')
+        parent_id = data.get('parent_id')
+
+        # Validate input
+        if post_id is None:
+            return jsonify({
+                'status': 'error',
+                'message': 'post_id is required'
+            }), 400
+
+        # Call database function
+        success = db.set_post_parent(post_id, parent_id)
+
+        if success:
+            return jsonify({
+                'status': 'success',
+                'message': f'Post {post_id} reparented successfully'
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Failed to reparent post'
+            }), 400
+
+    except Exception as e:
+        print(f"Error reparenting post: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/posts/<int:post_id>/children', methods=['GET'])
+def get_post_children(post_id):
+    """Get all child posts of a specific post"""
+    try:
+        children = db.get_child_posts(post_id)
+
+        return jsonify({
+            'status': 'success',
+            'post_id': post_id,
+            'children': children,
+            'count': len(children)
+        })
+    except Exception as e:
+        print(f"Error getting child posts: {e}")
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'

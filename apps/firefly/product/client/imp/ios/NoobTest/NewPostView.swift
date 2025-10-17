@@ -29,6 +29,7 @@ struct NewPostButton: View {
 struct NewPostEditor: View {
     @Environment(\.dismiss) var dismiss
     let onPostCreated: () -> Void
+    let parentId: Int?
 
     @State private var title: String = ""
     @State private var summary: String = ""
@@ -217,7 +218,8 @@ struct NewPostEditor: View {
             title: title,
             summary: summary.isEmpty ? "No summary" : summary,
             body: bodyText.isEmpty ? "No content" : bodyText,
-            image: selectedImage
+            image: selectedImage,
+            parentId: parentId
         ) { result in
             DispatchQueue.main.async {
                 isPosting = false

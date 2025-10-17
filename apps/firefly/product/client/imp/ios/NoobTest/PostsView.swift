@@ -8,6 +8,13 @@ struct PostsView: View {
     @State private var showNewPostEditor = false
 
     var body: some View {
+        NavigationStack {
+            postsContent
+        }
+        .navigationBarHidden(true)
+    }
+
+    var postsContent: some View {
         ZStack {
             Color(red: 64/255, green: 224/255, blue: 208/255)
                 .ignoresSafeArea()
@@ -44,25 +51,30 @@ struct PostsView: View {
                                                     expandedPostIds.remove(post.id)
                                                 }
                                             }
-                                        )
+                                        ),
+                                        onPostCreated: onPostCreated
                                     )
                                     .id(post.id)
                                 }
                             }
                             .padding()
+                            .onAppear {
+                                // If we have an expanded post, scroll to it when returning from navigation
+                                if let expandedPostId = expandedPostIds.first {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation {
+                                            proxy.scrollTo(expandedPostId, anchor: .top)
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        .onAppear {
-            // Expand first post by default
-            if let firstPost = posts.first {
-                expandedPostIds.insert(firstPost.id)
-            }
-        }
         .sheet(isPresented: $showNewPostEditor) {
-            NewPostEditor(onPostCreated: onPostCreated)
+            NewPostEditor(onPostCreated: onPostCreated, parentId: nil)
         }
     }
 }
@@ -70,11 +82,72 @@ struct PostsView: View {
 struct PostCardView: View {
     let post: Post
     @Binding var isExpanded: Bool
+    let onPostCreated: () -> Void
     let serverURL = "http://185.96.221.52:8080"
 
     @State private var isAnimatingCollapse = false
     @State private var collapseHeight: CGFloat? = nil
     @State private var measuredCompactHeight: CGFloat = 110
+
+    // Custom tree icon: circle with line branching to three circles
+    var treeIcon: some View {
+        Canvas { context, size in
+            let circleRadius: CGFloat = 3.0
+            let startX = size.width * 0.15
+            let midX = size.width * 0.45
+            let endX = size.width * 0.85
+            let centerY = size.height * 0.5
+            let topY = size.height * 0.15
+            let bottomY = size.height * 0.85
+            let cornerRadius: CGFloat = 4.5
+
+            // Draw horizontal line from circle to fork point
+            var path = Path()
+            path.move(to: CGPoint(x: startX + circleRadius, y: centerY))
+            path.addLine(to: CGPoint(x: midX - cornerRadius, y: centerY))
+
+            // Draw three branches with vertical paths and curved corners
+            // Top branch
+            path.addQuadCurve(to: CGPoint(x: midX, y: centerY - cornerRadius),
+                            control: CGPoint(x: midX, y: centerY))
+            path.addLine(to: CGPoint(x: midX, y: topY + cornerRadius))
+            path.addQuadCurve(to: CGPoint(x: midX + cornerRadius, y: topY),
+                            control: CGPoint(x: midX, y: topY))
+            path.addLine(to: CGPoint(x: endX - circleRadius, y: topY))
+
+            // Middle branch
+            path.move(to: CGPoint(x: midX, y: centerY))
+            path.addLine(to: CGPoint(x: endX - circleRadius, y: centerY))
+
+            // Bottom branch
+            path.move(to: CGPoint(x: midX, y: centerY))
+            path.addQuadCurve(to: CGPoint(x: midX, y: centerY + cornerRadius),
+                            control: CGPoint(x: midX, y: centerY))
+            path.addLine(to: CGPoint(x: midX, y: bottomY - cornerRadius))
+            path.addQuadCurve(to: CGPoint(x: midX + cornerRadius, y: bottomY),
+                            control: CGPoint(x: midX, y: bottomY))
+            path.addLine(to: CGPoint(x: endX - circleRadius, y: bottomY))
+
+            context.stroke(path, with: .color(.black), lineWidth: 1.5)
+
+            // Draw circles
+            let circles = [
+                CGPoint(x: startX, y: centerY),
+                CGPoint(x: endX, y: topY),
+                CGPoint(x: endX, y: centerY),
+                CGPoint(x: endX, y: bottomY)
+            ]
+
+            for point in circles {
+                context.fill(
+                    Path(ellipseIn: CGRect(x: point.x - circleRadius, y: point.y - circleRadius,
+                                          width: circleRadius * 2, height: circleRadius * 2)),
+                    with: .color(.black)
+                )
+            }
+        }
+        .frame(width: 24, height: 24)
+    }
 
     // Strip image markdown references and process body text
     func processBodyText(_ text: String) -> AttributedString {
@@ -186,6 +259,7 @@ struct PostCardView: View {
 
             Spacer()
 
+            // Always show thumbnail in compact view
             if let imageUrl = post.imageUrl {
                 let fullUrl = serverURL + imageUrl
                 if let thumbnail = ImageCache.shared.getThumbnail(fullUrl) {
@@ -227,16 +301,34 @@ struct PostCardView: View {
 
     var fullView: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Title
-            Text(post.title)
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(.black)
+            // Title and summary with optional children button
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    // Title
+                    Text(post.title)
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.black)
 
-            // Summary
-            Text(post.summary)
-                .font(.subheadline)
-                .italic()
-                .foregroundColor(.black.opacity(0.8))
+                    // Summary
+                    Text(post.summary)
+                        .font(.subheadline)
+                        .italic()
+                        .foregroundColor(.black.opacity(0.8))
+                }
+
+                Spacer(minLength: 8)
+
+                // Show children button if post has children
+                if let childCount = post.childCount, childCount > 0 {
+                    NavigationLink(destination: ChildrenPostsView(parentPostId: post.id, parentPostTitle: post.title, onPostCreated: onPostCreated)) {
+                        treeIcon
+                            .frame(width: 48, height: 48)
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 2)
+                    }
+                }
+            }
 
             // Image if available
             if let imageUrl = post.imageUrl {
@@ -309,6 +401,132 @@ struct PostCardView: View {
                 }
             }
         }
+    }
+}
+
+// View for displaying children of a post
+struct ChildrenPostsView: View {
+    let parentPostId: Int
+    let parentPostTitle: String
+    let onPostCreated: () -> Void
+    @State private var children: [Post] = []
+    @State private var isLoading = true
+    @State private var expandedPostIds: Set<Int> = []
+    @State private var showNewPostEditor = false
+    let serverURL = "http://185.96.221.52:8080"
+
+    var body: some View {
+        ZStack {
+            Color(red: 64/255, green: 224/255, blue: 208/255)
+                .ignoresSafeArea()
+
+            VStack {
+                if isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                } else if children.isEmpty {
+                    Text("No children posts")
+                        .foregroundColor(.black)
+                        .padding()
+                } else {
+                    ScrollView {
+                        VStack(spacing: 8) {
+                            // New post button at the top
+                            NewPostButton {
+                                showNewPostEditor = true
+                            }
+
+                            ForEach(children) { post in
+                                PostCardView(
+                                    post: post,
+                                    isExpanded: Binding(
+                                        get: { expandedPostIds.contains(post.id) },
+                                        set: { expanded in
+                                            if expanded {
+                                                expandedPostIds.removeAll()
+                                                expandedPostIds.insert(post.id)
+                                            } else {
+                                                expandedPostIds.remove(post.id)
+                                            }
+                                        }
+                                    ),
+                                    onPostCreated: onPostCreated
+                                )
+                            }
+                        }
+                        .padding()
+                    }
+                }
+            }
+        }
+        .navigationTitle("Children of \(parentPostTitle)")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            fetchChildren()
+        }
+        .sheet(isPresented: $showNewPostEditor) {
+            NewPostEditor(onPostCreated: {
+                // Reload children when a new post is created
+                fetchChildren()
+                // Also reload the parent recent posts view
+                onPostCreated()
+            }, parentId: parentPostId)
+        }
+    }
+
+    func fetchChildren() {
+        guard let url = URL(string: "\(serverURL)/api/posts/\(parentPostId)/children") else {
+            Logger.shared.error("[ChildrenPostsView] Invalid URL")
+            return
+        }
+
+        Logger.shared.info("[ChildrenPostsView] Fetching children for post \(parentPostId)")
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                Logger.shared.error("[ChildrenPostsView] Error fetching children: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+                return
+            }
+
+            guard let data = data else {
+                Logger.shared.error("[ChildrenPostsView] No data received")
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+                return
+            }
+
+            do {
+                let response = try JSONDecoder().decode(ChildrenResponse.self, from: data)
+                DispatchQueue.main.async {
+                    children = response.children
+                    isLoading = false
+                    Logger.shared.info("[ChildrenPostsView] Fetched \(children.count) children")
+                }
+            } catch {
+                Logger.shared.error("[ChildrenPostsView] Decoding error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+            }
+        }.resume()
+    }
+}
+
+struct ChildrenResponse: Codable {
+    let status: String
+    let postId: Int
+    let children: [Post]
+    let count: Int
+
+    enum CodingKeys: String, CodingKey {
+        case status
+        case postId = "post_id"
+        case children
+        case count
     }
 }
 

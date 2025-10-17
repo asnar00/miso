@@ -56,22 +56,22 @@ class Logger {
 
     // Convenience methods
     func debug(_ message: String) {
-        osLogger.debug("[APP] \(message)")
+        osLogger.debug("[APP] \(message, privacy: .public)")
         log(message, level: .debug)
     }
 
     func info(_ message: String) {
-        osLogger.info("[APP] \(message)")
+        osLogger.info("[APP] \(message, privacy: .public)")
         log(message, level: .info)
     }
 
     func warning(_ message: String) {
-        osLogger.warning("[APP] \(message)")
+        osLogger.warning("[APP] \(message, privacy: .public)")
         log(message, level: .warning)
     }
 
     func error(_ message: String) {
-        osLogger.error("[APP] \(message)")
+        osLogger.error("[APP] \(message, privacy: .public)")
         log(message, level: .error)
     }
 

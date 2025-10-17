@@ -15,6 +15,7 @@ struct Post: Codable, Identifiable {
     let locationTag: String?
     let aiGenerated: Bool
     let authorName: String?
+    let childCount: Int?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -29,6 +30,7 @@ struct Post: Codable, Identifiable {
         case locationTag = "location_tag"
         case aiGenerated = "ai_generated"
         case authorName = "author_name"
+        case childCount = "child_count"
     }
 }
 
@@ -112,7 +114,7 @@ class PostsAPI {
         }.resume()
     }
 
-    func createPost(title: String, summary: String, body: String, image: UIImage?, completion: @escaping (Result<Post, Error>) -> Void) {
+    func createPost(title: String, summary: String, body: String, image: UIImage?, parentId: Int? = nil, completion: @escaping (Result<Post, Error>) -> Void) {
         guard let url = URL(string: "\(serverURL)/api/posts/create") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return
@@ -126,7 +128,7 @@ class PostsAPI {
             return
         }
 
-        Logger.shared.info("[PostsAPI] Creating new post: \(title) for user: \(email)")
+        Logger.shared.info("[PostsAPI] Creating new post: \(title) for user: \(email), parent: \(parentId?.description ?? "none")")
 
         // Get current timezone
         let timezone = TimeZone.current.identifier
@@ -139,14 +141,18 @@ class PostsAPI {
 
         var requestBody = Data()
 
-        // Add text fields (including email and timezone)
-        let fields = [
+        // Add text fields (including email, timezone, and optional parent_id)
+        var fields = [
             "email": email,
             "title": title,
             "summary": summary,
             "body": body,
             "timezone": timezone
         ]
+
+        if let parentId = parentId {
+            fields["parent_id"] = String(parentId)
+        }
 
         for (key, value) in fields {
             requestBody.append("--\(boundary)\r\n".data(using: .utf8)!)

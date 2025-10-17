@@ -126,14 +126,20 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - User accounts with email-based authentication
 - Device association
 - **sign-in**: Email-based login with 4-digit one-time codes (10-minute validity)
-- **sign-up**: New user onboarding with profile setup and tutorial
+- **new-user**: New user onboarding with profile setup
 
 **posts** (`apps/firefly/features/posts.md`):
-- User-generated content with hierarchical structure
+- User-generated content with hierarchical structure (title, summary, optional image, body)
 - Vector embeddings for semantic search
+- Post metadata (timestamp, timezone, location, author, AI-generated flag)
+- **view-posts**: Display posts with compact/expanded views, markdown formatting, image caching with thumbnails
+- **recent-posts**: Fetch and display recent posts
+- **new-post**: Create new posts
 
-**background** (`apps/firefly/features/background.md`):
-- UI background color
+**visual** (`apps/firefly/features/`):
+- **background**: UI background color
+- **icon**: App icon
+- **logo**: App logo
 
 ## Testing Infrastructure
 
@@ -184,6 +190,13 @@ TestRegistry.register("myfeature") {
 ```bash
 adb shell am force-stop com.miso.noobtest          # Stop app
 adb shell am start -n com.miso.noobtest/.MainActivity  # Start app
+./mirror.sh  # Mirror project structure (if available)
+```
+
+**Server Management** (from `apps/firefly/product/server/imp/py/`):
+```bash
+./start.sh   # Start local Flask server
+./stop.sh    # Stop local Flask server
 ```
 
 **Debugging with Device Logs**:

@@ -207,7 +207,7 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                           u.email as author_name
+                           COALESCE(u.name, u.email) as author_name
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
                     WHERE p.id = %s
@@ -245,17 +245,22 @@ class Database:
             self.return_connection(conn)
 
     def get_child_posts(self, parent_id: int) -> List[Dict[str, Any]]:
-        """Get all child posts of a parent post"""
+        """Get all child posts of a parent post with author names and child counts"""
         conn = self.get_connection()
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
                     """
-                    SELECT id, user_id, parent_id, title, summary, body, image_url,
-                           created_at, timezone, location_tag, ai_generated
-                    FROM posts
-                    WHERE parent_id = %s
-                    ORDER BY created_at ASC
+                    SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           COALESCE(u.name, u.email) as author_name,
+                           COUNT(children.id) as child_count
+                    FROM posts p
+                    LEFT JOIN users u ON p.user_id = u.id
+                    LEFT JOIN posts children ON children.parent_id = p.id
+                    WHERE p.parent_id = %s
+                    GROUP BY p.id, u.email, u.name
+                    ORDER BY p.created_at DESC
                     """,
                     (parent_id,)
                 )
@@ -308,7 +313,7 @@ class Database:
             self.return_connection(conn)
 
     def get_recent_posts(self, limit: int = 50) -> List[Dict[str, Any]]:
-        """Get most recent posts"""
+        """Get most recent posts with child counts"""
         conn = self.get_connection()
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -316,9 +321,12 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                           u.email as author_name
+                           COALESCE(u.name, u.email) as author_name,
+                           COUNT(children.id) as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
+                    LEFT JOIN posts children ON children.parent_id = p.id
+                    GROUP BY p.id, u.email, u.name
                     ORDER BY p.created_at DESC
                     LIMIT %s
                     """,
@@ -328,6 +336,46 @@ class Database:
         except Exception as e:
             print(f"Error getting recent posts: {e}")
             return []
+        finally:
+            self.return_connection(conn)
+
+    def set_post_parent(self, post_id: int, parent_id: Optional[int]) -> bool:
+        """
+        Set or update the parent of a post.
+
+        Args:
+            post_id: ID of the post to update
+            parent_id: ID of the new parent post (or None to make it a root post)
+
+        Returns:
+            True if successful, False otherwise
+        """
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                # Verify both posts exist if parent_id is provided
+                if parent_id is not None:
+                    cur.execute("SELECT id FROM posts WHERE id = %s", (parent_id,))
+                    if cur.fetchone() is None:
+                        print(f"Parent post {parent_id} does not exist")
+                        return False
+
+                cur.execute("SELECT id FROM posts WHERE id = %s", (post_id,))
+                if cur.fetchone() is None:
+                    print(f"Post {post_id} does not exist")
+                    return False
+
+                # Update the parent_id
+                cur.execute(
+                    "UPDATE posts SET parent_id = %s WHERE id = %s",
+                    (parent_id, post_id)
+                )
+                conn.commit()
+                return True
+        except Exception as e:
+            conn.rollback()
+            print(f"Error setting post parent: {e}")
+            return False
         finally:
             self.return_connection(conn)
 
