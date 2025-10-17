@@ -74,11 +74,36 @@ class ImageCache {
         return image
     }
 
-    // Resize image to target size (for thumbnails)
+    // Crop and resize image to target size (for thumbnails)
+    // Crops a centered square from the image, then scales to target size
     private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: targetSize)
-        return renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: targetSize))
+        let imageSize = image.size
+
+        // Determine the crop size (largest square that fits in the image)
+        let cropSize = min(imageSize.width, imageSize.height)
+
+        // Calculate the crop rectangle (centered)
+        let cropRect = CGRect(
+            x: (imageSize.width - cropSize) / 2,
+            y: (imageSize.height - cropSize) / 2,
+            width: cropSize,
+            height: cropSize
+        )
+
+        // Use UIGraphicsImageRenderer to properly handle orientation
+        // This approach respects the image's orientation metadata
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: cropSize, height: cropSize))
+        let croppedImage = renderer.image { context in
+            // Draw the portion we want to keep
+            let drawRect = CGRect(x: -cropRect.origin.x, y: -cropRect.origin.y,
+                                  width: imageSize.width, height: imageSize.height)
+            image.draw(in: drawRect)
+        }
+
+        // Scale the cropped square to target size
+        let finalRenderer = UIGraphicsImageRenderer(size: targetSize)
+        return finalRenderer.image { _ in
+            croppedImage.draw(in: CGRect(origin: .zero, size: targetSize))
         }
     }
 
