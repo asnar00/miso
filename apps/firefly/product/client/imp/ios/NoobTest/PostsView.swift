@@ -188,8 +188,8 @@ struct PostCardView: View {
 
             if let imageUrl = post.imageUrl {
                 let fullUrl = serverURL + imageUrl
-                if let cachedImage = ImageCache.shared.get(fullUrl) {
-                    Image(uiImage: cachedImage)
+                if let thumbnail = ImageCache.shared.getThumbnail(fullUrl) {
+                    Image(uiImage: thumbnail)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 80, height: 80)
@@ -241,9 +241,9 @@ struct PostCardView: View {
             // Image if available
             if let imageUrl = post.imageUrl {
                 let fullUrl = serverURL + imageUrl
-                if let cachedImage = ImageCache.shared.get(fullUrl) {
+                if let fullImage = ImageCache.shared.getFullImage(fullUrl) {
                     // Use cached image
-                    Image(uiImage: cachedImage)
+                    Image(uiImage: fullImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity)

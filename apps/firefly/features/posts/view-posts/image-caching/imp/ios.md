@@ -1,3 +1,11 @@
+# iOS image caching implementation
+*iOS-specific implementation using NSCache and UIImage*
+
+## Implementation in ImageCache.swift
+
+Replace the existing single-cache implementation with three separate NSCache instances:
+
+```swift
 import UIKit
 
 class ImageCache {
@@ -68,7 +76,7 @@ class ImageCache {
         }
 
         // Calculate cost (width * height * 4 bytes per pixel)
-        let cost = Int(image.size.width * image.size.height * image.scale * image.scale * 4)
+        let cost = Int(image.size.width * image.size.height * 4)
         fullImageCache.setObject(image, forKey: url as NSString, cost: cost)
 
         return image
@@ -115,3 +123,43 @@ class ImageCache {
         }
     }
 }
+```
+
+## Integration with PostsView
+
+**Compact View (PostsView.swift:189-217):**
+
+Replace:
+```swift
+if let cachedImage = ImageCache.shared.get(fullUrl) {
+    Image(uiImage: cachedImage)
+```
+
+With:
+```swift
+if let thumbnail = ImageCache.shared.getThumbnail(fullUrl) {
+    Image(uiImage: thumbnail)
+```
+
+**Full View (PostsView.swift:244-269):**
+
+Replace:
+```swift
+if let cachedImage = ImageCache.shared.get(fullUrl) {
+    Image(uiImage: cachedImage)
+```
+
+With:
+```swift
+if let fullImage = ImageCache.shared.getFullImage(fullUrl) {
+    Image(uiImage: fullImage)
+```
+
+## NSCache Cost Calculation
+
+For decoded images, cost = width × height × 4 (RGBA bytes per pixel):
+- 80×80 thumbnail = 25,600 bytes (~25KB)
+- 2000×1500 full image = 12,000,000 bytes (~12MB)
+- 4000×3000 full image = 48,000,000 bytes (~48MB)
+
+For raw data, cost = data.count (compressed file size)
