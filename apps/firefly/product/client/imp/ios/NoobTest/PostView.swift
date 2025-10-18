@@ -22,9 +22,6 @@ struct PostView: View {
     let isExpanded: Bool
     let onTap: () -> Void
     let onPostCreated: () -> Void
-    let onFlickToChildren: () -> Void
-    let draggedPostId: Int?
-    let animateToChildren: CGFloat
     let serverURL = "http://185.96.221.52:8080"
 
     @State private var expansionFactor: CGFloat = 0.0
@@ -32,6 +29,12 @@ struct PostView: View {
     @State private var bodyTextHeight: CGFloat = 200  // Start with reasonable default
     @State private var titleSummaryHeight: CGFloat = 60  // Estimate for now
     @State private var isMeasured: Bool = false
+
+    let dragOffset: CGFloat  // Applied from parent when this post is being dragged
+    let onDragCircle: (CGFloat) -> Void  // Called when right circle is dragged
+    let onDragEnd: () -> Void  // Called when drag ends
+    let onDragLeftCircle: (CGFloat) -> Void  // Called when left circle is dragged
+    let onDragLeftEnd: () -> Void  // Called when left drag ends
 
     // Linear interpolation helper
     func lerp(_ start: CGFloat, _ end: CGFloat, _ t: CGFloat) -> CGFloat {
@@ -115,7 +118,7 @@ struct PostView: View {
                 // Link line extending right
                 Rectangle()
                     .fill(Color.black)
-                    .frame(width: 100, height: linkLineThickness)
+                    .frame(width: 50, height: linkLineThickness)
                     .offset(x: availableWidth + 10 + linkCircleSize/2, y: linkY + linkCircleSize/2 - linkLineThickness/2)
 
                 // Circle
@@ -123,6 +126,24 @@ struct PostView: View {
                     .fill(Color.black)
                     .frame(width: linkCircleSize, height: linkCircleSize)
                     .offset(x: availableWidth + 10 + linkCircleSize/2, y: linkY)
+
+                // Invisible drag area spanning full post height
+                Rectangle()
+                    .fill(Color.clear)
+                    .frame(width: 60, height: currentHeight)
+                    .contentShape(Rectangle())
+                    .offset(x: availableWidth - 20, y: 0)
+                    .gesture(
+                        DragGesture(coordinateSpace: .global)
+                            .onChanged { value in
+                                if value.translation.width < 0 {
+                                    onDragCircle(value.translation.width)
+                                }
+                            }
+                            .onEnded { _ in
+                                onDragEnd()
+                            }
+                    )
             }
 
             // Leftward link (if post has parent)
@@ -130,14 +151,32 @@ struct PostView: View {
                 // Link line extending left
                 Rectangle()
                     .fill(Color.black)
-                    .frame(width: 100, height: linkLineThickness)
-                    .offset(x: -100, y: linkY + linkCircleSize/2 - linkLineThickness/2)
+                    .frame(width: 50, height: linkLineThickness)
+                    .offset(x: -50, y: linkY + linkCircleSize/2 - linkLineThickness/2)
 
                 // Circle
                 Circle()
                     .fill(Color.black)
                     .frame(width: linkCircleSize, height: linkCircleSize)
                     .offset(x: -linkCircleSize/2, y: linkY)
+
+                // Invisible drag area spanning full post height on left side
+                Rectangle()
+                    .fill(Color.clear)
+                    .frame(width: 60, height: currentHeight)
+                    .contentShape(Rectangle())
+                    .offset(x: -60, y: 0)
+                    .gesture(
+                        DragGesture(coordinateSpace: .global)
+                            .onChanged { value in
+                                if value.translation.width > 0 {
+                                    onDragLeftCircle(value.translation.width)
+                                }
+                            }
+                            .onEnded { _ in
+                                onDragLeftEnd()
+                            }
+                    )
             }
 
             // Title and summary at the top
@@ -227,10 +266,9 @@ struct PostView: View {
                 let fullUrl = serverURL + imageUrl
 
                 // Compact state: 80x80 thumbnail on top-right with padding
-                let compactWidth: CGFloat = 80
-                let compactHeight: CGFloat = 80
-                let compactX = availableWidth - 80 + 8 - (2 * linkCircleSize)  // Right-aligned, inset for symmetry
-                let compactY: CGFloat = (compactHeight - 80) / 2 + 8  // Vertically centered in compact view with top padding
+                let thumbnailSize: CGFloat = 80
+                let compactX = availableWidth - 80 + 8 - (0.5 * linkCircleSize)  // Right-aligned, moved right by one circle radius
+                let compactY: CGFloat = (100 - thumbnailSize) / 2  // Vertically centered in 100px compact post view
 
                 // Expanded state: full-width centered below summary (matching content rectangle)
                 let expandedWidth = availableWidth
@@ -239,8 +277,8 @@ struct PostView: View {
                 let expandedY = titleSummaryHeight + 8  // Below summary
 
                 // Interpolated values
-                let currentWidth = lerp(compactWidth, expandedWidth, expansionFactor)
-                let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
+                let currentWidth = lerp(thumbnailSize, expandedWidth, expansionFactor)
+                let currentHeight = lerp(thumbnailSize, expandedHeight, expansionFactor)
                 let currentX = lerp(compactX, expandedX, expansionFactor)
                 let currentY = lerp(compactY, expandedY, expansionFactor)
 
@@ -302,35 +340,6 @@ struct PostView: View {
                 }
             }
         )
-        .opacity({
-            // If this is the dragged post or not navigating, stay opaque
-            if draggedPostId == post.id || animateToChildren == 0 {
-                return 1.0
-            } else {
-                // Fade out other posts during navigation
-                return 1.0 - animateToChildren
-            }
-        }())
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 20)
-                .onEnded { value in
-                    // Check if we have children
-                    guard let childCount = post.childCount, childCount > 0 else { return }
-
-                    // Check for horizontal leftward gesture
-                    let horizontalAmount = abs(value.translation.width)
-                    let verticalAmount = abs(value.translation.height)
-                    guard value.translation.width < 0 && horizontalAmount > verticalAmount * 1.5 else { return }
-
-                    // Calculate velocity
-                    let velocity = value.predictedEndTranslation.width - value.translation.width
-
-                    // Trigger if dragged > 50pt or flicked with velocity > 500
-                    if value.translation.width < -50 || velocity < -500 {
-                        onFlickToChildren()
-                    }
-                }
-        )
         .onTapGesture {
             onTap()
         }
@@ -351,5 +360,6 @@ struct PostView: View {
             // Set initial expansion state without doing any heavy work
             expansionFactor = isExpanded ? 1.0 : 0.0
         }
+        .offset(x: dragOffset)
     }
 }

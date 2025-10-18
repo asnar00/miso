@@ -1,50 +1,36 @@
 import SwiftUI
 
+// State container for a PostsView level
+struct PostsViewState {
+    var posts: [Post]
+    var expandedPostId: Int?
+    var scrollPosition: Int?  // Track scroll position by post ID
+}
+
 struct PostsView: View {
-    let posts: [Post]
     let onPostCreated: () -> Void
 
+    @State private var posts: [Post]
     @State private var expandedPostId: Int? = nil
     @State private var showNewPostEditor = false
     @State private var draggedPostId: Int? = nil
-    @State private var childrenViewPostId: Int? = nil  // Which post's children are we viewing
-    @State private var animateToChildren: CGFloat = 0  // 0 = parent view, 1 = children view
-    @State private var isDragging: Bool = false
+    @State private var dragOffset: CGFloat = 0
+    @State private var parentDragPost: Post? = nil
+    @State private var childrenPosts: [Post] = []
+    @State private var isLoadingChildren = false
+    @State private var navigationStack: [PostsViewState] = []
+    @State private var scrollPosition: Int? = nil  // Track current scroll position by post ID
+
+    let serverURL = "http://185.96.221.52:8080"
+
+    init(posts: [Post], onPostCreated: @escaping () -> Void) {
+        _posts = State(initialValue: posts)
+        self.onPostCreated = onPostCreated
+    }
 
     var body: some View {
         NavigationStack {
-            GeometryReader { geometry in
-                let screenWidth = geometry.size.width
-
-                ZStack {
-                    // Main posts content - offset based on animateToChildren
-                    postsContent
-                        .offset(x: -screenWidth * animateToChildren)
-
-                    // Children view - offset based on animateToChildren
-                    if let postId = (draggedPostId ?? childrenViewPostId),
-                       let post = posts.first(where: { $0.id == postId }),
-                       let childCount = post.childCount, childCount > 0 {
-                        ChildrenPostsView(
-                            parentPostId: post.id,
-                            parentPostTitle: post.title,
-                            onPostCreated: onPostCreated,
-                            onFlickBack: {
-                                // Animate back to parent
-                                withAnimation(.easeOut(duration: 0.3)) {
-                                    animateToChildren = 0
-                                }
-                                // Clear state after animation
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                    childrenViewPostId = nil
-                                    draggedPostId = nil
-                                }
-                            }
-                        )
-                        .offset(x: screenWidth * (1.0 - animateToChildren))
-                    }
-                }
-            }
+            postsContent
         }
         .navigationBarHidden(true)
     }
@@ -60,13 +46,21 @@ struct PostsView: View {
                         .foregroundColor(.black)
                         .padding()
                 } else {
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            VStack(spacing: 8) {
-                                // New post button at the top
-                                NewPostButton {
-                                    showNewPostEditor = true
-                                }
+                    GeometryReader { geometry in
+                        let screenWidth = geometry.size.width
+
+                        ScrollViewReader { proxy in
+                            ScrollView {
+                                VStack(spacing: 8) {
+                                    // Calculate fade only for left-drag (negative offset)
+                                    let fadeAmount = dragOffset < 0 ? min(1.0, (abs(dragOffset) / screenWidth) * 3) : 0.0
+
+                                    // New post button at the top
+                                    NewPostButton {
+                                        showNewPostEditor = true
+                                    }
+                                    .offset(x: dragOffset)
+                                    .opacity(1.0 - fadeAmount)
 
                                 ForEach(posts) { post in
                                     PostView(
@@ -85,24 +79,32 @@ struct PostsView: View {
                                             }
                                         },
                                         onPostCreated: onPostCreated,
-                                        onFlickToChildren: {
-                                            // Set which post's children to show (creates the view)
-                                            draggedPostId = post.id
-                                            // Let SwiftUI render the view, THEN animate
-                                            DispatchQueue.main.async {
-                                                withAnimation(.easeOut(duration: 0.3)) {
-                                                    animateToChildren = 1.0
-                                                }
-                                                // Make permanent after animation
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                    childrenViewPostId = post.id
-                                                    draggedPostId = nil
-                                                }
+                                        dragOffset: dragOffset,
+                                        onDragCircle: { offset in
+                                            if draggedPostId == nil {
+                                                // Drag just started - identify the post and fetch children
+                                                parentDragPost = post
+                                                Logger.shared.info("🎯 Started left drag on '\(post.title)'")
+                                                fetchChildren(for: post.id)
                                             }
+                                            draggedPostId = post.id
+                                            dragOffset = offset
                                         },
-                                        draggedPostId: draggedPostId,
-                                        animateToChildren: animateToChildren
+                                        onDragEnd: {
+                                            handleDragEnd(screenWidth: screenWidth)
+                                        },
+                                        onDragLeftCircle: { offset in
+                                            if draggedPostId == nil {
+                                                Logger.shared.info("🎯 Started right drag on '\(post.title)' (stack depth: \(navigationStack.count))")
+                                            }
+                                            draggedPostId = post.id
+                                            dragOffset = offset
+                                        },
+                                        onDragLeftEnd: {
+                                            handleDragEnd(screenWidth: screenWidth)
+                                        }
                                     )
+                                    .opacity(draggedPostId == post.id ? 1.0 : (1.0 - fadeAmount))
                                     .id(post.id)
                                 }
                             }
@@ -111,9 +113,167 @@ struct PostsView: View {
                     }
                 }
             }
+            }
+
+            // Children view overlay - slides in from right during left-drag
+            if draggedPostId != nil, !childrenPosts.isEmpty {
+                GeometryReader { geometry in
+                    let screenWidth = geometry.size.width
+                    let childViewX = screenWidth + dragOffset + 32
+
+                    PostsView(posts: childrenPosts, onPostCreated: onPostCreated)
+                        .frame(width: screenWidth)
+                        .offset(x: childViewX)
+                }
+            }
+
+            // Parent view overlay - slides in from left during right-drag
+            if draggedPostId != nil, !navigationStack.isEmpty, dragOffset > 0 {
+                GeometryReader { geometry in
+                    let screenWidth = geometry.size.width
+                    let parentViewX = -screenWidth + dragOffset - 32
+                    let parentState = navigationStack.last!
+
+                    PostsView(posts: parentState.posts, onPostCreated: onPostCreated)
+                        .frame(width: screenWidth)
+                        .offset(x: parentViewX)
+                }
+            }
         }
         .sheet(isPresented: $showNewPostEditor) {
             NewPostEditor(onPostCreated: onPostCreated, parentId: nil)
+        }
+    }
+
+    func fetchChildren(for parentId: Int) {
+        guard let url = URL(string: "\(serverURL)/api/posts/\(parentId)/children") else {
+            Logger.shared.error("[PostsView] Invalid URL for children")
+            return
+        }
+
+        isLoadingChildren = true
+        Logger.shared.info("[PostsView] Fetching children for post \(parentId)")
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            DispatchQueue.main.async {
+                isLoadingChildren = false
+
+                if let error = error {
+                    Logger.shared.error("[PostsView] Error fetching children: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let data = data else {
+                    Logger.shared.error("[PostsView] No data received for children")
+                    return
+                }
+
+                do {
+                    let response = try JSONDecoder().decode(ChildrenResponse.self, from: data)
+                    childrenPosts = response.children
+                    Logger.shared.info("[PostsView] Fetched \(childrenPosts.count) children")
+                } catch {
+                    Logger.shared.error("[PostsView] Decoding error for children: \(error.localizedDescription)")
+                }
+            }
+        }.resume()
+    }
+
+    func handleDragEnd(screenWidth: CGFloat) {
+        let threshold = screenWidth / 4
+        let dragAmount = abs(dragOffset)
+        let isLeftDrag = dragOffset < 0
+        let isRightDrag = dragOffset > 0
+
+        Logger.shared.info("🎯 Drag ended: offset=\(Int(dragOffset)), threshold=\(Int(threshold))")
+
+        if dragAmount < threshold {
+            // Snap back - drag didn't meet threshold
+            Logger.shared.info("📱 Snapping back (drag < threshold)")
+            withAnimation(.easeOut(duration: 0.2)) {
+                dragOffset = 0
+            }
+            // Reset state after animation
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                draggedPostId = nil
+                parentDragPost = nil
+                childrenPosts = []
+            }
+        } else if isLeftDrag && !childrenPosts.isEmpty {
+            // Navigate to children - push current state and replace with children
+            Logger.shared.info("📱 Navigating to children")
+
+            // Save current state including scroll position (using expandedPostId as scroll anchor)
+            let currentState = PostsViewState(
+                posts: posts,
+                expandedPostId: expandedPostId,
+                scrollPosition: expandedPostId  // Use expanded post as scroll anchor
+            )
+            navigationStack.append(currentState)
+            Logger.shared.info("📚 Pushed state onto stack (depth: \(navigationStack.count), expanded: \(expandedPostId?.description ?? "nil"))")
+
+            // Animate out
+            withAnimation(.easeOut(duration: 0.3)) {
+                dragOffset = -screenWidth - 32
+            }
+
+            // After animation, replace posts with children
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                Logger.shared.info("🔄 Before replacement: scrollPosition=\(scrollPosition?.description ?? "nil")")
+                posts = childrenPosts
+                expandedPostId = nil
+                scrollPosition = nil  // Reset scroll for children view
+                dragOffset = 0
+                draggedPostId = nil
+                parentDragPost = nil
+                childrenPosts = []
+                Logger.shared.info("✅ Replaced view with \(posts.count) children, scrollPosition now: \(scrollPosition?.description ?? "nil")")
+            }
+        } else if isRightDrag && !navigationStack.isEmpty {
+            // Navigate to parent - pop state and restore
+            Logger.shared.info("📱 Navigating to parent")
+
+            let parentState = navigationStack.removeLast()
+            Logger.shared.info("📚 Popped state from stack (depth: \(navigationStack.count), will restore expanded: \(parentState.expandedPostId?.description ?? "nil"))")
+
+            // Animate out
+            withAnimation(.easeOut(duration: 0.3)) {
+                dragOffset = screenWidth + 32
+            }
+
+            // After animation, restore parent state
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                Logger.shared.info("🔄 Restoring: posts=\(parentState.posts.count), expandedId=\(parentState.expandedPostId?.description ?? "nil"), scrollPos=\(parentState.scrollPosition?.description ?? "nil")")
+                posts = parentState.posts
+                expandedPostId = parentState.expandedPostId
+                dragOffset = 0
+                draggedPostId = nil
+                parentDragPost = nil
+
+                // Force scrollPosition to change by setting to -1 first, then to actual value
+                // This ensures onChange fires even if restoring to nil
+                scrollPosition = -1
+                DispatchQueue.main.async {
+                    scrollPosition = parentState.scrollPosition
+                }
+
+                Logger.shared.info("✅ Restored parent view with \(posts.count) posts, will scroll to: \(parentState.scrollPosition?.description ?? "nil")")
+            }
+        } else {
+            // Fallback: drag met threshold but conditions weren't met (e.g., children not loaded yet)
+            // Just snap back to avoid getting stuck
+            Logger.shared.info("⚠️ Drag met threshold but can't complete navigation - snapping back")
+            Logger.shared.info("   isLeftDrag=\(isLeftDrag), childrenPosts.isEmpty=\(childrenPosts.isEmpty)")
+            Logger.shared.info("   isRightDrag=\(isRightDrag), navigationStack.isEmpty=\(navigationStack.isEmpty)")
+            withAnimation(.easeOut(duration: 0.2)) {
+                dragOffset = 0
+            }
+            // Reset state after animation
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                draggedPostId = nil
+                parentDragPost = nil
+                childrenPosts = []
+            }
         }
     }
 }
@@ -451,7 +611,6 @@ struct ChildrenPostsView: View {
     let parentPostId: Int
     let parentPostTitle: String
     let onPostCreated: () -> Void
-    let onFlickBack: () -> Void
     @State private var children: [Post] = []
     @State private var isLoading = true
     @State private var expandedPostId: Int? = nil
@@ -495,11 +654,11 @@ struct ChildrenPostsView: View {
                                             }
                                         },
                                         onPostCreated: onPostCreated,
-                                        onFlickToChildren: {
-                                            // For now, do nothing - could add recursive navigation later
-                                        },
-                                        draggedPostId: nil,
-                                        animateToChildren: 0
+                                        dragOffset: 0,
+                                        onDragCircle: { _ in },
+                                        onDragEnd: {},
+                                        onDragLeftCircle: { _ in },
+                                        onDragLeftEnd: {}
                                     )
                                     .id(post.id)
                                 }
@@ -524,23 +683,6 @@ struct ChildrenPostsView: View {
                 onPostCreated()
             }, parentId: parentPostId)
         }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 20)
-                .onEnded { value in
-                    // Check for horizontal rightward gesture
-                    let horizontalAmount = abs(value.translation.width)
-                    let verticalAmount = abs(value.translation.height)
-                    guard value.translation.width > 0 && horizontalAmount > verticalAmount * 1.5 else { return }
-
-                    // Calculate velocity
-                    let velocity = value.predictedEndTranslation.width - value.translation.width
-
-                    // Trigger if dragged > 50pt or flicked with velocity > 500
-                    if value.translation.width > 50 || velocity > 500 {
-                        onFlickBack()
-                    }
-                }
-        )
     }
 
     func fetchChildren() {
