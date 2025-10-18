@@ -6,17 +6,22 @@ Already implemented at `apps/firefly/product/server/imp/py/db.py:247`
 
 ```python
 def get_child_posts(self, parent_id: int) -> List[Dict[str, Any]]:
-    """Get all child posts of a parent post"""
+    """Get all child posts of a parent post, sorted by newest first"""
     conn = self.get_connection()
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(
                 """
-                SELECT id, user_id, parent_id, title, summary, body, image_url,
-                       created_at, timezone, location_tag, ai_generated
-                FROM posts
-                WHERE parent_id = %s
-                ORDER BY created_at ASC
+                SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                       p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                       COALESCE(u.name, u.email) as author_name,
+                       COUNT(children.id) as child_count
+                FROM posts p
+                LEFT JOIN users u ON p.user_id = u.id
+                LEFT JOIN posts children ON children.parent_id = p.id
+                WHERE p.parent_id = %s
+                GROUP BY p.id, u.email, u.name
+                ORDER BY p.created_at DESC
                 """,
                 (parent_id,)
             )
@@ -33,7 +38,9 @@ def get_child_posts(self, parent_id: int) -> List[Dict[str, Any]]:
 **Key points**:
 - Uses indexed query on `parent_id` for fast performance
 - Returns empty list (not error) if no children found
-- Results ordered chronologically (oldest first)
+- Results ordered chronologically (newest first)
+- Includes author name (with fallback from name to email)
+- Includes child_count for each child post (for nested navigation)
 
 ## API Endpoint (app.py)
 
@@ -74,26 +81,13 @@ curl http://185.96.221.52:8080/api/posts/6/children
 curl http://185.96.221.52:8080/api/posts/11/children
 ```
 
-**Example response** (post with 2 children):
+**Example response** (post with 2 children, newest first):
 ```json
 {
   "status": "success",
   "post_id": 6,
   "count": 2,
   "children": [
-    {
-      "id": 7,
-      "user_id": 7,
-      "parent_id": 6,
-      "title": "classic cherry pie",
-      "summary": "a timeless dessert with buttery crust and sweet-tart filling",
-      "body": "![cherry pie](test-cherry-pie.png)...",
-      "image_url": "/uploads/test-cherry-pie.png",
-      "created_at": "Thu, 16 Oct 2025 09:42:14 GMT",
-      "timezone": "Europe/Madrid",
-      "location_tag": "Barcelona, Spain",
-      "ai_generated": true
-    },
     {
       "id": 8,
       "user_id": 7,
@@ -105,7 +99,24 @@ curl http://185.96.221.52:8080/api/posts/11/children
       "created_at": "Thu, 16 Oct 2025 10:12:02 GMT",
       "timezone": "Europe/Madrid",
       "location_tag": "Barcelona, Spain",
-      "ai_generated": false
+      "ai_generated": false,
+      "author_name": "asnaroo",
+      "child_count": 0
+    },
+    {
+      "id": 7,
+      "user_id": 7,
+      "parent_id": 6,
+      "title": "classic cherry pie",
+      "summary": "a timeless dessert with buttery crust and sweet-tart filling",
+      "body": "![cherry pie](test-cherry-pie.png)...",
+      "image_url": "/uploads/test-cherry-pie.png",
+      "created_at": "Thu, 16 Oct 2025 09:42:14 GMT",
+      "timezone": "Europe/Madrid",
+      "location_tag": "Barcelona, Spain",
+      "ai_generated": true,
+      "author_name": "asnaroo",
+      "child_count": 0
     }
   ]
 }

@@ -3,10 +3,7 @@
 ## State Variables
 
 ```swift
-@State private var expandedPostIds: Set<Int> = []
-@State private var isAnimatingCollapse = false
-@State private var collapseHeight: CGFloat? = nil
-@State private var measuredCompactHeight: CGFloat = 110
+@State private var expandedPostId: Int? = nil
 ```
 
 ## ScrollViewReader Integration
@@ -16,24 +13,21 @@ ScrollViewReader { proxy in
     ScrollView {
         VStack(spacing: 8) {
             ForEach(posts) { post in
-                PostCardView(
+                PostView(
                     post: post,
-                    isExpanded: Binding(
-                        get: { expandedPostIds.contains(post.id) },
-                        set: { expanded in
-                            if expanded {
-                                // Collapse all other posts
-                                expandedPostIds.removeAll()
-                                expandedPostIds.insert(post.id)
-                                // Scroll to top of expanded post concurrently
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    proxy.scrollTo(post.id, anchor: .top)
-                                }
-                            } else {
-                                expandedPostIds.remove(post.id)
+                    isExpanded: expandedPostId == post.id,
+                    onTap: {
+                        if expandedPostId == post.id {
+                            // Collapse currently expanded post
+                            expandedPostId = nil
+                        } else {
+                            // Expand new post and scroll to it
+                            expandedPostId = post.id
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                proxy.scrollTo(post.id, anchor: .top)
                             }
                         }
-                    )
+                    }
                 )
                 .id(post.id)
             }
@@ -43,74 +37,55 @@ ScrollViewReader { proxy in
 }
 ```
 
-**Key decision**: Use `ScrollViewReader` with `.id(post.id)` on each card to enable programmatic scrolling to specific posts.
-
-## Tap Gesture for Expand/Collapse
-
-```swift
-.onTapGesture {
-    withAnimation(.easeInOut(duration: 0.3)) {
-        isExpanded.toggle()
-    }
-}
-```
-
 **Key decisions**:
-- Use `.toggle()` to flip between expanded and collapsed states
-- Use `.easeInOut` instead of spring animation to avoid bounce effect, providing a smoother, more predictable animation
-- Single tap gesture handles both expand (when compact) and collapse (when expanded)
+- Use `ScrollViewReader` with `.id(post.id)` on each view to enable programmatic scrolling
+- Pass `isExpanded` as a boolean to each PostView; the PostView handles its own `expansionFactor` animation
+- Centralize tap handling and scrolling at the list level
 
-## Collapse Animation Handler
+## PostView expansionFactor Handling
+
+Within PostView, the `isExpanded` binding drives the animation:
 
 ```swift
-.onChange(of: isExpanded) { oldValue, newValue in
-    if oldValue && !newValue {
-        // Started collapsing
-        isAnimatingCollapse = true
-        collapseHeight = nil  // Start at full height
+struct PostView: View {
+    let post: Post
+    let isExpanded: Bool
+    let onTap: () -> Void
 
-        // Animate height down to compact size
-        withAnimation(.easeInOut(duration: 0.3)) {
-            collapseHeight = measuredCompactHeight
+    @State private var expansionFactor: CGFloat = 0.0
+
+    var body: some View {
+        // ... layout using expansionFactor ...
+        .onTapGesture {
+            onTap()
         }
-
-        // After animation completes, switch to compact view
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            isAnimatingCollapse = false
-            collapseHeight = nil
+        .onChange(of: isExpanded) { _, newValue in
+            withAnimation(.easeInOut(duration: 0.3)) {
+                expansionFactor = newValue ? 1.0 : 0.0
+            }
         }
     }
 }
 ```
 
-**Key decision**: Use `onChange` to detect collapse start, then coordinate the height animation with a delayed view swap.
+**Key decision**: PostView owns its `expansionFactor` and animates it based on the `isExpanded` prop, keeping view-level animation concerns separate from list-level coordination.
 
-## View Rendering During Animation
+## Scroll-to-Expanded on Navigation Return
 
 ```swift
-var body: some View {
-    Group {
-        if isExpanded || isAnimatingCollapse {
-            fullView
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(height: collapseHeight, alignment: .top)
-                .clipped()
-        } else {
-            compactView
+.onAppear {
+    if let expandedId = expandedPostId {
+        // Small delay to ensure layout is complete
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation {
+                proxy.scrollTo(expandedId, anchor: .top)
+            }
         }
     }
-    .padding()
-    .background(Color.white.opacity(0.9))
-    .cornerRadius(12)
-    .shadow(radius: 2)
 }
 ```
 
-**Key iOS-specific decisions**:
-- `.fixedSize(horizontal: false, vertical: true)` - Prevents vertical layout recalculation during animation
-- `.frame(height: collapseHeight, alignment: .top)` - Animatable height with top alignment
-- `.clipped()` - Clips overflow content from the bottom
-- Keep showing fullView during animation (`isAnimatingCollapse`) to maintain content stability
+When returning from navigation (e.g., after viewing children), scroll back to the expanded post.
 
 ## First Post Auto-Expansion
 
@@ -122,7 +97,7 @@ case .success(let fetchedPosts):
             self.isLoading = false
             // Expand the first post by default
             if let firstPost = fetchedPosts.first {
-                self.expandedPostIds.insert(firstPost.id)
+                self.expandedPostId = firstPost.id
             }
         }
     }

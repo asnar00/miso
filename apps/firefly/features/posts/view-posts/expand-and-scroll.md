@@ -1,10 +1,11 @@
 # expand and scroll
 *smooth post expansion with automatic repositioning*
 
-When you tap on a post to expand it, two things happen at once: the currently expanded post smoothly shrinks down to its compact form, while the post you tapped grows to show its full content, while aligning to the top of the phone's screen so you can read it.
+When you tap on a compact-form post view to expand it, three things happen in parallel, over 0.3 seconds:
 
-To make this happen smoothly, the app first computes the eventual scroll offset of the top of the new post - this is simply the index of the expanding post in the list, multiplied by the padded height of compact views (which are always the same height).
+- the previously expanded post (if any) collapses to compact form
+- the new post expands from collapsed to expanded form
+- the display scrolls so the top edge of the new post aligns with the top edge of the display.
 
-The app then kicks off three animations simultaneously: the old post compacts to compact-view size, the new post expands to full size, and scrolling smoothly travels to the computed scroll offset.
+To compute the target scroll offset, we need to figure out the scroll offset based on the index of the post we're expanding in the list, and the height of compact posts (plus any other buttons such add/remove/search).
 
-Once the old post has been compacted to the right size, it gets swapped out for a compact view and nobody's the wiser.

@@ -37,6 +37,7 @@
 - `summary` (required): One-line summary
 - `body` (required): Post body text
 - `timezone` (optional, default: "UTC"): User's timezone
+- `parent_id` (optional): ID of parent post (for creating child posts)
 - `location_tag` (optional): Location string
 - `ai_generated` (optional, default: false): Whether AI-generated
 - `image` (optional): Image file upload (png, jpg, jpeg, gif, webp)
@@ -57,14 +58,15 @@
 **Logic**:
 1. Extract form data from request
 2. Validate required fields (email, title, summary, body)
-3. Look up user by email address
-4. If image file present:
+3. If parent_id provided, validate it's a valid integer
+4. Look up user by email address
+5. If image file present:
    - Validate file extension
    - Generate unique filename (UUID + extension)
    - Save to uploads folder
    - Store image URL as "/uploads/{filename}"
-5. Call database create_post function
-6. Retrieve and return the created post
+6. Call database create_post function with parent_id (if provided)
+7. Retrieve and return the created post
 
 **Error Handling**:
 - 400: Missing required fields

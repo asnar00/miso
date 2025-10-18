@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 // Post model matching server schema
-struct Post: Codable, Identifiable {
+struct Post: Codable, Identifiable, Hashable {
     let id: Int
     let userId: Int
     let parentId: Int?

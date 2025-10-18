@@ -24,9 +24,26 @@ struct Post: Codable, Identifiable {
 
 **File**: `PostsView.swift`
 
+### Navigation Structure
+
+Wrapped PostsView in NavigationStack to enable navigation (PostsView.swift:25):
+
+```swift
+struct PostsView: View {
+    let onPostCreated: () -> Void
+    // ... state variables ...
+
+    var body: some View {
+        NavigationStack {
+            // ... scrollview with posts ...
+        }
+    }
+}
+```
+
 ### Button UI
 
-Added button within ZStack wrapper around post card (PostCardView.swift:135):
+Added NavigationLink wrapped around button within ZStack around post card (PostCardView.swift:310-330):
 
 ```swift
 var body: some View {
@@ -46,7 +63,11 @@ var body: some View {
 
         // Show play button if post has children and is expanded
         if isExpanded, let childCount = post.childCount, childCount > 0 {
-            Button(action: viewChildren) {
+            NavigationLink(destination: ChildrenPostsView(
+                parentPostId: post.id,
+                parentPostTitle: post.title,
+                onPostCreated: onPostCreated
+            )) {
                 Image(systemName: "play.fill")
                     .foregroundColor(.black)
                     .font(.system(size: 14))
@@ -60,17 +81,69 @@ var body: some View {
 }
 ```
 
-### Dummy Action Function
+**Key details**:
+- Button only appears when `isExpanded` is true AND `childCount > 0`
+- NavigationLink passes parent post ID, title, and onPostCreated callback
+- Native slide animation provided by NavigationStack
+- offset(x: 16) makes button overlap the right edge of the card
 
-Added placeholder function (PostsView.swift:80):
+### Callback Propagation
+
+PostCardView accepts onPostCreated callback (PostCardView.swift:84):
 
 ```swift
-// Dummy function to view children
-func viewChildren() {
-    Logger.shared.info("[PostCardView] View children button tapped for post \(post.id): \(post.title)")
-    print("[PostCardView] View children button tapped for post \(post.id): \(post.title)")
+struct PostCardView: View {
+    let post: Post
+    @Binding var isExpanded: Bool
+    let onPostCreated: () -> Void
+    // ...
 }
 ```
+
+PostsView passes callback to all PostCardView instances (PostsView.swift:38-58):
+
+```swift
+ForEach(posts) { post in
+    PostCardView(
+        post: post,
+        isExpanded: Binding(
+            get: { expandedPostIds.contains(post.id) },
+            set: { expanded in
+                if expanded {
+                    expandedPostIds.removeAll()
+                    expandedPostIds.insert(post.id)
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        proxy.scrollTo(post.id, anchor: .top)
+                    }
+                } else {
+                    expandedPostIds.remove(post.id)
+                }
+            }
+        ),
+        onPostCreated: onPostCreated
+    )
+    .id(post.id)
+}
+```
+
+### Scroll-to-Expanded on Return
+
+When returning from navigation, scroll to expanded post (PostsView.swift:59-69):
+
+```swift
+.onAppear {
+    // If we have an expanded post, scroll to it when returning from navigation
+    if let expandedPostId = expandedPostIds.first {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation {
+                proxy.scrollTo(expandedPostId, anchor: .top)
+            }
+        }
+    }
+}
+```
+
+**Key decision**: Use 0.1s delay to ensure view is fully laid out before scrolling
 
 ## Server API Changes
 

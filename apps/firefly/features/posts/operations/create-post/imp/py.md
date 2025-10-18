@@ -79,6 +79,18 @@ def create_post():
         location_tag = request.form.get('location_tag', '').strip() or None
         ai_generated = request.form.get('ai_generated', 'false').lower() == 'true'
 
+        # Get optional parent_id
+        parent_id = None
+        parent_id_str = request.form.get('parent_id', '').strip()
+        if parent_id_str:
+            try:
+                parent_id = int(parent_id_str)
+            except ValueError:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'parent_id must be a valid integer'
+                }), 400
+
         # Validate required fields
         if not email or not title or not summary or not body:
             return jsonify({
@@ -116,6 +128,7 @@ def create_post():
             summary=summary,
             body=body,
             timezone=timezone,
+            parent_id=parent_id,
             image_url=image_url,
             location_tag=location_tag,
             ai_generated=ai_generated
@@ -186,6 +199,14 @@ curl -X POST http://185.96.221.52:8080/api/posts/create \
   -F "title=Text Only Post" \
   -F "summary=No image this time" \
   -F "body=Just some text content"
+
+# Create child post (with parent_id)
+curl -X POST http://185.96.221.52:8080/api/posts/create \
+  -F "email=user@example.com" \
+  -F "title=Child Post" \
+  -F "summary=This is a child of another post" \
+  -F "body=This post is part of a tree structure" \
+  -F "parent_id=6"
 ```
 
 **Response**:

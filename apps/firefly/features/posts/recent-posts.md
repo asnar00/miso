@@ -13,4 +13,4 @@ The posts are sorted by creation date, newest first, so the most recent post app
 - Continue loading remaining images in the background
 - If fetching fails, show an error message with a retry button
 
-The first post in the list is automatically expanded to full view, with subsequent posts shown in compact view, making it easy to start reading right away.
+All posts start in compact view. Tap any post to expand it and read the full content.

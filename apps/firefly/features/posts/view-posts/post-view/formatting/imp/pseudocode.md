@@ -3,8 +3,7 @@
 ## Text Sizing Constants
 
 ```
-TITLE_EXPANDED = 24pt bold
-TITLE_COMPACT = 20pt bold
+TITLE = 24pt bold (same in both compact and expanded states)
 SUMMARY = 14pt subheadline italic
 BODY = standard system size
 HEADING = 18pt bold

@@ -6,6 +6,7 @@
 For each user, we store:
 
 - email address
+- display name (optional - defaults to showing email if not set)
 - one or more `posts`
 - list of device IDs
 

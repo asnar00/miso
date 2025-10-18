@@ -3,67 +3,55 @@
 ## State Management
 
 ```
-state expandedPostIds: Set<PostId> = empty
+state expandedPostId: PostId? = null
 ```
 
-Only one post can be expanded at a time (enforced by clearing the set before adding).
+Only one post can be expanded at a time. Each PostView controls its own `expansionFactor`, but the list coordinates which post should be expanded.
 
 ## Expansion Logic
 
 ```
-when post tapped for expansion:
-  collapse all posts:
-    expandedPostIds.clear()
+when post tapped:
+  previousExpandedId = expandedPostId
 
-  expand this post:
-    expandedPostIds.add(post.id)
+  if post.id == expandedPostId:
+    // Tapping the currently expanded post - collapse it
+    expandedPostId = null
+  else:
+    // Expanding a different post
+    expandedPostId = post.id
 
-  scroll to post concurrently:
+    // Scroll to new expanded post concurrently with animation
     animate scroll to post.id with anchor=top, duration=0.3s, easing=easeInOut
 ```
 
-**Key decision**: All three animations (old post collapse, new post expand, scroll to position) happen **concurrently** over the same 0.3-second duration with the same easing curve for visual coherence.
-
-## Collapse Animation Sequence
-
-When collapsing (tap on expanded post):
-
+Each PostView observes `expandedPostId` and sets its own target `expansionFactor`:
 ```
-state isAnimatingCollapse: Bool = false
-state collapseHeight: Float? = nil
-
-on collapse triggered:
-  isAnimatingCollapse = true
-  collapseHeight = nil  // starts at full height
-
-  animate over 0.3s with easeInOut:
-    collapseHeight = measuredCompactHeight
-
-  after 0.3s:
-    isAnimatingCollapse = false
-    collapseHeight = nil  // reset for next time
-```
-
-## View Selection During Animation
-
-```
-if isExpanded or isAnimatingCollapse:
-  render fullView with:
-    fixedSize(horizontal=false, vertical=true)  // prevent content reflow
-    frame(height=collapseHeight, alignment=top)  // clip from bottom
-    clipped()  // apply clipping
+if expandedPostId == this.post.id:
+  targetExpansionFactor = 1.0
 else:
-  render compactView
+  targetExpansionFactor = 0.0
+
+animate expansionFactor to targetExpansionFactor over 0.3s with easeInOut
 ```
 
-**Key decision**: Use `fixedSize` + `frame(alignment: .top)` + `clipped()` to keep content layout frozen and clip from the bottom, avoiding janky content rearrangement during the collapse animation.
+**Key decision**: All animations (previous post collapse, new post expand, scroll to position) happen **concurrently** over the same 0.3-second duration with the same easing curve for visual coherence.
 
-## First Post Auto-Expansion
+## Scroll-to-Expanded on Navigation Return
 
 ```
-on posts loaded successfully:
+on view appear:
+  if expandedPostId not null:
+    delay 0.1 seconds:  // ensure view is laid out
+      animate scroll to expandedPostId with anchor=top
+```
+
+When returning from navigation (e.g., after viewing children), scroll back to the expanded post so the user doesn't lose their place.
+
+## Initial State
+
+```
+on posts loaded:
   if posts not empty:
-    expandedPostIds.add(posts[0].id)
+    expandedPostId = posts[0].id  // expand first post by default
 ```
-
-Automatically expands the first post when posts are initially loaded.

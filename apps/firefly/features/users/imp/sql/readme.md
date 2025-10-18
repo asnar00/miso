@@ -12,6 +12,7 @@ The `users` table stores basic account information for people using Firefly. Eac
 users (
     id              SERIAL PRIMARY KEY,
     email           VARCHAR(255) UNIQUE NOT NULL,
+    name            VARCHAR(255),
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     device_ids      TEXT[] DEFAULT ARRAY[]::TEXT[]
 )
@@ -29,6 +30,12 @@ users (
 - User's email address
 - Must be unique across all users
 - Used for signup and login verification
+
+### name
+- Type: `VARCHAR(255)`
+- User's display name (optional)
+- If not set, email address is shown instead
+- Used throughout the app with COALESCE(name, email) pattern
 
 ### created_at
 - Type: `TIMESTAMP WITH TIME ZONE`
@@ -67,9 +74,16 @@ WHERE email = 'user@example.com';
 
 ### Get user by ID
 ```sql
-SELECT id, email, created_at, device_ids
+SELECT id, email, name, created_at, device_ids
 FROM users
 WHERE id = 123;
+```
+
+### Update user's display name
+```sql
+UPDATE users
+SET name = 'username'
+WHERE email = 'user@example.com';
 ```
 
 ### Add device to user

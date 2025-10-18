@@ -4,12 +4,47 @@ struct PostsView: View {
     let posts: [Post]
     let onPostCreated: () -> Void
 
-    @State private var expandedPostIds: Set<Int> = []
+    @State private var expandedPostId: Int? = nil
     @State private var showNewPostEditor = false
+    @State private var draggedPostId: Int? = nil
+    @State private var childrenViewPostId: Int? = nil  // Which post's children are we viewing
+    @State private var animateToChildren: CGFloat = 0  // 0 = parent view, 1 = children view
+    @State private var isDragging: Bool = false
 
     var body: some View {
         NavigationStack {
-            postsContent
+            GeometryReader { geometry in
+                let screenWidth = geometry.size.width
+
+                ZStack {
+                    // Main posts content - offset based on animateToChildren
+                    postsContent
+                        .offset(x: -screenWidth * animateToChildren)
+
+                    // Children view - offset based on animateToChildren
+                    if let postId = (draggedPostId ?? childrenViewPostId),
+                       let post = posts.first(where: { $0.id == postId }),
+                       let childCount = post.childCount, childCount > 0 {
+                        ChildrenPostsView(
+                            parentPostId: post.id,
+                            parentPostTitle: post.title,
+                            onPostCreated: onPostCreated,
+                            onFlickBack: {
+                                // Animate back to parent
+                                withAnimation(.easeOut(duration: 0.3)) {
+                                    animateToChildren = 0
+                                }
+                                // Clear state after animation
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    childrenViewPostId = nil
+                                    draggedPostId = nil
+                                }
+                            }
+                        )
+                        .offset(x: screenWidth * (1.0 - animateToChildren))
+                    }
+                }
+            }
         }
         .navigationBarHidden(true)
     }
@@ -34,40 +69,44 @@ struct PostsView: View {
                                 }
 
                                 ForEach(posts) { post in
-                                    PostCardView(
+                                    PostView(
                                         post: post,
-                                        isExpanded: Binding(
-                                            get: { expandedPostIds.contains(post.id) },
-                                            set: { expanded in
-                                                if expanded {
-                                                    // Collapse all other posts
-                                                    expandedPostIds.removeAll()
-                                                    expandedPostIds.insert(post.id)
-                                                    // Scroll to top of expanded post concurrently with animation
-                                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                                        proxy.scrollTo(post.id, anchor: .top)
-                                                    }
-                                                } else {
-                                                    expandedPostIds.remove(post.id)
+                                        isExpanded: expandedPostId == post.id,
+                                        onTap: {
+                                            if expandedPostId == post.id {
+                                                // Collapse currently expanded post
+                                                expandedPostId = nil
+                                            } else {
+                                                // Expand new post and scroll to it
+                                                expandedPostId = post.id
+                                                withAnimation(.easeInOut(duration: 0.3)) {
+                                                    proxy.scrollTo(post.id, anchor: .top)
                                                 }
                                             }
-                                        ),
-                                        onPostCreated: onPostCreated
+                                        },
+                                        onPostCreated: onPostCreated,
+                                        onFlickToChildren: {
+                                            // Set which post's children to show (creates the view)
+                                            draggedPostId = post.id
+                                            // Let SwiftUI render the view, THEN animate
+                                            DispatchQueue.main.async {
+                                                withAnimation(.easeOut(duration: 0.3)) {
+                                                    animateToChildren = 1.0
+                                                }
+                                                // Make permanent after animation
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                    childrenViewPostId = post.id
+                                                    draggedPostId = nil
+                                                }
+                                            }
+                                        },
+                                        draggedPostId: draggedPostId,
+                                        animateToChildren: animateToChildren
                                     )
                                     .id(post.id)
                                 }
                             }
                             .padding()
-                            .onAppear {
-                                // If we have an expanded post, scroll to it when returning from navigation
-                                if let expandedPostId = expandedPostIds.first {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                        withAnimation {
-                                            proxy.scrollTo(expandedPostId, anchor: .top)
-                                        }
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -79,6 +118,8 @@ struct PostsView: View {
     }
 }
 
+// Old PostCardView - DEPRECATED, use PostView.swift instead
+/*
 struct PostCardView: View {
     let post: Post
     @Binding var isExpanded: Bool
@@ -403,15 +444,17 @@ struct PostCardView: View {
         }
     }
 }
+*/
 
 // View for displaying children of a post
 struct ChildrenPostsView: View {
     let parentPostId: Int
     let parentPostTitle: String
     let onPostCreated: () -> Void
+    let onFlickBack: () -> Void
     @State private var children: [Post] = []
     @State private var isLoading = true
-    @State private var expandedPostIds: Set<Int> = []
+    @State private var expandedPostId: Int? = nil
     @State private var showNewPostEditor = false
     let serverURL = "http://185.96.221.52:8080"
 
@@ -429,38 +472,47 @@ struct ChildrenPostsView: View {
                         .foregroundColor(.black)
                         .padding()
                 } else {
-                    ScrollView {
-                        VStack(spacing: 8) {
-                            // New post button at the top
-                            NewPostButton {
-                                showNewPostEditor = true
-                            }
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            VStack(spacing: 8) {
+                                // New post button at the top
+                                NewPostButton {
+                                    showNewPostEditor = true
+                                }
 
-                            ForEach(children) { post in
-                                PostCardView(
-                                    post: post,
-                                    isExpanded: Binding(
-                                        get: { expandedPostIds.contains(post.id) },
-                                        set: { expanded in
-                                            if expanded {
-                                                expandedPostIds.removeAll()
-                                                expandedPostIds.insert(post.id)
+                                ForEach(children) { post in
+                                    PostView(
+                                        post: post,
+                                        isExpanded: expandedPostId == post.id,
+                                        onTap: {
+                                            if expandedPostId == post.id {
+                                                expandedPostId = nil
                                             } else {
-                                                expandedPostIds.remove(post.id)
+                                                expandedPostId = post.id
+                                                withAnimation(.easeInOut(duration: 0.3)) {
+                                                    proxy.scrollTo(post.id, anchor: .top)
+                                                }
                                             }
-                                        }
-                                    ),
-                                    onPostCreated: onPostCreated
-                                )
+                                        },
+                                        onPostCreated: onPostCreated,
+                                        onFlickToChildren: {
+                                            // For now, do nothing - could add recursive navigation later
+                                        },
+                                        draggedPostId: nil,
+                                        animateToChildren: 0
+                                    )
+                                    .id(post.id)
+                                }
                             }
+                            .padding()
                         }
-                        .padding()
                     }
                 }
             }
         }
         .navigationTitle("Children of \(parentPostTitle)")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             fetchChildren()
         }
@@ -472,6 +524,23 @@ struct ChildrenPostsView: View {
                 onPostCreated()
             }, parentId: parentPostId)
         }
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 20)
+                .onEnded { value in
+                    // Check for horizontal rightward gesture
+                    let horizontalAmount = abs(value.translation.width)
+                    let verticalAmount = abs(value.translation.height)
+                    guard value.translation.width > 0 && horizontalAmount > verticalAmount * 1.5 else { return }
+
+                    // Calculate velocity
+                    let velocity = value.predictedEndTranslation.width - value.translation.width
+
+                    // Trigger if dragged > 50pt or flicked with velocity > 500
+                    if value.translation.width > 50 || velocity > 500 {
+                        onFlickBack()
+                    }
+                }
+        )
     }
 
     func fetchChildren() {

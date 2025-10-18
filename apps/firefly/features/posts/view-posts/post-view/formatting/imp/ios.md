@@ -3,14 +3,9 @@
 ## SwiftUI Font and Style Application
 
 ```swift
-// Title in expanded view
+// Title (same in both compact and expanded states)
 Text(post.title)
     .font(.system(size: 24, weight: .bold))
-    .foregroundColor(.black)
-
-// Title in compact view
-Text(post.title)
-    .font(.system(size: 20, weight: .bold))
     .foregroundColor(.black)
 
 // Summary
