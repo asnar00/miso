@@ -164,42 +164,91 @@ For features that affect visual appearance (colors, layouts, UI elements), use a
 
 **Key Insight**: Initial implementation often misses files. Visual verification catches this and drives iteration until the visible result matches the specification.
 
-### 7. Update Implementation Documentation Post-Debug
+### 7. Post-Debug Cleanup
 
-After visual verification succeeds, **update the platform implementation files** to capture ALL the changes discovered during debugging:
+After visual verification succeeds and the feature works correctly, **update all documentation to accurately reflect what was actually built**. This is critical because the initial implementation often differs from the final working version due to debugging discoveries.
+
+**Run the post-debug cleanup process:**
 
 1. **Review what was actually changed**:
    ```bash
    git diff apps/firefly/product/client/imp/ios/
    ```
 
-2. **Update the platform implementation markdown** (`imp/ios.md`, `imp/eos.md`, etc.):
-   - Add ALL target files that needed changes
-   - Include line numbers where colors/values appear
-   - Add any discovered patterns (e.g., "search all views for Color(red:")
-   - Document why each file needs updating
+2. **Update the feature specification** (`feature.md`):
+   - Ensure user-facing description matches final behavior
+   - Update visual details (exact colors, sizes, positions)
+   - Describe final gesture interactions (thresholds discovered during debugging)
+   - Keep <300 words, user-focused language
 
-3. **Example Update**:
+3. **Update the pseudocode** (`imp/pseudocode.md`):
+   - Capture exact specifications discovered during debugging:
+     - Gesture thresholds (e.g., "30pt minimum for left swipe", "100pt for right swipe")
+     - UI measurements (e.g., "32pt icon with -8pt trailing padding")
+     - API endpoints with correct paths and response formats
+     - Visual specs (exact RGB values, font sizes, weights)
+   - Update patching instructions to reflect ALL files that need changes
+   - Include data structures that were added (e.g., new response types)
+
+4. **Update platform implementations** (`imp/ios.md`, `imp/eos.md`, etc.):
+   - Replace stub code with complete, working code from actual product files
+   - Include ALL target files that needed changes (discovered during debugging)
+   - Add exact file paths and line numbers
+   - Document any platform-specific workarounds (e.g., `.highPriorityGesture` for SwiftUI)
+   - Include complete API response structures with correct field names
+
+5. **Example Updates**:
+
+   **Feature spec (`explore-posts.md`)**:
    ```markdown
-   ## Product Integration
+   **Navigate to Children**: Swipe left on a post with children to navigate to a view showing all its child posts.
 
-   **Primary Target**: ContentView.swift
-   **Additional Targets**: All views with background colors must be updated
-
-   The following files contain backgrounds:
-   1. PostsView.swift (line ~26)
-   2. SignInView.swift (line ~24)
-   3. NewUserView.swift (line ~10)
-   4. NewPostView.swift (lines ~11, ~47)
-   5. NoobTestApp.swift (line ~49)
-
-   **Important**: Search for all instances of `Color(red:` and replace...
+   **Navigate Back**: Either tap the back button or swipe right anywhere in the child view to return to the parent view.
    ```
 
-4. **Why This Matters**:
-   - Next time miso runs, it will know to update ALL these files
-   - If someone deletes the product code, the spec can rebuild it completely
-   - The implementation documentation becomes the source of truth
+   **Pseudocode (`imp/pseudocode.md`)**:
+   ```markdown
+   ## Gesture Handling
+
+   **Swipe Left on Post with Children:**
+   - Minimum distance: 30pt
+   - Condition: Post must have children (childCount > 0)
+
+   **Swipe Right in Child View:**
+   - Minimum distance: 100pt
+   - Start position: Anywhere in view (not just left edge)
+   - Priority: High priority gesture to override ScrollView
+   ```
+
+   **Platform spec (`imp/ios.md`)**:
+   ```swift
+   // Complete working code with exact measurements
+   .gesture(
+       DragGesture(minimumDistance: 30)
+           .onEnded { value in
+               if value.translation.width < -30 && (post.childCount ?? 0) > 0 {
+                   onNavigateToChildren?(post.id)
+               }
+           }
+   )
+
+   // In ChildPostsView - swipe right from anywhere
+   .highPriorityGesture(
+       DragGesture()
+           .onEnded { value in
+               if value.translation.width > 100 {
+                   navigationPath.removeLast()
+               }
+           }
+   )
+   ```
+
+6. **Why This Matters**:
+   - Next time miso runs, the documentation will generate complete, working code immediately
+   - All debugging discoveries (exact thresholds, workarounds, edge cases) are preserved
+   - Another developer can implement the feature correctly from the docs
+   - If product code is deleted, specs can rebuild it without re-debugging
+   - The implementation documentation becomes an accurate, tested source of truth
 
 ## State Tracking
 
@@ -240,14 +289,15 @@ User modifies `apps/firefly/features/background.md` (changes color from turquois
 9. **Search for Remaining Instances**:
    - `grep -r "Color(red: 64/255" NoobTest/`
    - Find 5 more files with old color
-10. **Update Implementation Documentation**:
-    - Edit `background/imp/ios.md`
-    - Add all 6 target files that need the color change
-    - Include line numbers and search patterns
+10. **Post-Debug Cleanup**:
+    - Edit `background.md`: Describe grey/dark-red colors as user sees them
+    - Edit `background/imp/pseudocode.md`: Add exact RGB values (128,128,128) and (139,0,0)
+    - Edit `background/imp/ios.md`: List all 6 target files with line numbers and complete code examples
+    - Include search pattern: "Search for all instances of `Color(red:` and replace..."
 11. **Test**: Run `./test-feature.sh background` if test exists
 12. **Track**: Update `.last-run` timestamp
 
-**Result**: The implementation documentation now captures that 6 files need updating, not just 1. Next time, the initial implementation will be complete.
+**Result**: The documentation now accurately reflects the final implementation. All 6 files are documented with exact values. Next time miso runs, it will update all 6 files on the first attempt, with no debugging needed.
 
 ## Important Notes
 
