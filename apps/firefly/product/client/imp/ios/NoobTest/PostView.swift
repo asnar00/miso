@@ -22,6 +22,7 @@ struct PostView: View {
     let isExpanded: Bool
     let onTap: () -> Void
     let onPostCreated: () -> Void
+    let onNavigateToChildren: ((Int) -> Void)?
     let serverURL = "http://185.96.221.52:8080"
 
     @State private var expansionFactor: CGFloat = 0.0
@@ -101,6 +102,47 @@ struct PostView: View {
                 .fill(Color.white.opacity(0.9))
                 .frame(height: currentHeight)
                 .shadow(radius: 2)
+
+            // Child indicator overlay (right arrow)
+            // Position at the right edge of the card
+            if (post.childCount ?? 0) > 0 {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundColor(Color.white)
+                            .background(
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 32, weight: .bold))
+                                    .foregroundColor(Color.black)
+                                    .offset(x: -1, y: -1)
+                            )
+                            .background(
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 32, weight: .bold))
+                                    .foregroundColor(Color.black)
+                                    .offset(x: 1, y: -1)
+                            )
+                            .background(
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 32, weight: .bold))
+                                    .foregroundColor(Color.black)
+                                    .offset(x: -1, y: 1)
+                            )
+                            .background(
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 32, weight: .bold))
+                                    .foregroundColor(Color.black)
+                                    .offset(x: 1, y: 1)
+                            )
+                            .padding(.trailing, -8)
+                    }
+                    Spacer()
+                }
+                .frame(height: currentHeight)
+            }
 
             // Title and summary at the top
             VStack(alignment: .leading, spacing: 4) {
@@ -265,6 +307,15 @@ struct PostView: View {
         .onTapGesture {
             onTap()
         }
+        .gesture(
+            DragGesture(minimumDistance: 30)
+                .onEnded { value in
+                    // Detect left swipe (negative translation)
+                    if value.translation.width < -30 && (post.childCount ?? 0) > 0 {
+                        onNavigateToChildren?(post.id)
+                    }
+                }
+        )
         .onChange(of: isExpanded) { _, newValue in
             if newValue {
                 // Expanding - animate immediately with default aspect ratio

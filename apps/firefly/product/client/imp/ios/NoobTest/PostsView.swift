@@ -6,6 +6,7 @@ struct PostsView: View {
     @State private var posts: [Post]
     @State private var expandedPostId: Int? = nil
     @State private var showNewPostEditor = false
+    @State private var navigationPath: [Int] = []
 
     let serverURL = "http://185.96.221.52:8080"
 
@@ -15,8 +16,15 @@ struct PostsView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             postsContent
+                .navigationDestination(for: Int.self) { parentPostId in
+                    ChildPostsView(
+                        parentPostId: parentPostId,
+                        onPostCreated: onPostCreated,
+                        navigationPath: $navigationPath
+                    )
+                }
         }
         .navigationBarHidden(true)
     }
@@ -56,7 +64,10 @@ struct PostsView: View {
                                                 }
                                             }
                                         },
-                                        onPostCreated: onPostCreated
+                                        onPostCreated: onPostCreated,
+                                        onNavigateToChildren: { postId in
+                                            navigationPath.append(postId)
+                                        }
                                     )
                                     .id(post.id)
                                 }

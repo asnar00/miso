@@ -41380,3 +41380,2260 @@
 [2025-10-18 08:04:56.404] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
 [2025-10-18 08:04:56.720] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
 [2025-10-18 08:04:56.723] [INFO] ✅ Restored parent view with 10 posts, scrollPosition=nil, expandedPostId=nil
+
+=== Logger initialized at 2025-10-18 06:06:51 +0000 ===
+[2025-10-18 08:06:51.734] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 08:06:51.735] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 08:06:51.735] [INFO] [APP] About to start TestServer
+[2025-10-18 08:06:51.735] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 08:06:51.735] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 08:06:51.735] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 08:06:51.735] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 08:06:51.735] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 08:06:51.735] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 08:06:51.736] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 08:06:51.736] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 08:06:51.736] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 08:06:51.736] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 08:06:51.736] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 08:06:51.741] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 08:06:51.741] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 08:06:51.741] [INFO] [APP] TestServer.start() returned
+[2025-10-18 08:06:51.791] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 08:06:51.888] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 08:06:56.155] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:06:56.155] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:06:56.471] [INFO] 🎯 Drag ended: offset=-242, threshold=100
+[2025-10-18 08:06:56.486] [INFO] [PostsView] Fetched 4 children
+
+=== Logger initialized at 2025-10-18 06:07:03 +0000 ===
+[2025-10-18 08:07:03.503] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 08:07:03.503] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 08:07:03.503] [INFO] [APP] About to start TestServer
+[2025-10-18 08:07:03.503] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 08:07:03.504] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 08:07:03.504] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 08:07:03.504] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 08:07:03.504] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 08:07:03.504] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 08:07:03.505] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 08:07:03.505] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 08:07:03.505] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 08:07:03.505] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 08:07:03.505] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 08:07:03.510] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 08:07:03.510] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 08:07:03.511] [INFO] [APP] TestServer.start() returned
+[2025-10-18 08:07:03.575] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 08:07:03.758] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 08:07:06.556] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:07:06.556] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:07:08.489] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:07:09.157] [INFO] 🎯 Drag ended: offset=-368, threshold=100
+[2025-10-18 08:07:09.157] [INFO] 📱 Navigating to children
+[2025-10-18 08:07:09.157] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 08:07:09.468] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:07:09.468] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:07:13.976] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:07:15.175] [INFO] 🎯 Drag ended: offset=381, threshold=100
+[2025-10-18 08:07:15.175] [INFO] 📱 Navigating to parent
+[2025-10-18 08:07:15.175] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 08:07:15.485] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 08:07:15.485] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 08:07:15.499] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:07:15.499] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:07:15.509] [INFO] 🎯 scrollPosition changed from -1 to nil
+[2025-10-18 08:07:15.509] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:07:15.601] [INFO] 📜 Scrolled to post -1
+
+=== Logger initialized at 2025-10-18 06:09:20 +0000 ===
+[2025-10-18 08:09:20.312] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 08:09:20.312] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 08:09:20.312] [INFO] [APP] About to start TestServer
+[2025-10-18 08:09:20.312] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 08:09:20.312] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 08:09:20.312] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 08:09:20.312] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 08:09:20.312] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 08:09:20.312] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 08:09:20.313] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 08:09:20.313] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 08:09:20.313] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 08:09:20.313] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 08:09:20.313] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 08:09:20.333] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 08:09:20.333] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 08:09:20.334] [INFO] [APP] TestServer.start() returned
+[2025-10-18 08:09:20.402] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 08:09:20.556] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 08:09:30.214] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:09:30.214] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:09:30.456] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:09:31.329] [INFO] 🎯 Drag ended: offset=-1, threshold=100
+[2025-10-18 08:09:31.329] [INFO] 📱 Snapping back (drag < threshold)
+
+=== Logger initialized at 2025-10-18 06:11:01 +0000 ===
+[2025-10-18 08:11:01.801] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 08:11:01.802] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 08:11:01.802] [INFO] [APP] About to start TestServer
+[2025-10-18 08:11:01.802] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 08:11:01.802] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 08:11:01.802] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 08:11:01.802] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 08:11:01.802] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 08:11:01.802] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 08:11:01.803] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 08:11:01.803] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 08:11:01.803] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 08:11:01.803] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 08:11:01.803] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 08:11:01.806] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 08:11:01.806] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 08:11:01.806] [INFO] [APP] TestServer.start() returned
+[2025-10-18 08:11:01.858] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 08:11:02.069] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 08:12:22.025] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:12:22.025] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:12:22.158] [INFO] 🎯 Drag ended: offset=-118, threshold=100
+[2025-10-18 08:12:22.205] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:12:24.725] [INFO] 🎯 Drag ended: offset=-212, threshold=100
+[2025-10-18 08:12:24.725] [INFO] 📱 Navigating to children
+[2025-10-18 08:12:24.725] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 12)
+[2025-10-18 08:12:25.044] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:12:25.044] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:12:27.526] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:12:27.874] [INFO] 🎯 Drag ended: offset=344, threshold=100
+[2025-10-18 08:12:27.874] [INFO] 📱 Navigating to parent
+[2025-10-18 08:12:27.874] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 12)
+[2025-10-18 08:12:28.185] [INFO] 🔄 Restoring: posts=10, expandedId=12, scrollPos=12
+[2025-10-18 08:12:28.185] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 12
+[2025-10-18 08:12:28.204] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:12:28.204] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:12:28.217] [INFO] 🎯 scrollPosition changed from -1 to 12
+[2025-10-18 08:12:28.217] [INFO] 📜 Will scroll to post 12 in 0.1s
+[2025-10-18 08:12:28.312] [INFO] 📜 Scrolled to post -1
+[2025-10-18 08:12:28.320] [INFO] 📜 Scrolled to post 12
+[2025-10-18 08:12:33.944] [INFO] 🎯 Started right drag on 'beer' (stack depth: 0)
+[2025-10-18 08:12:36.276] [INFO] 🎯 Drag ended: offset=18, threshold=100
+[2025-10-18 08:12:36.277] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:12:40.161] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:12:40.161] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:12:40.425] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:12:41.309] [INFO] 🎯 Drag ended: offset=-363, threshold=100
+[2025-10-18 08:12:41.309] [INFO] 📱 Navigating to children
+[2025-10-18 08:12:41.309] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 08:12:41.620] [INFO] 🔄 Before replacement: scrollPosition=12
+[2025-10-18 08:12:41.620] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:12:41.629] [INFO] 🎯 scrollPosition changed from 12 to nil
+[2025-10-18 08:12:41.629] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:12:46.428] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:12:46.477] [INFO] 🎯 Drag ended: offset=63, threshold=100
+[2025-10-18 08:12:46.477] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:12:47.264] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:12:47.327] [INFO] 🎯 Drag ended: offset=158, threshold=100
+[2025-10-18 08:12:47.328] [INFO] 📱 Navigating to parent
+[2025-10-18 08:12:47.328] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 08:12:47.638] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 08:12:47.638] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 08:12:47.652] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:12:47.652] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:12:47.662] [INFO] 🎯 scrollPosition changed from -1 to nil
+[2025-10-18 08:12:47.663] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:12:47.758] [INFO] 📜 Scrolled to post -1
+
+=== Logger initialized at 2025-10-18 06:12:52 +0000 ===
+[2025-10-18 08:12:52.253] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 08:12:52.253] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 08:12:52.253] [INFO] [APP] About to start TestServer
+[2025-10-18 08:12:52.253] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 08:12:52.253] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 08:12:52.253] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 08:12:52.253] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 08:12:52.253] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 08:12:52.253] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 08:12:52.254] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 08:12:52.254] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 08:12:52.254] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 08:12:52.254] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 08:12:52.254] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 08:12:52.259] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 08:12:52.259] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 08:12:52.259] [INFO] [APP] TestServer.start() returned
+[2025-10-18 08:12:52.320] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 08:12:52.446] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 08:13:11.866] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:13:11.867] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:13:11.975] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:13:12.644] [INFO] 🎯 Drag ended: offset=-374, threshold=100
+[2025-10-18 08:13:12.644] [INFO] 📱 Navigating to children
+[2025-10-18 08:13:12.644] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:13:12.958] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:13:12.959] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:13:15.768] [INFO] 🎯 Started right drag on 'beer' (stack depth: 1)
+[2025-10-18 08:13:16.582] [INFO] 🎯 Drag ended: offset=387, threshold=100
+[2025-10-18 08:13:16.582] [INFO] 📱 Navigating to parent
+[2025-10-18 08:13:16.582] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:13:16.892] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:13:16.893] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:13:16.902] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:13:16.902] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:13:16.911] [INFO] 🎯 scrollPosition changed from -1 to 6
+[2025-10-18 08:13:16.911] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:13:17.006] [INFO] 📜 Scrolled to post -1
+[2025-10-18 08:13:17.018] [INFO] 📜 Scrolled to post 6
+[2025-10-18 08:13:31.034] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:13:31.034] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:13:31.267] [INFO] 🎯 Drag ended: offset=-301, threshold=100
+[2025-10-18 08:13:31.315] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:13:33.786] [INFO] 🎯 Drag ended: offset=-301, threshold=100
+[2025-10-18 08:13:33.786] [INFO] 📱 Navigating to children
+[2025-10-18 08:13:33.786] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:13:34.103] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:13:34.104] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:13:34.112] [INFO] 🎯 scrollPosition changed from 6 to nil
+[2025-10-18 08:13:34.112] [INFO] 📜 No target post to scroll to
+
+=== Logger initialized at 2025-10-18 06:15:00 +0000 ===
+[2025-10-18 08:15:00.795] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 08:15:00.795] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 08:15:00.795] [INFO] [APP] About to start TestServer
+[2025-10-18 08:15:00.795] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 08:15:00.795] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 08:15:00.795] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 08:15:00.795] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 08:15:00.795] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 08:15:00.795] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 08:15:00.796] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 08:15:00.796] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 08:15:00.796] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 08:15:00.796] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 08:15:00.796] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 08:15:00.800] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 08:15:00.801] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 08:15:00.801] [INFO] [APP] TestServer.start() returned
+[2025-10-18 08:15:00.859] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 08:15:01.033] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 08:15:04.332] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:04.332] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:05.787] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:07.300] [INFO] 🎯 Drag ended: offset=-2, threshold=100
+[2025-10-18 08:15:07.300] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:15:08.251] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:08.251] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:08.410] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:10.767] [INFO] 🎯 Drag ended: offset=-21, threshold=100
+[2025-10-18 08:15:10.768] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:15:11.451] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:11.452] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:11.555] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:11.616] [INFO] 🎯 Drag ended: offset=-258, threshold=100
+[2025-10-18 08:15:11.616] [INFO] 📱 Navigating to children
+[2025-10-18 08:15:11.617] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 08:15:11.922] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:15:11.922] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:15:16.386] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:15:16.868] [INFO] 🎯 Drag ended: offset=287, threshold=100
+[2025-10-18 08:15:16.869] [INFO] 📱 Navigating to parent
+[2025-10-18 08:15:16.869] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 08:15:17.179] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 08:15:17.179] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 08:15:21.171] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:21.171] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:21.330] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:21.342] [INFO] 🎯 Drag ended: offset=-225, threshold=100
+[2025-10-18 08:15:21.342] [INFO] 📱 Navigating to children
+[2025-10-18 08:15:21.342] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:15:21.654] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:15:21.654] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:15:22.653] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:15:22.835] [INFO] 🎯 Drag ended: offset=205, threshold=100
+[2025-10-18 08:15:22.835] [INFO] 📱 Navigating to parent
+[2025-10-18 08:15:22.835] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:15:23.146] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:15:23.146] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:15:23.154] [INFO] 🎯 scrollPosition changed from nil to 6
+[2025-10-18 08:15:23.154] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:15:23.257] [INFO] 📜 Scrolled to post 6
+[2025-10-18 08:15:24.554] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:24.554] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:24.620] [INFO] 🎯 Drag ended: offset=-162, threshold=100
+[2025-10-18 08:15:24.620] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:15:24.620] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:15:24.620] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:15:24.777] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:25.404] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:25.404] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:25.537] [INFO] 🎯 Drag ended: offset=-280, threshold=100
+[2025-10-18 08:15:25.537] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:15:25.537] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:15:25.537] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:15:25.622] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:26.421] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:26.421] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:26.529] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:26.702] [INFO] 🎯 Drag ended: offset=-389, threshold=100
+[2025-10-18 08:15:26.702] [INFO] 📱 Navigating to children
+[2025-10-18 08:15:26.702] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:15:27.005] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:15:27.005] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:15:27.012] [INFO] 🎯 scrollPosition changed from 6 to nil
+[2025-10-18 08:15:27.013] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:15:30.505] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:15:30.636] [INFO] 🎯 Drag ended: offset=222, threshold=100
+[2025-10-18 08:15:30.636] [INFO] 📱 Navigating to parent
+[2025-10-18 08:15:30.636] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:15:30.948] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:15:30.949] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:15:30.956] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:15:30.957] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:15:30.966] [INFO] 🎯 scrollPosition changed from -1 to 6
+[2025-10-18 08:15:30.966] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:15:31.062] [INFO] 📜 Scrolled to post -1
+[2025-10-18 08:15:31.072] [INFO] 📜 Scrolled to post 6
+[2025-10-18 08:15:33.322] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:33.322] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:33.455] [INFO] 🎯 Drag ended: offset=-227, threshold=100
+[2025-10-18 08:15:33.455] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:15:33.455] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:15:33.455] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:15:33.489] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:34.356] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:34.357] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:34.438] [INFO] 🎯 Drag ended: offset=-225, threshold=100
+[2025-10-18 08:15:34.438] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:15:34.438] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:15:34.438] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:15:34.512] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:35.255] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:35.256] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:35.448] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:35.888] [INFO] 🎯 Drag ended: offset=-378, threshold=100
+[2025-10-18 08:15:35.888] [INFO] 📱 Navigating to children
+[2025-10-18 08:15:35.888] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:15:36.204] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:15:36.204] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:15:36.206] [INFO] 🎯 scrollPosition changed from 6 to nil
+[2025-10-18 08:15:36.207] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:15:42.308] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:15:42.455] [INFO] 🎯 Drag ended: offset=231, threshold=100
+[2025-10-18 08:15:42.455] [INFO] 📱 Navigating to parent
+[2025-10-18 08:15:42.455] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:15:42.766] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:15:42.766] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:15:42.774] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:15:42.774] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:15:42.779] [INFO] 🎯 scrollPosition changed from -1 to 6
+[2025-10-18 08:15:42.779] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:15:42.877] [INFO] 📜 Scrolled to post -1
+[2025-10-18 08:15:42.885] [INFO] 📜 Scrolled to post 6
+[2025-10-18 08:15:43.890] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:43.890] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:44.006] [INFO] 🎯 Drag ended: offset=-178, threshold=100
+[2025-10-18 08:15:44.006] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:15:44.006] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:15:44.006] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:15:44.133] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:50.042] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:50.042] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:50.181] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:51.624] [INFO] 🎯 Drag ended: offset=-220, threshold=100
+[2025-10-18 08:15:51.624] [INFO] 📱 Navigating to children
+[2025-10-18 08:15:51.624] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:15:51.934] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:15:51.934] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:15:51.942] [INFO] 🎯 scrollPosition changed from 6 to nil
+[2025-10-18 08:15:51.943] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:15:53.975] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:15:54.457] [INFO] 🎯 Drag ended: offset=363, threshold=100
+[2025-10-18 08:15:54.457] [INFO] 📱 Navigating to parent
+[2025-10-18 08:15:54.457] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:15:54.767] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:15:54.768] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:15:54.776] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:15:54.777] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:15:54.781] [INFO] 🎯 scrollPosition changed from -1 to 6
+[2025-10-18 08:15:54.781] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:15:54.881] [INFO] 📜 Scrolled to post -1
+[2025-10-18 08:15:54.888] [INFO] 📜 Scrolled to post 6
+[2025-10-18 08:15:56.159] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:15:56.159] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:15:56.419] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:15:57.358] [INFO] 🎯 Drag ended: offset=-383, threshold=100
+[2025-10-18 08:15:57.358] [INFO] 📱 Navigating to children
+[2025-10-18 08:15:57.358] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:15:57.676] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:15:57.677] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:15:57.684] [INFO] 🎯 scrollPosition changed from 6 to nil
+[2025-10-18 08:15:57.684] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:16:00.793] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:16:01.309] [INFO] 🎯 Drag ended: offset=377, threshold=100
+[2025-10-18 08:16:01.309] [INFO] 📱 Navigating to parent
+[2025-10-18 08:16:01.309] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:16:01.625] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:16:01.628] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:16:01.637] [INFO] 🎯 scrollPosition changed from nil to 6
+[2025-10-18 08:16:01.637] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:16:01.744] [INFO] 📜 Scrolled to post 6
+[2025-10-18 08:16:49.501] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:16:49.501] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:16:49.583] [INFO] 🎯 Drag ended: offset=-88, threshold=100
+[2025-10-18 08:16:49.583] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:16:49.673] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:16:50.301] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:16:50.302] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:16:50.408] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:16:50.899] [INFO] 🎯 Drag ended: offset=-338, threshold=100
+[2025-10-18 08:16:50.899] [INFO] 📱 Navigating to children
+[2025-10-18 08:16:50.899] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:16:51.210] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:16:51.210] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:16:51.215] [INFO] 🎯 scrollPosition changed from 6 to nil
+[2025-10-18 08:16:51.215] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:16:52.434] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:16:53.700] [INFO] 🎯 Drag ended: offset=384, threshold=100
+[2025-10-18 08:16:53.701] [INFO] 📱 Navigating to parent
+[2025-10-18 08:16:53.701] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:16:54.017] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:16:54.019] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:16:54.028] [INFO] 🎯 scrollPosition changed from nil to 6
+[2025-10-18 08:16:54.028] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:16:54.137] [INFO] 📜 Scrolled to post 6
+[2025-10-18 08:17:13.204] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:17:13.204] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:17:13.431] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:17:18.122] [INFO] 🎯 Drag ended: offset=-365, threshold=100
+[2025-10-18 08:17:18.122] [INFO] 📱 Navigating to children
+[2025-10-18 08:17:18.122] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 08:17:18.440] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:17:18.441] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:17:18.449] [INFO] 🎯 scrollPosition changed from 6 to nil
+[2025-10-18 08:17:18.449] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:17:20.022] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:17:20.588] [INFO] 🎯 Drag ended: offset=269, threshold=100
+[2025-10-18 08:17:20.588] [INFO] 📱 Navigating to parent
+[2025-10-18 08:17:20.588] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 08:17:20.904] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 08:17:20.906] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 08:17:24.007] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:17:24.008] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:17:24.120] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:17:25.894] [INFO] 🎯 Drag ended: offset=-179, threshold=100
+[2025-10-18 08:17:25.894] [INFO] 📱 Navigating to children
+[2025-10-18 08:17:25.895] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 08:17:26.209] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:17:26.209] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:17:28.417] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:17:29.085] [INFO] 🎯 Drag ended: offset=137, threshold=100
+[2025-10-18 08:17:29.085] [INFO] 📱 Navigating to parent
+[2025-10-18 08:17:29.085] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 08:17:29.399] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 08:17:29.400] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 08:17:29.409] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:17:29.409] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:17:29.414] [INFO] 🎯 scrollPosition changed from -1 to nil
+[2025-10-18 08:17:29.414] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:17:29.510] [INFO] 📜 Scrolled to post -1
+
+=== Logger initialized at 2025-10-18 06:18:02 +0000 ===
+[2025-10-18 08:18:02.798] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 08:18:02.798] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 08:18:02.798] [INFO] [APP] About to start TestServer
+[2025-10-18 08:18:02.798] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 08:18:02.798] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 08:18:02.798] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 08:18:02.798] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 08:18:02.798] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 08:18:02.798] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 08:18:02.799] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 08:18:02.799] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 08:18:02.799] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 08:18:02.799] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 08:18:02.799] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 08:18:02.800] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 08:18:02.800] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 08:18:02.800] [INFO] [APP] TestServer.start() returned
+[2025-10-18 08:18:02.840] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 08:18:03.128] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 08:18:45.346] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:18:45.346] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:18:45.395] [INFO] 🎯 Drag ended: offset=-75, threshold=100
+[2025-10-18 08:18:45.395] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:18:45.533] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:18:46.263] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:18:46.263] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:18:46.312] [INFO] 🎯 Drag ended: offset=-98, threshold=100
+[2025-10-18 08:18:46.312] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:18:46.359] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:18:47.030] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:18:47.030] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:18:47.186] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:18:48.479] [INFO] 🎯 Drag ended: offset=-252, threshold=100
+[2025-10-18 08:18:48.479] [INFO] 📱 Navigating to children
+[2025-10-18 08:18:48.479] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:18:48.798] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:18:48.798] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:18:50.031] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:18:50.211] [INFO] 🎯 Drag ended: offset=288, threshold=100
+[2025-10-18 08:18:50.212] [INFO] 📱 Navigating to parent
+[2025-10-18 08:18:50.212] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:18:50.526] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:18:50.526] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:18:50.537] [INFO] 🎯 scrollPosition changed from nil to -1
+[2025-10-18 08:18:50.537] [INFO] 📜 Will scroll to post -1 in 0.1s
+[2025-10-18 08:18:50.545] [INFO] 🎯 scrollPosition changed from -1 to 6
+[2025-10-18 08:18:50.545] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:18:50.643] [INFO] 📜 Scrolled to post -1
+[2025-10-18 08:18:50.650] [INFO] 📜 Scrolled to post 6
+[2025-10-18 08:18:51.648] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:18:51.648] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:18:51.874] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:18:53.046] [INFO] 🎯 Drag ended: offset=-68, threshold=100
+[2025-10-18 08:18:53.046] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:18:53.714] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:18:53.714] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:18:53.825] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:18:55.714] [INFO] 🎯 Drag ended: offset=-6, threshold=100
+[2025-10-18 08:18:55.714] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:18:56.382] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:18:56.382] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:18:56.474] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:18:57.381] [INFO] 🎯 Drag ended: offset=-360, threshold=100
+[2025-10-18 08:18:57.381] [INFO] 📱 Navigating to children
+[2025-10-18 08:18:57.381] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:18:57.699] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:18:57.699] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:18:57.706] [INFO] 🎯 scrollPosition changed from 6 to nil
+[2025-10-18 08:18:57.706] [INFO] 📜 No target post to scroll to
+[2025-10-18 08:19:09.001] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:19:09.165] [INFO] 🎯 Drag ended: offset=250, threshold=100
+[2025-10-18 08:19:09.165] [INFO] 📱 Navigating to parent
+[2025-10-18 08:19:09.165] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:19:09.480] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:19:09.480] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:19:09.489] [INFO] 🎯 scrollPosition changed from nil to 6
+[2025-10-18 08:19:09.489] [INFO] 📜 Will scroll to post 6 in 0.1s
+[2025-10-18 08:19:09.597] [INFO] 📜 Scrolled to post 6
+
+=== Logger initialized at 2025-10-18 06:21:13 +0000 ===
+[2025-10-18 08:21:13.104] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 08:21:13.104] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 08:21:13.104] [INFO] [APP] About to start TestServer
+[2025-10-18 08:21:13.104] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 08:21:13.104] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 08:21:13.104] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 08:21:13.104] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 08:21:13.104] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 08:21:13.104] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 08:21:13.105] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 08:21:13.105] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 08:21:13.105] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 08:21:13.105] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 08:21:13.105] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 08:21:13.111] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 08:21:13.111] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 08:21:13.111] [INFO] [APP] TestServer.start() returned
+[2025-10-18 08:21:13.163] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 08:21:13.321] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 08:21:21.256] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:21:21.256] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:21:21.355] [INFO] 🎯 Drag ended: offset=-132, threshold=100
+[2025-10-18 08:21:21.355] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:21:21.355] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:21:21.355] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:21:21.484] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:21:22.173] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:21:22.174] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:21:22.331] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:21:22.621] [INFO] 🎯 Drag ended: offset=-355, threshold=100
+[2025-10-18 08:21:22.621] [INFO] 📱 Navigating to children
+[2025-10-18 08:21:22.621] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:21:22.925] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:21:22.925] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:21:26.907] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:21:27.088] [INFO] 🎯 Drag ended: offset=276, threshold=100
+[2025-10-18 08:21:27.089] [INFO] 📱 Navigating to parent
+[2025-10-18 08:21:27.089] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:21:27.403] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:21:27.403] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:22:25.433] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:22:25.434] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:22:25.559] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:22:31.117] [INFO] 🎯 Drag ended: offset=-397, threshold=100
+[2025-10-18 08:22:31.117] [INFO] 📱 Navigating to children
+[2025-10-18 08:22:31.117] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:22:31.435] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:22:31.436] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:22:33.002] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:22:33.867] [INFO] 🎯 Drag ended: offset=385, threshold=100
+[2025-10-18 08:22:33.867] [INFO] 📱 Navigating to parent
+[2025-10-18 08:22:33.867] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:22:34.180] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:22:34.180] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:23:59.866] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:23:59.866] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:23:59.973] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:24:05.400] [INFO] 🎯 Drag ended: offset=-373, threshold=100
+[2025-10-18 08:24:05.400] [INFO] 📱 Navigating to children
+[2025-10-18 08:24:05.400] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:24:05.719] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:24:05.720] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:24:16.444] [INFO] 🎯 Started right drag on 'Life’s a Beach' (stack depth: 1)
+[2025-10-18 08:24:16.609] [INFO] 🎯 Drag ended: offset=240, threshold=100
+[2025-10-18 08:24:16.609] [INFO] 📱 Navigating to parent
+[2025-10-18 08:24:16.610] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:24:16.920] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:24:16.920] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:24:35.163] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:24:35.163] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:24:35.312] [INFO] 🎯 Drag ended: offset=-138, threshold=100
+[2025-10-18 08:24:35.312] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:24:35.312] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:24:35.312] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:24:35.339] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:24:36.098] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:24:36.098] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:24:36.258] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:24:39.447] [INFO] 🎯 Drag ended: offset=-235, threshold=100
+[2025-10-18 08:24:39.447] [INFO] 📱 Navigating to children
+[2025-10-18 08:24:39.447] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:24:39.766] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:24:39.766] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:24:40.682] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:24:41.079] [INFO] 🎯 Drag ended: offset=392, threshold=100
+[2025-10-18 08:24:41.080] [INFO] 📱 Navigating to parent
+[2025-10-18 08:24:41.080] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:24:41.390] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:24:41.390] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:24:44.316] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:24:44.316] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:24:44.545] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:24:46.081] [INFO] 🎯 Drag ended: offset=-51, threshold=100
+[2025-10-18 08:24:46.082] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:24:48.067] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:24:48.067] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:24:48.258] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:24:49.149] [INFO] 🎯 Drag ended: offset=-2, threshold=100
+[2025-10-18 08:24:49.149] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:24:51.733] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:24:51.733] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:24:51.927] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:24:55.550] [INFO] 🎯 Drag ended: offset=-23, threshold=100
+[2025-10-18 08:24:55.550] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:24:58.586] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:24:58.586] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:24:58.808] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:24:58.999] [INFO] 🎯 Drag ended: offset=-387, threshold=100
+[2025-10-18 08:24:58.999] [INFO] 📱 Navigating to children
+[2025-10-18 08:24:58.999] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:24:59.303] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:24:59.304] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:25:00.436] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:25:02.184] [INFO] 🎯 Drag ended: offset=392, threshold=100
+[2025-10-18 08:25:02.184] [INFO] 📱 Navigating to parent
+[2025-10-18 08:25:02.184] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:25:02.494] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:25:02.494] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:25:19.454] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:25:19.455] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:25:19.548] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:25:29.456] [INFO] 🎯 Drag ended: offset=-373, threshold=100
+[2025-10-18 08:25:29.456] [INFO] 📱 Navigating to children
+[2025-10-18 08:25:29.456] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 08:25:29.775] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:25:29.775] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:25:30.707] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:25:30.939] [INFO] 🎯 Drag ended: offset=279, threshold=100
+[2025-10-18 08:25:30.939] [INFO] 📱 Navigating to parent
+[2025-10-18 08:25:30.939] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 08:25:31.249] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 08:25:31.249] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 08:25:37.175] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:25:37.176] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:25:37.287] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:25:44.159] [INFO] 🎯 Drag ended: offset=-11, threshold=100
+[2025-10-18 08:25:44.159] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:26:04.214] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:26:04.214] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:26:04.325] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:26:06.911] [INFO] 🎯 Drag ended: offset=0, threshold=100
+[2025-10-18 08:26:06.912] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:26:12.481] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:26:12.481] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:26:12.620] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:26:14.046] [INFO] 🎯 Drag ended: offset=-51, threshold=100
+[2025-10-18 08:26:14.046] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:26:15.664] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:26:15.664] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:26:15.750] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:26:18.147] [INFO] 🎯 Drag ended: offset=-1, threshold=100
+[2025-10-18 08:26:18.147] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:26:19.715] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:26:19.715] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:26:19.889] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:26:22.365] [INFO] 🎯 Drag ended: offset=-388, threshold=100
+[2025-10-18 08:26:22.365] [INFO] 📱 Navigating to children
+[2025-10-18 08:26:22.365] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:26:22.684] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:26:22.684] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:26:24.666] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:26:25.398] [INFO] 🎯 Drag ended: offset=392, threshold=100
+[2025-10-18 08:26:25.398] [INFO] 📱 Navigating to parent
+[2025-10-18 08:26:25.399] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 08:26:25.708] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 08:26:25.708] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 08:27:35.328] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:27:35.329] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:27:35.457] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:27:38.427] [INFO] 🎯 Drag ended: offset=-355, threshold=100
+[2025-10-18 08:27:38.427] [INFO] 📱 Navigating to children
+[2025-10-18 08:27:38.427] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 10)
+[2025-10-18 08:27:38.730] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 08:27:38.730] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:27:43.796] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:27:44.712] [INFO] 🎯 Drag ended: offset=325, threshold=100
+[2025-10-18 08:27:44.712] [INFO] 📱 Navigating to parent
+[2025-10-18 08:27:44.712] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 10)
+[2025-10-18 08:27:45.021] [INFO] 🔄 Restoring: posts=10, expandedId=10, scrollPos=10
+[2025-10-18 08:27:45.022] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 10
+[2025-10-18 08:28:09.350] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:28:09.350] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:28:09.560] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:28:15.550] [INFO] 🎯 Drag ended: offset=-43, threshold=100
+[2025-10-18 08:28:15.551] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:28:44.006] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:28:44.006] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:28:44.105] [INFO] 🎯 Drag ended: offset=-158, threshold=100
+[2025-10-18 08:28:44.106] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:28:44.106] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:28:44.106] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:28:44.175] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:28:45.023] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:28:45.023] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:28:45.116] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:28:45.171] [INFO] 🎯 Drag ended: offset=-232, threshold=100
+[2025-10-18 08:28:45.171] [INFO] 📱 Navigating to children
+[2025-10-18 08:28:45.171] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 08:28:45.476] [INFO] 🔄 Before replacement: scrollPosition=10
+[2025-10-18 08:28:45.476] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 08:28:48.490] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:28:48.572] [INFO] 🎯 Drag ended: offset=67, threshold=100
+[2025-10-18 08:28:48.572] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:28:49.307] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 08:28:49.373] [INFO] 🎯 Drag ended: offset=206, threshold=100
+[2025-10-18 08:28:49.373] [INFO] 📱 Navigating to parent
+[2025-10-18 08:28:49.373] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 08:28:49.683] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 08:28:49.683] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 08:29:01.142] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:29:01.142] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:29:01.208] [INFO] 🎯 Drag ended: offset=-107, threshold=100
+[2025-10-18 08:29:01.208] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:29:01.208] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:29:01.208] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:29:01.271] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:29:02.243] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:29:02.243] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:29:02.325] [INFO] 🎯 Drag ended: offset=-154, threshold=100
+[2025-10-18 08:29:02.325] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 08:29:02.325] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 08:29:02.325] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 08:29:02.403] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:29:03.160] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:29:03.160] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:29:03.319] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:29:06.009] [INFO] 🎯 Drag ended: offset=-2, threshold=100
+[2025-10-18 08:29:06.009] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 08:29:06.559] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 08:29:06.560] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 08:29:06.704] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 08:29:07.041] [INFO] 🎯 Drag ended: offset=-388, threshold=100
+[2025-10-18 08:29:07.041] [INFO] 📱 Navigating to children
+[2025-10-18 08:29:07.041] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 08:29:07.353] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 08:29:07.353] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+
+=== Logger initialized at 2025-10-18 10:49:35 +0000 ===
+[2025-10-18 12:49:35.810] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 12:49:35.811] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 12:49:35.811] [INFO] [APP] About to start TestServer
+[2025-10-18 12:49:35.811] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 12:49:35.811] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 12:49:35.811] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 12:49:35.811] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 12:49:35.811] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 12:49:35.811] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 12:49:35.813] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 12:49:35.813] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 12:49:35.814] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 12:49:35.814] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 12:49:35.814] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 12:49:35.816] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 12:49:35.817] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 12:49:35.817] [INFO] [APP] TestServer.start() returned
+[2025-10-18 12:49:35.946] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 12:49:36.066] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 12:50:22.247] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:50:22.247] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:50:22.485] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:50:23.075] [INFO] 🎯 Drag ended: offset=-362, threshold=100
+[2025-10-18 12:50:23.076] [INFO] 📱 Navigating to children
+[2025-10-18 12:50:23.076] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 12:50:23.378] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 12:50:23.378] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 12:50:26.403] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 12:50:26.584] [INFO] 🎯 Drag ended: offset=311, threshold=100
+[2025-10-18 12:50:26.584] [INFO] 📱 Navigating to parent
+[2025-10-18 12:50:26.584] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 12:50:26.898] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 12:50:26.898] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 12:50:33.347] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:50:33.347] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:50:33.453] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:50:34.260] [INFO] 🎯 Drag ended: offset=-393, threshold=100
+[2025-10-18 12:50:34.261] [INFO] 📱 Navigating to children
+[2025-10-18 12:50:34.261] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 12:50:34.564] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 12:50:34.564] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 12:50:49.160] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 12:50:49.259] [INFO] 🎯 Drag ended: offset=166, threshold=100
+[2025-10-18 12:50:49.259] [INFO] 📱 Navigating to parent
+[2025-10-18 12:50:49.259] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 12:50:49.573] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 12:50:49.573] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 12:50:54.164] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:50:54.164] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:50:54.297] [INFO] 🎯 Drag ended: offset=-177, threshold=100
+[2025-10-18 12:50:54.297] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 12:50:54.297] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 12:50:54.297] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 12:50:54.307] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:50:55.123] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:50:55.124] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:50:55.189] [INFO] 🎯 Drag ended: offset=-172, threshold=100
+[2025-10-18 12:50:55.189] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 12:50:55.189] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 12:50:55.189] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 12:50:55.218] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:50:56.046] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:50:56.046] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:50:56.106] [INFO] 🎯 Drag ended: offset=-157, threshold=100
+[2025-10-18 12:50:56.106] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 12:50:56.106] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 12:50:56.107] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 12:50:56.139] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:50:56.875] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:50:56.875] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:50:57.065] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:50:57.574] [INFO] 🎯 Drag ended: offset=-334, threshold=100
+[2025-10-18 12:50:57.574] [INFO] 📱 Navigating to children
+[2025-10-18 12:50:57.574] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 12:50:57.891] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 12:50:57.892] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 12:51:14.244] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 12:51:14.775] [INFO] 🎯 Drag ended: offset=345, threshold=100
+[2025-10-18 12:51:14.776] [INFO] 📱 Navigating to parent
+[2025-10-18 12:51:14.776] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 12:51:15.086] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 12:51:15.086] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 12:51:19.907] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:51:19.907] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:51:20.104] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:51:20.119] [INFO] 🎯 Drag ended: offset=-222, threshold=100
+[2025-10-18 12:51:20.119] [INFO] 📱 Navigating to children
+[2025-10-18 12:51:20.119] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 12:51:20.429] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 12:51:20.430] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 12:51:26.612] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 12:51:27.044] [INFO] 🎯 Drag ended: offset=338, threshold=100
+[2025-10-18 12:51:27.044] [INFO] 📱 Navigating to parent
+[2025-10-18 12:51:27.044] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 12:51:27.356] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 12:51:27.356] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 12:53:53.790] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:53:53.790] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:53:53.889] [INFO] 🎯 Drag ended: offset=-128, threshold=100
+[2025-10-18 12:53:53.889] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 12:53:53.889] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 12:53:53.889] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 12:53:53.910] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:53:54.742] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:53:54.742] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:53:54.932] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:53:55.251] [INFO] 🎯 Drag ended: offset=-399, threshold=100
+[2025-10-18 12:53:55.251] [INFO] 📱 Navigating to children
+[2025-10-18 12:53:55.251] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 12:53:55.565] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 12:53:55.565] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 12:54:01.605] [INFO] 🎯 Started right drag on 'Life’s a Beach' (stack depth: 1)
+[2025-10-18 12:54:03.720] [INFO] 🎯 Drag ended: offset=391, threshold=100
+[2025-10-18 12:54:03.720] [INFO] 📱 Navigating to parent
+[2025-10-18 12:54:03.720] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 12:54:04.030] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 12:54:04.030] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 12:56:56.833] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:56:56.833] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:56:56.982] [INFO] 🎯 Drag ended: offset=-204, threshold=100
+[2025-10-18 12:56:56.982] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 12:56:56.982] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 12:56:56.982] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 12:56:57.015] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:56:58.216] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 12:56:58.216] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 12:56:58.341] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 12:56:58.381] [INFO] 🎯 Drag ended: offset=-280, threshold=100
+[2025-10-18 12:56:58.381] [INFO] 📱 Navigating to children
+[2025-10-18 12:56:58.381] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 8)
+[2025-10-18 12:56:58.696] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 12:56:58.696] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 12:57:01.330] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 12:57:01.478] [INFO] 🎯 Drag ended: offset=166, threshold=100
+[2025-10-18 12:57:01.478] [INFO] 📱 Navigating to parent
+[2025-10-18 12:57:01.478] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 8)
+[2025-10-18 12:57:01.788] [INFO] 🔄 Restoring: posts=10, expandedId=8, scrollPos=8
+[2025-10-18 12:57:01.789] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 8
+[2025-10-18 13:19:38.731] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 13:19:38.731] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 13:19:38.829] [INFO] 🎯 Drag ended: offset=-161, threshold=100
+[2025-10-18 13:19:38.829] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 13:19:38.829] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 13:19:38.829] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 13:19:38.843] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 13:19:39.747] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 13:19:39.747] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 13:19:39.846] [INFO] 🎯 Drag ended: offset=-178, threshold=100
+[2025-10-18 13:19:39.846] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 13:19:39.846] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 13:19:39.846] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 13:19:39.908] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 13:19:40.630] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 13:19:40.630] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 13:19:40.763] [INFO] 🎯 Drag ended: offset=-222, threshold=100
+[2025-10-18 13:19:40.763] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 13:19:40.763] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 13:19:40.763] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 13:19:40.782] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 13:19:41.547] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 13:19:41.547] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 13:19:41.706] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 13:19:42.446] [INFO] 🎯 Drag ended: offset=-304, threshold=100
+[2025-10-18 13:19:42.446] [INFO] 📱 Navigating to children
+[2025-10-18 13:19:42.446] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 13:19:42.762] [INFO] 🔄 Before replacement: scrollPosition=8
+[2025-10-18 13:19:42.762] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+
+=== Logger initialized at 2025-10-18 12:17:39 +0000 ===
+[2025-10-18 14:17:39.780] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 14:17:39.780] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 14:17:39.780] [INFO] [APP] About to start TestServer
+[2025-10-18 14:17:39.780] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 14:17:39.780] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 14:17:39.780] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 14:17:39.780] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 14:17:39.780] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 14:17:39.780] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 14:17:39.781] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 14:17:39.781] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 14:17:39.783] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 14:17:39.783] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 14:17:39.783] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 14:17:39.786] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 14:17:39.786] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 14:17:39.786] [INFO] [APP] TestServer.start() returned
+[2025-10-18 14:17:39.948] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 14:17:40.158] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 14:20:19.644] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:20:19.644] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:20:20.102] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:20:21.490] [INFO] 🎯 Drag ended: offset=-388, threshold=100
+[2025-10-18 14:20:21.490] [INFO] 📱 Navigating to children
+[2025-10-18 14:20:21.491] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 14:20:21.805] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 14:20:21.805] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 14:20:23.513] [INFO] 🎯 Started right drag on 'beer' (stack depth: 1)
+[2025-10-18 14:20:23.911] [INFO] 🎯 Drag ended: offset=187, threshold=100
+[2025-10-18 14:20:23.911] [INFO] 📱 Navigating to parent
+[2025-10-18 14:20:23.911] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 14:20:24.222] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 14:20:24.223] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 14:20:37.273] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:20:37.273] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:20:37.499] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:20:44.290] [INFO] 🎯 Drag ended: offset=-45, threshold=100
+[2025-10-18 14:20:44.290] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 14:20:49.996] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:20:49.997] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:20:50.206] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:21:03.163] [INFO] 🎯 Drag ended: offset=-65, threshold=100
+[2025-10-18 14:21:03.163] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 14:24:44.641] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:24:44.642] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:24:44.757] [INFO] 🎯 Drag ended: offset=-131, threshold=100
+[2025-10-18 14:24:44.757] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 14:24:44.757] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 14:24:44.757] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 14:24:45.030] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:24:54.206] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:24:54.206] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:24:54.465] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:24:54.654] [INFO] 🎯 Drag ended: offset=-244, threshold=100
+[2025-10-18 14:24:54.654] [INFO] 📱 Navigating to children
+[2025-10-18 14:24:54.654] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 14:24:54.970] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 14:24:54.970] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 14:24:59.395] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 14:24:59.776] [INFO] 🎯 Drag ended: offset=347, threshold=100
+[2025-10-18 14:24:59.777] [INFO] 📱 Navigating to parent
+[2025-10-18 14:24:59.777] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 14:25:00.091] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 14:25:00.091] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 14:25:03.024] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:25:03.024] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:25:03.156] [INFO] 🎯 Drag ended: offset=-169, threshold=100
+[2025-10-18 14:25:03.156] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 14:25:03.156] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 14:25:03.156] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 14:25:03.385] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:25:03.881] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:25:03.881] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:25:04.074] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:25:04.114] [INFO] 🎯 Drag ended: offset=-266, threshold=100
+[2025-10-18 14:25:04.114] [INFO] 📱 Navigating to children
+[2025-10-18 14:25:04.114] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-18 14:25:04.418] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 14:25:04.419] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 14:25:11.909] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 14:25:12.357] [INFO] 🎯 Drag ended: offset=326, threshold=100
+[2025-10-18 14:25:12.357] [INFO] 📱 Navigating to parent
+[2025-10-18 14:25:12.357] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-18 14:25:12.673] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-18 14:25:12.673] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-18 14:25:49.260] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:25:49.260] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:25:49.480] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:25:54.626] [INFO] 🎯 Drag ended: offset=-85, threshold=100
+[2025-10-18 14:25:54.626] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 14:25:56.279] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 14:25:56.279] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 14:25:56.586] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 14:26:09.729] [INFO] 🎯 Drag ended: offset=-125, threshold=100
+[2025-10-18 14:26:09.729] [INFO] 📱 Navigating to children
+[2025-10-18 14:26:09.729] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 14:26:10.040] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 14:26:10.041] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 14:26:23.425] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 14:26:23.523] [INFO] 🎯 Drag ended: offset=168, threshold=100
+[2025-10-18 14:26:23.523] [INFO] 📱 Navigating to parent
+[2025-10-18 14:26:23.524] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 14:26:23.837] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 14:26:23.837] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 15:33:14.980] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 15:33:14.980] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 15:33:15.176] [INFO] 🎯 Drag ended: offset=-29, threshold=100
+[2025-10-18 15:33:15.176] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 15:33:15.420] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 15:36:27.629] [INFO] 🎯 Started right drag on 'beer' (stack depth: 0)
+[2025-10-18 15:36:27.778] [INFO] 🎯 Drag ended: offset=161, threshold=100
+[2025-10-18 15:36:27.778] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 15:36:27.778] [INFO]    isLeftDrag=false, childrenPosts.isEmpty=false
+[2025-10-18 15:36:27.778] [INFO]    isRightDrag=true, navigationStack.isEmpty=true
+[2025-10-18 15:36:31.705] [INFO] 🎯 Started right drag on 'Lao Gan Ma' (stack depth: 0)
+[2025-10-18 15:36:32.687] [INFO] 🎯 Drag ended: offset=3, threshold=100
+[2025-10-18 15:36:32.688] [INFO] 📱 Snapping back (drag < threshold)
+
+=== Logger initialized at 2025-10-18 14:19:09 +0000 ===
+[2025-10-18 16:19:09.390] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 16:19:09.391] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 16:19:09.391] [INFO] [APP] About to start TestServer
+[2025-10-18 16:19:09.391] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 16:19:09.391] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 16:19:09.391] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 16:19:09.391] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 16:19:09.391] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 16:19:09.391] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 16:19:09.392] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 16:19:09.392] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 16:19:09.394] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 16:19:09.394] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 16:19:09.394] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 16:19:09.396] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 16:19:09.396] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 16:19:09.396] [INFO] [APP] TestServer.start() returned
+[2025-10-18 16:19:09.520] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 16:19:09.630] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 16:19:14.247] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 16:19:14.247] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 16:19:14.352] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 16:19:14.476] [INFO] 🎯 Drag ended: offset=-263, threshold=100
+[2025-10-18 16:19:14.476] [INFO] 📱 Navigating to children
+[2025-10-18 16:19:14.476] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 16:19:14.777] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 16:19:14.777] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 16:19:17.546] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 16:19:18.526] [INFO] 🎯 Drag ended: offset=318, threshold=100
+[2025-10-18 16:19:18.526] [INFO] 📱 Navigating to parent
+[2025-10-18 16:19:18.527] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 16:19:18.839] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 16:19:18.840] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 16:19:33.701] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 16:19:33.701] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 16:19:33.797] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 16:19:38.001] [INFO] 🎯 Drag ended: offset=-75, threshold=100
+[2025-10-18 16:19:38.001] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 16:19:41.081] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 16:19:41.081] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 16:19:41.271] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 16:19:41.881] [INFO] 🎯 Drag ended: offset=-18, threshold=100
+[2025-10-18 16:19:41.881] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 16:19:51.675] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 16:19:51.675] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 16:19:51.950] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 16:19:59.859] [INFO] 🎯 Drag ended: offset=-371, threshold=100
+[2025-10-18 16:19:59.859] [INFO] 📱 Navigating to children
+[2025-10-18 16:19:59.859] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 16:20:00.173] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 16:20:00.173] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 16:20:06.494] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 16:20:06.876] [INFO] 🎯 Drag ended: offset=318, threshold=100
+[2025-10-18 16:20:06.876] [INFO] 📱 Navigating to parent
+[2025-10-18 16:20:06.876] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 16:20:07.192] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 16:20:07.192] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 16:20:13.500] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 16:20:13.501] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 16:20:13.657] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 16:20:14.849] [INFO] 🎯 Drag ended: offset=-37, threshold=100
+[2025-10-18 16:20:14.849] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 16:20:26.260] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 16:20:26.260] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 16:20:26.359] [INFO] 🎯 Drag ended: offset=-114, threshold=100
+[2025-10-18 16:20:26.359] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 16:20:26.359] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 16:20:26.359] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 16:20:26.437] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 16:20:27.023] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 16:20:27.023] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 16:20:27.122] [INFO] 🎯 Drag ended: offset=-160, threshold=100
+[2025-10-18 16:20:27.122] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 16:20:27.122] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 16:20:27.122] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 16:20:27.167] [INFO] [PostsView] Fetched 4 children
+
+=== Logger initialized at 2025-10-18 17:58:53 +0000 ===
+[2025-10-18 19:58:53.768] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 19:58:53.768] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 19:58:53.768] [INFO] [APP] About to start TestServer
+[2025-10-18 19:58:53.768] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 19:58:53.768] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 19:58:53.768] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 19:58:53.768] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 19:58:53.768] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 19:58:53.768] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 19:58:53.769] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 19:58:53.769] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 19:58:53.771] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 19:58:53.771] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 19:58:53.771] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 19:58:53.774] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 19:58:53.774] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 19:58:53.774] [INFO] [APP] TestServer.start() returned
+[2025-10-18 19:58:53.930] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 19:58:54.182] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 20:02:47.164] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 20:02:47.164] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 20:02:47.389] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 20:02:47.428] [INFO] 🎯 Drag ended: offset=-233, threshold=100
+[2025-10-18 20:02:47.428] [INFO] 📱 Navigating to children
+[2025-10-18 20:02:47.428] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 20:02:47.739] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 20:02:47.740] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 20:02:53.881] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 20:02:54.164] [INFO] 🎯 Drag ended: offset=291, threshold=100
+[2025-10-18 20:02:54.164] [INFO] 📱 Navigating to parent
+[2025-10-18 20:02:54.165] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 20:02:54.479] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 20:02:54.481] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 20:11:54.244] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 20:11:54.244] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 20:11:54.359] [INFO] 🎯 Drag ended: offset=-188, threshold=100
+[2025-10-18 20:11:54.359] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 20:11:54.359] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 20:11:54.359] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 20:11:54.362] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 20:11:55.279] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 20:11:55.279] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 20:11:55.358] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 20:11:55.372] [INFO] 🎯 Drag ended: offset=-175, threshold=100
+[2025-10-18 20:11:55.372] [INFO] 📱 Navigating to children
+[2025-10-18 20:11:55.372] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 20:11:55.679] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 20:11:55.680] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 20:14:22.456] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 20:14:22.971] [INFO] 🎯 Drag ended: offset=385, threshold=100
+[2025-10-18 20:14:22.971] [INFO] 📱 Navigating to parent
+[2025-10-18 20:14:22.971] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 20:14:23.284] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 20:14:23.285] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+
+=== Logger initialized at 2025-10-18 19:04:47 +0000 ===
+[2025-10-18 21:04:47.306] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 21:04:47.306] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 21:04:47.306] [INFO] [APP] About to start TestServer
+[2025-10-18 21:04:47.307] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 21:04:47.307] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 21:04:47.307] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 21:04:47.307] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 21:04:47.307] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 21:04:47.307] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 21:04:47.308] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 21:04:47.308] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 21:04:47.311] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 21:04:47.311] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 21:04:47.311] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 21:04:47.316] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 21:04:47.316] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 21:04:47.316] [INFO] [APP] TestServer.start() returned
+[2025-10-18 21:04:47.418] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 21:04:47.548] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 21:54:45.931] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 21:54:45.931] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 21:54:46.078] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 21:54:50.481] [INFO] 🎯 Drag ended: offset=-25, threshold=100
+[2025-10-18 21:54:50.481] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 21:54:52.332] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 21:54:52.332] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 21:54:52.440] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 21:54:54.164] [INFO] 🎯 Drag ended: offset=-157, threshold=100
+[2025-10-18 21:54:54.164] [INFO] 📱 Navigating to children
+[2025-10-18 21:54:54.165] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 21:54:54.475] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 21:54:54.475] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 21:54:55.311] [INFO] 🎯 Started right drag on 'beer' (stack depth: 1)
+[2025-10-18 21:54:55.393] [INFO] 🎯 Drag ended: offset=178, threshold=100
+[2025-10-18 21:54:55.393] [INFO] 📱 Navigating to parent
+[2025-10-18 21:54:55.393] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 21:54:55.708] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 21:54:55.708] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-18 21:58:21.224] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 21:58:21.224] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 21:58:21.346] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 21:58:59.648] [INFO] 🎯 Drag ended: offset=-84, threshold=100
+[2025-10-18 21:58:59.648] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 21:59:02.941] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 21:59:02.941] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 21:59:03.116] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 21:59:09.024] [INFO] 🎯 Drag ended: offset=-39, threshold=100
+[2025-10-18 21:59:09.025] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 21:59:11.317] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 21:59:11.317] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 21:59:11.409] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 21:59:27.786] [INFO] 🎯 Drag ended: offset=-78, threshold=100
+[2025-10-18 21:59:27.786] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 21:59:35.467] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 21:59:35.467] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 21:59:35.576] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 21:59:41.251] [INFO] 🎯 Drag ended: offset=-38, threshold=100
+[2025-10-18 21:59:41.251] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 22:26:06.608] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 22:26:06.608] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 22:26:06.798] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 22:26:07.204] [INFO] 🎯 Drag ended: offset=-237, threshold=100
+[2025-10-18 22:26:07.204] [INFO] 📱 Navigating to children
+[2025-10-18 22:26:07.204] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 22:26:07.520] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-18 22:26:07.520] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 22:26:14.161] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 22:26:14.294] [INFO] 🎯 Drag ended: offset=236, threshold=100
+[2025-10-18 22:26:14.294] [INFO] 📱 Navigating to parent
+[2025-10-18 22:26:14.294] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 22:26:14.606] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 22:26:14.608] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+
+=== Logger initialized at 2025-10-18 21:56:21 +0000 ===
+[2025-10-18 23:56:21.822] [INFO] [APP] NoobTestApp init() called
+[2025-10-18 23:56:21.823] [INFO] [APP] User already logged in: test@example.com
+[2025-10-18 23:56:21.823] [INFO] [APP] About to start TestServer
+[2025-10-18 23:56:21.823] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-18 23:56:21.823] [INFO] [TESTSERVER] About to register tests
+[2025-10-18 23:56:21.823] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-18 23:56:21.823] [INFO] [TESTSERVER] Tests registered
+[2025-10-18 23:56:21.823] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-18 23:56:21.823] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-18 23:56:21.825] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-18 23:56:21.825] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-18 23:56:21.826] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-18 23:56:21.826] [INFO] [TESTSERVER] About to start listener
+[2025-10-18 23:56:21.826] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-18 23:56:21.829] [INFO] [TESTSERVER] State changed to ready
+[2025-10-18 23:56:21.829] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-18 23:56:21.829] [INFO] [APP] TestServer.start() returned
+[2025-10-18 23:56:21.947] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-18 23:56:22.073] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-18 23:56:31.403] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 23:56:31.403] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 23:56:31.532] [INFO] 🎯 Drag ended: offset=-163, threshold=100
+[2025-10-18 23:56:31.533] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 23:56:31.533] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 23:56:31.533] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 23:56:31.594] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 23:56:32.734] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 23:56:32.734] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 23:56:32.782] [INFO] 🎯 Drag ended: offset=-14, threshold=100
+[2025-10-18 23:56:32.782] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-18 23:56:32.920] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 23:56:33.300] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 23:56:33.301] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 23:56:33.366] [INFO] 🎯 Drag ended: offset=-102, threshold=100
+[2025-10-18 23:56:33.366] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-18 23:56:33.366] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-18 23:56:33.366] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-18 23:56:33.443] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 23:56:36.830] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-18 23:56:36.830] [INFO] [PostsView] Fetching children for post 6
+[2025-10-18 23:56:37.021] [INFO] [PostsView] Fetched 4 children
+[2025-10-18 23:56:37.828] [INFO] 🎯 Drag ended: offset=-340, threshold=100
+[2025-10-18 23:56:37.828] [INFO] 📱 Navigating to children
+[2025-10-18 23:56:37.828] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-18 23:56:38.143] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-18 23:56:38.143] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-18 23:56:45.376] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-18 23:56:45.575] [INFO] 🎯 Drag ended: offset=316, threshold=100
+[2025-10-18 23:56:45.575] [INFO] 📱 Navigating to parent
+[2025-10-18 23:56:45.575] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-18 23:56:45.891] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-18 23:56:45.891] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-19 09:20:25.580] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 09:20:25.581] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 09:20:25.660] [INFO] 🎯 Drag ended: offset=-125, threshold=100
+[2025-10-19 09:20:25.661] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-19 09:20:25.661] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-19 09:20:25.661] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-19 09:20:25.764] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 09:20:26.570] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 09:20:26.570] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 09:20:26.662] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 09:20:27.186] [INFO] 🎯 Drag ended: offset=-335, threshold=100
+[2025-10-19 09:20:27.186] [INFO] 📱 Navigating to children
+[2025-10-19 09:20:27.186] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-19 09:20:27.535] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-19 09:20:27.535] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-19 09:20:33.146] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-19 09:20:34.428] [INFO] 🎯 Drag ended: offset=392, threshold=100
+[2025-10-19 09:20:34.428] [INFO] 📱 Navigating to parent
+[2025-10-19 09:20:34.428] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-19 09:20:34.735] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-19 09:20:34.735] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+
+=== Logger initialized at 2025-10-19 13:10:41 +0000 ===
+[2025-10-19 15:10:41.306] [INFO] [APP] NoobTestApp init() called
+[2025-10-19 15:10:41.307] [INFO] [APP] User already logged in: test@example.com
+[2025-10-19 15:10:41.307] [INFO] [APP] About to start TestServer
+[2025-10-19 15:10:41.307] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-19 15:10:41.307] [INFO] [TESTSERVER] About to register tests
+[2025-10-19 15:10:41.307] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-19 15:10:41.307] [INFO] [TESTSERVER] Tests registered
+[2025-10-19 15:10:41.307] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-19 15:10:41.307] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-19 15:10:41.308] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-19 15:10:41.308] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-19 15:10:41.309] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-19 15:10:41.309] [INFO] [TESTSERVER] About to start listener
+[2025-10-19 15:10:41.309] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-19 15:10:41.312] [INFO] [TESTSERVER] State changed to ready
+[2025-10-19 15:10:41.312] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-19 15:10:41.312] [INFO] [APP] TestServer.start() returned
+[2025-10-19 15:10:41.466] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-19 15:10:41.788] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-19 15:11:07.287] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 15:11:07.287] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 15:11:07.696] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 15:11:10.719] [INFO] 🎯 Drag ended: offset=0, threshold=100
+[2025-10-19 15:11:10.719] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-19 15:11:11.620] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 15:11:11.621] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 15:11:11.911] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 15:11:19.688] [INFO] 🎯 Drag ended: offset=-1, threshold=100
+[2025-10-19 15:11:19.688] [INFO] 📱 Snapping back (drag < threshold)
+
+=== Logger initialized at 2025-10-19 14:04:17 +0000 ===
+[2025-10-19 16:04:17.235] [INFO] [APP] NoobTestApp init() called
+[2025-10-19 16:04:17.235] [INFO] [APP] User already logged in: test@example.com
+[2025-10-19 16:04:17.235] [INFO] [APP] About to start TestServer
+[2025-10-19 16:04:17.235] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-19 16:04:17.235] [INFO] [TESTSERVER] About to register tests
+[2025-10-19 16:04:17.235] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-19 16:04:17.235] [INFO] [TESTSERVER] Tests registered
+[2025-10-19 16:04:17.235] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-19 16:04:17.235] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-19 16:04:17.236] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-19 16:04:17.236] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-19 16:04:17.237] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-19 16:04:17.237] [INFO] [TESTSERVER] About to start listener
+[2025-10-19 16:04:17.237] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-19 16:04:17.239] [INFO] [TESTSERVER] State changed to ready
+[2025-10-19 16:04:17.239] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-19 16:04:17.239] [INFO] [APP] TestServer.start() returned
+[2025-10-19 16:04:17.328] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-19 16:04:17.596] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-19 15:41:29 +0000 ===
+[2025-10-19 17:41:29.574] [INFO] [APP] NoobTestApp init() called
+[2025-10-19 17:41:29.575] [INFO] [APP] User already logged in: test@example.com
+[2025-10-19 17:41:29.575] [INFO] [APP] About to start TestServer
+[2025-10-19 17:41:29.575] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-19 17:41:29.575] [INFO] [TESTSERVER] About to register tests
+[2025-10-19 17:41:29.575] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-19 17:41:29.575] [INFO] [TESTSERVER] Tests registered
+[2025-10-19 17:41:29.575] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-19 17:41:29.575] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-19 17:41:29.577] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-19 17:41:29.577] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-19 17:41:29.578] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-19 17:41:29.578] [INFO] [TESTSERVER] About to start listener
+[2025-10-19 17:41:29.578] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-19 17:41:29.581] [INFO] [TESTSERVER] State changed to ready
+[2025-10-19 17:41:29.581] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-19 17:41:29.581] [INFO] [APP] TestServer.start() returned
+[2025-10-19 17:41:29.756] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-19 17:41:30.074] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-19 20:08:07 +0000 ===
+[2025-10-19 22:08:07.723] [INFO] [APP] NoobTestApp init() called
+[2025-10-19 22:08:07.724] [INFO] [APP] User already logged in: test@example.com
+[2025-10-19 22:08:07.724] [INFO] [APP] About to start TestServer
+[2025-10-19 22:08:07.724] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-19 22:08:07.724] [INFO] [TESTSERVER] About to register tests
+[2025-10-19 22:08:07.724] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-19 22:08:07.724] [INFO] [TESTSERVER] Tests registered
+[2025-10-19 22:08:07.724] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-19 22:08:07.724] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-19 22:08:07.725] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-19 22:08:07.725] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-19 22:08:07.725] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-19 22:08:07.725] [INFO] [TESTSERVER] About to start listener
+[2025-10-19 22:08:07.726] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-19 22:08:07.728] [INFO] [TESTSERVER] State changed to ready
+[2025-10-19 22:08:07.728] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-19 22:08:07.728] [INFO] [APP] TestServer.start() returned
+[2025-10-19 22:08:07.817] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-19 22:08:07.941] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-19 22:08:22.635] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 22:08:22.635] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 22:08:22.715] [INFO] 🎯 Drag ended: offset=-164, threshold=100
+[2025-10-19 22:08:22.715] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-19 22:08:22.715] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-19 22:08:22.715] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-19 22:08:22.787] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 22:08:23.505] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 22:08:23.505] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 22:08:23.607] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 22:08:23.631] [INFO] 🎯 Drag ended: offset=-309, threshold=100
+[2025-10-19 22:08:23.631] [INFO] 📱 Navigating to children
+[2025-10-19 22:08:23.632] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-19 22:08:23.934] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-19 22:08:23.934] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-19 22:08:51.115] [INFO] 🎯 Started right drag on 'beer' (stack depth: 1)
+[2025-10-19 22:08:51.331] [INFO] 🎯 Drag ended: offset=303, threshold=100
+[2025-10-19 22:08:51.331] [INFO] 📱 Navigating to parent
+[2025-10-19 22:08:51.331] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-19 22:08:51.642] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-19 22:08:51.642] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-19 22:08:55.875] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 22:08:55.875] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 22:08:55.957] [INFO] 🎯 Drag ended: offset=-146, threshold=100
+[2025-10-19 22:08:55.957] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-19 22:08:55.957] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-19 22:08:55.957] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-19 22:08:56.065] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 22:08:56.750] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 22:08:56.750] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 22:08:56.865] [INFO] 🎯 Drag ended: offset=-225, threshold=100
+[2025-10-19 22:08:56.865] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-19 22:08:56.865] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-19 22:08:56.865] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-19 22:08:56.897] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 22:08:57.784] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 22:08:57.784] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 22:08:57.875] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 22:08:58.399] [INFO] 🎯 Drag ended: offset=-392, threshold=100
+[2025-10-19 22:08:58.399] [INFO] 📱 Navigating to children
+[2025-10-19 22:08:58.399] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-19 22:08:58.714] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-19 22:08:58.714] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-19 22:15:07.006] [INFO] 🎯 Started right drag on 'beer' (stack depth: 1)
+[2025-10-19 22:15:07.104] [INFO] 🎯 Drag ended: offset=145, threshold=100
+[2025-10-19 22:15:07.104] [INFO] 📱 Navigating to parent
+[2025-10-19 22:15:07.104] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-19 22:15:07.415] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-19 22:15:07.415] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+[2025-10-19 22:18:55.239] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 22:18:55.239] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 22:18:55.416] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 22:18:55.441] [INFO] 🎯 Drag ended: offset=-233, threshold=100
+[2025-10-19 22:18:55.441] [INFO] 📱 Navigating to children
+[2025-10-19 22:18:55.441] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 10)
+[2025-10-19 22:18:55.756] [INFO] 🔄 Before replacement: scrollPosition=6
+[2025-10-19 22:18:55.757] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+
+=== Logger initialized at 2025-10-19 21:30:19 +0000 ===
+[2025-10-19 23:30:19.540] [INFO] [APP] NoobTestApp init() called
+[2025-10-19 23:30:19.541] [INFO] [APP] User already logged in: test@example.com
+[2025-10-19 23:30:19.541] [INFO] [APP] About to start TestServer
+[2025-10-19 23:30:19.541] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-19 23:30:19.541] [INFO] [TESTSERVER] About to register tests
+[2025-10-19 23:30:19.541] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-19 23:30:19.541] [INFO] [TESTSERVER] Tests registered
+[2025-10-19 23:30:19.541] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-19 23:30:19.541] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-19 23:30:19.542] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-19 23:30:19.542] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-19 23:30:19.543] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-19 23:30:19.543] [INFO] [TESTSERVER] About to start listener
+[2025-10-19 23:30:19.543] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-19 23:30:19.546] [INFO] [TESTSERVER] State changed to ready
+[2025-10-19 23:30:19.546] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-19 23:30:19.546] [INFO] [APP] TestServer.start() returned
+[2025-10-19 23:30:19.665] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-19 23:30:19.777] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-19 23:30:34.836] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-19 23:30:34.836] [INFO] [PostsView] Fetching children for post 6
+[2025-10-19 23:30:34.929] [INFO] [PostsView] Fetched 4 children
+[2025-10-19 23:30:34.982] [INFO] 🎯 Drag ended: offset=-138, threshold=100
+[2025-10-19 23:30:34.982] [INFO] 📱 Navigating to children
+[2025-10-19 23:30:34.982] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: 6)
+[2025-10-19 23:30:35.288] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-19 23:30:35.288] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-19 23:30:43.318] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-19 23:30:43.984] [INFO] 🎯 Drag ended: offset=355, threshold=100
+[2025-10-19 23:30:43.984] [INFO] 📱 Navigating to parent
+[2025-10-19 23:30:43.984] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: 6)
+[2025-10-19 23:30:44.298] [INFO] 🔄 Restoring: posts=10, expandedId=6, scrollPos=6
+[2025-10-19 23:30:44.298] [INFO] ✅ Restored parent view with 10 posts, will scroll to: 6
+
+=== Logger initialized at 2025-10-19 21:36:50 +0000 ===
+[2025-10-19 23:36:50.981] [INFO] [APP] NoobTestApp init() called
+[2025-10-19 23:36:50.981] [INFO] [APP] User already logged in: test@example.com
+[2025-10-19 23:36:50.981] [INFO] [APP] About to start TestServer
+[2025-10-19 23:36:50.981] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-19 23:36:50.981] [INFO] [TESTSERVER] About to register tests
+[2025-10-19 23:36:50.981] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-19 23:36:50.981] [INFO] [TESTSERVER] Tests registered
+[2025-10-19 23:36:50.981] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-19 23:36:50.981] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-19 23:36:50.982] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-19 23:36:50.982] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-19 23:36:50.982] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-19 23:36:50.982] [INFO] [TESTSERVER] About to start listener
+[2025-10-19 23:36:50.983] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-19 23:36:50.986] [INFO] [TESTSERVER] State changed to ready
+[2025-10-19 23:36:50.986] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-19 23:36:50.986] [INFO] [APP] TestServer.start() returned
+[2025-10-19 23:36:51.032] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-19 23:36:51.146] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-20 12:46:10 +0000 ===
+[2025-10-20 14:46:10.496] [INFO] [APP] NoobTestApp init() called
+[2025-10-20 14:46:10.497] [INFO] [APP] User already logged in: test@example.com
+[2025-10-20 14:46:10.497] [INFO] [APP] About to start TestServer
+[2025-10-20 14:46:10.497] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-20 14:46:10.497] [INFO] [TESTSERVER] About to register tests
+[2025-10-20 14:46:10.497] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-20 14:46:10.497] [INFO] [TESTSERVER] Tests registered
+[2025-10-20 14:46:10.497] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-20 14:46:10.497] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-20 14:46:10.498] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-20 14:46:10.498] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-20 14:46:10.499] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-20 14:46:10.499] [INFO] [TESTSERVER] About to start listener
+[2025-10-20 14:46:10.499] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-20 14:46:10.502] [INFO] [TESTSERVER] State changed to ready
+[2025-10-20 14:46:10.502] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-20 14:46:10.502] [INFO] [APP] TestServer.start() returned
+[2025-10-20 14:46:10.618] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-20 14:46:10.864] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-20 15:00:13.113] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-20 15:00:13.113] [INFO] [PostsView] Fetching children for post 6
+[2025-10-20 15:00:13.304] [INFO] [PostsView] Fetched 4 children
+[2025-10-20 15:00:27.711] [INFO] 🎯 Drag ended: offset=-11, threshold=100
+[2025-10-20 15:00:27.711] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-20 15:00:37.642] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-20 15:00:37.643] [INFO] [PostsView] Fetching children for post 6
+[2025-10-20 15:00:37.734] [INFO] [PostsView] Fetched 4 children
+[2025-10-20 15:00:42.692] [INFO] 🎯 Drag ended: offset=-16, threshold=100
+[2025-10-20 15:00:42.692] [INFO] 📱 Snapping back (drag < threshold)
+[2025-10-20 15:00:47.340] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-20 15:00:47.340] [INFO] [PostsView] Fetching children for post 6
+[2025-10-20 15:00:47.503] [INFO] [PostsView] Fetched 4 children
+[2025-10-20 15:00:47.538] [INFO] 🎯 Drag ended: offset=-216, threshold=100
+[2025-10-20 15:00:47.538] [INFO] 📱 Navigating to children
+[2025-10-20 15:00:47.538] [INFO] 📚 Pushed state onto stack (depth: 1, expanded: nil)
+[2025-10-20 15:00:47.841] [INFO] 🔄 Before replacement: scrollPosition=nil
+[2025-10-20 15:00:47.841] [INFO] ✅ Replaced view with 4 children, scrollPosition now: nil
+[2025-10-20 15:00:50.420] [INFO] 🎯 Started right drag on 'classic cherry pie' (stack depth: 1)
+[2025-10-20 15:00:51.218] [INFO] 🎯 Drag ended: offset=377, threshold=100
+[2025-10-20 15:00:51.218] [INFO] 📱 Navigating to parent
+[2025-10-20 15:00:51.218] [INFO] 📚 Popped state from stack (depth: 0, will restore expanded: nil)
+[2025-10-20 15:00:51.525] [INFO] 🔄 Restoring: posts=10, expandedId=nil, scrollPos=nil
+[2025-10-20 15:00:51.525] [INFO] ✅ Restored parent view with 10 posts, will scroll to: nil
+[2025-10-20 15:03:15.464] [INFO] 🎯 Started left drag on 'test post'
+[2025-10-20 15:03:15.465] [INFO] [PostsView] Fetching children for post 6
+[2025-10-20 15:03:15.547] [INFO] 🎯 Drag ended: offset=-153, threshold=100
+[2025-10-20 15:03:15.547] [INFO] ⚠️ Drag met threshold but can't complete navigation - snapping back
+[2025-10-20 15:03:15.547] [INFO]    isLeftDrag=true, childrenPosts.isEmpty=true
+[2025-10-20 15:03:15.547] [INFO]    isRightDrag=false, navigationStack.isEmpty=true
+[2025-10-20 15:03:15.576] [INFO] [PostsView] Fetched 4 children
+[2025-10-20 15:03:16.932] [INFO] 🎯 Drag ended: offset=0, threshold=100
+[2025-10-20 15:03:16.933] [INFO] 📱 Snapping back (drag < threshold)
+
+=== Logger initialized at 2025-10-20 13:33:43 +0000 ===
+[2025-10-20 15:33:43.553] [INFO] [APP] NoobTestApp init() called
+[2025-10-20 15:33:43.554] [INFO] [APP] User already logged in: test@example.com
+[2025-10-20 15:33:43.554] [INFO] [APP] About to start TestServer
+[2025-10-20 15:33:43.554] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-20 15:33:43.554] [INFO] [TESTSERVER] About to register tests
+[2025-10-20 15:33:43.554] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-20 15:33:43.554] [INFO] [TESTSERVER] Tests registered
+[2025-10-20 15:33:43.554] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-20 15:33:43.554] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-20 15:33:43.555] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-20 15:33:43.555] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-20 15:33:43.556] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-20 15:33:43.556] [INFO] [TESTSERVER] About to start listener
+[2025-10-20 15:33:43.556] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-20 15:33:43.558] [INFO] [TESTSERVER] State changed to ready
+[2025-10-20 15:33:43.558] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-20 15:33:43.558] [INFO] [APP] TestServer.start() returned
+[2025-10-20 15:33:43.720] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-20 15:33:43.842] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-20 15:16:34 +0000 ===
+[2025-10-20 17:16:34.708] [INFO] [APP] NoobTestApp init() called
+[2025-10-20 17:16:34.708] [INFO] [APP] User already logged in: test@example.com
+[2025-10-20 17:16:34.708] [INFO] [APP] About to start TestServer
+[2025-10-20 17:16:34.708] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-20 17:16:34.708] [INFO] [TESTSERVER] About to register tests
+[2025-10-20 17:16:34.708] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-20 17:16:34.708] [INFO] [TESTSERVER] Tests registered
+[2025-10-20 17:16:34.708] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-20 17:16:34.708] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-20 17:16:34.709] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-20 17:16:34.709] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-20 17:16:34.709] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-20 17:16:34.709] [INFO] [TESTSERVER] About to start listener
+[2025-10-20 17:16:34.709] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-20 17:16:34.712] [INFO] [TESTSERVER] State changed to ready
+[2025-10-20 17:16:34.712] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-20 17:16:34.712] [INFO] [APP] TestServer.start() returned
+[2025-10-20 17:16:34.765] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-20 17:16:34.978] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-20 16:56:56 +0000 ===
+[2025-10-20 18:56:56.950] [INFO] [APP] NoobTestApp init() called
+[2025-10-20 18:56:56.950] [INFO] [APP] User already logged in: test@example.com
+[2025-10-20 18:56:56.950] [INFO] [APP] About to start TestServer
+[2025-10-20 18:56:56.950] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-20 18:56:56.950] [INFO] [TESTSERVER] About to register tests
+[2025-10-20 18:56:56.950] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-20 18:56:56.950] [INFO] [TESTSERVER] Tests registered
+[2025-10-20 18:56:56.950] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-20 18:56:56.950] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-20 18:56:56.951] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-20 18:56:56.951] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-20 18:56:56.953] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-20 18:56:56.953] [INFO] [TESTSERVER] About to start listener
+[2025-10-20 18:56:56.953] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-20 18:56:56.956] [INFO] [TESTSERVER] State changed to ready
+[2025-10-20 18:56:56.956] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-20 18:56:56.956] [INFO] [APP] TestServer.start() returned
+[2025-10-20 18:56:57.065] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-20 18:56:57.177] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-20 16:59:04 +0000 ===
+[2025-10-20 18:59:04.710] [INFO] [APP] NoobTestApp init() called
+[2025-10-20 18:59:04.710] [INFO] [APP] User already logged in: test@example.com
+[2025-10-20 18:59:04.710] [INFO] [APP] About to start TestServer
+[2025-10-20 18:59:04.710] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-20 18:59:04.710] [INFO] [TESTSERVER] About to register tests
+[2025-10-20 18:59:04.710] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-20 18:59:04.710] [INFO] [TESTSERVER] Tests registered
+[2025-10-20 18:59:04.710] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-20 18:59:04.710] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-20 18:59:04.711] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-20 18:59:04.711] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-20 18:59:04.711] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-20 18:59:04.711] [INFO] [TESTSERVER] About to start listener
+[2025-10-20 18:59:04.711] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-20 18:59:04.714] [INFO] [TESTSERVER] State changed to ready
+[2025-10-20 18:59:04.714] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-20 18:59:04.714] [INFO] [APP] TestServer.start() returned
+[2025-10-20 18:59:04.759] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-20 18:59:04.871] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-20 19:36:55 +0000 ===
+[2025-10-20 21:36:55.804] [INFO] [APP] NoobTestApp init() called
+[2025-10-20 21:36:55.805] [INFO] [APP] User already logged in: test@example.com
+[2025-10-20 21:36:55.805] [INFO] [APP] About to start TestServer
+[2025-10-20 21:36:55.805] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-20 21:36:55.805] [INFO] [TESTSERVER] About to register tests
+[2025-10-20 21:36:55.805] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-20 21:36:55.805] [INFO] [TESTSERVER] Tests registered
+[2025-10-20 21:36:55.805] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-20 21:36:55.805] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-20 21:36:55.806] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-20 21:36:55.806] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-20 21:36:55.807] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-20 21:36:55.807] [INFO] [TESTSERVER] About to start listener
+[2025-10-20 21:36:55.807] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-20 21:36:55.809] [INFO] [TESTSERVER] State changed to ready
+[2025-10-20 21:36:55.809] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-20 21:36:55.809] [INFO] [APP] TestServer.start() returned
+[2025-10-20 21:36:55.918] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-20 21:36:56.048] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-20 19:37:03 +0000 ===
+[2025-10-20 21:37:03.074] [INFO] [APP] NoobTestApp init() called
+[2025-10-20 21:37:03.074] [INFO] [APP] User already logged in: test@example.com
+[2025-10-20 21:37:03.074] [INFO] [APP] About to start TestServer
+[2025-10-20 21:37:03.074] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-20 21:37:03.074] [INFO] [TESTSERVER] About to register tests
+[2025-10-20 21:37:03.074] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-20 21:37:03.074] [INFO] [TESTSERVER] Tests registered
+[2025-10-20 21:37:03.074] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-20 21:37:03.074] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-20 21:37:03.075] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-20 21:37:03.075] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-20 21:37:03.075] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-20 21:37:03.075] [INFO] [TESTSERVER] About to start listener
+[2025-10-20 21:37:03.075] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-20 21:37:03.077] [INFO] [TESTSERVER] State changed to ready
+[2025-10-20 21:37:03.077] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-20 21:37:03.077] [INFO] [APP] TestServer.start() returned
+[2025-10-20 21:37:03.119] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-20 21:37:03.340] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-21 12:58:03 +0000 ===
+[2025-10-21 14:58:03.313] [INFO] [APP] NoobTestApp init() called
+[2025-10-21 14:58:03.314] [INFO] [APP] User already logged in: test@example.com
+[2025-10-21 14:58:03.314] [INFO] [APP] About to start TestServer
+[2025-10-21 14:58:03.314] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-21 14:58:03.314] [INFO] [TESTSERVER] About to register tests
+[2025-10-21 14:58:03.314] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-21 14:58:03.314] [INFO] [TESTSERVER] Tests registered
+[2025-10-21 14:58:03.314] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-21 14:58:03.314] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-21 14:58:03.319] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-21 14:58:03.319] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-21 14:58:03.326] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-21 14:58:03.326] [INFO] [TESTSERVER] About to start listener
+[2025-10-21 14:58:03.326] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-21 14:58:03.330] [INFO] [TESTSERVER] State changed to ready
+[2025-10-21 14:58:03.330] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-21 14:58:03.330] [INFO] [APP] TestServer.start() returned
+[2025-10-21 14:58:03.503] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-21 14:58:03.793] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-21 16:21:39 +0000 ===
+[2025-10-21 18:21:39.301] [INFO] [APP] NoobTestApp init() called
+[2025-10-21 18:21:39.302] [INFO] [APP] User already logged in: test@example.com
+[2025-10-21 18:21:39.302] [INFO] [APP] About to start TestServer
+[2025-10-21 18:21:39.302] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-21 18:21:39.302] [INFO] [TESTSERVER] About to register tests
+[2025-10-21 18:21:39.302] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-21 18:21:39.302] [INFO] [TESTSERVER] Tests registered
+[2025-10-21 18:21:39.302] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-21 18:21:39.302] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-21 18:21:39.304] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-21 18:21:39.304] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-21 18:21:39.307] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-21 18:21:39.307] [INFO] [TESTSERVER] About to start listener
+[2025-10-21 18:21:39.307] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-21 18:21:39.311] [INFO] [TESTSERVER] State changed to ready
+[2025-10-21 18:21:39.311] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-21 18:21:39.311] [INFO] [APP] TestServer.start() returned
+[2025-10-21 18:21:39.423] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-21 18:21:39.445] [ERROR] [PostsAPI] Error fetching posts: The Internet connection appears to be offline.
+[2025-10-21 18:21:40.909] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-21 18:21:40.916] [ERROR] [PostsAPI] Error fetching posts: The Internet connection appears to be offline.
+[2025-10-21 18:48:01.609] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-21 18:48:01.618] [ERROR] [PostsAPI] Error fetching posts: The Internet connection appears to be offline.
+[2025-10-21 19:13:23.178] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-21 19:13:23.400] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-22 06:11:09 +0000 ===
+[2025-10-22 07:11:09.775] [INFO] [APP] NoobTestApp init() called
+[2025-10-22 07:11:09.775] [INFO] [APP] User already logged in: test@example.com
+[2025-10-22 07:11:09.775] [INFO] [APP] About to start TestServer
+[2025-10-22 07:11:09.775] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-22 07:11:09.775] [INFO] [TESTSERVER] About to register tests
+[2025-10-22 07:11:09.775] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-22 07:11:09.775] [INFO] [TESTSERVER] Tests registered
+[2025-10-22 07:11:09.775] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-22 07:11:09.775] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-22 07:11:09.776] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-22 07:11:09.776] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-22 07:11:09.777] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-22 07:11:09.777] [INFO] [TESTSERVER] About to start listener
+[2025-10-22 07:11:09.777] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-22 07:11:09.780] [INFO] [TESTSERVER] State changed to ready
+[2025-10-22 07:11:09.780] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-22 07:11:09.780] [INFO] [APP] TestServer.start() returned
+[2025-10-22 07:11:09.916] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-22 07:15:20.495] [ERROR] [PostsAPI] Error fetching posts: The request timed out.
+
+=== Logger initialized at 2025-10-22 06:18:57 +0000 ===
+[2025-10-22 07:18:57.572] [INFO] [APP] NoobTestApp init() called
+[2025-10-22 07:18:57.573] [INFO] [APP] User already logged in: test@example.com
+[2025-10-22 07:18:57.573] [INFO] [APP] About to start TestServer
+[2025-10-22 07:18:57.573] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-22 07:18:57.573] [INFO] [TESTSERVER] About to register tests
+[2025-10-22 07:18:57.573] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-22 07:18:57.573] [INFO] [TESTSERVER] Tests registered
+[2025-10-22 07:18:57.573] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-22 07:18:57.573] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-22 07:18:57.574] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-22 07:18:57.574] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-22 07:18:57.574] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-22 07:18:57.574] [INFO] [TESTSERVER] About to start listener
+[2025-10-22 07:18:57.574] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-22 07:18:57.577] [INFO] [TESTSERVER] State changed to ready
+[2025-10-22 07:18:57.577] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-22 07:18:57.577] [INFO] [APP] TestServer.start() returned
+[2025-10-22 07:18:57.622] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-22 07:18:57.666] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-24 07:07:27 +0000 ===
+[2025-10-24 08:07:27.854] [INFO] [APP] NoobTestApp init() called
+[2025-10-24 08:07:28.009] [INFO] [APP] User already logged in: test@example.com
+[2025-10-24 08:07:28.014] [INFO] [APP] About to start TestServer
+[2025-10-24 08:07:28.014] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-24 08:07:28.015] [INFO] [TESTSERVER] About to register tests
+[2025-10-24 08:07:28.015] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-24 08:07:28.015] [INFO] [TESTSERVER] Tests registered
+[2025-10-24 08:07:28.015] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-24 08:07:28.015] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-24 08:07:28.055] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-24 08:07:28.057] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-24 08:07:28.090] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-24 08:07:28.090] [INFO] [TESTSERVER] About to start listener
+[2025-10-24 08:07:28.090] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-24 08:07:28.184] [INFO] [TESTSERVER] State changed to ready
+[2025-10-24 08:07:28.192] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-24 08:07:28.192] [INFO] [APP] TestServer.start() returned
+
+=== Logger initialized at 2025-10-24 07:51:55 +0000 ===
+[2025-10-24 08:51:55.852] [INFO] [APP] NoobTestApp init() called
+[2025-10-24 08:51:55.852] [INFO] [APP] User already logged in: test@example.com
+[2025-10-24 08:51:55.852] [INFO] [APP] About to start TestServer
+[2025-10-24 08:51:55.852] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-24 08:51:55.852] [INFO] [TESTSERVER] About to register tests
+[2025-10-24 08:51:55.852] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-24 08:51:55.852] [INFO] [TESTSERVER] Tests registered
+[2025-10-24 08:51:55.852] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-24 08:51:55.852] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-24 08:51:55.853] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-24 08:51:55.853] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-24 08:51:55.854] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-24 08:51:55.854] [INFO] [TESTSERVER] About to start listener
+[2025-10-24 08:51:55.854] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-24 08:51:55.856] [INFO] [TESTSERVER] State changed to ready
+[2025-10-24 08:51:55.856] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-24 08:51:55.856] [INFO] [APP] TestServer.start() returned
+[2025-10-24 08:51:55.949] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-24 08:51:56.084] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-25 08:24:52 +0000 ===
+[2025-10-25 09:24:52.861] [INFO] [APP] NoobTestApp init() called
+[2025-10-25 09:24:52.862] [INFO] [APP] User already logged in: test@example.com
+[2025-10-25 09:24:52.862] [INFO] [APP] About to start TestServer
+[2025-10-25 09:24:52.862] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-25 09:24:52.862] [INFO] [TESTSERVER] About to register tests
+[2025-10-25 09:24:52.862] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-25 09:24:52.862] [INFO] [TESTSERVER] Tests registered
+[2025-10-25 09:24:52.862] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-25 09:24:52.862] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-25 09:24:52.868] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-25 09:24:52.868] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-25 09:24:52.957] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-25 09:24:52.960] [INFO] [TESTSERVER] About to start listener
+[2025-10-25 09:24:52.960] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-25 09:24:53.019] [INFO] [TESTSERVER] State changed to ready
+[2025-10-25 09:24:53.019] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-25 09:24:53.019] [INFO] [APP] TestServer.start() returned
+[2025-10-25 09:52:41.247] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-25 09:52:41.303] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 14:25:12 +0000 ===
+[2025-10-27 14:25:12.677] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 14:25:12.677] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 14:25:12.677] [INFO] [APP] About to start TestServer
+[2025-10-27 14:25:12.678] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 14:25:12.678] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 14:25:12.678] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 14:25:12.678] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 14:25:12.678] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 14:25:12.678] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 14:25:12.678] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 14:25:12.678] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 14:25:12.679] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 14:25:12.679] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 14:25:12.679] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 14:25:12.681] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 14:25:12.681] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 14:25:12.681] [INFO] [APP] TestServer.start() returned
+[2025-10-27 14:25:12.772] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 14:25:12.835] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 15:16:08 +0000 ===
+[2025-10-27 15:16:08.404] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 15:16:08.404] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 15:16:08.404] [INFO] [APP] About to start TestServer
+[2025-10-27 15:16:08.404] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 15:16:08.404] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 15:16:08.404] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 15:16:08.404] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 15:16:08.404] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 15:16:08.404] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 15:16:08.405] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 15:16:08.405] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 15:16:08.405] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 15:16:08.406] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 15:16:08.406] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 15:16:08.409] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 15:16:08.409] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 15:16:08.409] [INFO] [APP] TestServer.start() returned
+[2025-10-27 15:16:08.515] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 15:16:08.615] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 16:53:06 +0000 ===
+[2025-10-27 16:53:06.823] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 16:53:06.824] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 16:53:06.824] [INFO] [APP] About to start TestServer
+[2025-10-27 16:53:06.824] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 16:53:06.824] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 16:53:06.824] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 16:53:06.824] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 16:53:06.824] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 16:53:06.824] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 16:53:06.825] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 16:53:06.825] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 16:53:06.826] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 16:53:06.826] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 16:53:06.826] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 16:53:06.830] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 16:53:06.830] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 16:53:06.830] [INFO] [APP] TestServer.start() returned
+[2025-10-27 16:53:06.930] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 16:53:06.995] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 16:53:16 +0000 ===
+[2025-10-27 16:53:16.598] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 16:53:16.598] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 16:53:16.598] [INFO] [APP] About to start TestServer
+[2025-10-27 16:53:16.598] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 16:53:16.598] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 16:53:16.598] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 16:53:16.598] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 16:53:16.598] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 16:53:16.598] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 16:53:16.599] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 16:53:16.599] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 16:53:16.599] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 16:53:16.599] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 16:53:16.599] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 16:53:16.601] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 16:53:16.601] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 16:53:16.601] [INFO] [APP] TestServer.start() returned
+[2025-10-27 16:53:16.670] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 16:53:16.873] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 16:53:22 +0000 ===
+[2025-10-27 16:53:22.332] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 16:53:22.332] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 16:53:22.332] [INFO] [APP] About to start TestServer
+[2025-10-27 16:53:22.332] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 16:53:22.332] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 16:53:22.332] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 16:53:22.332] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 16:53:22.332] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 16:53:22.332] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 16:53:22.333] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 16:53:22.333] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 16:53:22.333] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 16:53:22.333] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 16:53:22.333] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 16:53:22.335] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 16:53:22.335] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 16:53:22.335] [INFO] [APP] TestServer.start() returned
+[2025-10-27 16:53:22.382] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 16:53:22.533] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 16:53:26 +0000 ===
+[2025-10-27 16:53:26.455] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 16:53:26.455] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 16:53:26.455] [INFO] [APP] About to start TestServer
+[2025-10-27 16:53:26.455] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 16:53:26.455] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 16:53:26.455] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 16:53:26.455] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 16:53:26.455] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 16:53:26.455] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 16:53:26.456] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 16:53:26.456] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 16:53:26.456] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 16:53:26.456] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 16:53:26.456] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 16:53:26.461] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 16:53:26.462] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 16:53:26.462] [INFO] [APP] TestServer.start() returned
+[2025-10-27 16:53:26.534] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 16:53:26.609] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 16:55:13 +0000 ===
+[2025-10-27 16:55:13.778] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 16:55:13.778] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 16:55:13.778] [INFO] [APP] About to start TestServer
+[2025-10-27 16:55:13.778] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 16:55:13.778] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 16:55:13.778] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 16:55:13.778] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 16:55:13.778] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 16:55:13.778] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 16:55:13.779] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 16:55:13.779] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 16:55:13.779] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 16:55:13.779] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 16:55:13.780] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 16:55:13.783] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 16:55:13.783] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 16:55:13.783] [INFO] [APP] TestServer.start() returned
+[2025-10-27 16:55:13.847] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 16:55:13.910] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 17:00:20 +0000 ===
+[2025-10-27 17:00:20.793] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:00:20.793] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:00:20.793] [INFO] [APP] About to start TestServer
+[2025-10-27 17:00:20.793] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:00:20.793] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:00:20.793] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:00:20.793] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:00:20.793] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:00:20.794] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:00:20.794] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:00:20.794] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:00:20.795] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:00:20.795] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:00:20.795] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:00:20.799] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:00:20.799] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:00:20.799] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:00:20.858] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:00:20.962] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 17:01:12 +0000 ===
+[2025-10-27 17:01:12.208] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:01:12.209] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:01:12.209] [INFO] [APP] About to start TestServer
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:01:12.209] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:01:12.209] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:01:12.212] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:01:12.212] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:01:12.212] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:01:12.269] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:01:12.433] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 17:02:21 +0000 ===
+[2025-10-27 17:02:21.241] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:02:21.242] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:02:21.242] [INFO] [APP] About to start TestServer
+[2025-10-27 17:02:21.242] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:02:21.242] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:02:21.242] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:02:21.242] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:02:21.242] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:02:21.242] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:02:21.242] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:02:21.242] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:02:21.243] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:02:21.243] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:02:21.243] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:02:21.245] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:02:21.245] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:02:21.245] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:02:21.304] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:02:21.550] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 17:13:36 +0000 ===
+[2025-10-27 17:13:36.105] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:13:36.106] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:13:36.106] [INFO] [APP] About to start TestServer
+[2025-10-27 17:13:36.106] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:13:36.106] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:13:36.106] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:13:36.106] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:13:36.106] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:13:36.106] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:13:36.107] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:13:36.107] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:13:36.107] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:13:36.107] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:13:36.107] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:13:36.109] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:13:36.109] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:13:36.109] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:13:36.178] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:13:36.265] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 17:29:34 +0000 ===
+[2025-10-27 17:29:34.576] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:29:34.577] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:29:34.577] [INFO] [APP] About to start TestServer
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:29:34.577] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:29:34.577] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:29:34.580] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:29:34.580] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:29:34.580] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:29:34.657] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:29:34.757] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-27 17:30:04.618] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:30:04.763] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+[2025-10-27 17:30:06.734] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:30:06.810] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+[2025-10-27 17:30:09.095] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:30:09.224] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+[2025-10-27 17:30:10.820] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:30:10.862] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+[2025-10-27 17:30:18.265] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:30:18.380] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+
+=== Logger initialized at 2025-10-27 17:32:40 +0000 ===
+[2025-10-27 17:32:40.643] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:32:40.643] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:32:40.643] [INFO] [APP] About to start TestServer
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:32:40.643] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:32:40.643] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:32:40.646] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:32:40.646] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:32:40.646] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:32:40.722] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:32:40.819] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-27 17:32:55.310] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:32:55.374] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+
+=== Logger initialized at 2025-10-27 17:33:53 +0000 ===
+[2025-10-27 17:33:53.689] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:33:53.690] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:33:53.690] [INFO] [APP] About to start TestServer
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:33:53.690] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:33:53.690] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:33:53.692] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:33:53.692] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:33:53.692] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:33:53.752] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:33:53.833] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 17:35:13 +0000 ===
+[2025-10-27 17:35:13.039] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:35:13.040] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:35:13.040] [INFO] [APP] About to start TestServer
+[2025-10-27 17:35:13.040] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:35:13.040] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:35:13.040] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:35:13.040] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:35:13.040] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:35:13.040] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:35:13.041] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:35:13.041] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:35:13.041] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:35:13.041] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:35:13.041] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:35:13.044] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:35:13.044] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:35:13.044] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:35:13.106] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:35:13.199] [INFO] [PostsAPI] Successfully fetched 10 posts
+
+=== Logger initialized at 2025-10-27 17:35:50 +0000 ===
+[2025-10-27 17:35:50.047] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:35:50.047] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:35:50.048] [INFO] [APP] About to start TestServer
+[2025-10-27 17:35:50.048] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:35:50.048] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:35:50.048] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:35:50.048] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:35:50.048] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:35:50.048] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:35:50.048] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:35:50.048] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:35:50.049] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:35:50.049] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:35:50.049] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:35:50.051] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:35:50.051] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:35:50.051] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:35:50.114] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:35:50.268] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-27 17:36:27.077] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:36:27.142] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+
+=== Logger initialized at 2025-10-27 17:37:40 +0000 ===
+[2025-10-27 17:37:40.847] [INFO] [APP] NoobTestApp init() called
+[2025-10-27 17:37:40.848] [INFO] [APP] User already logged in: test@example.com
+[2025-10-27 17:37:40.848] [INFO] [APP] About to start TestServer
+[2025-10-27 17:37:40.848] [INFO] [TESTSERVER] start() called with port 8081
+[2025-10-27 17:37:40.848] [INFO] [TESTSERVER] About to register tests
+[2025-10-27 17:37:40.848] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-10-27 17:37:40.848] [INFO] [TESTSERVER] Tests registered
+[2025-10-27 17:37:40.848] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-10-27 17:37:40.848] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-10-27 17:37:40.848] [INFO] [TESTSERVER] TCP parameters created
+[2025-10-27 17:37:40.848] [INFO] [TESTSERVER] Creating NWListener
+[2025-10-27 17:37:40.849] [INFO] [TESTSERVER] NWListener created successfully
+[2025-10-27 17:37:40.849] [INFO] [TESTSERVER] About to start listener
+[2025-10-27 17:37:40.849] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-10-27 17:37:40.851] [INFO] [TESTSERVER] State changed to ready
+[2025-10-27 17:37:40.851] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-10-27 17:37:40.851] [INFO] [APP] TestServer.start() returned
+[2025-10-27 17:37:40.900] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-10-27 17:37:40.962] [INFO] [PostsAPI] Successfully fetched 10 posts
+[2025-10-27 17:37:45.707] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:37:45.774] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+[2025-10-27 17:37:53.423] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:37:53.556] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.
+[2025-10-27 17:38:03.174] [INFO] [ChildPostsView] Fetching posts for parent 6
+[2025-10-27 17:38:03.285] [ERROR] [ChildPostsView] Decode error: The data couldn’t be read because it isn’t in the correct format.

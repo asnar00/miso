@@ -32,6 +32,7 @@
 		7833216D1EBB47219089D8BA /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30F2B84F9B24F78B74B36D5 /* PostsView.swift */; };
 		03E3602E289E4F3C80B74D74 /* NewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19113C60331E4ECB84DCE75C /* NewPostView.swift */; };
 		3F1688D22240B882B88A0D8ED20A8C45 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22CDF50A3D8444F817CCED6C3B2240F /* PostView.swift */; };
+		b5bcb77f5ffa4b0295f612de1a3b532a /* ChildPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422efe4e080c4fbc8a67811afd740c0c /* ChildPostsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +63,7 @@
 		B30F2B84F9B24F78B74B36D5 /* PostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
 		19113C60331E4ECB84DCE75C /* NewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostView.swift; sourceTree = "<group>"; };
 		A22CDF50A3D8444F817CCED6C3B2240F /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		422efe4e080c4fbc8a67811afd740c0c /* ChildPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildPostsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				B30F2B84F9B24F78B74B36D5 /* PostsView.swift */,
 				19113C60331E4ECB84DCE75C /* NewPostView.swift */,
 				A22CDF50A3D8444F817CCED6C3B2240F /* PostView.swift */,
+				422efe4e080c4fbc8a67811afd740c0c /* ChildPostsView.swift */,
 				43D261757C2449B3A3EE8C1D /* SignInView.swift */,
 				229665909EA74D12BF7E9AA3 /* NewUserView.swift */,
 				B9E9A68FA53242E9884724E1 /* Post.swift */,
@@ -204,6 +207,7 @@
 				7833216D1EBB47219089D8BA /* PostsView.swift in Sources */,
 				03E3602E289E4F3C80B74D74 /* NewPostView.swift in Sources */,
 				3F1688D22240B882B88A0D8ED20A8C45 /* PostView.swift in Sources */,
+				b5bcb77f5ffa4b0295f612de1a3b532a /* ChildPostsView.swift in Sources */,
 				616EE06379184D01AE552328 /* SignInView.swift in Sources */,
 				ADF7F86F3BD9479F874EB52C /* NewUserView.swift in Sources */,
 				24C4F362E4AA4DEA8EF7725F /* Post.swift in Sources */,

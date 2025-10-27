@@ -45,6 +45,20 @@ struct SinglePostResponse: Codable {
     let post: Post
 }
 
+struct ChildrenResponse: Codable {
+    let status: String
+    let postId: Int
+    let children: [Post]
+    let count: Int
+
+    enum CodingKeys: String, CodingKey {
+        case status
+        case postId = "post_id"
+        case children
+        case count
+    }
+}
+
 // API client for posts
 class PostsAPI {
     static let shared = PostsAPI()

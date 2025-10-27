@@ -1,10 +1,14 @@
 # explore posts
-*let the user explore the tree of posts*
+*navigate through the tree of posts and their children*
 
-`explore-posts` allows the user to explore the tree of posts by navigating to the child post list of any post in a `view-posts` view.
+Posts can have children, forming a tree structure. Users can navigate into child posts to explore deeper levels of the conversation.
 
-If a post in `post-view` has one or more children, the post-view displays a right-facing arrow across its right-hand edge.
+**Visual Indicator**: Posts with children show a white chevron (right arrow) with a black outline on their right edge. The arrow sits across the edge of the post card.
 
-Swiping such a post towards the left adds a new `view-posts` view to the right hand side, showing all child posts (and an "add post" button at the top); everything then scrolls to the left so that only the child list view is visible.
+**Navigate to Children**: Swipe left on a post with children to navigate to a view showing all its child posts.
 
-At any point, dragging the child view to the right will scroll leftwards, exposing the parent list view, until there are no more such views.
+**Child Posts View**: Shows the child posts with a "Create a new post" button at the top. The navigation bar displays a white oval button with a left arrow and the parent post's title (e.g., "< test post").
+
+**Navigate Back**: Either tap the back button or swipe right anywhere in the child view to return to the parent view.
+
+**Multiple Levels**: You can navigate through multiple levels of the post tree. Each level shows its own back button with the parent's title.
