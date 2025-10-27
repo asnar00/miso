@@ -94,7 +94,8 @@ The thumbnail generation is part of the image cache system:
 
 ## Quality Considerations
 
-- Use high-quality interpolation for scaling
+- Use high-quality interpolation for scaling (bicubic or lanczos preferred over bilinear)
+- For high-DPI screens, generate larger thumbnails (e.g., 240×240 for 3x density)
+- Use inSampleSize during decode to improve quality by avoiding large downsampling in one step
 - Avoid aliasing/jagged edges
-- 80×80 is sufficient for compact view preview
 - Center cropping assumes subjects are centered (common in photos)

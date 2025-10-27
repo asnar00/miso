@@ -30,12 +30,6 @@ struct PostView: View {
     @State private var titleSummaryHeight: CGFloat = 60  // Estimate for now
     @State private var isMeasured: Bool = false
 
-    let dragOffset: CGFloat  // Applied from parent when this post is being dragged
-    let onDragCircle: (CGFloat) -> Void  // Called when right circle is dragged
-    let onDragEnd: () -> Void  // Called when drag ends
-    let onDragLeftCircle: (CGFloat) -> Void  // Called when left circle is dragged
-    let onDragLeftEnd: () -> Void  // Called when left drag ends
-
     // Linear interpolation helper
     func lerp(_ start: CGFloat, _ end: CGFloat, _ t: CGFloat) -> CGFloat {
         return start + (end - start) * t
@@ -102,82 +96,11 @@ struct PostView: View {
 
         let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 
-        // Link circle constants
-        let linkCircleSize: CGFloat = 12
-        let linkLineThickness: CGFloat = 4
-        let linkY: CGFloat = 48  // Aligned with thumbnail center: 8 (compactY) + 40 (half of 80)
-
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.white.opacity(0.9))
                 .frame(height: currentHeight)
                 .shadow(radius: 2)
-
-            // Rightward link (if post has children)
-            if let childCount = post.childCount, childCount > 0 {
-                // Link line extending right
-                Rectangle()
-                    .fill(Color.black)
-                    .frame(width: 50, height: linkLineThickness)
-                    .offset(x: availableWidth + 10 + linkCircleSize/2, y: linkY + linkCircleSize/2 - linkLineThickness/2)
-
-                // Circle
-                Circle()
-                    .fill(Color.black)
-                    .frame(width: linkCircleSize, height: linkCircleSize)
-                    .offset(x: availableWidth + 10 + linkCircleSize/2, y: linkY)
-
-                // Invisible drag area spanning full post height
-                Rectangle()
-                    .fill(Color.clear)
-                    .frame(width: 60, height: currentHeight)
-                    .contentShape(Rectangle())
-                    .offset(x: availableWidth - 20, y: 0)
-                    .gesture(
-                        DragGesture(coordinateSpace: .global)
-                            .onChanged { value in
-                                if value.translation.width < 0 {
-                                    onDragCircle(value.translation.width)
-                                }
-                            }
-                            .onEnded { _ in
-                                onDragEnd()
-                            }
-                    )
-            }
-
-            // Leftward link (if post has parent)
-            if post.parentId != nil {
-                // Link line extending left
-                Rectangle()
-                    .fill(Color.black)
-                    .frame(width: 50, height: linkLineThickness)
-                    .offset(x: -50, y: linkY + linkCircleSize/2 - linkLineThickness/2)
-
-                // Circle
-                Circle()
-                    .fill(Color.black)
-                    .frame(width: linkCircleSize, height: linkCircleSize)
-                    .offset(x: -linkCircleSize/2, y: linkY)
-
-                // Invisible drag area spanning full post height on left side
-                Rectangle()
-                    .fill(Color.clear)
-                    .frame(width: 60, height: currentHeight)
-                    .contentShape(Rectangle())
-                    .offset(x: -60, y: 0)
-                    .gesture(
-                        DragGesture(coordinateSpace: .global)
-                            .onChanged { value in
-                                if value.translation.width > 0 {
-                                    onDragLeftCircle(value.translation.width)
-                                }
-                            }
-                            .onEnded { _ in
-                                onDragLeftEnd()
-                            }
-                    )
-            }
 
             // Title and summary at the top
             VStack(alignment: .leading, spacing: 4) {
@@ -193,9 +116,8 @@ struct PostView: View {
                     .lineLimit(2)
             }
             .padding(8)
-            .padding(.leading, linkCircleSize)  // Extra left padding to clear the link circle
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.trailing, post.imageUrl != nil ? (96 + 2 * linkCircleSize) : 0)  // Leave room for thumbnail (adjusted for symmetry)
+            .padding(.trailing, post.imageUrl != nil ? 96 : 0)  // Leave room for thumbnail
             .background(
                 GeometryReader { geo in
                     Color.clear.preference(key: TitleSummaryHeightKey.self, value: geo.size.height)
@@ -267,7 +189,7 @@ struct PostView: View {
 
                 // Compact state: 80x80 thumbnail on top-right with padding
                 let thumbnailSize: CGFloat = 80
-                let compactX = availableWidth - 80 + 8 - (0.5 * linkCircleSize)  // Right-aligned, moved right by one circle radius
+                let compactX = availableWidth - 80 + 8  // Right-aligned with padding
                 let compactY: CGFloat = (100 - thumbnailSize) / 2  // Vertically centered in 100px compact post view
 
                 // Expanded state: full-width centered below summary (matching content rectangle)
@@ -360,6 +282,5 @@ struct PostView: View {
             // Set initial expansion state without doing any heavy work
             expansionFactor = isExpanded ? 1.0 : 0.0
         }
-        .offset(x: dragOffset)
     }
 }

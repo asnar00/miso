@@ -87,7 +87,9 @@ struct PostView: View {
 
 When returning from navigation (e.g., after viewing children), scroll back to the expanded post.
 
-## First Post Auto-Expansion
+## Initial State
+
+When the list is first loaded, all posts are in compact form (expandedPostId = nil). Posts only expand when tapped by the user.
 
 ```swift
 case .success(let fetchedPosts):
@@ -95,12 +97,7 @@ case .success(let fetchedPosts):
         DispatchQueue.main.async {
             self.posts = fetchedPosts
             self.isLoading = false
-            // Expand the first post by default
-            if let firstPost = fetchedPosts.first {
-                self.expandedPostId = firstPost.id
-            }
+            // All posts start in compact form
         }
     }
 ```
-
-**Key decision**: Auto-expand first post after images are preloaded but before displaying to user, ensuring smooth initial presentation.

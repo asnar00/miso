@@ -37,8 +37,9 @@ currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 ```
 compactWidth = 80pt
 compactHeight = 80pt
-compactX = availableWidth - 80 + 8  // right-aligned with 8pt from right edge
-compactY = (100 - 80) / 2 + 8  // vertically centered in 100pt compact view with top padding
+compactX = availableWidth - 80 - 16  // inset 16pt from right edge
+compactY = (100 - 80) / 2  // vertically centered in 100pt compact view
+                           // NOTE: On Android, subtract Box padding (8pt) if coordinates are relative to padded area
 ```
 
 ### Expanded State (Full Image)

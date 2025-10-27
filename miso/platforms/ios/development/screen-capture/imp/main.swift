@@ -2,6 +2,27 @@ import Cocoa
 import AVFoundation
 import CoreMediaIO
 
+class ClickableView: NSView {
+    var clickHandler: (() -> Void)?
+    var windowOriginOnMouseDown: NSPoint?
+
+    override func mouseDown(with event: NSEvent) {
+        windowOriginOnMouseDown = window?.frame.origin
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        // Only trigger click if window didn't move (wasn't dragged)
+        if let originalOrigin = windowOriginOnMouseDown,
+           let currentOrigin = window?.frame.origin {
+            let distance = hypot(currentOrigin.x - originalOrigin.x, currentOrigin.y - originalOrigin.y)
+            if distance < 1 {  // Window didn't move = it's a click
+                clickHandler?()
+            }
+        }
+        windowOriginOnMouseDown = nil
+    }
+}
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
     var statusLabel: NSTextField!
@@ -16,6 +37,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var logFileHandle: FileHandle?
     var logFileOffset: UInt64 = 0
     var logUpdateTimer: Timer?
+    var isSmallMode = false
+    let fullSize = NSSize(width: 390, height: 844)
+    let smallSize = NSSize(width: 195, height: 422)
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Set up menu bar
@@ -34,6 +58,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.isMovableByWindowBackground = true
         window.isOpaque = false
         window.backgroundColor = .clear
+        window.level = .floating
+
+        // Replace content view with clickable view
+        let clickableView = ClickableView(frame: window.contentView!.bounds)
+        clickableView.clickHandler = { [weak self] in
+            self?.toggleWindowSize()
+        }
+        window.contentView = clickableView
 
         // Add rounded corners and border
         window.contentView?.wantsLayer = true
@@ -178,6 +210,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
         consoleWindow?.title = "Console"
         consoleWindow?.isReleasedWhenClosed = false
+        consoleWindow?.level = .floating
 
         // Create text view for console
         let scrollView = NSScrollView(frame: consoleWindow!.contentView!.bounds)
@@ -542,6 +575,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusLabel.isHidden = false
         logView.enclosingScrollView?.isHidden = false
         statusLabel.stringValue = "No device found"
+    }
+
+    @objc func toggleWindowSize() {
+        isSmallMode.toggle()
+
+        let targetSize = isSmallMode ? smallSize : fullSize
+        let currentFrame = window.frame
+
+        // Calculate new frame (keeping top-left corner position)
+        let newFrame = NSRect(
+            x: currentFrame.origin.x,
+            y: currentFrame.origin.y + currentFrame.height - targetSize.height,
+            width: targetSize.width,
+            height: targetSize.height
+        )
+
+        // Snap to new size (no animation)
+        window.setFrame(newFrame, display: true, animate: false)
+
+        // Adjust corner radius proportionally
+        let cornerRadius: CGFloat = isSmallMode ? 22.5 : 45
+        window.contentView?.layer?.cornerRadius = cornerRadius
+
+        // Update preview layer frame if it exists
+        if let previewLayer = previewLayer {
+            previewLayer.frame = window.contentView!.bounds
+        }
+
+        log(isSmallMode ? "Switched to small mode" : "Switched to full size")
     }
 }
 

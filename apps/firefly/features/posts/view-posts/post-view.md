@@ -3,7 +3,7 @@
 
 A post is displayed using a *post view*, which can take two forms, *compact* and *expanded*
 
-In compact form, we see a lozenge almost as wide as the phone screen, about 1/6th the height of the screen. The view displays the title (in 24pt bold) and the one-line summary below it (in smaller italics). Finally, below that is the name of the author and the date/time, in even smaller text. All text wraps around, leaving space for a square thumbnail on the right-hand-side of the view.
+In compact form, we see a lozenge almost as wide as the phone screen, about 1/6th the height of the screen. The view displays the title (in 24pt bold) and the one-line summary below it (in smaller italics). Finally, below that is the name of the author and the date/time, in even smaller text. All text wraps around, leaving space for a square thumbnail on the right-hand-side of the view (centered vertically within the lozenge, and inset slightly from the right).
 
 In expanded form, the title and summary display exactly as in the compact version; below them is the image, then below that the body text; and then below that the author/datestamp information.
 

@@ -1,6 +1,72 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+page organisation ideas:
+
+- each person has their main page:
+  - name
+  - mission
+  - pic
+  - statement
+
+and under that, standard snippets:
+
+- writings
+- readings
+- questions
+- connections
+
+connection: a page where you introduce another person - that then links to their main page.
+
+eg. "I met Iarla at college, blah blah" -> link to Iarla's page.
+
+to ask questions, you go to questions, and add a query; the system summarises the response underneath. you can hop down into that tree and add new sub-queries.
+
+all of this is public to anyone on the app.
+
+note: this is just the starting tree, you can populate it any way you want.
+
+anyhoo. something like this. doesn't have to be perfect, just has to exist - that's the tree you show.
+
+--- idea:
+you populate each node with "prompt text" - shown in grey when you open the snippet, to give you an idea of what you could fill in there.
+That guides people, while also being pretty open.
+
+----------------------
+templates!!
+
+populate the questions/ page with some standard things, and their results.
+
+Mark a page "template"! AHA template pages.
+I like it a lot. Elegant idea.
+
+So we create a template snippet tree for a user, and then just instantiate it. The filled-in text shows as a grey background for the input field. Super elegant. 
+
+-------------------------------
+
+
+idea: live queries.
+
+make a query: it's a post!
+its childen are the "answer" to the question; a summary of the tree of relevant posts.
+
+so the summary is a tree of relevant posts and summaries; it's like a debug view of the RAG process.
+
+So you can always drill down to the real answers.
+
+If this query is re-run whenever a new post appears, the result is something like a live poll.
+
+So the format is like: people ask questions, those questions (and the answers) are visible to others, and people can modify the answer by adding their opinion (making posts).
+
+so it's just basically a collaborative tree editor, and a query system. Maybe the default view is just the most recently active topics.
+
+I'm feeling it.
+
+
+
+----------------------------------
+
+
 been thinking we need a refactor.
 
 features/

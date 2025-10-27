@@ -16,7 +16,9 @@ data class Post(
     @SerialName("created_at") val createdAt: String,
     val timezone: String,
     @SerialName("location_tag") val locationTag: String? = null,
-    @SerialName("ai_generated") val aiGenerated: Boolean
+    @SerialName("ai_generated") val aiGenerated: Boolean,
+    @SerialName("author_name") val authorName: String? = null,
+    @SerialName("child_count") val childCount: Int = 0
 )
 
 // API response structures
