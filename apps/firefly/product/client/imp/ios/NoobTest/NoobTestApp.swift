@@ -46,7 +46,7 @@ struct NoobTestApp: App {
                 NewUserView(email: email ?? "unknown", hasSeenWelcome: $hasSeenWelcome)
             } else {
                 ZStack {
-                    Color(red: 64/255, green: 224/255, blue: 208/255)
+                    Color(red: 139/255, green: 0, blue: 0)
                         .ignoresSafeArea()
 
                     if isLoadingPosts {

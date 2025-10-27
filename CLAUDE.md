@@ -186,6 +186,13 @@ TestRegistry.register("myfeature") {
 ./get-logs.sh     # Download app.log from device
 ```
 
+**iOS Screenshot Capture**:
+```bash
+# From miso/platforms/ios/development/screen-capture/imp/
+./screenshot.sh /tmp/screenshot.png  # Capture device screenshot
+# Useful for visual verification of UI changes
+```
+
 **Android App Management** (from `apps/firefly/product/client/imp/eos/`):
 ```bash
 adb shell am force-stop com.miso.noobtest          # Stop app
@@ -212,6 +219,107 @@ cat device-logs.txt
 log stream --device <DEVICE_ID> --predicate 'subsystem == "com.miso.noobtest"'
 ```
 
+## Claude Code Skills
+
+This repository includes a comprehensive skills system in `.claude/skills/` that provides automated workflows for common development tasks. Skills can be invoked by name or triggered by natural language phrases.
+
+### Core Workflow Skills
+
+**miso** - Automated feature-to-code implementation pipeline:
+- Detects changed feature markdown files using git diff
+- Updates `imp/pseudocode.md` to reflect feature changes
+- Propagates changes to platform implementations (`imp/ios.md`, `imp/eos.md`, `imp/py.md`)
+- Updates actual product code following patching instructions
+- Builds, deploys, and tests the changes
+- For UI changes: includes visual verification cycle with screenshots to ensure visible results match specs
+- Iteratively debugs until visual verification passes
+- Invoke with: "implement features", "run miso", "update implementations"
+
+**make-skill** - Create new Claude Code skills:
+- Generates skill directory and SKILL.md with proper structure
+- Includes YAML frontmatter and documentation sections
+- Use when creating automated workflows
+- Invoke with: "create a skill", "make a skill", "add a skill"
+
+**update-skill** - Improve existing skills based on usage:
+- Analyzes what went wrong during skill execution
+- Updates skill documentation with learnings
+- Adds prerequisites, troubleshooting steps, or clarifications
+- Use after resolving skill issues to prevent recurrence
+- Invoke with: "update the skill", "improve the skill", "fix the skill instructions"
+
+### Platform Skills
+
+**iOS Skills** (`.claude/skills/ios-*`):
+- `ios-deploy-usb` - Build and deploy to iPhone via USB (~8-10 seconds)
+- `ios-restart-app` - Restart app on device without rebuilding
+- `ios-stop-app` - Stop app running on device
+- `ios-watch-logs` - Stream real-time logs from iPhone
+- `ios-add-file` - Add Swift files to Xcode project without opening Xcode
+- `iphone-screen-capture` - Mirror iPhone screen on Mac using scrcpy
+
+**Android/e/OS Skills** (`.claude/skills/eos-*`):
+- `eos-deploy-usb` - Build and deploy to Android device via USB (~2-5 seconds)
+- `eos-restart-app` - Restart app on device without rebuilding
+- `eos-stop-app` - Stop app running on device
+- `eos-watch-logs` - Stream real-time logcat from Android device
+- `eos-screen-capture` - Mirror Android screen using scrcpy
+
+**Python/Server Skills** (`.claude/skills/py-*`):
+- `py-deploy-remote` - Deploy Flask server to remote machine (185.96.221.52)
+- `py-start-local` - Start local Flask development server
+- `py-stop-local` - Stop local Flask server
+- `py-server-logs` - View server logs (local or remote)
+
+### Skill Delegation Pattern
+
+Complex skills use **delegation** to save context:
+- Skills with `delegate: true` in frontmatter spawn autonomous sub-agents
+- Agent executes the skill independently using its own context budget
+- Only final result returns to foreground conversation
+- **Saves 80-90% of context tokens** for multi-step workflows
+
+Delegated skills: `ios-deploy-usb`, `eos-deploy-usb`, `py-deploy-remote`, `miso`
+
+Inline skills: All restart, stop, logs, and screen capture commands (simpler, faster)
+
+**Delegation Behavior (Repository Convention)**:
+
+When invoking a skill, always check the YAML frontmatter for `delegate: true`. If present, you MUST:
+
+1. Use the Task tool with `subagent_type="instruction-follower"`
+2. Provide the skill file path in the prompt: `.claude/skills/{skill-name}/skill.md`
+3. Give clear context: "Follow the instructions in .claude/skills/{skill-name}/skill.md to [brief description]"
+4. Let the sub-agent execute autonomously without intervention
+5. When the sub-agent completes, summarize its final report for the user
+
+Example delegation:
+```python
+# User says: "Deploy to iPhone"
+# Skill loads, you see delegate: true in frontmatter
+
+Task(
+    subagent_type="instruction-follower",
+    description="Deploy iOS app to device",
+    prompt="Follow the instructions in .claude/skills/ios-deploy-usb/skill.md to build and deploy the iOS app to the connected iPhone via USB."
+)
+```
+
+This pattern ensures complex workflows execute efficiently without consuming foreground context.
+
+### Using Skills
+
+Skills are invoked automatically when you use trigger phrases:
+```bash
+# Examples:
+"Deploy to iPhone" → invokes ios-deploy-usb
+"Run miso" → invokes miso implementation workflow
+"Watch iOS logs" → invokes ios-watch-logs
+"Create a new skill for X" → invokes make-skill
+```
+
+Or explicitly by name via the Skill tool in Claude Code.
+
 ## Working with This Repository
 
 1. **Start**: Read `miso.md` and relevant platform docs in `miso/platforms/{platform}/`
@@ -219,6 +327,9 @@ log stream --device <DEVICE_ID> --predicate 'subsystem == "com.miso.noobtest"'
 3. **Implement**: Add code to `imp/` subdirectories with platform-specific files
 4. **Deploy**: Use platform-specific scripts (`install-device.sh`, etc.)
 5. **Test**: Use `./test-feature.sh <feature>` to verify functionality
+
+**The Implementation Process** (detailed in `miso/features/implementation.md`):
+When features change, propagate through: feature → pseudocode → platform code → product code → build/test. The miso skill automates this workflow. For UI changes, includes iterative visual verification with screenshots.
 
 ## Repository Structure
 

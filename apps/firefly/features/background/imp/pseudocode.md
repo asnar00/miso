@@ -8,18 +8,18 @@ Provides immediate visual feedback about server connectivity by changing the app
 ## States and Colors
 
 **Connected:**
-- Background color: Turquoise (#40E0D0 / RGB: 64, 224, 208)
+- Background color: Grey (RGB: 128, 128, 128)
 - Indicates: Server is reachable and responding
 
 **Disconnected:**
-- Background color: Gray
+- Background color: Dark Red (RGB: 139, 0, 0)
 - Indicates: Server unreachable, network error, or server error
 
 ## State Management
 
 **Background Color Variable:**
 - Type: Color
-- Initial value: Gray (disconnected until first successful ping)
+- Initial value: Dark Red (disconnected until first successful ping)
 - Updated by: Ping result handler
 
 ## Integration with Ping
@@ -28,10 +28,10 @@ The background feature listens to ping results and updates accordingly:
 
 ```
 function onPingSuccess():
-    setBackgroundColor(turquoise)
+    setBackgroundColor(grey)
 
 function onPingFailure():
-    setBackgroundColor(gray)
+    setBackgroundColor(darkRed)
 ```
 
 ## UI Implementation
@@ -51,15 +51,15 @@ ZStack:
 ## Behavior Timeline
 
 **App launch:**
-1. Initialize with gray background (disconnected)
+1. Initialize with dark red background (disconnected)
 2. Start ping loop
-3. On first successful ping: transition to turquoise
+3. On first successful ping: transition to grey
 4. Continue updating based on ping results
 
 **During use:**
-- Ping succeeds every second → stays turquoise
-- Ping fails → immediately turns gray
-- Ping succeeds after failure → immediately returns to turquoise
+- Ping succeeds every second → stays grey
+- Ping fails → immediately turns dark red
+- Ping succeeds after failure → immediately returns to grey
 
 **Transitions:**
 - Color transitions should be smooth (not jarring)
@@ -69,8 +69,8 @@ ZStack:
 ## Visual Design
 
 **Color values:**
-- Turquoise: RGB(64, 224, 208) or #40E0D0
-- Gray: Platform default gray or RGB(128, 128, 128)
+- Grey: RGB(128, 128, 128) or #808080
+- Dark Red: RGB(139, 0, 0) or #8B0000
 
 **Accessibility:**
 - Sufficient contrast with black text
@@ -79,7 +79,7 @@ ZStack:
 
 ## Error States
 
-All error conditions result in gray background:
+All error conditions result in dark red background:
 - Network timeout
 - DNS resolution failure
 - Server returns error (non-200 status)
@@ -98,15 +98,15 @@ The interface (setBackgroundColor) remains the same across platforms.
 ## Testing
 
 **Manual test:**
-1. Start app with server running → should be turquoise
-2. Stop server → should turn gray within ~1 second
-3. Start server → should turn turquoise within ~1 second
+1. Start app with server running → should be grey
+2. Stop server → should turn dark red within ~1 second
+3. Start server → should turn grey within ~1 second
 4. Verify color transitions are smooth
 
 **Automated test:**
-1. Mock ping success → verify turquoise
-2. Mock ping failure → verify gray
-3. Verify initial state is gray
+1. Mock ping success → verify grey
+2. Mock ping failure → verify dark red
+3. Verify initial state is dark red
 
 ## Performance
 

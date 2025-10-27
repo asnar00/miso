@@ -7,7 +7,7 @@ struct NewUserView: View {
     var body: some View {
         ZStack {
             // Background color
-            Color(red: 64/255, green: 224/255, blue: 208/255)
+            Color(red: 139/255, green: 0, blue: 0)
                 .ignoresSafeArea()
 
             VStack(spacing: 40) {

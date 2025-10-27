@@ -23,7 +23,7 @@ struct PostsView: View {
 
     var postsContent: some View {
         ZStack {
-            Color(red: 64/255, green: 224/255, blue: 208/255)
+            Color(red: 128/255, green: 128/255, blue: 128/255)
                 .ignoresSafeArea()
 
             VStack {

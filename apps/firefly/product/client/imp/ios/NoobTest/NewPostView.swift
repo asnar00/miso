@@ -8,7 +8,7 @@ struct NewPostButton: View {
         HStack(alignment: .center, spacing: 12) {
             Image(systemName: "plus.circle.fill")
                 .font(.system(size: 32))
-                .foregroundColor(Color(red: 64/255, green: 224/255, blue: 208/255))
+                .foregroundColor(Color(red: 128/255, green: 128/255, blue: 128/255))
 
             Text("Create a new post")
                 .font(.system(size: 20, weight: .semibold))
@@ -44,7 +44,7 @@ struct NewPostEditor: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color(red: 64/255, green: 224/255, blue: 208/255)
+                Color(red: 128/255, green: 128/255, blue: 128/255)
                     .ignoresSafeArea()
 
                 ScrollView {

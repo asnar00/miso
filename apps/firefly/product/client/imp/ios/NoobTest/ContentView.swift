@@ -9,7 +9,7 @@ struct ContentView: View {
     let logger = Logger.shared
 
     // State variables for ping and background features
-    @State private var backgroundColor = Color.gray
+    @State private var backgroundColor = Color(red: 139/255, green: 0, blue: 0)
     @State private var timer: Timer?
 
     init() {
@@ -49,25 +49,25 @@ struct ContentView: View {
 
     func testConnection() {
         guard let url = URL(string: "\(serverURL)/api/ping") else {
-            backgroundColor = Color.gray
+            backgroundColor = Color(red: 139/255, green: 0, blue: 0)
             return
         }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error {
-                    // Connection failed - gray background
-                    backgroundColor = Color.gray
+                    // Connection failed - dark red background
+                    backgroundColor = Color(red: 139/255, green: 0, blue: 0)
                     return
                 }
 
                 if let httpResponse = response as? HTTPURLResponse {
                     if httpResponse.statusCode == 200 {
-                        // Connection successful - turquoise background
-                        backgroundColor = Color(red: 64/255, green: 224/255, blue: 208/255)
+                        // Connection successful - grey background
+                        backgroundColor = Color(red: 128/255, green: 128/255, blue: 128/255)
                     } else {
-                        // Server returned error - gray background
-                        backgroundColor = Color.gray
+                        // Server returned error - dark red background
+                        backgroundColor = Color(red: 139/255, green: 0, blue: 0)
                     }
                 }
             }

@@ -75,9 +75,14 @@ The app should now be on your iPhone's home screen.
 - Script uses `LD="clang"` to avoid Homebrew linker conflicts
 - This is automatically handled
 
-**VPN interference**:
-- Disable VPN if device shows "connecting" state indefinitely
-- Restart iPhone after disabling VPN
+**Script hangs during build or install**:
+- **Most common cause**: VPN is enabled on the Mac
+- If the install-device.sh script hangs and doesn't complete:
+  1. Ask the user: "Is your VPN currently enabled? If so, please disable it and try again."
+  2. Wait for user to disable VPN
+  3. Retry the deployment
+- This happens because VPN can interfere with USB device communication
+- After disabling VPN, the deployment should complete normally
 
 ## Implementation Details
 
