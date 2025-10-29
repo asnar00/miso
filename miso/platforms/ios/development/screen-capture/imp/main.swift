@@ -481,15 +481,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 log("ERROR: Cannot add input to session")
             }
 
-            // Create preview layer
+            // Create preview layer with inset for border
+            let borderWidth: CGFloat = 8
+            let bounds = window.contentView!.bounds
+            let insetFrame = NSRect(
+                x: borderWidth,
+                y: borderWidth,
+                width: bounds.width - (borderWidth * 2),
+                height: bounds.height - (borderWidth * 2)
+            )
+
             previewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
-            previewLayer?.frame = window.contentView!.bounds
-            previewLayer?.videoGravity = .resizeAspect
+            previewLayer?.frame = insetFrame
+            previewLayer?.videoGravity = .resizeAspectFill
             window.contentView?.layer = CALayer()
             window.contentView?.wantsLayer = true
             window.contentView?.layer?.cornerRadius = 45
             window.contentView?.layer?.masksToBounds = true
-            window.contentView?.layer?.borderWidth = 8
+            window.contentView?.layer?.borderWidth = borderWidth
             window.contentView?.layer?.borderColor = NSColor.black.cgColor
             window.contentView?.layer?.addSublayer(previewLayer!)
             log("Created preview layer")
@@ -598,9 +607,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let cornerRadius: CGFloat = isSmallMode ? 22.5 : 45
         window.contentView?.layer?.cornerRadius = cornerRadius
 
-        // Update preview layer frame if it exists
+        // Update preview layer frame if it exists, with inset for border
         if let previewLayer = previewLayer {
-            previewLayer.frame = window.contentView!.bounds
+            let borderWidth: CGFloat = 8
+            let bounds = window.contentView!.bounds
+            let insetFrame = NSRect(
+                x: borderWidth,
+                y: borderWidth,
+                width: bounds.width - (borderWidth * 2),
+                height: bounds.height - (borderWidth * 2)
+            )
+            previewLayer.frame = insetFrame
         }
 
         log(isSmallMode ? "Switched to small mode" : "Switched to full size")
