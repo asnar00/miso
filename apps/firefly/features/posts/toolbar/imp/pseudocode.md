@@ -9,15 +9,17 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 
 **Toolbar Container:**
 - Position: Bottom of screen, floating above content
-- Height: 60 points
-- Background: White with 95% opacity
+- Background: White with 95% opacity, extends to bottom edge of screen
 - Shadow: Subtle shadow to lift toolbar above content (2pt radius)
-- Safe area: Respects bottom safe area insets (iPhone notch/home indicator)
+- Button area height: 50 points
+- Buttons positioned 15pt from top edge of toolbar
+- Background extends below buttons to screen bottom (using ignoresSafeArea)
 
 **Button Layout:**
 - Four buttons arranged horizontally with equal spacing
 - Each button centered in its allocated space
-- Buttons evenly distributed across toolbar width
+- Horizontal padding: 40 points (buttons moved inward from edges)
+- Buttons evenly distributed across remaining width with Spacers
 
 **Button Design:**
 - Icon size: 24 points

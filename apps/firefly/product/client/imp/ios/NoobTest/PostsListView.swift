@@ -12,6 +12,7 @@ struct PostsListView: View {
     @State private var isLoading = true
     @State private var errorMessage: String?
     @State private var parentPost: Post? = nil
+    @State private var scrollProxy: ScrollViewProxy? = nil
 
     let serverURL = "http://185.96.221.52:8080"
 
@@ -75,13 +76,43 @@ struct PostsListView: View {
                                 }
                             }
                         }
-                        .padding()
+                        .padding(.horizontal, 8)  // Halved from 16pt to make posts wider
+                        .padding(.vertical)
+                    }
+                    .onAppear {
+                        // Register scroll actions for root view only
+                        if parentPostId == nil {
+                            // Register scroll to specific post by title
+                            for post in posts {
+                                let postTitle = post.title
+                                let postId = post.id
+                                UIAutomationRegistry.shared.register(id: "scroll-to-\(postTitle)") {
+                                    DispatchQueue.main.async {
+                                        withAnimation {
+                                            proxy.scrollTo(postId, anchor: .center)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(parentPost?.title ?? "")
+        .navigationBarHidden(parentPostId == nil)  // Hide nav bar for root, show for children
+        .toolbar {
+            if parentPostId != nil {
+                ToolbarItem(placement: .principal) {
+                    Text(parentPost?.title ?? "...")
+                        .font(.system(size: 21, weight: .semibold))  // 25% bigger (17 * 1.25 ≈ 21)
+                        .foregroundColor(.black)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .offset(x: -88)  // Move left 8pt more (was -80, now -88)
+                }
+            }
+        }
         .sheet(isPresented: $showNewPostEditor) {
             NewPostEditor(onPostCreated: {
                 fetchPosts()

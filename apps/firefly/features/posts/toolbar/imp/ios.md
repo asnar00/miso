@@ -31,56 +31,68 @@ struct Toolbar: View {
     let onProfileButtonTap: () -> Void
 
     var body: some View {
-        HStack(spacing: 0) {
-            // Home button
-            ToolbarButton(icon: "house", isActive: activeTab == .home) {
-                activeTab = .home
-                navigationPath = []
-            }
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                // Home button
+                ToolbarButton(icon: "house", isActive: activeTab == .home) {
+                    activeTab = .home
+                    navigationPath = []
+                }
 
+                Spacer()
+
+                // Post button
+                ToolbarButton(icon: "plus", isActive: activeTab == .post) {
+                    activeTab = .post
+                    onPostButtonTap()
+                }
+
+                Spacer()
+
+                // Search button
+                ToolbarButton(icon: "magnifyingglass", isActive: activeTab == .search) {
+                    activeTab = .search
+                    onSearchButtonTap()
+                }
+
+                Spacer()
+
+                // Profile button
+                ToolbarButton(icon: "person", isActive: activeTab == .profile) {
+                    activeTab = .profile
+                    onProfileButtonTap()
+                }
+            }
+            .padding(.horizontal, 40)
+            .padding(.top, 15)  // Move buttons down 15pt
+            .frame(height: 50)  // Toolbar height
+
+            // Spacer to extend background to bottom
             Spacer()
-
-            // Post button
-            ToolbarButton(icon: "plus", isActive: activeTab == .post) {
-                activeTab = .post
-                onPostButtonTap()
-            }
-
-            Spacer()
-
-            // Search button
-            ToolbarButton(icon: "magnifyingglass", isActive: activeTab == .search) {
-                activeTab = .search
-                onSearchButtonTap()
-            }
-
-            Spacer()
-
-            // Profile button
-            ToolbarButton(icon: "person", isActive: activeTab == .profile) {
-                activeTab = .profile
-                onProfileButtonTap()
-            }
+                .frame(height: 0)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 8)
-        .frame(height: 60)
-        .background(Color.white.opacity(0.95))
+        .background(
+            Color.white.opacity(0.95)
+                .ignoresSafeArea(edges: .bottom)
+        )
         .shadow(radius: 2)
         .onAppear {
-            // Register toolbar buttons with UI automation for testing
+            // Register toolbar buttons with UI automation
             UIAutomationRegistry.shared.register(id: "toolbar-home") {
                 activeTab = .home
                 navigationPath = []
             }
+
             UIAutomationRegistry.shared.register(id: "toolbar-plus") {
                 activeTab = .post
                 onPostButtonTap()
             }
+
             UIAutomationRegistry.shared.register(id: "toolbar-search") {
                 activeTab = .search
                 onSearchButtonTap()
             }
+
             UIAutomationRegistry.shared.register(id: "toolbar-profile") {
                 activeTab = .profile
                 onProfileButtonTap()
@@ -182,6 +194,13 @@ struct PostsView: View {
                         onPostCreated: {
                             onPostCreated()
                             showNewPostEditor = false
+                            activeTab = .home
+                        },
+                        onDismiss: {
+                            withAnimation {
+                                showNewPostEditor = false
+                                activeTab = .home
+                            }
                         },
                         parentId: currentParentId
                     )
@@ -240,14 +259,16 @@ Add `Toolbar.swift` to Xcode project:
 
 ## Visual Appearance
 
-- **Toolbar height**: 60pt (frame height)
+- **Button container height**: 50pt (.frame(height: 50))
+- **Button vertical position**: 15pt from top (.padding(.top, 15))
 - **Icon size**: 24pt (.system(size: 24))
 - **Tappable area**: 44x44pt per button (.frame(width: 44, height: 44))
 - **Background**: White at 95% opacity (Color.white.opacity(0.95))
+- **Background extends to screen bottom**: Uses .ignoresSafeArea(edges: .bottom)
 - **Shadow**: 2pt radius (.shadow(radius: 2))
-- **Padding**: Horizontal 24pt, Vertical 8pt
-- **Layout**: 4 buttons with Spacers between them for equal distribution
-- **Safe area**: Toolbar respects bottom safe area automatically (SwiftUI default behavior)
+- **Horizontal padding**: 40pt (.padding(.horizontal, 40)) - buttons moved inward from edges
+- **Layout**: VStack with HStack containing 4 buttons with Spacers between them for equal distribution
+- **Bottom alignment**: VStack with zero-height Spacer extends background to screen bottom
 - **Icons**: SF Symbols - "house", "plus", "magnifyingglass" (one word!), "person"
 
 ## Behavior
@@ -261,6 +282,11 @@ Add `Toolbar.swift` to Xcode project:
 - Root level: parentId = nil → creates top-level post
 - Child view: parentId = navigationPath.last → creates child of current parent
 
+**Active tab state management**:
+- After posting or canceling NewPostEditor, activeTab resets to .home
+- This ensures correct visual feedback (home button highlighted instead of + button)
+- Reset happens in both onPostCreated and onDismiss callbacks
+
 ## Notes
 
 - Toolbar remains visible during navigation transitions
@@ -272,6 +298,9 @@ Add `Toolbar.swift` to Xcode project:
 - Keyboard does not push toolbar up (ignoresSafeArea(.keyboard))
 - **Critical**: SF Symbol for search is "magnifyingglass" (one word), NOT "magnifying.glass" (with dot)
 - **UI Automation**: Toolbar buttons registered with UIAutomationRegistry for programmatic testing
+- **Layout structure**: VStack wraps HStack of buttons, with zero-height Spacer below to extend background to screen bottom
+- **Bottom edge alignment**: Background uses `.ignoresSafeArea(edges: .bottom)` to extend flush with screen edge
+- **Button positioning**: Buttons positioned 15pt from top edge for optimal thumb reach and visual balance
 
 ## Xcode Project Files
 

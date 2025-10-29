@@ -102,7 +102,7 @@ struct PostView: View {
         ZStack(alignment: .topLeading) {
             // Existing post content...
 
-            // Child indicator overlay (white circle with black chevron)
+            // Child indicator overlay (grey semi-transparent circle with white chevron)
             if (post.childCount ?? 0) > 0 {
                 VStack {
                     Spacer()
@@ -110,18 +110,14 @@ struct PostView: View {
                         Spacer()
                         ZStack {
                             Circle()
-                                .fill(Color.white.opacity(0.9))
-                                .frame(width: 42, height: 42)
-
-                            Circle()
-                                .stroke(Color.black, lineWidth: 3)
+                                .fill(Color(red: 128/255, green: 128/255, blue: 128/255).opacity(0.8))
                                 .frame(width: 42, height: 42)
 
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(Color.black)
+                                .foregroundColor(Color.white)
                         }
-                        .padding(.trailing, -16)
+                        .padding(.trailing, -10)
                     }
                     Spacer()
                 }
@@ -245,34 +241,24 @@ struct PostsListView: View {
                                 }
                             }
                         }
-                        .padding()
+                        .padding(.horizontal, 8)  // Halved from 16pt to make posts wider
+                        .padding(.vertical)
                     }
                 }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarHidden(parentPostId == nil)  // Hide nav bar for root, show for children
         .toolbar {
-            // Only show custom back button for child views
-            if let parentId = parentPostId {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        navigationPath.removeLast()
-                    }) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundColor(.black)
-
-                            Text(parentPost?.title ?? "...")
-                                .font(.system(size: 17, weight: .semibold))
-                                .foregroundColor(.black)
-                                .lineLimit(1)
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(Color.white.opacity(0.9))
-                        .clipShape(Capsule())
-                    }
+            // Show parent title for child views
+            if parentPostId != nil {
+                ToolbarItem(placement: .principal) {
+                    Text(parentPost?.title ?? "...")
+                        .font(.system(size: 21, weight: .semibold))  // 25% bigger than default
+                        .foregroundColor(.black)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .offset(x: -88)  // Position to left of center, next to standard back button
                 }
             }
         }
@@ -377,9 +363,10 @@ struct PostsListView: View {
 2. **State Preservation**: Root view only fetches when `posts.isEmpty`, keeping scroll position intact when navigating back
 3. **Different Endpoints**: Root uses `/api/posts/recent?limit=50`, children use `/api/posts/{id}/children`
 4. **No Scroll-Blocking Gestures**: Removed `.highPriorityGesture` to allow ScrollView to scroll freely without interference
-5. **Conditional Toolbar**: Custom back button only appears for child views (when `parentPostId != nil`)
-6. **Circle Indicator Design**: Changed from simple chevron with outline to white circle with black border and centered chevron
-7. **Edge Straddling**: Indicator positioned -16pt trailing (instead of -8pt) so circle straddles post edge more prominently
+5. **Standard Navigation**: Uses iOS standard back button to preserve swipe-right gesture, with parent title positioned next to it using `.toolbar` with `.principal` placement
+6. **Circle Indicator Design**: Grey semi-transparent circle (RGB 128/128/128, 80% opacity) with white chevron, no border
+7. **Edge Straddling**: Indicator positioned -10pt trailing so circle straddles post edge
+8. **UI Automation**: Programmatic scroll and navigation actions registered via UIAutomationRegistry for testing
 
 ## API Endpoints Used
 
@@ -417,21 +404,31 @@ struct PostsListView: View {
 
 ## Visual Design
 
+**Post Layout:**
+- List horizontal padding: 8pt (halved from 16pt to make posts wider)
+- List vertical padding: Default SwiftUI padding
+- Post title/summary left padding: 16pt (increased from 8pt for more text indent)
+- Post title/summary vertical padding: 8pt
+- Post title/summary right padding: 8pt
+- Expanded body text left offset: 18pt (increased from 10pt, aligned with title indent)
+- Expanded image left offset: 18pt (increased from 10pt, aligned with text)
+- Author line left offset: 18pt (increased from 10pt, aligned with text)
+
 **Child Indicator:**
-- Container: White circle (42pt diameter, 90% opacity)
-- Border: Black stroke (3pt width)
+- Container: Grey circle (42pt diameter, RGB 128/128/128, 80% opacity)
+- Border: None
 - Icon: `chevron.right` system icon
 - Icon size: 20pt, bold weight
-- Icon color: Black
-- Position: Right edge, vertically centered, -16pt trailing padding (straddles edge)
+- Icon color: White
+- Position: Right edge, vertically centered, -10pt trailing padding (straddles edge)
 - Only visible when `(post.childCount ?? 0) > 0`
 
-**Custom Back Button:**
-- White oval capsule (Capsule shape)
-- Contents: `chevron.left` (20pt, semibold) + parent post title (17pt, semibold, 1 line)
-- Padding: 12pt horizontal, 8pt vertical
-- Background: White 90% opacity
-- Position: Navigation bar leading area
+**Navigation Bar (Child Views):**
+- Standard iOS back button: Dark grey circle with white `chevron.left`
+- Parent post title: 21pt semibold, black color, 1 line max
+- Title position: `.offset(x: -88)` to sit left of center, next to back button
+- Title alignment: `.leading` within `.maxWidth(.infinity)` frame
+- Navigation bar hidden for root view, shown for child views
 
 ## Gestures
 
@@ -441,32 +438,82 @@ struct PostsListView: View {
 - Action: Navigate to child posts view (`navigationPath.append(postId)`)
 
 **Navigate Back:**
-- Method 1: Tap custom back button in toolbar
-- Method 2: Use standard NavigationStack swipe-from-left-edge gesture
-- Action: Remove last item from navigation path (`navigationPath.removeLast()`)
+- Method 1: Tap standard iOS back button in navigation bar
+- Method 2: Swipe from left edge (standard NavigationStack gesture)
+- Action: NavigationStack automatically removes last item from navigation path
 
 **No Custom Swipe-Right Gesture:**
 - Removed to allow ScrollView to scroll freely
 - Standard NavigationStack edge swipe works naturally
 
+## UI Automation
+
+For programmatic testing, the implementation registers automation actions with UIAutomationRegistry:
+
+**Scroll Actions (Root View Only)**:
+```swift
+// In PostsListView.onAppear for ScrollViewReader
+if parentPostId == nil {
+    for post in posts {
+        let postTitle = post.title
+        let postId = post.id
+        UIAutomationRegistry.shared.register(id: "scroll-to-\(postTitle)") {
+            DispatchQueue.main.async {
+                withAnimation {
+                    proxy.scrollTo(postId, anchor: .center)
+                }
+            }
+        }
+    }
+}
+```
+
+**Navigation Actions (All Posts)**:
+```swift
+// In PostView.onAppear
+UIAutomationRegistry.shared.register(id: "navigate-to-children-\(post.id)") {
+    if let navigate = onNavigateToChildren {
+        DispatchQueue.main.async {
+            navigate(post.id)
+        }
+    }
+}
+```
+
+**Trigger via HTTP**:
+```bash
+curl http://localhost:8081/trigger/scroll-to-test%20post
+curl http://localhost:8081/trigger/navigate-to-children-6
+```
+
 ## Testing
 
 **Manual Test:**
 1. View posts list with posts that have `childCount > 0`
-2. Verify white circle (42pt) with black outline (3pt) and black chevron appears on right edge, straddling the boundary
+2. Verify grey semi-transparent circle (42pt, 80% opacity) with white chevron appears on right edge, straddling the boundary
 3. Swipe left on post with children (minimum 30pt) → child list appears
-4. Verify back button shows "< {parent title}" in white oval capsule
-5. Scroll down in root view, navigate to child, tap back button
-6. Verify root view scroll position is preserved (not reset to top)
-7. Navigate to child view, swipe from left edge → return to parent
-8. Verify ScrollView scrolls normally (up/down) without any gesture interference
-9. Navigate multiple levels deep (verify back button updates at each level)
-10. Verify smooth NavigationStack slide animations between levels
+4. Verify standard iOS back button appears in navigation bar
+5. Verify parent post title (21pt, semibold, black) appears to the right of back button
+6. Scroll down in root view, navigate to child, tap back button
+7. Verify root view scroll position is preserved (not reset to top)
+8. Navigate to child view, swipe from left edge → return to parent
+9. Verify ScrollView scrolls normally (up/down) without any gesture interference
+10. Navigate multiple levels deep (verify title updates at each level)
+11. Verify smooth NavigationStack slide animations between levels
+
+**Programmatic Test (via UI Automation):**
+```bash
+# Scroll to specific post
+curl http://localhost:8081/trigger/scroll-to-test%20post
+
+# Navigate to child view
+curl http://localhost:8081/trigger/navigate-to-children-6
+```
 
 **Edge Cases:**
 - Post with `childCount = 0` or `null`: no arrow, no navigation
 - Swipe left on post without children: no navigation, expand/collapse works
 - Empty child list: shows "No posts yet" message
 - Failed child fetch: shows error message with "Retry" button
-- Failed parent fetch: back button shows "..."
+- Failed parent fetch: title shows "..."
 - Root view scroll position: preserved across navigation due to conditional fetching

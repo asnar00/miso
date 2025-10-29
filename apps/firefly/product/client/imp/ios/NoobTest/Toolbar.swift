@@ -12,41 +12,50 @@ struct Toolbar: View {
     let onProfileButtonTap: () -> Void
 
     var body: some View {
-        HStack(spacing: 0) {
-            // Home button
-            ToolbarButton(icon: "house", isActive: activeTab == .home) {
-                activeTab = .home
-                navigationPath = []
-            }
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                // Home button
+                ToolbarButton(icon: "house", isActive: activeTab == .home) {
+                    activeTab = .home
+                    navigationPath = []
+                }
 
+                Spacer()
+
+                // Post button
+                ToolbarButton(icon: "plus", isActive: activeTab == .post) {
+                    activeTab = .post
+                    onPostButtonTap()
+                }
+
+                Spacer()
+
+                // Search button
+                ToolbarButton(icon: "magnifyingglass", isActive: activeTab == .search) {
+                    activeTab = .search
+                    onSearchButtonTap()
+                }
+
+                Spacer()
+
+                // Profile button
+                ToolbarButton(icon: "person", isActive: activeTab == .profile) {
+                    activeTab = .profile
+                    onProfileButtonTap()
+                }
+            }
+            .padding(.horizontal, 40)
+            .padding(.top, 15)  // Move buttons down 15pt
+            .frame(height: 50)  // Toolbar height
+
+            // Spacer to extend background to bottom
             Spacer()
-
-            // Post button
-            ToolbarButton(icon: "plus", isActive: activeTab == .post) {
-                activeTab = .post
-                onPostButtonTap()
-            }
-
-            Spacer()
-
-            // Search button
-            ToolbarButton(icon: "magnifyingglass", isActive: activeTab == .search) {
-                activeTab = .search
-                onSearchButtonTap()
-            }
-
-            Spacer()
-
-            // Profile button
-            ToolbarButton(icon: "person", isActive: activeTab == .profile) {
-                activeTab = .profile
-                onProfileButtonTap()
-            }
+                .frame(height: 0)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 8)
-        .frame(height: 60)
-        .background(Color.white.opacity(0.95))
+        .background(
+            Color.white.opacity(0.95)
+                .ignoresSafeArea(edges: .bottom)
+        )
         .shadow(radius: 2)
         .onAppear {
             // Register toolbar buttons with UI automation

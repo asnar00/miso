@@ -33,13 +33,13 @@ let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 // Compact state (thumbnail)
 let compactWidth: CGFloat = 80
 let compactHeight: CGFloat = 80
-let compactX = availableWidth - 80 + 8  // right-aligned with 8pt padding
+let compactX = availableWidth - 80 + 20  // right-aligned, moved right by 12pt for reduced list padding
 let compactY: CGFloat = (100 - 80) / 2 + 8  // vertically centered with top padding
 
 // Expanded state (full image)
 let expandedWidth = availableWidth
 let expandedHeight = availableWidth / imageAspectRatio
-let expandedX: CGFloat = 10  // aligned with content left edge
+let expandedX: CGFloat = 18  // aligned with text content indent
 let expandedY = titleSummaryHeight + 8  // below title/summary
 
 // Interpolated values
@@ -119,7 +119,7 @@ if isExpanded && isMeasured {
                 .frame(height: currentBodyHeight)
                 .frame(maxHeight: .infinity, alignment: .top)
         )
-        .offset(x: 10, y: bodyY)
+        .offset(x: 18, y: bodyY)  // Increased from 10pt for more left indent
 }
 ```
 
@@ -189,7 +189,9 @@ VStack(alignment: .leading, spacing: 4) {
         .foregroundColor(.black.opacity(0.8))
         .lineLimit(2)
 }
-.padding(8)
+.padding(.leading, 16)  // Increased from 8pt for more text indent
+.padding(.vertical, 8)
+.padding(.trailing, 8)
 .frame(maxWidth: .infinity, alignment: .leading)
 .padding(.trailing, post.imageUrl != nil ? 96 : 0)  // leave room for thumbnail
 .background(
@@ -228,7 +230,7 @@ if isExpanded && isMeasured {
         }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
-    .offset(x: 10, y: authorY)  // aligned with content left edge
+    .offset(x: 18, y: authorY)  // Increased from 10pt for more left indent
     .opacity(expansionFactor)  // fade in with expansion
 }
 ```
@@ -270,7 +272,9 @@ var body: some View {
                 .foregroundColor(.black.opacity(0.8))
                 .lineLimit(2)
         }
-        .padding(8)
+        .padding(.leading, 16)  // Increased from 8pt for more text indent
+        .padding(.vertical, 8)
+        .padding(.trailing, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.trailing, post.imageUrl != nil ? 96 : 0)
         .background(
@@ -304,7 +308,7 @@ var body: some View {
                         .frame(height: currentBodyHeight)
                         .frame(maxHeight: .infinity, alignment: .top)
                 )
-                .offset(x: 10, y: bodyY)
+                .offset(x: 18, y: bodyY)  // Increased from 10pt for more left indent
         }
 
         // Author metadata (tracks image + body position, fades in)
@@ -330,7 +334,7 @@ var body: some View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .offset(x: 10, y: authorY)
+            .offset(x: 18, y: authorY)  // Increased from 10pt for more left indent
             .opacity(expansionFactor)
         }
 
@@ -340,12 +344,12 @@ var body: some View {
 
             let compactWidth: CGFloat = 80
             let compactHeight: CGFloat = 80
-            let compactX = availableWidth - 80 + 8
+            let compactX = availableWidth - 80 + 20
             let compactY: CGFloat = (compactHeight - 80) / 2 + 8
 
             let expandedWidth = availableWidth
             let expandedHeight = availableWidth / imageAspectRatio
-            let expandedX: CGFloat = 10
+            let expandedX: CGFloat = 18
             let expandedY = titleSummaryHeight + 8
 
             let currentWidth = lerp(compactWidth, expandedWidth, expansionFactor)

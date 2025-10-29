@@ -116,7 +116,9 @@ struct PostView: View {
                     .foregroundColor(.black.opacity(0.8))
                     .lineLimit(2)
             }
-            .padding(8)
+            .padding(.leading, 16)  // Increased from 8pt for more text indent
+            .padding(.vertical, 8)
+            .padding(.trailing, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.trailing, post.imageUrl != nil ? 96 : 0)  // Leave room for thumbnail
             .background(
@@ -153,7 +155,7 @@ struct PostView: View {
                             .frame(height: currentBodyHeight)
                             .frame(maxHeight: .infinity, alignment: .top)
                     )
-                    .offset(x: 10, y: bodyY)
+                    .offset(x: 18, y: bodyY)  // Increased from 10pt for more left indent
             }
 
             // Author - fades in when expanded
@@ -180,7 +182,7 @@ struct PostView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .offset(x: 10, y: authorY)  // Align with content left edge
+                .offset(x: 18, y: authorY)  // Increased from 10pt for more left indent
                 .opacity(expansionFactor)  // Fade in with expansion
             }
 
@@ -190,13 +192,13 @@ struct PostView: View {
 
                 // Compact state: 80x80 thumbnail on top-right with padding
                 let thumbnailSize: CGFloat = 80
-                let compactX = availableWidth - 80 + 8  // Right-aligned with padding
+                let compactX = availableWidth - 80 + 20  // Right-aligned, moved right by 12pt for reduced list padding
                 let compactY: CGFloat = (100 - thumbnailSize) / 2  // Vertically centered in 100px compact post view
 
                 // Expanded state: full-width centered below summary (matching content rectangle)
                 let expandedWidth = availableWidth
                 let expandedHeight = availableWidth / imageAspectRatio
-                let expandedX: CGFloat = 10  // Aligned with content rectangle left edge (centered with padding)
+                let expandedX: CGFloat = 18  // Increased from 10pt to align with text indent
                 let expandedY = titleSummaryHeight + 8  // Below summary
 
                 // Interpolated values
@@ -250,21 +252,27 @@ struct PostView: View {
                         Spacer()
                         ZStack {
                             Circle()
-                                .fill(Color.white.opacity(0.9))
-                                .frame(width: 42, height: 42)
-
-                            Circle()
-                                .stroke(Color.black, lineWidth: 3)
+                                .fill(Color(red: 128/255, green: 128/255, blue: 128/255).opacity(0.8))
                                 .frame(width: 42, height: 42)
 
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(Color.black)
+                                .foregroundColor(Color.white)
                         }
-                        .padding(.trailing, -16)
+                        .padding(.trailing, -10)  // Position straddling the right edge
                         .onTapGesture {
                             if let navigate = onNavigateToChildren {
                                 navigate(post.id)
+                            }
+                        }
+                        .onAppear {
+                            // Register this post's navigation action
+                            UIAutomationRegistry.shared.register(id: "navigate-to-children-\(post.id)") {
+                                if let navigate = onNavigateToChildren {
+                                    DispatchQueue.main.async {
+                                        navigate(post.id)
+                                    }
+                                }
                             }
                         }
                     }

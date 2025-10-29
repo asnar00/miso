@@ -24,7 +24,6 @@ struct PostsView: View {
                     )
                 }
             }
-            .navigationBarHidden(true)
 
             // Custom sheet overlay (instead of .sheet modifier)
             if showNewPostEditor {
