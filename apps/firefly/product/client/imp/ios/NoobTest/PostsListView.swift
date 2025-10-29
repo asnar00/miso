@@ -1,7 +1,8 @@
 import SwiftUI
 
-struct ChildPostsView: View {
-    let parentPostId: Int
+// Unified view for displaying a list of posts, either at root level or for a specific parent
+struct PostsListView: View {
+    let parentPostId: Int?  // nil = root level, non-nil = child posts
     let onPostCreated: () -> Void
     @Binding var navigationPath: [Int]
 
@@ -33,7 +34,7 @@ struct ChildPostsView: View {
                         .multilineTextAlignment(.center)
                         .padding()
                     Button("Retry") {
-                        fetchChildPosts()
+                        fetchPosts()
                     }
                     .padding()
                     .background(Color.white.opacity(0.3))
@@ -43,12 +44,6 @@ struct ChildPostsView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 8) {
-                            // New post button
-                            NewPostButton {
-                                showNewPostEditor = true
-                            }
-
-                            // Child posts
                             if posts.isEmpty {
                                 Text("No posts yet")
                                     .foregroundColor(.black)
@@ -69,7 +64,7 @@ struct ChildPostsView: View {
                                             }
                                         },
                                         onPostCreated: {
-                                            fetchChildPosts()
+                                            fetchPosts()
                                             onPostCreated()
                                         },
                                         onNavigateToChildren: { postId in
@@ -86,46 +81,30 @@ struct ChildPostsView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    navigationPath.removeLast()
-                }) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 20, weight: .semibold))
-                            .foregroundColor(.black)
-
-                        Text(parentPost?.title ?? "...")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(.black)
-                            .lineLimit(1)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color.white.opacity(0.9))
-                    .clipShape(Capsule())
-                }
-            }
-        }
+        .navigationTitle(parentPost?.title ?? "")
         .sheet(isPresented: $showNewPostEditor) {
             NewPostEditor(onPostCreated: {
-                fetchChildPosts()
+                fetchPosts()
                 onPostCreated()
             }, onDismiss: nil, parentId: parentPostId)
         }
         .onAppear {
-            fetchParentPost()
-            fetchChildPosts()
+            if let parentId = parentPostId {
+                fetchParentPost(parentId)
+                fetchPosts()
+            } else if posts.isEmpty {
+                // Only fetch root posts if we don't have any yet
+                fetchPosts()
+            }
         }
     }
 
-    func fetchParentPost() {
-        guard let url = URL(string: "\(serverURL)/api/posts/\(parentPostId)") else {
+    func fetchParentPost(_ postId: Int) {
+        guard let url = URL(string: "\(serverURL)/api/posts/\(postId)") else {
             return
         }
 
-        Logger.shared.info("[ChildPostsView] Fetching parent post \(parentPostId)")
+        Logger.shared.info("[PostsListView] Fetching parent post \(postId)")
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else { return }
@@ -136,29 +115,36 @@ struct ChildPostsView: View {
                     self.parentPost = postResponse.post
                 }
             } catch {
-                Logger.shared.error("[ChildPostsView] Error fetching parent: \(error.localizedDescription)")
+                Logger.shared.error("[PostsListView] Error fetching parent: \(error.localizedDescription)")
             }
         }.resume()
     }
 
-    func fetchChildPosts() {
+    func fetchPosts() {
         isLoading = true
         errorMessage = nil
 
-        guard let url = URL(string: "\(serverURL)/api/posts/\(parentPostId)/children") else {
+        let urlString: String
+        if let parentId = parentPostId {
+            urlString = "\(serverURL)/api/posts/\(parentId)/children"
+        } else {
+            urlString = "\(serverURL)/api/posts/recent?limit=50"
+        }
+
+        guard let url = URL(string: urlString) else {
             isLoading = false
             errorMessage = "Invalid URL"
             return
         }
 
-        Logger.shared.info("[ChildPostsView] Fetching posts for parent \(parentPostId)")
+        Logger.shared.info("[PostsListView] Fetching posts (parent: \(parentPostId?.description ?? "root"))")
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
                 isLoading = false
 
                 if let error = error {
-                    Logger.shared.error("[ChildPostsView] Error: \(error.localizedDescription)")
+                    Logger.shared.error("[PostsListView] Error: \(error.localizedDescription)")
                     errorMessage = error.localizedDescription
                     return
                 }
@@ -169,11 +155,19 @@ struct ChildPostsView: View {
                 }
 
                 do {
-                    let childrenResponse = try JSONDecoder().decode(ChildrenResponse.self, from: data)
-                    Logger.shared.info("[ChildPostsView] Loaded \(childrenResponse.children.count) posts")
-                    self.posts = childrenResponse.children
+                    if parentPostId != nil {
+                        // Child posts - different response format
+                        let childrenResponse = try JSONDecoder().decode(ChildrenResponse.self, from: data)
+                        Logger.shared.info("[PostsListView] Loaded \(childrenResponse.children.count) posts")
+                        self.posts = childrenResponse.children
+                    } else {
+                        // Root posts
+                        let postsResponse = try JSONDecoder().decode(PostsResponse.self, from: data)
+                        Logger.shared.info("[PostsListView] Loaded \(postsResponse.posts.count) posts")
+                        self.posts = postsResponse.posts
+                    }
                 } catch {
-                    Logger.shared.error("[ChildPostsView] Decode error: \(error.localizedDescription)")
+                    Logger.shared.error("[PostsListView] Decode error: \(error.localizedDescription)")
                     errorMessage = "Failed to load posts"
                 }
             }

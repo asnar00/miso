@@ -10,43 +10,15 @@
 
 ### NewPostButton
 
-```swift
-struct NewPostButton: View {
-    let onTap: () -> Void
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            Image(systemName: "plus.circle.fill")
-                .font(.system(size: 32))
-                .foregroundColor(Color(red: 64/255, green: 224/255, blue: 208/255))
-
-            Text("Create a new post")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(.black.opacity(0.7))
-
-            Spacer()
-        }
-        .padding()
-        .background(Color.white.opacity(0.9))
-        .cornerRadius(12)
-        .shadow(radius: 2)
-        .onTapGesture {
-            onTap()
-        }
-    }
-}
-```
-
-**Usage in PostsView:**
-- Add at top of VStack before ForEach(posts)
-- Call `showNewPostEditor = true` in onTap handler
+**NOTE:** The NewPostButton component is deprecated and should be removed from the product code. New posts are now triggered from a floating toolbar instead.
 
 ### NewPostEditor
 
 ```swift
 struct NewPostEditor: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
     let onPostCreated: () -> Void
+    let onDismiss: (() -> Void)?  // Optional callback for custom overlay dismissal
     let parentId: Int?
 
     @State private var title: String = ""
@@ -59,6 +31,15 @@ struct NewPostEditor: View {
     @State private var isPosting = false
     @State private var postError: String? = nil
 ```
+
+**onDismiss callback pattern:**
+
+The `onDismiss` parameter is optional and supports two presentation modes:
+
+1. **Standard `.sheet()` presentation**: Pass `nil` for `onDismiss`. The view uses `@Environment(\.dismiss)` to close itself.
+2. **Custom overlay presentation**: Pass a callback that manages the overlay state (used when toolbar must remain visible). The callback sets `showNewPostEditor = false` and `activeTab = .home` in the parent view.
+
+This dual-mode approach allows the same editor to work both with SwiftUI's built-in sheet presentation and custom ZStack overlays.
 
 **Layout structure:**
 - `NavigationView` with inline title "New Post"
@@ -95,20 +76,74 @@ All fields use `ZStack` with placeholder text that shows when empty:
 }
 ```
 
-**Post button:**
+**Toolbar buttons (Cancel and Post):**
+
+The Cancel and Post buttons use custom styling with rounded pill-shaped backgrounds:
+
 ```swift
-ToolbarItem(placement: .navigationBarTrailing) {
-    Button(action: { postNewPost() }) {
-        if isPosting {
-            ProgressView()
+// Cancel button (left side)
+ToolbarItem(placement: .navigationBarLeading) {
+    Button(action: {
+        if let onDismiss = onDismiss {
+            onDismiss()  // Use callback for custom overlay
         } else {
-            Text("Post").fontWeight(.semibold)
+            dismiss()    // Use environment dismiss for standard sheet
+        }
+    }) {
+        Text("Cancel")
+            .fontWeight(.medium)
+            .foregroundColor(.white)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(Color.black)
+            .cornerRadius(20)
+    }
+    .buttonStyle(.plain)
+    .fixedSize()
+    .onAppear {
+        // Register with UI automation for programmatic testing
+        UIAutomationRegistry.shared.register(id: "newpost-cancel") {
+            if let onDismiss = onDismiss {
+                onDismiss()
+            } else {
+                dismiss()
+            }
         }
     }
-    .foregroundColor(title.isEmpty ? .gray : .black)
+}
+
+// Post button (right side)
+ToolbarItem(placement: .navigationBarTrailing) {
+    Button(action: { postNewPost() }) {
+        Group {
+            if isPosting {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .black))
+            } else {
+                Text("Post")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.black)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(Color.white)
+        .cornerRadius(20)
+    }
+    .buttonStyle(.plain)
+    .fixedSize()
     .disabled(title.isEmpty || isPosting)
+    .opacity(title.isEmpty ? 0.5 : 1.0)
 }
 ```
+
+**Critical styling details:**
+- Both buttons use `.buttonStyle(.plain)` to remove default SwiftUI button styling (which adds borders)
+- Both buttons use `.fixedSize()` to prevent text clipping by toolbar constraints
+- Cancel: White text on black background (cornerRadius 20)
+- Post: Black text on white background (cornerRadius 20), grayed out when disabled
+- Horizontal padding: 16pt, Vertical padding: 8pt
+- Button text is NOT clipped because of `.fixedSize()` modifier
 
 **Posting logic:**
 ```swift

@@ -65,7 +65,7 @@ struct NoobTestApp: App {
                             .cornerRadius(8)
                         }
                     } else {
-                        PostsView(posts: posts, onPostCreated: fetchRecentPosts)
+                        PostsView(onPostCreated: fetchRecentPosts)
                     }
                 }
                 .onAppear {

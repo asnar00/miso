@@ -151,12 +151,25 @@ class TestServer {
         Logger.shared.info("[TESTSERVER] Request: \(firstLine)")
 
         let parts = firstLine.components(separatedBy: " ")
-        guard parts.count >= 2, parts[0] == "GET" else {
-            Logger.shared.error("[TESTSERVER] Method not allowed: \(parts[0])")
+        guard parts.count >= 2 else {
+            Logger.shared.error("[TESTSERVER] Bad request format")
+            return httpResponse("Bad request", status: "400 Bad Request")
+        }
+
+        let method = parts[0]
+        let path = parts[1]
+
+        // Handle POST /test/tap
+        if method == "POST" && path.hasPrefix("/test/tap") {
+            return handleTap(path: path)
+        }
+
+        // Handle GET /test/{feature}
+        guard method == "GET" else {
+            Logger.shared.error("[TESTSERVER] Method not allowed: \(method)")
             return httpResponse("Method not allowed", status: "405 Method Not Allowed")
         }
 
-        let path = parts[1]
         guard path.hasPrefix("/test/") else {
             Logger.shared.error("[TESTSERVER] Path not found: \(path)")
             return httpResponse("Not found", status: "404 Not Found")
@@ -171,10 +184,34 @@ class TestServer {
         return httpResponse(message, status: "200 OK")
     }
 
-    private func httpResponse(_ body: String, status: String) -> String {
+    private func handleTap(path: String) -> String {
+        // Extract id from query string: /test/tap?id=toolbar-plus
+        guard let urlComponents = URLComponents(string: path),
+              let queryItems = urlComponents.queryItems,
+              let id = queryItems.first(where: { $0.name == "id" })?.value else {
+            Logger.shared.error("[TESTSERVER] Missing id parameter in tap request")
+            let json = #"{"status": "error", "message": "Missing id parameter"}"#
+            return httpResponse(json, status: "400 Bad Request", contentType: "application/json")
+        }
+
+        Logger.shared.info("[TESTSERVER] Triggering UI element: \(id)")
+        let success = UIAutomationRegistry.shared.trigger(id: id)
+
+        if success {
+            Logger.shared.info("[TESTSERVER] Successfully triggered: \(id)")
+            let json = #"{"status": "success", "id": "\#(id)"}"#
+            return httpResponse(json, status: "200 OK", contentType: "application/json")
+        } else {
+            Logger.shared.error("[TESTSERVER] Element not found: \(id)")
+            let json = #"{"status": "error", "message": "Element not found: \#(id)"}"#
+            return httpResponse(json, status: "404 Not Found", contentType: "application/json")
+        }
+    }
+
+    private func httpResponse(_ body: String, status: String, contentType: String = "text/plain") -> String {
         return """
         HTTP/1.1 \(status)
-        Content-Type: text/plain
+        Content-Type: \(contentType)
         Content-Length: \(body.utf8.count)
         Connection: close
 

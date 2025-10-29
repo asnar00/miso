@@ -3,87 +3,83 @@ import SwiftUI
 struct PostsView: View {
     let onPostCreated: () -> Void
 
-    @State private var posts: [Post]
-    @State private var expandedPostId: Int? = nil
-    @State private var showNewPostEditor = false
     @State private var navigationPath: [Int] = []
-
-    let serverURL = "http://185.96.221.52:8080"
-
-    init(posts: [Post], onPostCreated: @escaping () -> Void) {
-        _posts = State(initialValue: posts)
-        self.onPostCreated = onPostCreated
-    }
+    @State private var showNewPostEditor = false
+    @State private var activeTab: ToolbarTab = .home
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
-            postsContent
+        ZStack {
+            // Main content
+            NavigationStack(path: $navigationPath) {
+                PostsListView(
+                    parentPostId: nil,
+                    onPostCreated: onPostCreated,
+                    navigationPath: $navigationPath
+                )
                 .navigationDestination(for: Int.self) { parentPostId in
-                    ChildPostsView(
+                    PostsListView(
                         parentPostId: parentPostId,
                         onPostCreated: onPostCreated,
                         navigationPath: $navigationPath
                     )
                 }
-        }
-        .navigationBarHidden(true)
-    }
+            }
+            .navigationBarHidden(true)
 
-    var postsContent: some View {
-        ZStack {
-            Color(red: 128/255, green: 128/255, blue: 128/255)
-                .ignoresSafeArea()
-
-            VStack {
-                if posts.isEmpty {
-                    Text("No posts yet")
-                        .foregroundColor(.black)
-                        .padding()
-                } else {
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            VStack(spacing: 8) {
-                                // New post button at the top
-                                NewPostButton {
-                                    showNewPostEditor = true
-                                }
-
-                                ForEach(posts) { post in
-                                    PostView(
-                                        post: post,
-                                        isExpanded: expandedPostId == post.id,
-                                        onTap: {
-                                            if expandedPostId == post.id {
-                                                // Collapse currently expanded post
-                                                expandedPostId = nil
-                                            } else {
-                                                // Expand new post and scroll to it
-                                                expandedPostId = post.id
-                                                withAnimation(.easeInOut(duration: 0.3)) {
-                                                    proxy.scrollTo(post.id, anchor: .top)
-                                                }
-                                            }
-                                        },
-                                        onPostCreated: onPostCreated,
-                                        onNavigateToChildren: { postId in
-                                            navigationPath.append(postId)
-                                        }
-                                    )
-                                    .id(post.id)
-                                }
-                            }
-                            .padding()
-                        }
+            // Custom sheet overlay (instead of .sheet modifier)
+            if showNewPostEditor {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showNewPostEditor = false
                     }
+
+                VStack {
+                    Spacer()
+                    let currentParentId = navigationPath.isEmpty ? nil : navigationPath.last
+                    NewPostEditor(
+                        onPostCreated: {
+                            onPostCreated()
+                            showNewPostEditor = false
+                            activeTab = .home
+                        },
+                        onDismiss: {
+                            withAnimation {
+                                showNewPostEditor = false
+                                activeTab = .home
+                            }
+                        },
+                        parentId: currentParentId
+                    )
+                    .frame(maxHeight: .infinity)
+                    .transition(.move(edge: .bottom))
                 }
             }
-        }
-        .sheet(isPresented: $showNewPostEditor) {
-            NewPostEditor(onPostCreated: onPostCreated, parentId: nil)
+
+            // Floating toolbar at bottom - always on top
+            VStack {
+                Spacer()
+                Toolbar(
+                    navigationPath: $navigationPath,
+                    activeTab: $activeTab,
+                    onPostButtonTap: {
+                        withAnimation {
+                            showNewPostEditor = true
+                        }
+                    },
+                    onSearchButtonTap: {
+                        // TODO: Navigate to search
+                    },
+                    onProfileButtonTap: {
+                        // TODO: Navigate to profile
+                    }
+                )
+                .ignoresSafeArea(.keyboard)
+            }
         }
     }
 }
 
 #Preview {
-    PostsView(posts: [], onPostCreated: {})
+    PostsView(onPostCreated: {})
 }

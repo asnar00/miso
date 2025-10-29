@@ -5,16 +5,7 @@
 ## Components
 
 ### NewPostButton
-A compact button view that appears at the top of the posts list, before the first post.
-
-**Visual design:**
-- White rounded rectangle card (matches post card style)
-- Left side: large "+" circle icon in turquoise (app accent color)
-- Right side: "Create a new post" text in semibold, slightly faded black
-- Tappable across the entire button area
-
-**Behavior:**
-- When tapped, opens the NewPostEditor modal
+**NOTE:** The NewPostButton component is no longer used in the posts list. This component specification is preserved for historical reference but should be removed from active product code.
 
 ### NewPostEditor
 A full-screen modal sheet for composing a new post.
@@ -55,8 +46,8 @@ A full-screen modal sheet for composing a new post.
 ## Integration
 
 **In PostsView:**
-- Add NewPostButton at the top of the posts list (before first post)
-- Wire button to show NewPostEditor as a sheet/modal
+- NewPostEditor is triggered by the floating toolbar (not by a button in the posts list)
+- Wire toolbar action to show NewPostEditor as a sheet/modal
 - Pass onPostCreated callback that refreshes the posts list
 
 **PostsAPI.createPost:**

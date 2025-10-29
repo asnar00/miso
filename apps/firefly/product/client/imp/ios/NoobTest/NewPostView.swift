@@ -27,8 +27,9 @@ struct NewPostButton: View {
 }
 
 struct NewPostEditor: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
     let onPostCreated: () -> Void
+    let onDismiss: (() -> Void)?
     let parentId: Int?
 
     @State private var title: String = ""
@@ -170,25 +171,56 @@ struct NewPostEditor: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
+                    Button(action: {
+                        if let onDismiss = onDismiss {
+                            onDismiss()
+                        } else {
+                            dismiss()
+                        }
+                    }) {
+                        Text("Cancel")
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color.black)
+                            .cornerRadius(20)
                     }
-                    .foregroundColor(.black)
+                    .buttonStyle(.plain)
+                    .fixedSize()
+                    .onAppear {
+                        UIAutomationRegistry.shared.register(id: "newpost-cancel") {
+                            if let onDismiss = onDismiss {
+                                onDismiss()
+                            } else {
+                                dismiss()
+                            }
+                        }
+                    }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         postNewPost()
                     }) {
-                        if isPosting {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                        } else {
-                            Text("Post")
-                                .fontWeight(.semibold)
+                        Group {
+                            if isPosting {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .black))
+                            } else {
+                                Text("Post")
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.black)
+                            }
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.white)
+                        .cornerRadius(20)
                     }
-                    .foregroundColor(title.isEmpty ? .gray : .black)
+                    .buttonStyle(.plain)
+                    .fixedSize()
                     .disabled(title.isEmpty || isPosting)
+                    .opacity(title.isEmpty ? 0.5 : 1.0)
                 }
             }
             .confirmationDialog("Choose Image Source", isPresented: $showSourceSelection) {

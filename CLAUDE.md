@@ -8,6 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Key philosophy**: This is a line of experiments. Each new experiment may start from scratch or build on previous work. Previous experiments are stored in branches, and the main branch is cleared for new experiments. When working in this repo, be aware that the current state may represent work-in-progress on the latest experiment.
 
+**Current experiment focus**: Tree-based post exploration (experiment 22.1). Recent work includes implementing hierarchical post navigation with swipe gestures and preserved scroll positions.
+
 ## Core Architecture
 
 ### Feature Specification System
@@ -135,6 +137,9 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - **view-posts**: Display posts with compact/expanded views, markdown formatting, image caching with thumbnails
 - **recent-posts**: Fetch and display recent posts
 - **new-post**: Create new posts
+- **explore-posts**: Navigate through tree of posts and children with swipe gestures, preserved scroll position, multi-level hierarchy
+
+**iOS View Architecture**: Uses `PostsListView` as a unified component for both root-level and child post lists, with `navigationPath: [Int]` for hierarchical navigation. PostView handles individual post display, expand/collapse, and navigation triggers.
 
 **visual** (`apps/firefly/features/`):
 - **background**: UI background color
@@ -248,6 +253,14 @@ This repository includes a comprehensive skills system in `.claude/skills/` that
 - Use after resolving skill issues to prevent recurrence
 - Invoke with: "update the skill", "improve the skill", "fix the skill instructions"
 
+**post-debug-cleanup** - Document completed implementations:
+- Updates feature specs and implementation docs after debugging iterations
+- Ensures feature.md, pseudocode.md, and platform.md reflect final working code
+- Captures exact details: measurements, API endpoints, gesture thresholds
+- Preserves institutional knowledge from debugging process
+- Use after feature implementation with multiple debugging rounds
+- Invoke with: "post-debug cleanup", "document what we did", "clean up the implementation docs"
+
 ### Platform Skills
 
 **iOS Skills** (`.claude/skills/ios-*`):
@@ -270,6 +283,9 @@ This repository includes a comprehensive skills system in `.claude/skills/` that
 - `py-start-local` - Start local Flask development server
 - `py-stop-local` - Stop local Flask server
 - `py-server-logs` - View server logs (local or remote)
+
+**UI Automation Skills** (`.claude/skills/`):
+- `ui-tap` - Trigger UI elements programmatically via HTTP for automated testing. Use when you need to press buttons, interact with UI, or verify UI changes without manual intervention. Invoke with "tap the X button", "press X", "trigger X".
 
 ### Skill Delegation Pattern
 

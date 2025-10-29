@@ -45,9 +45,14 @@ Invoke this skill when the user:
    - Install the .app to the device
    - Report success
 
-4. Inform the user:
+4. After successful installation, automatically start the app:
+   ```bash
+   ./restart-app.sh
+   ```
+
+5. Inform the user:
    - The build typically takes 8-10 seconds
-   - The app will appear on the iPhone home screen
+   - The app will be automatically launched on the iPhone
    - If errors occur, check that iPhone is properly connected and trusted
 
 ## Expected Output
@@ -60,7 +65,9 @@ Invoke this skill when the user:
 ✅ Build complete
 📲 Installing to device...
 🎉 Installation complete!
-The app should now be on your iPhone's home screen.
+🔄 Restarting NoobTest on device...
+✅ App restarted
+The app is now running on your iPhone.
 ```
 
 ## Common Issues

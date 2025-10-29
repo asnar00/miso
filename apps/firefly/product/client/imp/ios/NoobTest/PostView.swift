@@ -103,47 +103,6 @@ struct PostView: View {
                 .frame(height: currentHeight)
                 .shadow(radius: 2)
 
-            // Child indicator overlay (right arrow)
-            // Position at the right edge of the card
-            if (post.childCount ?? 0) > 0 {
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 32, weight: .bold))
-                            .foregroundColor(Color.white)
-                            .background(
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 32, weight: .bold))
-                                    .foregroundColor(Color.black)
-                                    .offset(x: -1, y: -1)
-                            )
-                            .background(
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 32, weight: .bold))
-                                    .foregroundColor(Color.black)
-                                    .offset(x: 1, y: -1)
-                            )
-                            .background(
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 32, weight: .bold))
-                                    .foregroundColor(Color.black)
-                                    .offset(x: -1, y: 1)
-                            )
-                            .background(
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 32, weight: .bold))
-                                    .foregroundColor(Color.black)
-                                    .offset(x: 1, y: 1)
-                            )
-                            .padding(.trailing, -8)
-                    }
-                    Spacer()
-                }
-                .frame(height: currentHeight)
-            }
-
             // Title and summary at the top
             VStack(alignment: .leading, spacing: 4) {
                 Text(post.title)
@@ -280,6 +239,38 @@ struct PostView: View {
                         }
                     }
                 }
+            }
+
+            // Child indicator overlay (right arrow in opaque circle)
+            // Position at the right edge of the card, drawn AFTER image so it appears on top
+            if (post.childCount ?? 0) > 0 {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        ZStack {
+                            Circle()
+                                .fill(Color.white.opacity(0.9))
+                                .frame(width: 42, height: 42)
+
+                            Circle()
+                                .stroke(Color.black, lineWidth: 3)
+                                .frame(width: 42, height: 42)
+
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(Color.black)
+                        }
+                        .padding(.trailing, -16)
+                        .onTapGesture {
+                            if let navigate = onNavigateToChildren {
+                                navigate(post.id)
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+                .frame(height: currentHeight)
             }
         }
         .background(

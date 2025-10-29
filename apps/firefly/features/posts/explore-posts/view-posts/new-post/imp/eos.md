@@ -10,54 +10,7 @@
 
 ### NewPostButton
 
-```kotlin
-@Composable
-fun NewPostButton(onTap: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onTap() }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.9f)
-        ),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.AddCircle,
-                contentDescription = "New post",
-                modifier = Modifier.size(32.dp),
-                tint = Color(0xFF40E0D0)  // Turquoise
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "Create a new post",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black.copy(alpha = 0.7f)
-            )
-        }
-    }
-}
-```
-
-**Usage in PostsView:**
-```kotlin
-var showNewPostEditor by remember { mutableStateOf(false) }
-
-LazyColumn {
-    item {
-        NewPostButton { showNewPostEditor = true }
-    }
-    items(posts) { post ->
+**NOTE:** The NewPostButton component is deprecated and should be removed from the product code. New posts are now triggered from a floating toolbar instead.
         // ... post views ...
     }
 }
