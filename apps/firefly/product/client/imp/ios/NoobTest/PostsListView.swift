@@ -3,6 +3,7 @@ import SwiftUI
 // Unified view for displaying a list of posts, either at root level or for a specific parent
 struct PostsListView: View {
     let parentPostId: Int?  // nil = root level, non-nil = child posts
+    let initialPosts: [Post]
     let onPostCreated: () -> Void
     @Binding var navigationPath: [Int]
 
@@ -45,6 +46,25 @@ struct PostsListView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 8) {
+                            // Add post button at the top
+                            Button(action: {
+                                showNewPostEditor = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "plus.circle.fill")
+                                        .font(.system(size: 20))
+                                    Text("Add Post")
+                                        .font(.system(size: 17, weight: .medium))
+                                }
+                                .foregroundColor(.black)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.white.opacity(0.3))
+                                .cornerRadius(12)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.top, 8)
+
                             if posts.isEmpty {
                                 Text("No posts yet")
                                     .foregroundColor(.black)
@@ -124,8 +144,13 @@ struct PostsListView: View {
                 fetchParentPost(parentId)
                 fetchPosts()
             } else if posts.isEmpty {
-                // Only fetch root posts if we don't have any yet
-                fetchPosts()
+                // Root level: use initial posts if available, otherwise fetch
+                if !initialPosts.isEmpty {
+                    posts = initialPosts
+                    isLoading = false
+                } else {
+                    fetchPosts()
+                }
             }
         }
     }

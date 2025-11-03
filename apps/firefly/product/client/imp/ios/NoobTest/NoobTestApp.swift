@@ -19,7 +19,7 @@ struct NoobTestApp: App {
         URLCache.shared = cache
 
         // Check login state on startup
-        let (email, isLoggedIn) = Storage.shared.getLoginState()
+        let (email, _, isLoggedIn) = Storage.shared.getLoginState()
         _isAuthenticated = State(initialValue: isLoggedIn && email != nil)
 
         if isLoggedIn && email != nil {
@@ -42,16 +42,22 @@ struct NoobTestApp: App {
                 SignInView(isAuthenticated: $isAuthenticated, isNewUser: $isNewUser)
             } else if isNewUser && !hasSeenWelcome {
                 // Get email from storage for welcome screen
-                let (email, _) = Storage.shared.getLoginState()
+                let (email, _, _) = Storage.shared.getLoginState()
                 NewUserView(email: email ?? "unknown", hasSeenWelcome: $hasSeenWelcome)
             } else {
                 ZStack {
-                    Color(red: 139/255, green: 0, blue: 0)
+                    Color(red: 64/255, green: 224/255, blue: 208/255)  // Turquoise
                         .ignoresSafeArea()
 
                     if isLoadingPosts {
-                        ProgressView("Loading posts...")
-                            .foregroundColor(.black)
+                        VStack(spacing: 20) {
+                            Text("ᕦ(ツ)ᕤ")
+                                .font(.system(size: UIScreen.main.bounds.width / 12))
+                                .foregroundColor(.black)
+
+                            ProgressView("Loading posts...")
+                                .foregroundColor(.black)
+                        }
                     } else if let error = postsError {
                         VStack {
                             Text("Error: \(error)")
@@ -65,7 +71,7 @@ struct NoobTestApp: App {
                             .cornerRadius(8)
                         }
                     } else {
-                        PostsView(onPostCreated: fetchRecentPosts)
+                        PostsView(initialPosts: posts, onPostCreated: fetchRecentPosts)
                     }
                 }
                 .onAppear {

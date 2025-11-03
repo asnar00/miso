@@ -228,10 +228,11 @@ struct SignInView: View {
                 if status == "success" {
                     // Check if this is a new user
                     let newUser = json["is_new_user"] as? Bool ?? false
+                    let userId = json["user_id"] as? Int ?? 0
 
                     // Save login state
-                    Storage.shared.saveLoginState(email: email, isLoggedIn: true)
-                    Logger.shared.info("[SignIn] User authenticated: \(email) (new_user: \(newUser))")
+                    Storage.shared.saveLoginState(email: email, userId: userId, isLoggedIn: true)
+                    Logger.shared.info("[SignIn] User authenticated: \(email) (ID: \(userId), new_user: \(newUser))")
 
                     // Trigger authentication and set new user flag
                     isNewUser = newUser

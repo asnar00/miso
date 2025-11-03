@@ -1,7 +1,27 @@
 ---
 name: ui-tap
 description: Trigger UI elements programmatically via HTTP automation. Use when you need to press buttons, interact with UI, or verify UI changes. Invoke with "tap the X button", "press X", "trigger X", or "click X".
+delegate: true
 ---
+
+## ⚠️ DELEGATION REQUIRED
+
+**This skill must be executed by the instruction-follower subagent.**
+
+When you see this skill invoked, you MUST use the Task tool to delegate it:
+
+```
+Task(
+    subagent_type="instruction-follower",
+    description="[Brief 3-5 word description]",
+    prompt="Follow the instructions in .claude/skills/ui-tap/skill.md to [complete task description]."
+)
+```
+
+**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
+
+---
+
 
 # UI Tap
 

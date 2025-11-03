@@ -7,19 +7,22 @@ class Storage {
     private init() {}
 
     // Login state
-    func saveLoginState(email: String, isLoggedIn: Bool) {
+    func saveLoginState(email: String, userId: Int, isLoggedIn: Bool) {
         defaults.set(email, forKey: "user_email")
+        defaults.set(userId, forKey: "user_id")
         defaults.set(isLoggedIn, forKey: "is_logged_in")
     }
 
-    func getLoginState() -> (email: String?, isLoggedIn: Bool) {
+    func getLoginState() -> (email: String?, userId: Int?, isLoggedIn: Bool) {
         let email = defaults.string(forKey: "user_email")
+        let userId = defaults.object(forKey: "user_id") as? Int
         let isLoggedIn = defaults.bool(forKey: "is_logged_in")
-        return (email, isLoggedIn)
+        return (email, userId, isLoggedIn)
     }
 
     func clearLoginState() {
         defaults.removeObject(forKey: "user_email")
+        defaults.removeObject(forKey: "user_id")
         defaults.removeObject(forKey: "is_logged_in")
     }
 

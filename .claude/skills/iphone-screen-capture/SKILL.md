@@ -1,7 +1,27 @@
 ---
 name: iphone-screen-capture
 description: Start the iPhone screen capture app to mirror a connected iPhone's screen on macOS. Use when the user wants to view their iPhone screen, mirror their device, or start screen capture.
+delegate: true
 ---
+
+## ⚠️ DELEGATION REQUIRED
+
+**This skill must be executed by the instruction-follower subagent.**
+
+When you see this skill invoked, you MUST use the Task tool to delegate it:
+
+```
+Task(
+    subagent_type="instruction-follower",
+    description="[Brief 3-5 word description]",
+    prompt="Follow the instructions in .claude/skills/iphone-screen-capture/skill.md to [complete task description]."
+)
+```
+
+**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
+
+---
+
 
 # iPhone Screen Capture
 

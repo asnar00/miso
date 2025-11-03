@@ -129,6 +129,7 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - Device association
 - **sign-in**: Email-based login with 4-digit one-time codes (10-minute validity)
 - **new-user**: New user onboarding with profile setup
+- **profile**: User profile pages (name, profession, photo, bio text up to 300 words) with edit functionality
 
 **posts** (`apps/firefly/features/posts.md`):
 - User-generated content with hierarchical structure (title, summary, optional image, body)

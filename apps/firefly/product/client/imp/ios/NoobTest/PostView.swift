@@ -30,6 +30,23 @@ struct PostView: View {
     @State private var bodyTextHeight: CGFloat = 200  // Start with reasonable default
     @State private var titleSummaryHeight: CGFloat = 60  // Estimate for now
     @State private var isMeasured: Bool = false
+    @State private var isEditing: Bool = false
+
+    // Check if current user owns this post
+    private var isOwnPost: Bool {
+        let loginState = Storage.shared.getLoginState()
+        guard let email = loginState.email else {
+            Logger.shared.info("[PostView] No logged in email")
+            return false
+        }
+        guard let authorEmail = post.authorEmail else {
+            Logger.shared.info("[PostView] Post \(post.id) has no authorEmail")
+            return false
+        }
+        let matches = authorEmail.lowercased() == email.lowercased()
+        Logger.shared.info("[PostView] Post \(post.id) authorEmail: '\(authorEmail)', logged in: '\(email)', matches: \(matches)")
+        return matches
+    }
 
     // Linear interpolation helper
     func lerp(_ start: CGFloat, _ end: CGFloat, _ t: CGFloat) -> CGFloat {
@@ -135,7 +152,7 @@ struct PostView: View {
                 // Calculate current image dimensions and position
                 let compactImageHeight: CGFloat = 80
                 let compactImageY: CGFloat = (100 - 80) / 2 + 8
-                let expandedImageY = titleSummaryHeight + 8
+                let expandedImageY = titleSummaryHeight + 16  // Match spacing in image positioning
                 let expandedImageHeight = availableWidth / imageAspectRatio
 
                 let currentImageY = lerp(compactImageY, expandedImageY, expansionFactor)
@@ -199,7 +216,8 @@ struct PostView: View {
                 let expandedWidth = availableWidth
                 let expandedHeight = availableWidth / imageAspectRatio
                 let expandedX: CGFloat = 18  // Increased from 10pt to align with text indent
-                let expandedY = titleSummaryHeight + 8  // Below summary
+                // Match the spacing used in height calculation (not the 8pt in outdated docs)
+                let expandedY = titleSummaryHeight + 16  // 16pt spacing matches expandedHeight formula
 
                 // Interpolated values
                 let currentWidth = lerp(thumbnailSize, expandedWidth, expansionFactor)
@@ -279,6 +297,53 @@ struct PostView: View {
                     Spacer()
                 }
                 .frame(height: currentHeight)
+            }
+
+            // Edit button overlay (top-right corner when expanded and owned by user)
+            // Drawn AFTER image so it appears on top
+            if isExpanded && isOwnPost {
+                VStack {
+                    HStack {
+                        Spacer()
+
+                        // HStack for buttons - can hold one or two buttons
+                        HStack(spacing: 8) {
+                            if !isEditing {
+                                // Edit mode: single pencil button
+                                Button(action: {
+                                    Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
+                                    isEditing = true
+                                }) {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundColor(.black.opacity(0.6))
+                                }
+                            } else {
+                                // Editing mode: X and tick buttons
+                                Button(action: {
+                                    Logger.shared.info("[PostView] Cancel button tapped")
+                                    isEditing = false
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundColor(.red.opacity(0.6))
+                                }
+
+                                Button(action: {
+                                    Logger.shared.info("[PostView] Save button tapped")
+                                    isEditing = false
+                                }) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundColor(.green.opacity(0.6))
+                                }
+                            }
+                        }
+                        .padding(.trailing, 16)
+                        .padding(.top, 8)
+                    }
+                    Spacer()
+                }
             }
         }
         .background(

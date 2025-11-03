@@ -1,7 +1,27 @@
 ---
 name: ios-add-file
 description: Add a Swift file to an Xcode project without opening Xcode. Programmatically edits project.pbxproj to include the file. Use when adding new Swift files to iOS projects from command line.
+delegate: true
 ---
+
+## ⚠️ DELEGATION REQUIRED
+
+**This skill must be executed by the instruction-follower subagent.**
+
+When you see this skill invoked, you MUST use the Task tool to delegate it:
+
+```
+Task(
+    subagent_type="instruction-follower",
+    description="[Brief 3-5 word description]",
+    prompt="Follow the instructions in .claude/skills/ios-add-file/skill.md to [complete task description]."
+)
+```
+
+**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
+
+---
+
 
 # iOS Add File to Project
 

@@ -1,7 +1,27 @@
 ---
 name: eos-stop-app
 description: Stop the Android app running on connected device. Cleanly terminates the app using force-stop. Use when stopping the app for debugging, testing, or cleanup.
+delegate: true
 ---
+
+## ⚠️ DELEGATION REQUIRED
+
+**This skill must be executed by the instruction-follower subagent.**
+
+When you see this skill invoked, you MUST use the Task tool to delegate it:
+
+```
+Task(
+    subagent_type="instruction-follower",
+    description="[Brief 3-5 word description]",
+    prompt="Follow the instructions in .claude/skills/eos-stop-app/skill.md to [complete task description]."
+)
+```
+
+**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
+
+---
+
 
 # Android/e/OS Stop App
 

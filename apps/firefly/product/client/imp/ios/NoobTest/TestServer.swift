@@ -116,7 +116,7 @@ class TestServer {
         Storage.shared.clearLoginState()
 
         // Verify it was cleared
-        let (email, isLoggedIn) = Storage.shared.getLoginState()
+        let (email, _, isLoggedIn) = Storage.shared.getLoginState()
         if email == nil && !isLoggedIn {
             Logger.shared.info("[TEST:clear-login] Login state cleared successfully")
             return TestResult(success: true)

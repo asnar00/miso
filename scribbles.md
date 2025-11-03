@@ -1,6 +1,83 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+start again with claude.
+literally tell it: I want to start from scratch - this is now old. -> advise design based on the last one.
+
+
+--------------------------
+
+it's just a single tree;
+starting at you - and you decide what you want to add.
+any post can be a query.
+
+so the interface is:
+
+your have your main page
+edit button at any time (bottom right)
+">" to children
+"+post" is good.
+
+for ANY post, you can turn that into a search query.
+
+the fundamental operation is: "run a semantic search using this post as the query"
+
+OH YEAH.
+That's IT.
+
+as before, toolbar icons are just shortcuts to sub-trees.
+
+each user manages a tree of posts.
+users connect to each other ("x invited y") forming a DAG/tree
+we can semantic search the entire database 
+weighting results by proximity in user graph.
+
+I really like this structure.
+
+user -> intro -> another-user
+
+because then of course you can introduce people to each other without having to write the intro every time.
+
+"intro" that's a good word.... name,.
+
+what if that was its purpose!!!? 
+you and me chat, you intro me, I intro you
+
+so it really is:
+when you start, there's a tree there already
+that contains the instructions - but it's all changeable.
+
+me -> writing
+   -> reading
+   -> questions
+
+but it's really up to you - you organise it as you want.
+
+so there's tools at each level:
+-> reorder
+-> merge
+-> add
+
+just make that for now.
+
+
+
+
+-------------------------
+
+
+core if it is just a tree explorer.
+start at the root, go from there.
+at any time, search=> new tree; and save those.
+and then basically your toolbar is just shortcuts.
+
+ok - rebuild based on that.
+#startagain
+
+
+
+----------------------------------------
+
 page organisation ideas:
 
 - each person has their main page:

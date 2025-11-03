@@ -9,6 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from werkzeug.utils import secure_filename
 import uuid
 from db import db
+import sys
 
 app = Flask(__name__)
 
@@ -354,6 +355,109 @@ def create_post():
             'message': f'Server error: {str(e)}'
         }), 500
 
+@app.route('/api/posts/update', methods=['POST'])
+def update_post():
+    """Update an existing post"""
+    try:
+        # Get form data
+        post_id_str = request.form.get('post_id', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        title = request.form.get('title', '').strip()
+        summary = request.form.get('summary', '').strip()
+        body = request.form.get('body', '').strip()
+
+        # Validate required fields
+        if not post_id_str or not email or not title or not summary or not body:
+            return jsonify({
+                'status': 'error',
+                'message': 'post_id, email, title, summary, and body are required'
+            }), 400
+
+        # Convert post_id to int
+        try:
+            post_id = int(post_id_str)
+        except ValueError:
+            return jsonify({
+                'status': 'error',
+                'message': 'post_id must be a valid integer'
+            }), 400
+
+        # Look up user by email
+        user = db.get_user_by_email(email)
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': f'User not found: {email}'
+            }), 404
+
+        user_id = user['id']
+
+        # Get existing post to verify ownership
+        existing_post = db.get_post_by_id(post_id)
+        if not existing_post:
+            return jsonify({
+                'status': 'error',
+                'message': 'Post not found'
+            }), 404
+
+        if existing_post['user_id'] != user_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'You can only edit your own posts'
+            }), 403
+
+        # Handle image upload if present
+        image_url = existing_post['image_url']  # Keep existing image by default
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename and allowed_file(file.filename):
+                # Generate unique filename
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                filename = f"{uuid.uuid4().hex}.{ext}"
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                image_url = f"/uploads/{filename}"
+                print(f"Uploaded new image: {filename}")
+
+                # TODO: Delete old image file if it exists
+
+        # Update post in database
+        success = db.update_post(
+            post_id=post_id,
+            title=title,
+            summary=summary,
+            body=body,
+            image_url=image_url
+        )
+
+        if not success:
+            return jsonify({
+                'status': 'error',
+                'message': 'Failed to update post'
+            }), 500
+
+        print(f"Updated post {post_id} by user {email} (ID: {user_id})")
+
+        # Fetch the updated post to return it
+        post = db.get_post_by_id(post_id)
+        if not post:
+            return jsonify({
+                'status': 'error',
+                'message': 'Post updated but failed to retrieve'
+            }), 500
+
+        return jsonify({
+            'status': 'success',
+            'post': post
+        })
+
+    except Exception as e:
+        print(f"Error updating post: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
 @app.route('/api/posts/recent', methods=['GET'])
 def get_recent_posts():
     """Get recent posts"""
@@ -444,6 +548,257 @@ def get_post_children(post_id):
         })
     except Exception as e:
         print(f"Error getting child posts: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/users/<path:user_id>/profile', methods=['GET'])
+def get_user_profile(user_id):
+    """Get a user's profile post (user_id can be email or numeric ID)"""
+    try:
+        print(f"[PROFILE] Fetching profile for user_id: {user_id}", file=sys.stderr, flush=True)
+
+        # If user_id is an email, look up the numeric user ID
+        if '@' in str(user_id):
+            print(f"[PROFILE] Looking up user by email: {user_id}", file=sys.stderr, flush=True)
+            user = db.get_user_by_email(user_id)
+            if not user:
+                print(f"[PROFILE] User not found: {user_id}", file=sys.stderr, flush=True)
+                return jsonify({
+                    'status': 'error',
+                    'message': 'User not found'
+                }), 404
+            user_id = user['id']
+            print(f"[PROFILE] Found user ID: {user_id}", file=sys.stderr, flush=True)
+
+        profile = db.get_user_profile(user_id)
+        print(f"[PROFILE] Profile result: {profile}", file=sys.stderr, flush=True)
+
+        # If profile doesn't exist, create a blank one
+        if profile is None:
+            print(f"[PROFILE] No profile found for user {user_id}, creating blank profile", file=sys.stderr, flush=True)
+            try:
+                profile_id = db.create_profile_post(
+                    user_id=user_id,
+                    title="",
+                    summary="",
+                    body="",
+                    image_url=None,
+                    timezone="UTC"
+                )
+                print(f"[PROFILE] Created profile with ID: {profile_id}", file=sys.stderr, flush=True)
+                if profile_id is None:
+                    print(f"[PROFILE] WARNING: create_profile_post returned None - check database logs", file=sys.stderr, flush=True)
+                # Fetch the newly created profile
+                profile = db.get_user_profile(user_id)
+                print(f"[PROFILE] Fetched newly created profile: {profile}", file=sys.stderr, flush=True)
+            except Exception as create_error:
+                print(f"[PROFILE] Exception during profile creation: {create_error}", file=sys.stderr, flush=True)
+                import traceback
+                traceback.print_exc(file=sys.stderr)
+
+        return jsonify({
+            'status': 'success',
+            'profile': profile
+        })
+    except Exception as e:
+        print(f"[PROFILE] Error getting user profile: {e}", file=sys.stderr, flush=True)
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/users/profile/create', methods=['POST'])
+def create_profile():
+    """Create a new profile post"""
+    try:
+        # Get form data
+        email = request.form.get('email', '').strip().lower()
+        title = request.form.get('title', '').strip()
+        summary = request.form.get('summary', '').strip()
+        body = request.form.get('body', '').strip()
+        timezone = request.form.get('timezone', 'UTC')
+
+        # Validate required fields
+        if not email or not title or not summary or not body:
+            return jsonify({
+                'status': 'error',
+                'message': 'email, title, summary, and body are required'
+            }), 400
+
+        # Look up user by email
+        user = db.get_user_by_email(email)
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': f'User not found: {email}'
+            }), 404
+
+        user_id = user['id']
+
+        # Check if profile already exists
+        existing_profile = db.get_user_profile(user_id)
+        if existing_profile:
+            return jsonify({
+                'status': 'error',
+                'message': 'Profile already exists. Use update endpoint.'
+            }), 400
+
+        # Handle image upload if present
+        image_url = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename and allowed_file(file.filename):
+                # Generate unique filename
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                filename = f"{uuid.uuid4().hex}.{ext}"
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                image_url = f"/uploads/{filename}"
+                print(f"Uploaded profile image: {filename}")
+
+        # Create profile post
+        post_id = db.create_profile_post(
+            user_id=user_id,
+            title=title,
+            summary=summary,
+            body=body,
+            timezone=timezone,
+            image_url=image_url
+        )
+
+        if not post_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'Failed to create profile'
+            }), 500
+
+        print(f"Created profile {post_id} for user {email} (ID: {user_id})")
+
+        # Fetch the created profile to return it
+        profile = db.get_post_by_id(post_id)
+        if not profile:
+            return jsonify({
+                'status': 'error',
+                'message': 'Profile created but failed to retrieve'
+            }), 500
+
+        return jsonify({
+            'status': 'success',
+            'profile': profile
+        })
+
+    except Exception as e:
+        print(f"Error creating profile: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/users/profile/update', methods=['POST'])
+def update_profile():
+    """Update an existing profile post"""
+    try:
+        # Get form data
+        post_id_str = request.form.get('post_id', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        title = request.form.get('title', '').strip()
+        summary = request.form.get('summary', '').strip()
+        body = request.form.get('body', '').strip()
+
+        # Validate required fields
+        if not post_id_str or not email:
+            return jsonify({
+                'status': 'error',
+                'message': 'post_id and email are required'
+            }), 400
+
+        try:
+            post_id = int(post_id_str)
+        except ValueError:
+            return jsonify({
+                'status': 'error',
+                'message': 'post_id must be a valid integer'
+            }), 400
+
+        # Look up user by email
+        user = db.get_user_by_email(email)
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': f'User not found: {email}'
+            }), 404
+
+        user_id = user['id']
+
+        # Verify the post exists and belongs to the user
+        post = db.get_post_by_id(post_id)
+        if not post:
+            return jsonify({
+                'status': 'error',
+                'message': 'Profile not found'
+            }), 404
+
+        if post['user_id'] != user_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'Unauthorized: Profile belongs to different user'
+            }), 403
+
+        if post['parent_id'] != -1:
+            return jsonify({
+                'status': 'error',
+                'message': 'Post is not a profile post'
+            }), 400
+
+        # Handle image upload if present
+        image_url = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename and allowed_file(file.filename):
+                # Generate unique filename
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                filename = f"{uuid.uuid4().hex}.{ext}"
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                image_url = f"/uploads/{filename}"
+                print(f"Uploaded new profile image: {filename}")
+
+        # Update the profile post
+        success = db.update_post(
+            post_id=post_id,
+            title=title if title else None,
+            summary=summary if summary else None,
+            body=body if body else None,
+            image_url=image_url
+        )
+
+        if not success:
+            return jsonify({
+                'status': 'error',
+                'message': 'Failed to update profile'
+            }), 500
+
+        print(f"Updated profile {post_id} for user {email} (ID: {user_id})")
+
+        # Fetch the updated profile to return it
+        profile = db.get_post_by_id(post_id)
+        if not profile:
+            return jsonify({
+                'status': 'error',
+                'message': 'Profile updated but failed to retrieve'
+            }), 500
+
+        return jsonify({
+            'status': 'success',
+            'profile': profile
+        })
+
+    except Exception as e:
+        print(f"Error updating profile: {e}")
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'

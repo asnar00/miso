@@ -1,0 +1,165 @@
+16:57:36 [INFO] [APP] NoobTestApp init() called
+16:57:36 [INFO] [APP] User already logged in: test@example.com
+16:57:36 [INFO] [APP] About to start TestServer
+16:57:36 [INFO] [TESTSERVER] start() called with port 8081
+16:57:36 [INFO] [TESTSERVER] About to register tests
+16:57:36 [INFO] TestServer: Registered tests: storage, clear-login
+16:57:36 [INFO] [TESTSERVER] Tests registered
+16:57:36 [INFO] [TESTSERVER] Attempting to start on port 8081
+16:57:36 [INFO] [TESTSERVER] Creating TCP parameters
+16:57:36 [INFO] [TESTSERVER] TCP parameters created
+16:57:36 [INFO] [TESTSERVER] Creating NWListener
+16:57:36 [INFO] [TESTSERVER] NWListener created successfully
+16:57:36 [INFO] [TESTSERVER] About to start listener
+16:57:36 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+16:57:36 [INFO] [TESTSERVER] State changed to ready
+16:57:36 [INFO] [TESTSERVER] Listener is ready and accepting connections
+16:57:36 [INFO] [APP] TestServer.start() returned
+16:57:36 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+16:57:36 [INFO] [PostsListView] Fetching posts (parent: root)
+16:57:36 [INFO] [PostsAPI] Successfully fetched 12 posts
+16:57:36 [INFO] [PostsListView] Loaded 12 posts
+16:57:48 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+16:57:48 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+16:57:48 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+16:57:52 [INFO] [PostView] Edit button tapped for post 22
+16:57:52 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+16:57:54 [INFO] [PostView] Cancel button tapped
+16:57:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+16:57:56 [INFO] [PostView] Edit button tapped for post 22
+16:57:56 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+16:57:57 [INFO] [PostView] Save button tapped
+16:57:57 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:00:32 [INFO] [APP] NoobTestApp init() called
+17:00:32 [INFO] [APP] User already logged in: test@example.com
+17:00:32 [INFO] [APP] About to start TestServer
+17:00:32 [INFO] [TESTSERVER] start() called with port 8081
+17:00:32 [INFO] [TESTSERVER] About to register tests
+17:00:32 [INFO] TestServer: Registered tests: storage, clear-login
+17:00:32 [INFO] [TESTSERVER] Tests registered
+17:00:32 [INFO] [TESTSERVER] Attempting to start on port 8081
+17:00:32 [INFO] [TESTSERVER] Creating TCP parameters
+17:00:32 [INFO] [TESTSERVER] TCP parameters created
+17:00:32 [INFO] [TESTSERVER] Creating NWListener
+17:00:32 [INFO] [TESTSERVER] NWListener created successfully
+17:00:32 [INFO] [TESTSERVER] About to start listener
+17:00:32 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:00:32 [INFO] [TESTSERVER] State changed to ready
+17:00:32 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:00:32 [INFO] [APP] TestServer.start() returned
+17:00:33 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+17:00:33 [INFO] [PostsListView] Fetching posts (parent: root)
+17:00:33 [INFO] [PostsAPI] Successfully fetched 12 posts
+17:00:33 [INFO] [PostsListView] Loaded 12 posts
+17:00:34 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:00:34 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:00:34 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:00:37 [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:00:37 [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:00:37 [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:00:41 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:00:41 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:01:53 [INFO] [APP] NoobTestApp init() called
+17:01:53 [INFO] [APP] User already logged in: test@example.com
+17:01:53 [INFO] [APP] About to start TestServer
+17:01:53 [INFO] [TESTSERVER] start() called with port 8081
+17:01:53 [INFO] [TESTSERVER] About to register tests
+17:01:53 [INFO] TestServer: Registered tests: storage, clear-login
+17:01:53 [INFO] [TESTSERVER] Tests registered
+17:01:53 [INFO] [TESTSERVER] Attempting to start on port 8081
+17:01:53 [INFO] [TESTSERVER] Creating TCP parameters
+17:01:53 [INFO] [TESTSERVER] TCP parameters created
+17:01:53 [INFO] [TESTSERVER] Creating NWListener
+17:01:53 [INFO] [TESTSERVER] NWListener created successfully
+17:01:53 [INFO] [TESTSERVER] About to start listener
+17:01:53 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:01:53 [INFO] [TESTSERVER] State changed to ready
+17:01:53 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:01:53 [INFO] [APP] TestServer.start() returned
+17:01:53 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+17:01:53 [INFO] [PostsListView] Fetching posts (parent: root)
+17:01:53 [INFO] [PostsAPI] Successfully fetched 12 posts
+17:01:53 [INFO] [PostsListView] Loaded 12 posts
+17:01:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:01:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:01:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:01:56 [INFO] [PostView] Edit button tapped for post 22
+17:01:56 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:01:57 [INFO] [PostView] Cancel button tapped
+17:01:57 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:03:06 [INFO] [APP] NoobTestApp init() called
+17:03:06 [INFO] [APP] User already logged in: test@example.com
+17:03:06 [INFO] [APP] About to start TestServer
+17:03:06 [INFO] [TESTSERVER] start() called with port 8081
+17:03:06 [INFO] [TESTSERVER] About to register tests
+17:03:06 [INFO] TestServer: Registered tests: storage, clear-login
+17:03:06 [INFO] [TESTSERVER] Tests registered
+17:03:06 [INFO] [TESTSERVER] Attempting to start on port 8081
+17:03:06 [INFO] [TESTSERVER] Creating TCP parameters
+17:03:06 [INFO] [TESTSERVER] TCP parameters created
+17:03:06 [INFO] [TESTSERVER] Creating NWListener
+17:03:06 [INFO] [TESTSERVER] NWListener created successfully
+17:03:06 [INFO] [TESTSERVER] About to start listener
+17:03:06 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:03:06 [INFO] [TESTSERVER] State changed to ready
+17:03:06 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:03:06 [INFO] [APP] TestServer.start() returned
+17:03:06 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+17:03:06 [INFO] [PostsListView] Fetching posts (parent: root)
+17:03:06 [INFO] [PostsAPI] Successfully fetched 12 posts
+17:03:06 [INFO] [PostsListView] Loaded 12 posts
+17:03:07 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:03:07 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:03:07 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:08:20 [INFO] [APP] NoobTestApp init() called
+17:08:20 [INFO] [APP] User already logged in: test@example.com
+17:08:20 [INFO] [APP] About to start TestServer
+17:08:20 [INFO] [TESTSERVER] start() called with port 8081
+17:08:20 [INFO] [TESTSERVER] About to register tests
+17:08:20 [INFO] TestServer: Registered tests: storage, clear-login
+17:08:20 [INFO] [TESTSERVER] Tests registered
+17:08:20 [INFO] [TESTSERVER] Attempting to start on port 8081
+17:08:20 [INFO] [TESTSERVER] Creating TCP parameters
+17:08:20 [INFO] [TESTSERVER] TCP parameters created
+17:08:20 [INFO] [TESTSERVER] Creating NWListener
+17:08:20 [INFO] [TESTSERVER] NWListener created successfully
+17:08:20 [INFO] [TESTSERVER] About to start listener
+17:08:20 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:08:20 [INFO] [TESTSERVER] State changed to ready
+17:08:20 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:08:20 [INFO] [APP] TestServer.start() returned
+17:08:20 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+17:08:20 [INFO] [PostsListView] Fetching posts (parent: root)
+17:08:20 [INFO] [PostsListView] Loaded 12 posts
+17:08:20 [INFO] [PostsAPI] Successfully fetched 12 posts
+17:08:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:08:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:08:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:09:18 [INFO] [APP] NoobTestApp init() called
+17:09:18 [INFO] [APP] User already logged in: test@example.com
+17:09:18 [INFO] [APP] About to start TestServer
+17:09:18 [INFO] [TESTSERVER] start() called with port 8081
+17:09:18 [INFO] [TESTSERVER] About to register tests
+17:09:18 [INFO] TestServer: Registered tests: storage, clear-login
+17:09:18 [INFO] [TESTSERVER] Tests registered
+17:09:18 [INFO] [TESTSERVER] Attempting to start on port 8081
+17:09:18 [INFO] [TESTSERVER] Creating TCP parameters
+17:09:18 [INFO] [TESTSERVER] TCP parameters created
+17:09:18 [INFO] [TESTSERVER] Creating NWListener
+17:09:18 [INFO] [TESTSERVER] NWListener created successfully
+17:09:18 [INFO] [TESTSERVER] About to start listener
+17:09:18 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+17:09:18 [INFO] [TESTSERVER] State changed to ready
+17:09:18 [INFO] [TESTSERVER] Listener is ready and accepting connections
+17:09:18 [INFO] [APP] TestServer.start() returned
+17:09:18 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+17:09:18 [INFO] [PostsListView] Fetching posts (parent: root)
+17:09:18 [INFO] [PostsAPI] Successfully fetched 12 posts
+17:09:18 [INFO] [PostsListView] Loaded 12 posts
+17:09:19 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:09:19 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:09:19 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:09:21 [INFO] [PostView] Edit button tapped for post 22
+17:09:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+17:09:22 [INFO] [PostView] Cancel button tapped
+17:09:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true

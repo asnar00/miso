@@ -146,30 +146,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func setupConsoleButton() {
-        // Create a larger button positioned inside the border
-        consoleButton = NSButton(frame: NSRect(x: 355, y: 400, width: 25, height: 60))
+        // Create a small rounded square button at top right corner
+        let buttonSize: CGFloat = 30
+        let buttonX: CGFloat = fullSize.width - buttonSize - 10  // 10px padding from edge
+        let buttonY: CGFloat = fullSize.height - buttonSize - 10  // 10px padding from top
+        consoleButton = NSButton(frame: NSRect(x: buttonX, y: buttonY, width: buttonSize, height: buttonSize))
         consoleButton.title = ""
         consoleButton.bezelStyle = .rounded
         consoleButton.setButtonType(.pushOnPushOff)
         consoleButton.target = self
         consoleButton.action = #selector(toggleConsole)
 
-        // Style the button to look like a tab - make it stand out
+        // Style as a small rounded square
         consoleButton.wantsLayer = true
         consoleButton.layer?.backgroundColor = NSColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.8).cgColor
-        consoleButton.layer?.cornerRadius = 5
+        consoleButton.layer?.cornerRadius = 8
         consoleButton.layer?.borderWidth = 1
         consoleButton.layer?.borderColor = NSColor.white.withAlphaComponent(0.5).cgColor
 
-        // Add a label with clearer icon
-        let label = NSTextField(frame: NSRect(x: 0, y: 20, width: 25, height: 20))
+        // Add chevron label centered in button
+        let label = NSTextField(frame: NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize))
         label.stringValue = ">"
         label.isEditable = false
         label.isBordered = false
         label.backgroundColor = .clear
-        label.textColor = .white
+        label.textColor = .black
         label.alignment = .center
-        label.font = NSFont.systemFont(ofSize: 16, weight: .bold)
+        label.font = NSFont.systemFont(ofSize: 18, weight: .bold)
         consoleButton.addSubview(label)
 
         window.contentView?.addSubview(consoleButton)
@@ -619,6 +622,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             )
             previewLayer.frame = insetFrame
         }
+
+        // Update console button position for new size
+        let buttonSize: CGFloat = 30
+        let buttonX: CGFloat = targetSize.width - buttonSize - 10  // 10px padding from edge
+        let buttonY: CGFloat = targetSize.height - buttonSize - 10  // 10px padding from top
+        consoleButton.frame = NSRect(x: buttonX, y: buttonY, width: buttonSize, height: buttonSize)
 
         log(isSmallMode ? "Switched to small mode" : "Switched to full size")
     }

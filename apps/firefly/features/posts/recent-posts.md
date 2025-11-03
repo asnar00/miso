@@ -8,9 +8,9 @@ The posts are sorted by creation date, newest first, so the most recent post app
 **Loading behavior:**
 
 - On app open (after sign-in), immediately fetch recent posts
-- Show a loading spinner while the request is in progress
+- Show a turquoise background (RGB 64/224/208) with a black "ᕦ(ツ)ᕤ" logo (1/12 screen width) above a "Loading posts..." message
 - Once posts are fetched, preload the first image before displaying the feed
 - Continue loading remaining images in the background
-- If fetching fails, show an error message with a retry button
+- If fetching fails, show an error message with a retry button on the turquoise background
 
 All posts start in compact view. Tap any post to expand it and read the full content.

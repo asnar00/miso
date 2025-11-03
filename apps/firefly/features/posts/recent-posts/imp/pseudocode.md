@@ -20,13 +20,13 @@ function fetchRecentPosts(callback):
 ## Post Loading Sequence
 
 ```
-state isLoading: Bool = false
-state errorMessage: String? = nil
+state isLoadingPosts: Bool = false
+state postsError: String? = nil
 state posts: Array<Post> = []
 
-function loadPosts():
-  isLoading = true
-  errorMessage = nil
+function fetchRecentPosts():
+  isLoadingPosts = true
+  postsError = nil
 
   fetchRecentPosts(result):
     if result is success:
@@ -35,23 +35,20 @@ function loadPosts():
       // Preload first image before displaying
       preloadImagesOptimized(fetchedPosts):
         posts = fetchedPosts
-        isLoading = false
-
-        // Auto-expand first post
-        if posts not empty:
-          expandedPostIds.add(posts[0].id)
+        isLoadingPosts = false
 
     else if result is failure:
-      errorMessage = result.error.description
-      isLoading = false
+      postsError = result.error.description
+      isLoadingPosts = false
 ```
 
 **Key decisions**:
+- App-level state management in NoobTestApp (not in PostsView)
+- Posts are fetched once at app startup and passed to PostsView as initialPosts
+- This prevents double-loading when navigating between views
 - Set loading state immediately before API call
 - Clear any previous error messages
 - Preload first image before showing posts for instant display
-- Auto-expand first post for immediate reading
-- Continue loading remaining images in background
 
 ## Image Preloading Strategy
 
@@ -78,11 +75,32 @@ function preloadImagesOptimized(posts, completion):
 
 **Key decision**: Load first image before displaying feed, then load remaining images in background to balance initial perceived speed with complete experience.
 
+## Loading Screen UI
+
+```
+if isLoadingPosts:
+  display turquoise background (RGB 64/255, 224/255, 208/255)
+  display black "ᕦ(ツ)ᕤ" logo (font size = screen width / 12)
+  display "Loading posts..." message below logo with spinner
+else if postsError exists:
+  display turquoise background
+  display error message
+  display retry button
+else:
+  display PostsView with posts
+```
+
+**Key specifications**:
+- Turquoise background: RGB(64, 224, 208)
+- Logo: "ᕦ(ツ)ᕤ" in black, size = screen width ÷ 12
+- Logo positioned above loading message with spacing
+
 ## Initial Load Trigger
 
 ```
-on view appear:
-  loadPosts()
+on app startup (after authentication):
+  if posts array is empty and not currently loading:
+    fetchRecentPosts()
 ```
 
-Automatically fetch posts when the view first appears.
+Automatically fetch posts when the app first starts up after sign-in.

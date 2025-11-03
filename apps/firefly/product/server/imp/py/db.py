@@ -9,6 +9,7 @@ from psycopg2.extras import RealDictCursor
 from typing import Optional, List, Dict, Any
 import os
 from datetime import datetime
+import sys
 
 class Database:
     """Database connection and operations manager"""
@@ -198,6 +199,47 @@ class Database:
         finally:
             self.return_connection(conn)
 
+    def update_post(
+        self,
+        post_id: int,
+        title: str,
+        summary: str,
+        body: str,
+        image_url: Optional[str] = None
+    ) -> bool:
+        """
+        Update an existing post.
+
+        Args:
+            post_id: ID of the post to update
+            title: New post title
+            summary: New one-line summary
+            body: New post body text
+            image_url: New image URL (if changed)
+
+        Returns:
+            True if successful, False otherwise
+        """
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE posts
+                    SET title = %s, summary = %s, body = %s, image_url = %s
+                    WHERE id = %s
+                    """,
+                    (title, summary, body, image_url, post_id)
+                )
+                conn.commit()
+                return True
+        except Exception as e:
+            conn.rollback()
+            print(f"Error updating post: {e}")
+            return False
+        finally:
+            self.return_connection(conn)
+
     def get_post_by_id(self, post_id: int) -> Optional[Dict[str, Any]]:
         """Get a post by ID"""
         conn = self.get_connection()
@@ -207,7 +249,8 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                           COALESCE(u.name, u.email) as author_name
+                           COALESCE(u.name, u.email) as author_name,
+                           u.email as author_email
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
                     WHERE p.id = %s
@@ -254,6 +297,7 @@ class Database:
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
                            COALESCE(u.name, u.email) as author_name,
+                           u.email as author_email,
                            COUNT(children.id) as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
@@ -268,6 +312,150 @@ class Database:
         except Exception as e:
             print(f"Error getting child posts: {e}")
             return []
+        finally:
+            self.return_connection(conn)
+
+    def get_user_profile(self, user_id: int) -> Optional[Dict[str, Any]]:
+        """
+        Get a user's profile post (post with parent_id = -1).
+        Profile posts are distinguished by having parent_id = -1 (a special marker).
+
+        Args:
+            user_id: The user's ID
+
+        Returns:
+            Profile post dict if found, None otherwise
+        """
+        conn = self.get_connection()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT
+                        p.id, p.user_id, p.parent_id, p.title, p.summary, p.body,
+                        p.image_url, p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                        u.email as author_name,
+                        0 as child_count
+                    FROM posts p
+                    LEFT JOIN users u ON p.user_id = u.id
+                    WHERE p.user_id = %s AND p.parent_id = -1
+                    LIMIT 1
+                """, (user_id,))
+                result = cur.fetchone()
+
+                if result:
+                    return dict(result)
+                return None
+        except Exception as e:
+            print(f"Error getting user profile: {e}")
+            return None
+        finally:
+            self.return_connection(conn)
+
+    def create_profile_post(
+        self,
+        user_id: int,
+        title: str,
+        summary: str,
+        body: str,
+        timezone: str = 'UTC',
+        image_url: Optional[str] = None
+    ) -> Optional[int]:
+        """
+        Create a profile post for a user (with parent_id = -1).
+        Profile posts use -1 as a special marker to distinguish them from regular posts.
+
+        Args:
+            user_id: User creating the profile
+            title: User's name
+            summary: User's profession/mission
+            body: About text
+            timezone: User's timezone
+            image_url: Optional profile photo URL
+
+        Returns:
+            Post ID if successful, None otherwise
+        """
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                print(f"[DB] Executing INSERT for profile post: user_id={user_id}, title='{title}', summary='{summary}'", file=sys.stderr, flush=True)
+                cur.execute("""
+                    INSERT INTO posts (user_id, parent_id, title, summary, body, timezone, image_url, ai_generated)
+                    VALUES (%s, -1, %s, %s, %s, %s, %s, false)
+                    RETURNING id
+                """, (user_id, title, summary, body, timezone, image_url))
+                post_id = cur.fetchone()[0]
+                conn.commit()
+                print(f"[DB] Created profile post {post_id} for user {user_id}", file=sys.stderr, flush=True)
+                return post_id
+        except Exception as e:
+            conn.rollback()
+            print(f"[DB] Error creating profile post: {e}", file=sys.stderr, flush=True)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            return None
+        finally:
+            self.return_connection(conn)
+
+    def update_post(
+        self,
+        post_id: int,
+        title: Optional[str] = None,
+        summary: Optional[str] = None,
+        body: Optional[str] = None,
+        image_url: Optional[str] = None
+    ) -> bool:
+        """
+        Update an existing post.
+
+        Args:
+            post_id: ID of post to update
+            title: New title (optional)
+            summary: New summary (optional)
+            body: New body (optional)
+            image_url: New image URL (optional)
+
+        Returns:
+            True if successful, False otherwise
+        """
+        conn = self.get_connection()
+        try:
+            # Build dynamic update query
+            updates = []
+            params = []
+
+            if title is not None:
+                updates.append("title = %s")
+                params.append(title)
+
+            if summary is not None:
+                updates.append("summary = %s")
+                params.append(summary)
+
+            if body is not None:
+                updates.append("body = %s")
+                params.append(body)
+
+            if image_url is not None:
+                updates.append("image_url = %s")
+                params.append(image_url)
+
+            if not updates:
+                print("No fields to update")
+                return False
+
+            params.append(post_id)
+            query = f"UPDATE posts SET {', '.join(updates)} WHERE id = %s"
+
+            with conn.cursor() as cur:
+                cur.execute(query, params)
+                conn.commit()
+                print(f"Updated post {post_id}")
+                return True
+        except Exception as e:
+            conn.rollback()
+            print(f"Error updating post: {e}")
+            return False
         finally:
             self.return_connection(conn)
 
@@ -322,6 +510,7 @@ class Database:
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
                            COALESCE(u.name, u.email) as author_name,
+                           u.email as author_email,
                            COUNT(children.id) as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
