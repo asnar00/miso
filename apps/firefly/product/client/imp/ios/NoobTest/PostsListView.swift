@@ -1,5 +1,13 @@
 import SwiftUI
 
+// Observable object to manage expansion state (so it can be updated from closures)
+class PostsListViewModel: ObservableObject {
+    @Published var expandedPostId: Int? = nil
+
+    // Singleton for automation access
+    static var current: PostsListViewModel?
+}
+
 // Unified view for displaying a list of posts, either at root level or for a specific parent
 struct PostsListView: View {
     let parentPostId: Int?  // nil = root level, non-nil = child posts
@@ -7,8 +15,8 @@ struct PostsListView: View {
     let onPostCreated: () -> Void
     @Binding var navigationPath: [Int]
 
+    @StateObject private var viewModel = PostsListViewModel()
     @State private var posts: [Post] = []
-    @State private var expandedPostId: Int? = nil
     @State private var showNewPostEditor = false
     @State private var isLoading = true
     @State private var errorMessage: String?
@@ -16,6 +24,17 @@ struct PostsListView: View {
     @State private var scrollProxy: ScrollViewProxy? = nil
 
     let serverURL = "http://185.96.221.52:8080"
+
+    func expandPost(_ postId: Int) {
+        Logger.shared.info("[PostsListView] expandPost(\(postId)) called, viewModel=\(ObjectIdentifier(viewModel))")
+        if viewModel.expandedPostId == postId {
+            viewModel.expandedPostId = nil
+        } else {
+            Logger.shared.info("[PostsListView] Setting viewModel.expandedPostId to \(postId)")
+            viewModel.expandedPostId = postId
+            Logger.shared.info("[PostsListView] After setting, expandedPostId = \(String(describing: viewModel.expandedPostId))")
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -73,15 +92,11 @@ struct PostsListView: View {
                                 ForEach(posts) { post in
                                     PostView(
                                         post: post,
-                                        isExpanded: expandedPostId == post.id,
+                                        isExpanded: viewModel.expandedPostId == post.id,
                                         onTap: {
-                                            if expandedPostId == post.id {
-                                                expandedPostId = nil
-                                            } else {
-                                                expandedPostId = post.id
-                                                withAnimation(.easeInOut(duration: 0.3)) {
-                                                    proxy.scrollTo(post.id, anchor: .top)
-                                                }
+                                            expandPost(post.id)
+                                            withAnimation(.easeInOut(duration: 0.3)) {
+                                                proxy.scrollTo(post.id, anchor: .top)
                                             }
                                         },
                                         onPostCreated: {
@@ -98,23 +113,6 @@ struct PostsListView: View {
                         }
                         .padding(.horizontal, 8)  // Halved from 16pt to make posts wider
                         .padding(.vertical)
-                    }
-                    .onAppear {
-                        // Register scroll actions for root view only
-                        if parentPostId == nil {
-                            // Register scroll to specific post by title
-                            for post in posts {
-                                let postTitle = post.title
-                                let postId = post.id
-                                UIAutomationRegistry.shared.register(id: "scroll-to-\(postTitle)") {
-                                    DispatchQueue.main.async {
-                                        withAnimation {
-                                            proxy.scrollTo(postId, anchor: .center)
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -140,6 +138,12 @@ struct PostsListView: View {
             }, onDismiss: nil, parentId: parentPostId)
         }
         .onAppear {
+            // Set as current viewModel for automation access
+            if parentPostId == nil {  // Only for root view
+                PostsListViewModel.current = viewModel
+                Logger.shared.info("[PostsListView] Set current viewModel to \(ObjectIdentifier(viewModel))")
+            }
+
             if let parentId = parentPostId {
                 fetchParentPost(parentId)
                 fetchPosts()
@@ -221,6 +225,25 @@ struct PostsListView: View {
                         let postsResponse = try JSONDecoder().decode(PostsResponse.self, from: data)
                         Logger.shared.info("[PostsListView] Loaded \(postsResponse.posts.count) posts")
                         self.posts = postsResponse.posts
+
+                        // Register UI automation for first post
+                        if let firstPost = self.posts.first {
+                            let postId = firstPost.id
+                            UIAutomationRegistry.shared.register(id: "first-post") {
+                                Logger.shared.info("[PostsListView] first-post automation triggered")
+                                DispatchQueue.main.async {
+                                    guard let vm = PostsListViewModel.current else {
+                                        Logger.shared.error("[PostsListView] No current viewModel!")
+                                        return
+                                    }
+                                    Logger.shared.info("[PostsListView] Using current viewModel=\(ObjectIdentifier(vm))")
+                                    Logger.shared.info("[PostsListView] Setting expandedPostId to \(postId)")
+                                    vm.expandedPostId = postId
+                                    Logger.shared.info("[PostsListView] expandedPostId now = \(String(describing: vm.expandedPostId))")
+                                }
+                            }
+                            Logger.shared.info("[PostsListView] Registered first-post automation for post \(firstPost.id)")
+                        }
                     }
                 } catch {
                     Logger.shared.error("[PostsListView] Decode error: \(error.localizedDescription)")

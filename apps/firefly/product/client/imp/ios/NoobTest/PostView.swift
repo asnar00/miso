@@ -31,6 +31,7 @@ struct PostView: View {
     @State private var titleSummaryHeight: CGFloat = 60  // Estimate for now
     @State private var isMeasured: Bool = false
     @State private var isEditing: Bool = false
+    @State private var editableBody: String = ""
 
     // Check if current user owns this post
     private var isOwnPost: Bool {
@@ -103,14 +104,34 @@ struct PostView: View {
         return result
     }
 
+    // Calculate height of text using UITextView (works reliably)
+    func calculateTextHeight(_ text: String, width: CGFloat, font: UIFont) -> CGFloat {
+        let textView = UITextView()
+        textView.font = font
+        textView.text = text
+        let size = textView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
+        return size.height
+    }
+
     var body: some View {
+        // Log when body is evaluated with isExpanded = true
+        let _ = {
+            if isExpanded && expansionFactor == 0.0 {
+                Logger.shared.info("[PostView] Body evaluated for post \(post.id): isExpanded=\(isExpanded), expansionFactor=\(expansionFactor) - should trigger animation")
+            }
+        }()
+
         let compactHeight: CGFloat = 100
 
         // Calculate expanded height based on actual content
         let availableWidth: CGFloat = 350  // Approximate - account for padding
         let imageHeight = post.imageUrl != nil ? (availableWidth / imageAspectRatio) : 0
         let authorHeight: CGFloat = 15  // Approximate height for author line
-        let expandedHeight: CGFloat = titleSummaryHeight + 16 + imageHeight + 16 + bodyTextHeight + 24 + authorHeight + 16
+
+        // Calculate body text height using UIKit measurement
+        let measuredBodyHeight = calculateTextHeight(post.body, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
+
+        let expandedHeight: CGFloat = titleSummaryHeight + 16 + imageHeight + 16 + measuredBodyHeight + 24 + authorHeight + 16
 
         let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 
@@ -148,7 +169,7 @@ struct PostView: View {
             }
 
             // Body text below the image
-            if isExpanded && isMeasured {
+            if isExpanded {
                 // Calculate current image dimensions and position
                 let compactImageHeight: CGFloat = 80
                 let compactImageY: CGFloat = (100 - 80) / 2 + 8
@@ -160,23 +181,28 @@ struct PostView: View {
 
                 // Position text below the current image position
                 let bodyY = currentImageY + currentImageHeight + 16
-                let currentBodyHeight = lerp(0, bodyTextHeight, expansionFactor)
+                let currentBodyHeight = lerp(0, measuredBodyHeight, expansionFactor)
 
-                Text(processBodyText(post.body))
-                    .foregroundColor(.black)
-                    .frame(width: availableWidth, alignment: .leading)
-                    .frame(height: bodyTextHeight, alignment: .top)
-                    .clipped()
-                    .mask(
-                        Rectangle()
-                            .frame(height: currentBodyHeight)
-                            .frame(maxHeight: .infinity, alignment: .top)
-                    )
-                    .offset(x: 18, y: bodyY)  // Increased from 10pt for more left indent
+                ZStack(alignment: .topLeading) {
+                    Color.clear  // Transparent background
+                    TextEditor(text: $editableBody)
+                        .scrollContentBackground(.hidden)  // Hide default background
+                        .foregroundColor(.black)
+                        .frame(width: availableWidth, height: measuredBodyHeight, alignment: .top)
+                        .scrollDisabled(true)
+                }
+                .frame(width: availableWidth, height: measuredBodyHeight)
+                .clipped()
+                .mask(
+                    Rectangle()
+                        .frame(height: currentBodyHeight)
+                        .frame(maxHeight: .infinity, alignment: .top)
+                )
+                .offset(x: 18, y: bodyY)
             }
 
             // Author - fades in when expanded
-            if isExpanded && isMeasured {
+            if isExpanded {
                 // Calculate position below body text
                 let compactImageHeight: CGFloat = 80
                 let compactImageY: CGFloat = (100 - 80) / 2 + 8
@@ -185,7 +211,7 @@ struct PostView: View {
 
                 let currentImageY = lerp(compactImageY, expandedImageY, expansionFactor)
                 let currentImageHeight = lerp(compactImageHeight, expandedImageHeight, expansionFactor)
-                let authorY = currentImageY + currentImageHeight + 16 + bodyTextHeight + 24  // Below body text with spacing
+                let authorY = currentImageY + currentImageHeight + 16 + measuredBodyHeight + 24  // Below body text with spacing
 
                 HStack {
                     if post.aiGenerated {
@@ -348,11 +374,10 @@ struct PostView: View {
         }
         .background(
             // Measure body text only when needed (when expanding)
-            // Use formatted text for accurate measurement
+            // Use TextEditor for accurate measurement of editable content
             Group {
                 if isExpanded && !isMeasured {
-                    Text(processBodyText(post.body))
-                        .lineLimit(nil)
+                    TextEditor(text: .constant(post.body))
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 350)
                         .background(
@@ -361,6 +386,7 @@ struct PostView: View {
                             }
                         )
                         .onPreferenceChange(BodyHeightKey.self) { height in
+                            Logger.shared.info("[PostView] TextEditor body measured height: \(height)")
                             bodyTextHeight = height
                             isMeasured = true
                         }
@@ -381,13 +407,29 @@ struct PostView: View {
                 }
         )
         .onChange(of: isExpanded) { _, newValue in
+            Logger.shared.info("[PostView] ⭐️ EXPANSION ANIMATION STARTING - Post \(post.id) isExpanded changed to \(newValue)")
             if newValue {
-                // Expanding - animate immediately with default aspect ratio
+                // Expanding - calculate and log positions
+                let availableWidth: CGFloat = 350
+                let imageHeight = post.imageUrl != nil ? (availableWidth / imageAspectRatio) : 0
+                let measuredBodyHeight = calculateTextHeight(post.body, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
+
+                // Calculate positions when fully expanded
+                let expandedImageY = titleSummaryHeight + 16
+                let expandedBodyY = expandedImageY + imageHeight + 16
+                let expandedAuthorY = expandedBodyY + measuredBodyHeight + 24
+
+                Logger.shared.info("[PostView] Post \(post.id) EXPANDED POSITIONS:")
+                Logger.shared.info("  Image Y: \(expandedImageY) (height: \(imageHeight))")
+                Logger.shared.info("  Body Y: \(expandedBodyY) (height: \(measuredBodyHeight))")
+                Logger.shared.info("  Author Y: \(expandedAuthorY)")
+
                 withAnimation(.easeInOut(duration: 0.3)) {
                     expansionFactor = 1.0
                 }
             } else {
                 // Collapsing - animate immediately
+                Logger.shared.info("[PostView] Post \(post.id) collapsing, setting expansionFactor to 0.0")
                 withAnimation(.easeInOut(duration: 0.3)) {
                     expansionFactor = 0.0
                 }
@@ -396,6 +438,8 @@ struct PostView: View {
         .onAppear {
             // Set initial expansion state without doing any heavy work
             expansionFactor = isExpanded ? 1.0 : 0.0
+            // Initialize editable body with post content
+            editableBody = post.body
         }
     }
 }

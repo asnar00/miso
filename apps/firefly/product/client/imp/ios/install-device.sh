@@ -51,4 +51,9 @@ xcrun devicectl device install app --device "$DEVICE_ID" "$APP_PATH"
 
 echo ""
 echo "🎉 Installation complete!"
-echo "The app should now be on your iPhone's home screen."
+
+# Launch the app
+echo "🚀 Launching app..."
+xcrun devicectl device process launch --device "$DEVICE_ID" com.miso.noobtest
+
+echo "✅ Installation complete!"

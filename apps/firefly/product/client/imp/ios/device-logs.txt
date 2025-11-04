@@ -1,165 +1,332 @@
-16:57:36 [INFO] [APP] NoobTestApp init() called
-16:57:36 [INFO] [APP] User already logged in: test@example.com
-16:57:36 [INFO] [APP] About to start TestServer
-16:57:36 [INFO] [TESTSERVER] start() called with port 8081
-16:57:36 [INFO] [TESTSERVER] About to register tests
-16:57:36 [INFO] TestServer: Registered tests: storage, clear-login
-16:57:36 [INFO] [TESTSERVER] Tests registered
-16:57:36 [INFO] [TESTSERVER] Attempting to start on port 8081
-16:57:36 [INFO] [TESTSERVER] Creating TCP parameters
-16:57:36 [INFO] [TESTSERVER] TCP parameters created
-16:57:36 [INFO] [TESTSERVER] Creating NWListener
-16:57:36 [INFO] [TESTSERVER] NWListener created successfully
-16:57:36 [INFO] [TESTSERVER] About to start listener
-16:57:36 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-16:57:36 [INFO] [TESTSERVER] State changed to ready
-16:57:36 [INFO] [TESTSERVER] Listener is ready and accepting connections
-16:57:36 [INFO] [APP] TestServer.start() returned
-16:57:36 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-16:57:36 [INFO] [PostsListView] Fetching posts (parent: root)
-16:57:36 [INFO] [PostsAPI] Successfully fetched 12 posts
-16:57:36 [INFO] [PostsListView] Loaded 12 posts
-16:57:48 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-16:57:48 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-16:57:48 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-16:57:52 [INFO] [PostView] Edit button tapped for post 22
-16:57:52 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-16:57:54 [INFO] [PostView] Cancel button tapped
-16:57:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-16:57:56 [INFO] [PostView] Edit button tapped for post 22
-16:57:56 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-16:57:57 [INFO] [PostView] Save button tapped
-16:57:57 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:00:32 [INFO] [APP] NoobTestApp init() called
-17:00:32 [INFO] [APP] User already logged in: test@example.com
-17:00:32 [INFO] [APP] About to start TestServer
-17:00:32 [INFO] [TESTSERVER] start() called with port 8081
-17:00:32 [INFO] [TESTSERVER] About to register tests
-17:00:32 [INFO] TestServer: Registered tests: storage, clear-login
-17:00:32 [INFO] [TESTSERVER] Tests registered
-17:00:32 [INFO] [TESTSERVER] Attempting to start on port 8081
-17:00:32 [INFO] [TESTSERVER] Creating TCP parameters
-17:00:32 [INFO] [TESTSERVER] TCP parameters created
-17:00:32 [INFO] [TESTSERVER] Creating NWListener
-17:00:32 [INFO] [TESTSERVER] NWListener created successfully
-17:00:32 [INFO] [TESTSERVER] About to start listener
-17:00:32 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-17:00:32 [INFO] [TESTSERVER] State changed to ready
-17:00:32 [INFO] [TESTSERVER] Listener is ready and accepting connections
-17:00:32 [INFO] [APP] TestServer.start() returned
-17:00:33 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-17:00:33 [INFO] [PostsListView] Fetching posts (parent: root)
-17:00:33 [INFO] [PostsAPI] Successfully fetched 12 posts
-17:00:33 [INFO] [PostsListView] Loaded 12 posts
-17:00:34 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:00:34 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:00:34 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:00:37 [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:00:37 [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:00:37 [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:00:41 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:00:41 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:01:53 [INFO] [APP] NoobTestApp init() called
-17:01:53 [INFO] [APP] User already logged in: test@example.com
-17:01:53 [INFO] [APP] About to start TestServer
-17:01:53 [INFO] [TESTSERVER] start() called with port 8081
-17:01:53 [INFO] [TESTSERVER] About to register tests
-17:01:53 [INFO] TestServer: Registered tests: storage, clear-login
-17:01:53 [INFO] [TESTSERVER] Tests registered
-17:01:53 [INFO] [TESTSERVER] Attempting to start on port 8081
-17:01:53 [INFO] [TESTSERVER] Creating TCP parameters
-17:01:53 [INFO] [TESTSERVER] TCP parameters created
-17:01:53 [INFO] [TESTSERVER] Creating NWListener
-17:01:53 [INFO] [TESTSERVER] NWListener created successfully
-17:01:53 [INFO] [TESTSERVER] About to start listener
-17:01:53 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-17:01:53 [INFO] [TESTSERVER] State changed to ready
-17:01:53 [INFO] [TESTSERVER] Listener is ready and accepting connections
-17:01:53 [INFO] [APP] TestServer.start() returned
-17:01:53 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-17:01:53 [INFO] [PostsListView] Fetching posts (parent: root)
-17:01:53 [INFO] [PostsAPI] Successfully fetched 12 posts
-17:01:53 [INFO] [PostsListView] Loaded 12 posts
-17:01:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:01:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:01:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:01:56 [INFO] [PostView] Edit button tapped for post 22
-17:01:56 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:01:57 [INFO] [PostView] Cancel button tapped
-17:01:57 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:03:06 [INFO] [APP] NoobTestApp init() called
-17:03:06 [INFO] [APP] User already logged in: test@example.com
-17:03:06 [INFO] [APP] About to start TestServer
-17:03:06 [INFO] [TESTSERVER] start() called with port 8081
-17:03:06 [INFO] [TESTSERVER] About to register tests
-17:03:06 [INFO] TestServer: Registered tests: storage, clear-login
-17:03:06 [INFO] [TESTSERVER] Tests registered
-17:03:06 [INFO] [TESTSERVER] Attempting to start on port 8081
-17:03:06 [INFO] [TESTSERVER] Creating TCP parameters
-17:03:06 [INFO] [TESTSERVER] TCP parameters created
-17:03:06 [INFO] [TESTSERVER] Creating NWListener
-17:03:06 [INFO] [TESTSERVER] NWListener created successfully
-17:03:06 [INFO] [TESTSERVER] About to start listener
-17:03:06 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-17:03:06 [INFO] [TESTSERVER] State changed to ready
-17:03:06 [INFO] [TESTSERVER] Listener is ready and accepting connections
-17:03:06 [INFO] [APP] TestServer.start() returned
-17:03:06 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-17:03:06 [INFO] [PostsListView] Fetching posts (parent: root)
-17:03:06 [INFO] [PostsAPI] Successfully fetched 12 posts
-17:03:06 [INFO] [PostsListView] Loaded 12 posts
-17:03:07 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:03:07 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:03:07 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:08:20 [INFO] [APP] NoobTestApp init() called
-17:08:20 [INFO] [APP] User already logged in: test@example.com
-17:08:20 [INFO] [APP] About to start TestServer
-17:08:20 [INFO] [TESTSERVER] start() called with port 8081
-17:08:20 [INFO] [TESTSERVER] About to register tests
-17:08:20 [INFO] TestServer: Registered tests: storage, clear-login
-17:08:20 [INFO] [TESTSERVER] Tests registered
-17:08:20 [INFO] [TESTSERVER] Attempting to start on port 8081
-17:08:20 [INFO] [TESTSERVER] Creating TCP parameters
-17:08:20 [INFO] [TESTSERVER] TCP parameters created
-17:08:20 [INFO] [TESTSERVER] Creating NWListener
-17:08:20 [INFO] [TESTSERVER] NWListener created successfully
-17:08:20 [INFO] [TESTSERVER] About to start listener
-17:08:20 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-17:08:20 [INFO] [TESTSERVER] State changed to ready
-17:08:20 [INFO] [TESTSERVER] Listener is ready and accepting connections
-17:08:20 [INFO] [APP] TestServer.start() returned
-17:08:20 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-17:08:20 [INFO] [PostsListView] Fetching posts (parent: root)
-17:08:20 [INFO] [PostsListView] Loaded 12 posts
-17:08:20 [INFO] [PostsAPI] Successfully fetched 12 posts
-17:08:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:08:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:08:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:09:18 [INFO] [APP] NoobTestApp init() called
-17:09:18 [INFO] [APP] User already logged in: test@example.com
-17:09:18 [INFO] [APP] About to start TestServer
-17:09:18 [INFO] [TESTSERVER] start() called with port 8081
-17:09:18 [INFO] [TESTSERVER] About to register tests
-17:09:18 [INFO] TestServer: Registered tests: storage, clear-login
-17:09:18 [INFO] [TESTSERVER] Tests registered
-17:09:18 [INFO] [TESTSERVER] Attempting to start on port 8081
-17:09:18 [INFO] [TESTSERVER] Creating TCP parameters
-17:09:18 [INFO] [TESTSERVER] TCP parameters created
-17:09:18 [INFO] [TESTSERVER] Creating NWListener
-17:09:18 [INFO] [TESTSERVER] NWListener created successfully
-17:09:18 [INFO] [TESTSERVER] About to start listener
-17:09:18 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-17:09:18 [INFO] [TESTSERVER] State changed to ready
-17:09:18 [INFO] [TESTSERVER] Listener is ready and accepting connections
-17:09:18 [INFO] [APP] TestServer.start() returned
-17:09:18 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-17:09:18 [INFO] [PostsListView] Fetching posts (parent: root)
-17:09:18 [INFO] [PostsAPI] Successfully fetched 12 posts
-17:09:18 [INFO] [PostsListView] Loaded 12 posts
-17:09:19 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:09:19 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:09:19 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:09:21 [INFO] [PostView] Edit button tapped for post 22
-17:09:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-17:09:22 [INFO] [PostView] Cancel button tapped
-17:09:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:06:34 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18:06:34 [INFO] [APP] NoobTestApp init() called
+18:06:34 [INFO] [APP] User already logged in: test@example.com
+18:06:34 [INFO] [APP] About to start TestServer
+18:06:34 [INFO] [TESTSERVER] start() called with port 8081
+18:06:34 [INFO] [TESTSERVER] About to register tests
+18:06:34 [INFO] TestServer: Registered tests: storage, clear-login
+18:06:34 [INFO] [TESTSERVER] Tests registered
+18:06:34 [INFO] [TESTSERVER] Attempting to start on port 8081
+18:06:34 [INFO] [TESTSERVER] Creating TCP parameters
+18:06:34 [INFO] [TESTSERVER] TCP parameters created
+18:06:34 [INFO] [TESTSERVER] Creating NWListener
+18:06:34 [INFO] [TESTSERVER] NWListener created successfully
+18:06:34 [INFO] [TESTSERVER] About to start listener
+18:06:34 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+18:06:34 [INFO] [TESTSERVER] State changed to ready
+18:06:34 [INFO] [TESTSERVER] Listener is ready and accepting connections
+18:06:34 [INFO] [APP] TestServer.start() returned
+18:06:34 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:06:34 [INFO] [PostsListView] Fetching posts (parent: root)
+18:06:34 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:06:34 [INFO] [PostsListView] Loaded 12 posts
+18:06:34 [INFO] [PostsListView] Registered first-post automation for post 22
+18:06:39 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18:06:39 [INFO] [APP] NoobTestApp init() called
+18:06:39 [INFO] [APP] User already logged in: test@example.com
+18:06:39 [INFO] [APP] About to start TestServer
+18:06:39 [INFO] [TESTSERVER] start() called with port 8081
+18:06:39 [INFO] [TESTSERVER] About to register tests
+18:06:39 [INFO] TestServer: Registered tests: storage, clear-login
+18:06:39 [INFO] [TESTSERVER] Tests registered
+18:06:39 [INFO] [TESTSERVER] Attempting to start on port 8081
+18:06:39 [INFO] [TESTSERVER] Creating TCP parameters
+18:06:39 [INFO] [TESTSERVER] TCP parameters created
+18:06:39 [INFO] [TESTSERVER] Creating NWListener
+18:06:39 [INFO] [TESTSERVER] NWListener created successfully
+18:06:39 [INFO] [TESTSERVER] About to start listener
+18:06:39 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+18:06:39 [INFO] [TESTSERVER] State changed to ready
+18:06:39 [INFO] [TESTSERVER] Listener is ready and accepting connections
+18:06:39 [INFO] [APP] TestServer.start() returned
+18:06:39 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:06:39 [INFO] [PostsListView] Fetching posts (parent: root)
+18:06:39 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:06:39 [INFO] [PostsListView] Loaded 12 posts
+18:06:39 [INFO] [PostsListView] Registered first-post automation for post 22
+18:06:47 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18:06:47 [INFO] [APP] NoobTestApp init() called
+18:06:47 [INFO] [APP] User already logged in: test@example.com
+18:06:47 [INFO] [APP] About to start TestServer
+18:06:47 [INFO] [TESTSERVER] start() called with port 8081
+18:06:47 [INFO] [TESTSERVER] About to register tests
+18:06:47 [INFO] TestServer: Registered tests: storage, clear-login
+18:06:47 [INFO] [TESTSERVER] Tests registered
+18:06:47 [INFO] [TESTSERVER] Attempting to start on port 8081
+18:06:47 [INFO] [TESTSERVER] Creating TCP parameters
+18:06:47 [INFO] [TESTSERVER] TCP parameters created
+18:06:47 [INFO] [TESTSERVER] Creating NWListener
+18:06:47 [INFO] [TESTSERVER] NWListener created successfully
+18:06:47 [INFO] [TESTSERVER] About to start listener
+18:06:47 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+18:06:47 [INFO] [TESTSERVER] State changed to ready
+18:06:47 [INFO] [TESTSERVER] Listener is ready and accepting connections
+18:06:47 [INFO] [APP] TestServer.start() returned
+18:06:47 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:06:47 [INFO] [PostsListView] Fetching posts (parent: root)
+18:06:47 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:06:47 [INFO] [PostsListView] Loaded 12 posts
+18:06:47 [INFO] [PostsListView] Registered first-post automation for post 22
+18:07:33 [INFO] [TESTSERVER] New connection received
+18:07:33 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:07:33 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:07:33 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:07:33 [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+18:07:33 [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+18:07:33 [INFO] [PostsListView] expandedPostId is now: Optional(22)
+18:07:39 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:07:39 [INFO] [PostView] TextEditor body measured height: 0.0
+18:07:39 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+18:07:39 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+18:07:39 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:07:39 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:07:39 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:07:56 [INFO] [TESTSERVER] New connection received
+18:07:56 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:07:56 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:07:56 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:07:56 [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+18:07:56 [INFO] [PostsListView] On main thread, current expandedPostId: Optional(22), setting to 22
+18:07:56 [INFO] [PostsListView] expandedPostId is now: Optional(22)
+18:07:59 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
+18:07:59 [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
+18:08:24 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18:08:24 [INFO] [APP] NoobTestApp init() called
+18:08:24 [INFO] [APP] User already logged in: test@example.com
+18:08:24 [INFO] [APP] About to start TestServer
+18:08:24 [INFO] [TESTSERVER] start() called with port 8081
+18:08:24 [INFO] [TESTSERVER] About to register tests
+18:08:24 [INFO] TestServer: Registered tests: storage, clear-login
+18:08:24 [INFO] [TESTSERVER] Tests registered
+18:08:24 [INFO] [TESTSERVER] Attempting to start on port 8081
+18:08:24 [INFO] [TESTSERVER] Creating TCP parameters
+18:08:24 [INFO] [TESTSERVER] TCP parameters created
+18:08:24 [INFO] [TESTSERVER] Creating NWListener
+18:08:24 [INFO] [TESTSERVER] NWListener created successfully
+18:08:24 [INFO] [TESTSERVER] About to start listener
+18:08:24 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+18:08:24 [INFO] [TESTSERVER] State changed to ready
+18:08:24 [INFO] [TESTSERVER] Listener is ready and accepting connections
+18:08:24 [INFO] [APP] TestServer.start() returned
+18:08:24 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:08:24 [INFO] [PostsListView] Fetching posts (parent: root)
+18:08:24 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:08:24 [INFO] [PostsListView] Loaded 12 posts
+18:08:24 [INFO] [PostsListView] Registered first-post automation for post 22
+18:08:32 [INFO] [TESTSERVER] New connection received
+18:08:32 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:08:32 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:08:32 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:08:32 [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+18:08:32 [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+18:08:32 [INFO] [PostsListView] expandedPostId is now: Optional(22)
+18:09:37 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+18:09:37 [INFO] [PostsListView] Fetching posts (parent: root)
+18:09:41 [INFO] [TESTSERVER] New connection received
+18:09:41 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:09:41 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:09:41 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:09:41 [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+18:09:41 [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+18:09:41 [INFO] [PostsListView] About to call objectWillChange.send()
+18:09:41 [INFO] [PostsListView] Called objectWillChange.send(), now setting expandedPostId
+18:09:41 [INFO] [PostsListView] expandedPostId is now: Optional(22)
+18:12:00 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:12:00 [INFO] [PostsListView] Loaded 12 posts
+18:12:00 [INFO] [PostsListView] Registered first-post automation for post 22
+18:12:04 [INFO] [TESTSERVER] New connection received
+18:12:04 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:12:04 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:12:04 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:12:04 [INFO] [PostsListView] first-post automation triggered
+18:12:04 [INFO] [PostsListView] expandPost(22) called
+18:12:37 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:12:37 [INFO] [PostsListView] Loaded 12 posts
+18:12:37 [INFO] [PostsListView] Registered first-post automation for post 22
+18:12:41 [INFO] [TESTSERVER] New connection received
+18:12:41 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:12:41 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:12:41 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:12:41 [INFO] [PostsListView] first-post automation triggered
+18:12:41 [INFO] [PostsListView] Setting expandedPostId directly on viewModel
+18:12:41 [INFO] [PostsListView] viewModel.expandedPostId = Optional(22)
+18:13:12 [INFO] [PostsListView] expandPost(22) called
+18:13:12 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:13:12 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:13:12 [INFO] [PostView] TextEditor body measured height: 0.0
+18:13:12 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+18:13:12 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+18:13:12 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:13:12 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:13:12 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:13:26 [INFO] [PostsListView] expandPost(22) called
+18:13:26 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
+18:13:26 [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
+18:13:55 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18:13:55 [INFO] [APP] NoobTestApp init() called
+18:13:55 [INFO] [APP] User already logged in: test@example.com
+18:13:55 [INFO] [APP] About to start TestServer
+18:13:55 [INFO] [TESTSERVER] start() called with port 8081
+18:13:55 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:13:59 [INFO] [TESTSERVER] New connection received
+18:13:59 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:13:59 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:13:59 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:13:59 [INFO] [PostsListView] first-post automation triggered, captured viewModel=ObjectIdentifier(0x000000011e3edb80)
+18:13:59 [INFO] [PostsListView] Setting expandedPostId directly on captured viewModel
+18:13:59 [INFO] [PostsListView] viewModel.expandedPostId = Optional(22)
+18:14:22 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000011ca0a900)
+18:14:22 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+18:14:22 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+18:14:22 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:14:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:14:22 [INFO] [PostView] TextEditor body measured height: 0.0
+18:14:22 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+18:14:22 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+18:14:22 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:14:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:14:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:15:18 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:15:18 [INFO] [PostsListView] Loaded 12 posts
+18:15:18 [INFO] [PostsListView] Registered first-post automation for post 22
+18:15:19 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000013be5f480)
+18:15:23 [INFO] [TESTSERVER] New connection received
+18:15:23 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:15:23 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:15:23 [INFO] [PostsListView] first-post automation triggered
+18:15:23 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:15:23 [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x000000013be5f480)
+18:15:23 [INFO] [PostsListView] Setting expandedPostId to 22
+18:15:23 [INFO] [PostsListView] expandedPostId now = Optional(22)
+18:15:23 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:15:23 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:15:23 [INFO] [PostView] TextEditor body measured height: 0.0
+18:15:23 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+18:15:23 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+18:15:23 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:15:23 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:15:23 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:15:36 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013be5f480)
+18:15:36 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
+18:15:36 [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
+18:15:37 [INFO] [PostsListView] expandPost(15) called, viewModel=ObjectIdentifier(0x000000013be5f480)
+18:15:37 [INFO] [PostsListView] Setting viewModel.expandedPostId to 15
+18:15:37 [INFO] [PostsListView] After setting, expandedPostId = Optional(15)
+18:15:37 [INFO] [PostView] Body evaluated for post 15: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:15:37 [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:15:37 [INFO] [PostView] TextEditor body measured height: 0.0
+18:15:37 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 15 isExpanded changed to true
+18:15:37 [INFO] [PostView] Post 15 expanding, setting expansionFactor to 1.0
+18:15:37 [INFO] [PostView] Body evaluated for post 15: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:15:37 [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:15:37 [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:15:38 [INFO] [PostsListView] expandPost(15) called, viewModel=ObjectIdentifier(0x000000013be5f480)
+18:15:38 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 15 isExpanded changed to false
+18:15:38 [INFO] [PostView] Post 15 collapsing, setting expansionFactor to 0.0
+18:15:40 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013be5f480)
+18:15:40 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+18:15:40 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+18:15:40 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:15:40 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:15:40 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+18:15:40 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+18:15:40 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:17:01 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:17:01 [INFO] [PostsListView] Loaded 12 posts
+18:17:01 [INFO] [PostsListView] Registered first-post automation for post 22
+18:17:05 [INFO] [TESTSERVER] New connection received
+18:17:05 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:17:05 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:17:05 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:17:05 [INFO] [PostsListView] first-post automation triggered
+18:17:05 [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x0000000101be9600)
+18:17:05 [INFO] [PostsListView] Setting expandedPostId to 22
+18:17:05 [INFO] [PostsListView] expandedPostId now = Optional(22)
+18:17:05 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:17:05 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:17:05 [INFO] [PostView] TextEditor body measured height: 0.0
+18:17:05 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+18:17:05 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+18:17:05 [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
+18:17:05 [INFO]   Body Y: 563.0 (height: 104.0)
+18:17:05 [INFO]   Author Y: 691.0
+18:17:05 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:17:05 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:17:05 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:19:46 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18:19:46 [INFO] [APP] NoobTestApp init() called
+18:19:46 [INFO] [APP] User already logged in: test@example.com
+18:19:46 [INFO] [APP] About to start TestServer
+18:19:46 [INFO] [TESTSERVER] start() called with port 8081
+18:19:46 [INFO] [TESTSERVER] About to register tests
+18:19:46 [INFO] TestServer: Registered tests: storage, clear-login
+18:19:46 [INFO] [TESTSERVER] Tests registered
+18:19:46 [INFO] [TESTSERVER] Attempting to start on port 8081
+18:19:46 [INFO] [TESTSERVER] Creating TCP parameters
+18:19:46 [INFO] [TESTSERVER] TCP parameters created
+18:19:46 [INFO] [TESTSERVER] Creating NWListener
+18:19:46 [INFO] [TESTSERVER] NWListener created successfully
+18:19:46 [INFO] [TESTSERVER] About to start listener
+18:19:46 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+18:19:46 [INFO] [TESTSERVER] State changed to ready
+18:19:46 [INFO] [TESTSERVER] Listener is ready and accepting connections
+18:19:46 [INFO] [APP] TestServer.start() returned
+18:19:46 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x0000000115cf64c0)
+18:19:50 [INFO] [TESTSERVER] New connection received
+18:19:50 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:19:50 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:19:50 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:19:50 [INFO] [PostsListView] first-post automation triggered
+18:19:50 [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x0000000115cf64c0)
+18:19:50 [INFO] [PostsListView] Setting expandedPostId to 22
+18:19:50 [INFO] [PostsListView] expandedPostId now = Optional(22)
+18:19:50 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:19:50 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:19:50 [INFO] [PostView] TextEditor body measured height: 0.0
+18:19:50 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+18:19:50 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+18:19:50 [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
+18:19:50 [INFO]   Body Y: 563.0 (height: 104.0)
+18:19:50 [INFO]   Author Y: 691.0
+18:19:50 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:19:50 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:19:50 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:21:59 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+18:21:59 [INFO] [APP] NoobTestApp init() called
+18:21:59 [INFO] [APP] User already logged in: test@example.com
+18:21:59 [INFO] [APP] About to start TestServer
+18:21:59 [INFO] [TESTSERVER] start() called with port 8081
+18:21:59 [INFO] [TESTSERVER] About to register tests
+18:21:59 [INFO] TestServer: Registered tests: storage, clear-login
+18:21:59 [INFO] [TESTSERVER] Tests registered
+18:21:59 [INFO] [TESTSERVER] Attempting to start on port 8081
+18:21:59 [INFO] [TESTSERVER] Creating TCP parameters
+18:21:59 [INFO] [TESTSERVER] TCP parameters created
+18:21:59 [INFO] [TESTSERVER] Creating NWListener
+18:21:59 [INFO] [TESTSERVER] NWListener created successfully
+18:21:59 [INFO] [TESTSERVER] About to start listener
+18:21:59 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+18:21:59 [INFO] [TESTSERVER] State changed to ready
+18:21:59 [INFO] [TESTSERVER] Listener is ready and accepting connections
+18:21:59 [INFO] [APP] TestServer.start() returned
+18:21:59 [INFO] [PostsAPI] Successfully fetched 12 posts
+18:22:00 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000013fac8840)
+18:22:04 [INFO] [TESTSERVER] New connection received
+18:22:04 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+18:22:04 [INFO] [TESTSERVER] Triggering UI element: first-post
+18:22:04 [INFO] [TESTSERVER] Successfully triggered: first-post
+18:22:04 [INFO] [PostsListView] first-post automation triggered
+18:22:04 [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x000000013fac8840)
+18:22:04 [INFO] [PostsListView] Setting expandedPostId to 22
+18:22:04 [INFO] [PostsListView] expandedPostId now = Optional(22)
+18:22:04 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:22:04 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:22:04 [INFO] [PostView] TextEditor body measured height: 0.0
+18:22:04 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+18:22:04 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+18:22:04 [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
+18:22:04 [INFO]   Body Y: 563.0 (height: 104.0)
+18:22:04 [INFO]   Author Y: 691.0
+18:22:04 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+18:22:04 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+18:22:04 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true

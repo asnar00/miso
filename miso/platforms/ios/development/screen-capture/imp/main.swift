@@ -314,7 +314,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if data.count > 0 {
             if let newText = String(data: data, encoding: .utf8) {
                 DispatchQueue.main.async {
-                    self.consoleTextView.string += newText
+                    // Check if the new text contains the separator line
+                    if newText.contains("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━") {
+                        // Clear the console and start fresh
+                        self.consoleTextView.string = newText
+                    } else {
+                        // Append as normal
+                        self.consoleTextView.string += newText
+                    }
                     self.consoleTextView.scrollToEndOfDocument(nil)
                 }
             }

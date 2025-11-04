@@ -10,6 +10,7 @@ struct NoobTestApp: App {
     @State private var postsError: String?
 
     init() {
+        Logger.shared.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         Logger.shared.info("[APP] NoobTestApp init() called")
 
         // Configure larger URLCache for images

@@ -47763,3 +47763,1521 @@
 [2025-11-03 16:53:50.786] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
 [2025-11-03 16:53:52.283] [INFO] [PostView] Save button tapped
 [2025-11-03 16:53:52.286] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 16:57:14 +0000 ===
+[2025-11-03 16:57:14.981] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 16:57:14.981] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 16:57:14.981] [INFO] [APP] About to start TestServer
+[2025-11-03 16:57:14.981] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 16:57:14.981] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 16:57:14.981] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 16:57:14.981] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 16:57:14.981] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 16:57:14.981] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 16:57:14.982] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 16:57:14.982] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 16:57:14.982] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 16:57:14.982] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 16:57:14.982] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 16:57:14.986] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 16:57:14.986] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 16:57:14.986] [INFO] [APP] TestServer.start() returned
+[2025-11-03 16:57:15.027] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 16:57:15.028] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 16:57:15.173] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 16:57:15.186] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 16:57:27.164] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 16:57:27.182] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 16:57:27.185] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 16:57:31.246] [INFO] [PostView] Edit button tapped for post 22
+[2025-11-03 16:57:31.250] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 16:57:32.812] [INFO] [PostView] Cancel button tapped
+[2025-11-03 16:57:32.816] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 16:57:34.830] [INFO] [PostView] Edit button tapped for post 22
+[2025-11-03 16:57:34.834] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 16:57:36.579] [INFO] [PostView] Save button tapped
+[2025-11-03 16:57:36.584] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:00:11 +0000 ===
+[2025-11-03 17:00:11.441] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:00:11.441] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:00:11.441] [INFO] [APP] About to start TestServer
+[2025-11-03 17:00:11.442] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:00:11.442] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:00:11.442] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:00:11.442] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:00:11.442] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:00:11.442] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:00:11.443] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:00:11.443] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:00:11.443] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:00:11.443] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:00:11.443] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:00:11.445] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:00:11.445] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:00:11.445] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:00:11.493] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:00:11.494] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:00:11.612] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:00:11.624] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:00:13.004] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:00:13.009] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:00:13.010] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:00:16.411] [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:00:16.419] [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:00:16.422] [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:00:20.060] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:00:20.070] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:01:31 +0000 ===
+[2025-11-03 17:01:31.895] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:01:31.895] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:01:31.895] [INFO] [APP] About to start TestServer
+[2025-11-03 17:01:31.895] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:01:31.895] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:01:31.895] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:01:31.895] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:01:31.895] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:01:31.895] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:01:31.896] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:01:31.896] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:01:31.896] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:01:31.896] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:01:31.896] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:01:31.899] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:01:31.899] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:01:31.900] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:01:31.940] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:01:31.941] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:01:31.993] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:01:32.006] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:01:33.134] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:01:33.139] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:01:33.140] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:01:34.836] [INFO] [PostView] Edit button tapped for post 22
+[2025-11-03 17:01:34.840] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:01:35.687] [INFO] [PostView] Cancel button tapped
+[2025-11-03 17:01:35.690] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:02:44 +0000 ===
+[2025-11-03 17:02:44.942] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:02:44.943] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:02:44.943] [INFO] [APP] About to start TestServer
+[2025-11-03 17:02:44.943] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:02:44.943] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:02:44.943] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:02:44.943] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:02:44.943] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:02:44.943] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:02:44.944] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:02:44.944] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:02:44.944] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:02:44.944] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:02:44.944] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:02:44.948] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:02:44.948] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:02:44.948] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:02:44.988] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:02:44.989] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:02:45.115] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:02:45.130] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:02:46.314] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:02:46.318] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:02:46.319] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:07:58 +0000 ===
+[2025-11-03 17:07:58.841] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:07:58.842] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:07:58.842] [INFO] [APP] About to start TestServer
+[2025-11-03 17:07:58.842] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:07:58.842] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:07:58.842] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:07:58.842] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:07:58.842] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:07:58.842] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:07:58.843] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:07:58.843] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:07:58.843] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:07:58.843] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:07:58.843] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:07:58.846] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:07:58.846] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:07:58.846] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:07:58.884] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:07:58.886] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:07:58.978] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:07:58.988] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:08:00.083] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:08:00.088] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:08:00.089] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:08:56 +0000 ===
+[2025-11-03 17:08:56.721] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:08:56.721] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:08:56.721] [INFO] [APP] About to start TestServer
+[2025-11-03 17:08:56.722] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:08:56.722] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:08:56.722] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:08:56.722] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:08:56.722] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:08:56.722] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:08:56.723] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:08:56.723] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:08:56.723] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:08:56.723] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:08:56.723] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:08:56.727] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:08:56.727] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:08:56.727] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:08:56.766] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:08:56.767] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:08:56.829] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:08:56.841] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:08:57.910] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:08:57.914] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:08:57.915] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:09:00.395] [INFO] [PostView] Edit button tapped for post 22
+[2025-11-03 17:09:00.399] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:09:01.145] [INFO] [PostView] Cancel button tapped
+[2025-11-03 17:09:01.148] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:11:37 +0000 ===
+[2025-11-03 17:11:37.882] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:11:37.882] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:11:37.882] [INFO] [APP] About to start TestServer
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:11:37.883] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:11:37.883] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:11:37.886] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:11:37.886] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:11:37.886] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:11:37.925] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:11:37.927] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:11:38.006] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:11:38.019] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:11:39.254] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:11:39.259] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:11:39.260] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:11:44.225] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:11:44.235] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:12:28 +0000 ===
+[2025-11-03 17:12:28.374] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:12:28.374] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:12:28.374] [INFO] [APP] About to start TestServer
+[2025-11-03 17:12:28.375] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:12:28.375] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:12:28.375] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:12:28.375] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:12:28.375] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:12:28.375] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:12:28.376] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:12:28.376] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:12:28.376] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:12:28.376] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:12:28.376] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:12:28.381] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:12:28.381] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:12:28.381] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:12:28.421] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:12:28.422] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:12:28.493] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:12:28.505] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:12:29.579] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:12:29.583] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:12:29.584] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:14:19 +0000 ===
+[2025-11-03 17:14:19.916] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:14:19.917] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:14:19.917] [INFO] [APP] About to start TestServer
+[2025-11-03 17:14:19.917] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:14:19.917] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:14:19.917] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:14:19.917] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:14:19.917] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:14:19.917] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:14:19.918] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:14:19.918] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:14:19.918] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:14:19.918] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:14:19.918] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:14:19.921] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:14:19.921] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:14:19.921] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:14:19.966] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:14:19.967] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:14:20.111] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:14:20.123] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:14:21.648] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:14:21.653] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:14:21.654] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:16:26 +0000 ===
+[2025-11-03 17:16:26.195] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:16:26.195] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:16:26.195] [INFO] [APP] About to start TestServer
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:16:26.197] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:16:26.197] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:16:26.199] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:16:26.199] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:16:26.199] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:16:26.243] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:16:26.244] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:16:26.377] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:16:26.389] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:16:27.636] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:16:27.641] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:16:27.642] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:17:30 +0000 ===
+[2025-11-03 17:17:30.980] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:17:30.981] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:17:30.981] [INFO] [APP] About to start TestServer
+[2025-11-03 17:17:30.981] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:17:30.981] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:17:30.981] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:17:30.981] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:17:30.981] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:17:30.981] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:17:30.982] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:17:30.982] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:17:30.982] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:17:30.982] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:17:30.982] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:17:30.986] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:17:30.986] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:17:30.986] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:17:31.026] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:17:31.027] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:17:31.091] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:17:31.103] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:17:32.330] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:17:32.335] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:17:32.336] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:18:22 +0000 ===
+[2025-11-03 17:18:22.656] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:18:22.657] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:18:22.657] [INFO] [APP] About to start TestServer
+[2025-11-03 17:18:22.658] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:18:22.658] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:18:22.658] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:18:22.658] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:18:22.658] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:18:22.658] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:18:22.659] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:18:22.659] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:18:22.659] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:18:22.659] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:18:22.659] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:18:22.665] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:18:22.666] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:18:22.666] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:18:22.723] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:18:22.725] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:18:22.806] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:18:22.818] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:18:23.201] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.201] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.201] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.201] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.201] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.201] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.202] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.202] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.202] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.202] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.202] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:23.202] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:18:27.343] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:18:27.363] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:18:27.367] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:19:08 +0000 ===
+[2025-11-03 17:19:08.538] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:19:08.539] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:19:08.539] [INFO] [APP] About to start TestServer
+[2025-11-03 17:19:08.539] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:19:08.539] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:19:08.539] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:19:08.539] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:19:08.539] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:19:08.539] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:19:08.540] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:19:08.540] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:19:08.541] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:19:08.541] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:19:08.541] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:19:08.544] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:19:08.544] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:19:08.544] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:19:08.584] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:19:08.586] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:19:08.682] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:19:08.697] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.093] [INFO] [PostView] Measured height: 0.0
+[2025-11-03 17:19:09.746] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:19:09.751] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:19:09.752] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:23:19 +0000 ===
+[2025-11-03 17:23:19.840] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:23:19.841] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:23:19.841] [INFO] [APP] About to start TestServer
+[2025-11-03 17:23:19.841] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:23:19.841] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:23:19.841] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:23:19.841] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:23:19.841] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:23:19.842] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:23:19.842] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:23:19.842] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:23:19.842] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:23:19.842] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:23:19.842] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:23:19.844] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:23:19.844] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:23:19.844] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:23:19.882] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:23:19.883] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:23:19.973] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:23:19.987] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:23:21.355] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:23:21.360] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:23:21.361] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:24:06 +0000 ===
+[2025-11-03 17:24:06.457] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:24:06.457] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:24:06.457] [INFO] [APP] About to start TestServer
+[2025-11-03 17:24:06.457] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:24:06.457] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:24:06.457] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:24:06.457] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:24:06.457] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:24:06.457] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:24:06.458] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:24:06.458] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:24:06.458] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:24:06.458] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:24:06.458] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:24:06.462] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:24:06.462] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:24:06.462] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:24:06.503] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:24:06.505] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:24:06.564] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:24:06.582] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:24:07.763] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:07.768] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:07.769] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:24:35 +0000 ===
+[2025-11-03 17:24:35.959] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:24:35.960] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:24:35.960] [INFO] [APP] About to start TestServer
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:24:35.961] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:24:35.961] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:24:35.965] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:24:35.965] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:24:35.965] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:24:36.005] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:24:36.007] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:24:36.159] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:24:36.175] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:24:37.752] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:37.757] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:37.758] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:40.273] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:40.283] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:44.657] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:44.666] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:47.274] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:24:47.284] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:25:46 +0000 ===
+[2025-11-03 17:25:46.425] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:25:46.426] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:25:46.426] [INFO] [APP] About to start TestServer
+[2025-11-03 17:25:46.426] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:25:46.426] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:25:46.426] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:25:46.426] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:25:46.426] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:25:46.426] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:25:46.427] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:25:46.427] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:25:46.427] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:25:46.427] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:25:46.427] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:25:46.430] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:25:46.430] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:25:46.430] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:25:46.468] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:25:46.470] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:25:46.616] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:25:46.628] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:25:47.797] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:25:47.802] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:25:47.803] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:18.621] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:18.629] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:18.634] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:21.185] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:21.196] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:23.256] [INFO] [PostView] Post 8 authorEmail: 'ash.nehru@gmail.com', logged in: 'test@example.com', matches: false
+[2025-11-03 17:27:23.264] [INFO] [PostView] Post 8 authorEmail: 'ash.nehru@gmail.com', logged in: 'test@example.com', matches: false
+[2025-11-03 17:27:23.269] [INFO] [PostView] Post 8 authorEmail: 'ash.nehru@gmail.com', logged in: 'test@example.com', matches: false
+[2025-11-03 17:27:25.753] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:25.763] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:28.622] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:28.631] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:28.635] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:31.228] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:31.238] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:40.859] [INFO] [PostView] Post 8 authorEmail: 'ash.nehru@gmail.com', logged in: 'test@example.com', matches: false
+[2025-11-03 17:27:40.867] [INFO] [PostView] Post 8 authorEmail: 'ash.nehru@gmail.com', logged in: 'test@example.com', matches: false
+[2025-11-03 17:27:56.495] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:27:56.507] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:27:59 +0000 ===
+[2025-11-03 17:27:59.248] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:27:59.249] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:27:59.249] [INFO] [APP] About to start TestServer
+[2025-11-03 17:27:59.249] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:27:59.249] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:27:59.249] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:27:59.249] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:27:59.249] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:27:59.249] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:27:59.250] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:27:59.250] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:27:59.250] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:27:59.250] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:27:59.250] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:27:59.254] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:27:59.254] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:27:59.254] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:27:59.294] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:27:59.295] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:27:59.428] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:27:59.440] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:28:05.996] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:28:06.014] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:28:06.018] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:28:10.918] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:28:10.930] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:28:10.934] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:28:22 +0000 ===
+[2025-11-03 17:28:22.981] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:28:22.982] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:28:22.982] [INFO] [APP] About to start TestServer
+[2025-11-03 17:28:22.982] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:28:22.982] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:28:22.982] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:28:22.982] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:28:22.982] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:28:22.982] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:28:22.983] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:28:22.983] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:28:22.983] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:28:22.983] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:28:22.983] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:28:22.985] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:28:22.985] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:28:22.985] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:28:23.024] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:28:23.025] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:28:23.085] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:28:23.099] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:28:24.726] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:28:24.730] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:28:24.731] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:32:58.177] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:32:58.185] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:32:58.189] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:01.261] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:01.270] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:03.411] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:03.419] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:06.761] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:06.770] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:52.969] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:52.978] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:55.369] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:55.377] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:33:59.473] [INFO] [PostView] Post 7 authorEmail: 'ash.nehru@gmail.com', logged in: 'test@example.com', matches: false
+[2025-11-03 17:33:59.481] [INFO] [PostView] Post 7 authorEmail: 'ash.nehru@gmail.com', logged in: 'test@example.com', matches: false
+[2025-11-03 17:33:59.489] [INFO] [PostView] Post 7 authorEmail: 'ash.nehru@gmail.com', logged in: 'test@example.com', matches: false
+[2025-11-03 17:37:54.862] [INFO] [PostView] Post 9 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:37:54.869] [INFO] [PostView] Post 9 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:37:54.873] [INFO] [PostView] Post 9 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:37:58.895] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:37:58.902] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:37:58.906] [INFO] [PostView] Post 10 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:38:02.946] [INFO] [PostView] Post 11 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:38:02.953] [INFO] [PostView] Post 11 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:38:02.956] [INFO] [PostView] Post 11 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:38:06.313] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:38:06.321] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:39:27.859] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:39:27.868] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:39:59.398] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:39:59.407] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:46:38 +0000 ===
+[2025-11-03 17:46:38.603] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:46:38.603] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:46:38.603] [INFO] [APP] About to start TestServer
+[2025-11-03 17:46:38.603] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:46:38.603] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:46:38.603] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:46:38.603] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:46:38.603] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:46:38.603] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:46:38.604] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:46:38.604] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:46:38.604] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:46:38.604] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:46:38.604] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:46:38.606] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:46:38.606] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:46:38.606] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:46:38.646] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:46:38.647] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:46:38.786] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:46:38.802] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:46:40.095] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:46:40.103] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:46:40.105] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:46:46.199] [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:46:46.216] [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:46:46.222] [INFO] [PostView] Post 14 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:46:48.717] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:46:48.727] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:49:12 +0000 ===
+[2025-11-03 17:49:12.290] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:49:12.290] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:49:12.290] [INFO] [APP] About to start TestServer
+[2025-11-03 17:49:12.290] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:49:12.290] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:49:12.290] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:49:12.290] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:49:12.290] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:49:12.290] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:49:12.291] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:49:12.291] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:49:12.291] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:49:12.291] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:49:12.291] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:49:12.296] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:49:12.296] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:49:12.296] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:49:12.338] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:49:12.340] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:49:12.494] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:49:12.507] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:50:15.852] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:50:15.875] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 17:50:15.878] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 17:50:15.882] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 17:52:42 +0000 ===
+[2025-11-03 17:52:42.727] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:52:42.728] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:52:42.728] [INFO] [APP] About to start TestServer
+[2025-11-03 17:52:42.728] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:52:42.728] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:52:42.728] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:52:42.728] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:52:42.728] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:52:42.728] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:52:42.729] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:52:42.729] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:52:42.729] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:52:42.729] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:52:42.729] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:52:42.733] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:52:42.733] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:52:42.733] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:52:42.776] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:52:42.778] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:52:42.927] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:52:42.943] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:53:15.768] [INFO] [TESTSERVER] New connection received
+[2025-11-03 17:53:15.769] [INFO] [TESTSERVER] Request: GET /tap/first-post HTTP/1.1
+[2025-11-03 17:53:15.769] [ERROR] [TESTSERVER] Path not found: /tap/first-post
+
+=== Logger initialized at 2025-11-03 17:54:01 +0000 ===
+[2025-11-03 17:54:01.382] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:54:01.382] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:54:01.382] [INFO] [APP] About to start TestServer
+[2025-11-03 17:54:01.382] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:54:01.382] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:54:01.382] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:54:01.382] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:54:01.382] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:54:01.382] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:54:01.383] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:54:01.383] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:54:01.383] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:54:01.383] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:54:01.383] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:54:01.386] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:54:01.386] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:54:01.386] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:54:01.448] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:54:01.451] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:54:01.575] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:54:01.586] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:54:01.586] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 17:54:06.388] [INFO] [TESTSERVER] New connection received
+[2025-11-03 17:54:06.390] [INFO] [TESTSERVER] Request: GET /tap/first-post HTTP/1.1
+[2025-11-03 17:54:06.390] [ERROR] [TESTSERVER] Path not found: /tap/first-post
+[2025-11-03 17:54:19.472] [INFO] [TESTSERVER] New connection received
+[2025-11-03 17:54:19.473] [INFO] [TESTSERVER] Request: GET /tap/first-post HTTP/1.1
+[2025-11-03 17:54:19.473] [ERROR] [TESTSERVER] Path not found: /tap/first-post
+[2025-11-03 17:54:40.944] [INFO] [TESTSERVER] New connection received
+[2025-11-03 17:54:40.945] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 17:54:40.946] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 17:54:40.946] [INFO] [TESTSERVER] Successfully triggered: first-post
+
+=== Logger initialized at 2025-11-03 17:55:54 +0000 ===
+[2025-11-03 17:55:54.117] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:55:54.117] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:55:54.117] [INFO] [APP] About to start TestServer
+[2025-11-03 17:55:54.117] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:55:54.117] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:55:54.117] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:55:54.117] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:55:54.118] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:55:54.118] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:55:54.118] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:55:54.118] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:55:54.118] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:55:54.118] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:55:54.118] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:55:54.121] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:55:54.121] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:55:54.121] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:55:54.162] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:55:54.163] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:55:54.317] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:55:54.329] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:55:54.329] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 17:55:59.130] [INFO] [TESTSERVER] New connection received
+[2025-11-03 17:55:59.131] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 17:55:59.132] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 17:55:59.132] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 17:55:59.132] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 17:55:59.132] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 17:55:59.132] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+
+=== Logger initialized at 2025-11-03 17:56:39 +0000 ===
+[2025-11-03 17:56:39.596] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:56:39.596] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:56:39.596] [INFO] [APP] About to start TestServer
+[2025-11-03 17:56:39.596] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:56:39.596] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:56:39.596] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:56:39.596] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:56:39.596] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:56:39.596] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:56:39.597] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:56:39.597] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:56:39.597] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:56:39.597] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:56:39.597] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:56:39.599] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:56:39.599] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:56:39.599] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:56:39.642] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:56:39.644] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:56:39.781] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:56:39.781] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 17:56:39.792] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:56:44.598] [INFO] [TESTSERVER] New connection received
+[2025-11-03 17:56:44.599] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 17:56:44.599] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 17:56:44.599] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 17:56:44.599] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 17:56:44.600] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 17:56:44.600] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+
+=== Logger initialized at 2025-11-03 17:57:16 +0000 ===
+[2025-11-03 17:57:16.548] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:57:16.548] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:57:16.548] [INFO] [APP] About to start TestServer
+[2025-11-03 17:57:16.548] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:57:16.548] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:57:16.548] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:57:16.548] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:57:16.548] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:57:16.548] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:57:16.549] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:57:16.549] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:57:16.549] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:57:16.549] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:57:16.549] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:57:16.552] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:57:16.552] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:57:16.552] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:57:16.593] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:57:16.594] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:57:16.645] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:57:16.657] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:57:16.657] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 17:57:21.559] [INFO] [TESTSERVER] New connection received
+[2025-11-03 17:57:21.563] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 17:57:21.563] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 17:57:21.563] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 17:57:21.563] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 17:57:21.563] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 17:57:21.563] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+
+=== Logger initialized at 2025-11-03 17:58:23 +0000 ===
+[2025-11-03 17:58:23.945] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 17:58:23.945] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 17:58:23.945] [INFO] [APP] About to start TestServer
+[2025-11-03 17:58:23.945] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 17:58:23.945] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 17:58:23.945] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 17:58:23.945] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 17:58:23.945] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 17:58:23.945] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 17:58:23.946] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 17:58:23.946] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 17:58:23.946] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 17:58:23.946] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 17:58:23.946] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 17:58:23.958] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 17:58:23.959] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 17:58:23.959] [INFO] [APP] TestServer.start() returned
+[2025-11-03 17:58:24.004] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 17:58:24.005] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 17:58:24.130] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 17:58:24.141] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 17:58:24.141] [INFO] [PostsListView] Registered first-post automation for post 22
+
+=== Logger initialized at 2025-11-03 18:00:29 +0000 ===
+[2025-11-03 18:00:29.615] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:00:29.615] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:00:29.615] [INFO] [APP] About to start TestServer
+[2025-11-03 18:00:29.615] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:00:29.615] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:00:29.615] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:00:29.615] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:00:29.615] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:00:29.615] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:00:29.616] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:00:29.616] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:00:29.616] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:00:29.616] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:00:29.616] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:00:29.617] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:00:29.617] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:00:29.617] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:00:29.667] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:00:29.669] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:00:29.706] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:00:29.721] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:00:29.721] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:00:34.634] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:00:34.635] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:00:34.636] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:00:34.636] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:00:34.636] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 18:00:34.636] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 18:00:34.636] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+[2025-11-03 18:00:55.562] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:00:55.563] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:00:55.563] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:00:55.563] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:00:55.563] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 18:00:55.563] [INFO] [PostsListView] On main thread, current expandedPostId: Optional(22), setting to 22
+[2025-11-03 18:00:55.563] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+
+=== Logger initialized at 2025-11-03 18:02:30 +0000 ===
+[2025-11-03 18:02:30.049] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:02:30.049] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:02:30.049] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:02:30.049] [INFO] [APP] About to start TestServer
+[2025-11-03 18:02:30.049] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:02:30.049] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:02:30.049] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:02:30.049] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:02:30.049] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:02:30.049] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:02:30.050] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:02:30.050] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:02:30.050] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:02:30.050] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:02:30.050] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:02:30.053] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:02:30.053] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:02:30.053] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:02:30.091] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:02:30.093] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:02:30.203] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:02:30.214] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:02:30.214] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:03:07.771] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:03:07.772] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:03:07.772] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:03:07.772] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:03:07.772] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 18:03:07.772] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 18:03:07.772] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+
+=== Logger initialized at 2025-11-03 18:03:29 +0000 ===
+[2025-11-03 18:03:29.188] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:03:29.188] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:03:29.188] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:03:29.188] [INFO] [APP] About to start TestServer
+[2025-11-03 18:03:29.188] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:03:29.188] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:03:29.188] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:03:29.188] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:03:29.188] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:03:29.188] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:03:29.189] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:03:29.189] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:03:29.189] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:03:29.189] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:03:29.189] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:03:29.192] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:03:29.192] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:03:29.192] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:03:29.241] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:03:29.242] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:03:29.288] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:03:29.299] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:03:29.299] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:04:30.581] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:04:30.582] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:04:30.582] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:04:30.582] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:04:30.582] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 18:04:30.582] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 18:04:30.582] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+
+=== Logger initialized at 2025-11-03 18:04:55 +0000 ===
+[2025-11-03 18:04:55.467] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:04:55.467] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:04:55.467] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:04:55.467] [INFO] [APP] About to start TestServer
+[2025-11-03 18:04:55.467] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:04:55.467] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:04:55.468] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:04:55.468] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:04:55.468] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:04:55.468] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:04:55.468] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:04:55.468] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:04:55.468] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:04:55.468] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:04:55.468] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:04:55.473] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:04:55.473] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:04:55.473] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:04:55.517] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:04:55.520] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:04:55.563] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:04:55.563] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:04:55.576] [INFO] [PostsAPI] Successfully fetched 12 posts
+
+=== Logger initialized at 2025-11-03 18:06:12 +0000 ===
+[2025-11-03 18:06:12.877] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:06:12.877] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:06:12.877] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:06:12.877] [INFO] [APP] About to start TestServer
+[2025-11-03 18:06:12.877] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:06:12.877] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:06:12.877] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:06:12.877] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:06:12.878] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:06:12.878] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:06:12.878] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:06:12.878] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:06:12.878] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:06:12.878] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:06:12.878] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:06:12.882] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:06:12.883] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:06:12.883] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:06:12.936] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:06:12.937] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:06:13.055] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:06:13.059] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:06:13.059] [INFO] [PostsListView] Registered first-post automation for post 22
+
+=== Logger initialized at 2025-11-03 18:06:17 +0000 ===
+[2025-11-03 18:06:17.851] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:06:17.851] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:06:17.851] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:06:17.851] [INFO] [APP] About to start TestServer
+[2025-11-03 18:06:17.851] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:06:17.851] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:06:17.851] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:06:17.851] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:06:17.851] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:06:17.851] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:06:17.853] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:06:17.853] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:06:17.853] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:06:17.853] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:06:17.853] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:06:17.859] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:06:17.859] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:06:17.859] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:06:17.909] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:06:17.911] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:06:18.043] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:06:18.055] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:06:18.055] [INFO] [PostsListView] Registered first-post automation for post 22
+
+=== Logger initialized at 2025-11-03 18:06:25 +0000 ===
+[2025-11-03 18:06:25.867] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:06:25.867] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:06:25.867] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:06:25.867] [INFO] [APP] About to start TestServer
+[2025-11-03 18:06:25.867] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:06:25.867] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:06:25.867] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:06:25.867] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:06:25.867] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:06:25.867] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:06:25.868] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:06:25.868] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:06:25.869] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:06:25.869] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:06:25.869] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:06:25.873] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:06:25.873] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:06:25.873] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:06:25.913] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:06:25.915] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:06:25.952] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:06:25.965] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:06:25.965] [INFO] [PostsListView] Registered first-post automation for post 22
+
+=== Logger initialized at 2025-11-03 18:07:07 +0000 ===
+[2025-11-03 18:07:07.246] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:07:07.247] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:07:07.247] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:07:07.247] [INFO] [APP] About to start TestServer
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:07:07.247] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:07:07.247] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:07:07.250] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:07:07.251] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:07:07.251] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:07:07.303] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:07:07.304] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:07:07.404] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:07:07.415] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:07:07.415] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:07:12.246] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:07:12.247] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:07:12.247] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:07:12.247] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:07:12.247] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 18:07:12.248] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 18:07:12.248] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+[2025-11-03 18:07:17.805] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:07:17.813] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:07:17.855] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:07:17.855] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:07:17.855] [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+[2025-11-03 18:07:17.857] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:07:17.859] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:07:17.862] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:07:35.362] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:07:35.364] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:07:35.364] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:07:35.364] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:07:35.364] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 18:07:35.364] [INFO] [PostsListView] On main thread, current expandedPostId: Optional(22), setting to 22
+[2025-11-03 18:07:35.364] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+[2025-11-03 18:07:38.262] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
+[2025-11-03 18:07:38.262] [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
+
+=== Logger initialized at 2025-11-03 18:08:02 +0000 ===
+[2025-11-03 18:08:02.515] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:08:02.515] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:08:02.515] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:08:02.515] [INFO] [APP] About to start TestServer
+[2025-11-03 18:08:02.515] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:08:02.515] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:08:02.515] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:08:02.515] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:08:02.515] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:08:02.515] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:08:02.516] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:08:02.516] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:08:02.516] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:08:02.516] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:08:02.517] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:08:02.520] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:08:02.520] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:08:02.520] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:08:02.567] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:08:02.568] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:08:02.624] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:08:02.639] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:08:02.639] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:08:10.613] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:08:10.614] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:08:10.614] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:08:10.614] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:08:10.614] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 18:08:10.615] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 18:08:10.615] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+
+=== Logger initialized at 2025-11-03 18:09:15 +0000 ===
+[2025-11-03 18:09:15.177] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:09:15.177] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:09:15.177] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:09:15.177] [INFO] [APP] About to start TestServer
+[2025-11-03 18:09:15.177] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:09:15.177] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:09:15.177] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:09:15.177] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:09:15.177] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:09:15.177] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:09:15.178] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:09:15.178] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:09:15.178] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:09:15.178] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:09:15.178] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:09:15.182] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:09:15.182] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:09:15.182] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:09:15.222] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:09:15.223] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:09:15.295] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:09:15.306] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:09:15.306] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:09:20.175] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:09:20.176] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:09:20.176] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:09:20.176] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:09:20.177] [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
+[2025-11-03 18:09:20.177] [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
+[2025-11-03 18:09:20.177] [INFO] [PostsListView] About to call objectWillChange.send()
+[2025-11-03 18:09:20.177] [INFO] [PostsListView] Called objectWillChange.send(), now setting expandedPostId
+[2025-11-03 18:09:20.177] [INFO] [PostsListView] expandedPostId is now: Optional(22)
+
+=== Logger initialized at 2025-11-03 18:11:38 +0000 ===
+[2025-11-03 18:11:38.511] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:11:38.511] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:11:38.511] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:11:38.511] [INFO] [APP] About to start TestServer
+[2025-11-03 18:11:38.511] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:11:38.511] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:11:38.511] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:11:38.511] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:11:38.511] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:11:38.511] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:11:38.512] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:11:38.512] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:11:38.512] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:11:38.512] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:11:38.512] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:11:38.514] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:11:38.515] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:11:38.515] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:11:38.555] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:11:38.557] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:11:38.664] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:11:38.677] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:11:38.677] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:11:43.509] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:11:43.510] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:11:43.510] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:11:43.510] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:11:43.510] [INFO] [PostsListView] first-post automation triggered
+[2025-11-03 18:11:43.510] [INFO] [PostsListView] expandPost(22) called
+
+=== Logger initialized at 2025-11-03 18:12:15 +0000 ===
+[2025-11-03 18:12:15.513] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:12:15.513] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:12:15.513] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:12:15.513] [INFO] [APP] About to start TestServer
+[2025-11-03 18:12:15.513] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:12:15.513] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:12:15.513] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:12:15.513] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:12:15.513] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:12:15.513] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:12:15.514] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:12:15.514] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:12:15.514] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:12:15.514] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:12:15.514] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:12:15.516] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:12:15.516] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:12:15.516] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:12:15.559] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:12:15.561] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:12:15.622] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:12:15.637] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:12:15.637] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:12:20.518] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:12:20.520] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:12:20.520] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:12:20.520] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:12:20.520] [INFO] [PostsListView] first-post automation triggered
+[2025-11-03 18:12:20.520] [INFO] [PostsListView] Setting expandedPostId directly on viewModel
+[2025-11-03 18:12:20.521] [INFO] [PostsListView] viewModel.expandedPostId = Optional(22)
+[2025-11-03 18:12:50.826] [INFO] [PostsListView] expandPost(22) called
+[2025-11-03 18:12:50.828] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:12:50.837] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:12:50.877] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:12:50.877] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:12:50.877] [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+[2025-11-03 18:12:50.880] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:12:50.882] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:12:50.884] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:13:05.529] [INFO] [PostsListView] expandPost(22) called
+[2025-11-03 18:13:05.567] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
+[2025-11-03 18:13:05.567] [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
+
+=== Logger initialized at 2025-11-03 18:13:33 +0000 ===
+[2025-11-03 18:13:33.281] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:13:33.281] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:13:33.281] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:13:33.281] [INFO] [APP] About to start TestServer
+[2025-11-03 18:13:33.281] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:13:33.281] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:13:33.281] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:13:33.281] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:13:33.281] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:13:33.281] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:13:33.282] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:13:33.282] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:13:33.282] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:13:33.282] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:13:33.282] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:13:33.284] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:13:33.284] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:13:33.284] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:13:33.329] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:13:33.330] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:13:33.375] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:13:33.388] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:13:33.389] [INFO] [PostsListView] Registering automation, capturing viewModel=ObjectIdentifier(0x000000011e3edb80)
+[2025-11-03 18:13:33.389] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:13:38.288] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:13:38.289] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:13:38.289] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:13:38.289] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:13:38.289] [INFO] [PostsListView] first-post automation triggered, captured viewModel=ObjectIdentifier(0x000000011e3edb80)
+[2025-11-03 18:13:38.289] [INFO] [PostsListView] Setting expandedPostId directly on captured viewModel
+[2025-11-03 18:13:38.289] [INFO] [PostsListView] viewModel.expandedPostId = Optional(22)
+[2025-11-03 18:14:01.021] [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000011ca0a900)
+[2025-11-03 18:14:01.022] [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+[2025-11-03 18:14:01.022] [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+[2025-11-03 18:14:01.023] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:14:01.032] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:14:01.072] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:14:01.072] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:14:01.072] [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+[2025-11-03 18:14:01.074] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:14:01.076] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:14:01.079] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 18:14:56 +0000 ===
+[2025-11-03 18:14:56.892] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:14:56.893] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:14:56.893] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:14:56.893] [INFO] [APP] About to start TestServer
+[2025-11-03 18:14:56.893] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:14:56.893] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:14:56.893] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:14:56.893] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:14:56.893] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:14:56.893] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:14:56.894] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:14:56.894] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:14:56.894] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:14:56.894] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:14:56.894] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:14:56.900] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:14:56.900] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:14:56.900] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:14:56.946] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:14:56.947] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x0000000101bb5680)
+[2025-11-03 18:14:56.947] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:14:57.013] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:14:57.026] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:14:57.026] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:14:57.397] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000013be5f480)
+[2025-11-03 18:15:01.904] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:15:01.905] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:15:01.906] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:15:01.906] [INFO] [PostsListView] first-post automation triggered
+[2025-11-03 18:15:01.906] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:15:01.906] [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x000000013be5f480)
+[2025-11-03 18:15:01.906] [INFO] [PostsListView] Setting expandedPostId to 22
+[2025-11-03 18:15:01.906] [INFO] [PostsListView] expandedPostId now = Optional(22)
+[2025-11-03 18:15:01.909] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:15:01.918] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:15:01.957] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:15:01.957] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:15:01.957] [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+[2025-11-03 18:15:01.957] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:15:01.959] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:15:01.962] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:15:15.117] [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013be5f480)
+[2025-11-03 18:15:15.156] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
+[2025-11-03 18:15:15.156] [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
+[2025-11-03 18:15:16.117] [INFO] [PostsListView] expandPost(15) called, viewModel=ObjectIdentifier(0x000000013be5f480)
+[2025-11-03 18:15:16.118] [INFO] [PostsListView] Setting viewModel.expandedPostId to 15
+[2025-11-03 18:15:16.118] [INFO] [PostsListView] After setting, expandedPostId = Optional(15)
+[2025-11-03 18:15:16.127] [INFO] [PostView] Body evaluated for post 15: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:15:16.131] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:15:16.160] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:15:16.160] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 15 isExpanded changed to true
+[2025-11-03 18:15:16.160] [INFO] [PostView] Post 15 expanding, setting expansionFactor to 1.0
+[2025-11-03 18:15:16.163] [INFO] [PostView] Body evaluated for post 15: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:15:16.165] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:15:16.167] [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:15:17.434] [INFO] [PostsListView] expandPost(15) called, viewModel=ObjectIdentifier(0x000000013be5f480)
+[2025-11-03 18:15:17.470] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 15 isExpanded changed to false
+[2025-11-03 18:15:17.470] [INFO] [PostView] Post 15 collapsing, setting expansionFactor to 0.0
+[2025-11-03 18:15:19.201] [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013be5f480)
+[2025-11-03 18:15:19.201] [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+[2025-11-03 18:15:19.201] [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+[2025-11-03 18:15:19.203] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:15:19.210] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:15:19.243] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:15:19.243] [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
+[2025-11-03 18:15:19.247] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 18:16:39 +0000 ===
+[2025-11-03 18:16:39.133] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:16:39.133] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:16:39.133] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:16:39.133] [INFO] [APP] About to start TestServer
+[2025-11-03 18:16:39.133] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:16:39.133] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:16:39.133] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:16:39.133] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:16:39.133] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:16:39.133] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:16:39.134] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:16:39.134] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:16:39.134] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:16:39.134] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:16:39.134] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:16:39.138] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:16:39.138] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:16:39.139] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:16:39.179] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:16:39.180] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x0000000101bea0c0)
+[2025-11-03 18:16:39.180] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:16:39.314] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:16:39.325] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:16:39.325] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:16:39.716] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x0000000101be9600)
+[2025-11-03 18:16:44.136] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:16:44.137] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:16:44.137] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:16:44.138] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:16:44.138] [INFO] [PostsListView] first-post automation triggered
+[2025-11-03 18:16:44.138] [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x0000000101be9600)
+[2025-11-03 18:16:44.138] [INFO] [PostsListView] Setting expandedPostId to 22
+[2025-11-03 18:16:44.138] [INFO] [PostsListView] expandedPostId now = Optional(22)
+[2025-11-03 18:16:44.140] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:16:44.148] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:16:44.187] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:16:44.187] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:16:44.189] [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+[2025-11-03 18:16:44.189] [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
+[2025-11-03 18:16:44.189] [INFO]   Body Y: 563.0 (height: 104.0)
+[2025-11-03 18:16:44.189] [INFO]   Author Y: 691.0
+[2025-11-03 18:16:44.189] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:16:44.191] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:16:44.194] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 18:19:24 +0000 ===
+[2025-11-03 18:19:24.410] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:19:24.410] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:19:24.410] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:19:24.410] [INFO] [APP] About to start TestServer
+[2025-11-03 18:19:24.410] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:19:24.410] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:19:24.410] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:19:24.410] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:19:24.410] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:19:24.410] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:19:24.411] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:19:24.411] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:19:24.411] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:19:24.411] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:19:24.411] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:19:24.413] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:19:24.413] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:19:24.413] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:19:24.454] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:19:24.456] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x00000001183f6260)
+[2025-11-03 18:19:24.456] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:19:24.587] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:19:24.601] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:19:24.601] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:19:24.964] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x0000000115cf64c0)
+[2025-11-03 18:19:29.408] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:19:29.410] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:19:29.410] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:19:29.410] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:19:29.410] [INFO] [PostsListView] first-post automation triggered
+[2025-11-03 18:19:29.410] [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x0000000115cf64c0)
+[2025-11-03 18:19:29.410] [INFO] [PostsListView] Setting expandedPostId to 22
+[2025-11-03 18:19:29.410] [INFO] [PostsListView] expandedPostId now = Optional(22)
+[2025-11-03 18:19:29.412] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:19:29.418] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:19:29.462] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:19:29.462] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:19:29.464] [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+[2025-11-03 18:19:29.464] [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
+[2025-11-03 18:19:29.464] [INFO]   Body Y: 563.0 (height: 104.0)
+[2025-11-03 18:19:29.464] [INFO]   Author Y: 691.0
+[2025-11-03 18:19:29.464] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:19:29.465] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:19:29.468] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 18:21:37 +0000 ===
+[2025-11-03 18:21:37.995] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:21:37.995] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:21:37.995] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:21:37.995] [INFO] [APP] About to start TestServer
+[2025-11-03 18:21:37.995] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:21:37.995] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:21:37.995] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:21:37.995] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:21:37.995] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:21:37.995] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:21:37.996] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:21:37.996] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:21:37.996] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:21:37.996] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:21:37.996] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:21:37.999] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:21:37.999] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:21:37.999] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:21:38.041] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:21:38.043] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x00000001057e7100)
+[2025-11-03 18:21:38.043] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:21:38.119] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:21:38.129] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:21:38.129] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:21:38.503] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000013fac8840)
+[2025-11-03 18:21:42.986] [INFO] [TESTSERVER] New connection received
+[2025-11-03 18:21:42.987] [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
+[2025-11-03 18:21:42.987] [INFO] [TESTSERVER] Triggering UI element: first-post
+[2025-11-03 18:21:42.988] [INFO] [TESTSERVER] Successfully triggered: first-post
+[2025-11-03 18:21:42.988] [INFO] [PostsListView] first-post automation triggered
+[2025-11-03 18:21:42.988] [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x000000013fac8840)
+[2025-11-03 18:21:42.988] [INFO] [PostsListView] Setting expandedPostId to 22
+[2025-11-03 18:21:42.988] [INFO] [PostsListView] expandedPostId now = Optional(22)
+[2025-11-03 18:21:42.990] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:21:42.997] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:21:43.040] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:21:43.040] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:21:43.042] [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+[2025-11-03 18:21:43.042] [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
+[2025-11-03 18:21:43.042] [INFO]   Body Y: 563.0 (height: 104.0)
+[2025-11-03 18:21:43.042] [INFO]   Author Y: 691.0
+[2025-11-03 18:21:43.042] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:21:43.044] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:21:43.046] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+
+=== Logger initialized at 2025-11-03 18:22:46 +0000 ===
+[2025-11-03 18:22:46.298] [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2025-11-03 18:22:46.298] [INFO] [APP] NoobTestApp init() called
+[2025-11-03 18:22:46.298] [INFO] [APP] User already logged in: test@example.com
+[2025-11-03 18:22:46.298] [INFO] [APP] About to start TestServer
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] start() called with port 8081
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] About to register tests
+[2025-11-03 18:22:46.298] [INFO] TestServer: Registered tests: storage, clear-login
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] Tests registered
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] Attempting to start on port 8081
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] Creating TCP parameters
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] TCP parameters created
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] Creating NWListener
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] NWListener created successfully
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] About to start listener
+[2025-11-03 18:22:46.298] [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+[2025-11-03 18:22:46.301] [INFO] [TESTSERVER] State changed to ready
+[2025-11-03 18:22:46.301] [INFO] [TESTSERVER] Listener is ready and accepting connections
+[2025-11-03 18:22:46.301] [INFO] [APP] TestServer.start() returned
+[2025-11-03 18:22:46.337] [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+[2025-11-03 18:22:46.338] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000011f0245e0)
+[2025-11-03 18:22:46.338] [INFO] [PostsListView] Fetching posts (parent: root)
+[2025-11-03 18:22:46.421] [INFO] [PostsAPI] Successfully fetched 12 posts
+[2025-11-03 18:22:46.434] [INFO] [PostsListView] Loaded 12 posts
+[2025-11-03 18:22:46.434] [INFO] [PostsListView] Registered first-post automation for post 22
+[2025-11-03 18:22:46.802] [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x0000000120067520)
+[2025-11-03 18:23:01.408] [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x0000000120067520)
+[2025-11-03 18:23:01.408] [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+[2025-11-03 18:23:01.408] [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+[2025-11-03 18:23:01.411] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:23:01.417] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:23:01.460] [INFO] [PostView] TextEditor body measured height: 0.0
+[2025-11-03 18:23:01.460] [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+[2025-11-03 18:23:01.462] [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+[2025-11-03 18:23:01.462] [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
+[2025-11-03 18:23:01.462] [INFO]   Body Y: 563.0 (height: 104.0)
+[2025-11-03 18:23:01.462] [INFO]   Author Y: 691.0
+[2025-11-03 18:23:01.465] [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+[2025-11-03 18:23:01.466] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+[2025-11-03 18:23:01.468] [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
