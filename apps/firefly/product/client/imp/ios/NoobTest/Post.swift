@@ -36,9 +36,9 @@ struct Post: Codable, Identifiable, Hashable {
         case authorName = "author_name"
         case authorEmail = "author_email"
         case childCount = "child_count"
-        case titlePlaceholder = "title_placeholder"
-        case summaryPlaceholder = "summary_placeholder"
-        case bodyPlaceholder = "body_placeholder"
+        case titlePlaceholder = "placeholder_title"
+        case summaryPlaceholder = "placeholder_summary"
+        case bodyPlaceholder = "placeholder_body"
     }
 }
 

@@ -295,25 +295,39 @@ When no image exists - Add Image button:
 
 ## Database Schema
 
-The posts table includes optional placeholder columns:
+The system uses a **templates table** to store reusable placeholder sets:
+
+```sql
+CREATE TABLE templates (
+    name TEXT PRIMARY KEY,
+    placeholder_title TEXT NOT NULL,
+    placeholder_summary TEXT NOT NULL,
+    placeholder_body TEXT NOT NULL
+);
+
+-- Default templates
+INSERT INTO templates (name, placeholder_title, placeholder_summary, placeholder_body)
+VALUES
+    ('post', 'Title', 'Summary', 'Body'),
+    ('profile', 'name', 'mission', 'personal statement');
+```
+
+Posts reference templates via a `template_name` column:
 
 ```sql
 ALTER TABLE posts
-ADD COLUMN IF NOT EXISTS title_placeholder TEXT,
-ADD COLUMN IF NOT EXISTS summary_placeholder TEXT,
-ADD COLUMN IF NOT EXISTS body_placeholder TEXT;
-```
+ADD COLUMN template_name TEXT DEFAULT 'post';
 
-These columns store custom placeholder text that overrides the default "Title", "Summary", "Body" labels in edit mode. When NULL, defaults are used.
-
-Example custom placeholders:
-```sql
+-- Example: Set a post to use profile template
 UPDATE posts
-SET title_placeholder = 'name',
-    summary_placeholder = 'mission',
-    body_placeholder = 'personal statement'
+SET template_name = 'profile'
 WHERE title = 'asnaroo';
 ```
+
+This normalized design allows:
+- Reusing templates across multiple posts
+- Changing placeholder text for all posts using a template by updating one row
+- Creating new templates without altering the posts table schema
 
 ## Server API
 
@@ -348,22 +362,23 @@ image: file (optional) - JPEG image data, max 1200px, quality 0.9
         "body": "Updated Body Text",
         "author_email": "test@example.com",
         "author_name": "asnaroo",
-        "title_placeholder": "name",
-        "summary_placeholder": "mission",
-        "body_placeholder": "personal statement",
+        "template_name": "profile",
+        "placeholder_title": "name",
+        "placeholder_summary": "mission",
+        "placeholder_body": "personal statement",
         ...
     }
 }
 ```
 
-Note: Placeholder fields are optional and may be null for posts using default placeholders.
+Note: Placeholder fields come from the templates table via JOIN on `template_name`.
 
 ## Patching Instructions
 
 ### Post Model
 ```
 // Make title, summary, body, imageUrl mutable
-// Add optional placeholder fields
+// Add optional placeholder fields from templates
 struct Post:
     let id: Int
     var title: String      // Changed from let to var
@@ -371,15 +386,15 @@ struct Post:
     var body: String       // Changed from let to var
     var imageUrl: String?  // Changed from let to var
     let authorEmail: String
-    let titlePlaceholder: String?    // Add: custom placeholder for title
-    let summaryPlaceholder: String?  // Add: custom placeholder for summary
-    let bodyPlaceholder: String?     // Add: custom placeholder for body
+    let titlePlaceholder: String?    // Add: from templates.placeholder_title
+    let summaryPlaceholder: String?  // Add: from templates.placeholder_summary
+    let bodyPlaceholder: String?     // Add: from templates.placeholder_body
     ... other fields
 
 // Add to CodingKeys enum:
-case titlePlaceholder = "title_placeholder"
-case summaryPlaceholder = "summary_placeholder"
-case bodyPlaceholder = "body_placeholder"
+case titlePlaceholder = "placeholder_title"    // Note: snake_case from API
+case summaryPlaceholder = "placeholder_summary"
+case bodyPlaceholder = "placeholder_body"
 ```
 
 ### PostView (or equivalent)

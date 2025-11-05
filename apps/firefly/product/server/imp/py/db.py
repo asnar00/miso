@@ -257,11 +257,13 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                           p.title_placeholder, p.summary_placeholder, p.body_placeholder,
+                           p.template_name,
+                           t.placeholder_title, t.placeholder_summary, t.placeholder_body,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
+                    LEFT JOIN templates t ON p.template_name = t.name
                     WHERE p.id = %s
                     """,
                     (post_id,)
@@ -280,12 +282,14 @@ class Database:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
                     """
-                    SELECT id, user_id, parent_id, title, summary, body, image_url,
-                           created_at, timezone, location_tag, ai_generated,
-                           title_placeholder, summary_placeholder, body_placeholder
-                    FROM posts
-                    WHERE user_id = %s
-                    ORDER BY created_at DESC
+                    SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           p.template_name,
+                           t.placeholder_title, t.placeholder_summary, t.placeholder_body
+                    FROM posts p
+                    LEFT JOIN templates t ON p.template_name = t.name
+                    WHERE p.user_id = %s
+                    ORDER BY p.created_at DESC
                     LIMIT %s
                     """,
                     (user_id, limit)
@@ -306,15 +310,17 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                           p.title_placeholder, p.summary_placeholder, p.body_placeholder,
+                           p.template_name,
+                           t.placeholder_title, t.placeholder_summary, t.placeholder_body,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email,
                            COUNT(children.id) as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
+                    LEFT JOIN templates t ON p.template_name = t.name
                     LEFT JOIN posts children ON children.parent_id = p.id
                     WHERE p.parent_id = %s
-                    GROUP BY p.id, u.email, u.name
+                    GROUP BY p.id, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body
                     ORDER BY p.created_at DESC
                     """,
                     (parent_id,)
@@ -344,11 +350,13 @@ class Database:
                     SELECT
                         p.id, p.user_id, p.parent_id, p.title, p.summary, p.body,
                         p.image_url, p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                        p.title_placeholder, p.summary_placeholder, p.body_placeholder,
+                        p.template_name,
+                        t.placeholder_title, t.placeholder_summary, t.placeholder_body,
                         u.email as author_name,
                         0 as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
+                    LEFT JOIN templates t ON p.template_name = t.name
                     WHERE p.user_id = %s AND p.parent_id = -1
                     LIMIT 1
                 """, (user_id,))
@@ -494,14 +502,16 @@ class Database:
                 cur.execute(
                     """
                     SELECT
-                        id, user_id, parent_id, title, summary, body, image_url,
-                        created_at, timezone, location_tag, ai_generated,
-                        title_placeholder, summary_placeholder, body_placeholder,
-                        1 - (embedding <=> %s::vector) as similarity
-                    FROM posts
-                    WHERE embedding IS NOT NULL
-                    AND 1 - (embedding <=> %s::vector) >= %s
-                    ORDER BY embedding <=> %s::vector
+                        p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                        p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                        p.template_name,
+                        t.placeholder_title, t.placeholder_summary, t.placeholder_body,
+                        1 - (p.embedding <=> %s::vector) as similarity
+                    FROM posts p
+                    LEFT JOIN templates t ON p.template_name = t.name
+                    WHERE p.embedding IS NOT NULL
+                    AND 1 - (p.embedding <=> %s::vector) >= %s
+                    ORDER BY p.embedding <=> %s::vector
                     LIMIT %s
                     """,
                     (query_embedding, query_embedding, threshold, query_embedding, limit)
@@ -522,14 +532,16 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                           p.title_placeholder, p.summary_placeholder, p.body_placeholder,
+                           p.template_name,
+                           t.placeholder_title, t.placeholder_summary, t.placeholder_body,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email,
                            COUNT(children.id) as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
+                    LEFT JOIN templates t ON p.template_name = t.name
                     LEFT JOIN posts children ON children.parent_id = p.id
-                    GROUP BY p.id, u.email, u.name
+                    GROUP BY p.id, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body
                     ORDER BY p.created_at DESC
                     LIMIT %s
                     """,

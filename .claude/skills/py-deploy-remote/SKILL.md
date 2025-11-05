@@ -143,6 +143,37 @@ Firefly server started on port 8080
 - **Logs**: ~/firefly-server/server.log
 - **PID file**: ~/firefly-server/server.pid
 
+### Database Access
+
+- **PostgreSQL**: localhost:5432 (only accessible via SSH)
+- **Database**: firefly
+- **Application user**: firefly_user (password: firefly123)
+- **Admin user**: microserver (empty password) - for schema changes
+
+**psql is not in PATH** - use full path:
+```bash
+/opt/homebrew/Cellar/postgresql@16/16.10/bin/psql
+```
+
+**Query database via SSH**:
+```bash
+# As application user
+ssh microserver@185.96.221.52 "/opt/homebrew/Cellar/postgresql@16/16.10/bin/psql -U firefly_user -d firefly -c 'SELECT * FROM posts LIMIT 5;'"
+
+# As admin (for schema changes)
+ssh microserver@185.96.221.52 "/opt/homebrew/Cellar/postgresql@16/16.10/bin/psql -U microserver -d firefly -c 'ALTER TABLE ...;'"
+```
+
+**Run database migrations**:
+```bash
+ssh microserver@185.96.221.52 "cd ~/firefly-server && python3 migration_script.py"
+```
+
+After creating new tables, grant permissions:
+```sql
+GRANT SELECT ON new_table TO firefly_user;
+```
+
 ## Common Issues
 
 **"Connection refused" when shutting down**:

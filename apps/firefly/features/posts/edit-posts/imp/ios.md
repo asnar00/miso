@@ -2,14 +2,15 @@
 
 ## Files Modified
 
-- `NoobTest/Post.swift` - Made title, summary, body mutable (var instead of let); added optional placeholder fields
+- `NoobTest/Post.swift` - Made title, summary, body mutable (var instead of let); added optional placeholder fields from templates
 - `NoobTest/PostView.swift` - Main post view with edit functionality for all three fields; custom placeholder support
 - `NoobTest/PostsListView.swift` - Added onPostUpdated callback handler
 - `NoobTest/ChildPostsView.swift` - Added onPostUpdated callback handler
 - `NoobTest/UIAutomationRegistry.swift` - Added .uiAutomationId() modifier
 - `reproduce.sh` - Simplified automated testing script
-- `server/imp/py/db.py` - Added placeholder columns to all SELECT queries
-- `server/imp/py/add_placeholders.py` - Database migration script
+- `server/imp/py/db.py` - Added LEFT JOIN templates to all SELECT queries
+- `server/imp/py/create_templates.py` - Database migration script for templates system
+- `server/imp/py/grant_template_permissions.py` - Grant SELECT on templates to firefly_user
 
 ## Post.swift - Mutable Fields and Placeholders
 
@@ -29,9 +30,9 @@ struct Post: Codable, Identifiable, Hashable {
     let authorName: String?
     let authorEmail: String?
     let childCount: Int?
-    let titlePlaceholder: String?    // Optional custom placeholder
-    let summaryPlaceholder: String?  // Optional custom placeholder
-    let bodyPlaceholder: String?     // Optional custom placeholder
+    let titlePlaceholder: String?    // From templates.placeholder_title via JOIN
+    let summaryPlaceholder: String?  // From templates.placeholder_summary via JOIN
+    let bodyPlaceholder: String?     // From templates.placeholder_body via JOIN
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -48,9 +49,9 @@ struct Post: Codable, Identifiable, Hashable {
         case authorName = "author_name"
         case authorEmail = "author_email"
         case childCount = "child_count"
-        case titlePlaceholder = "title_placeholder"
-        case summaryPlaceholder = "summary_placeholder"
-        case bodyPlaceholder = "body_placeholder"
+        case titlePlaceholder = "placeholder_title"     // Note: snake_case from API
+        case summaryPlaceholder = "placeholder_summary"
+        case bodyPlaceholder = "placeholder_body"
     }
 }
 ```
@@ -993,3 +994,110 @@ This prevents accidental collapse of the post while editing. The user must expli
    - Camera button (green) directly opens the camera with `.camera` source
    - No confirmation dialog needed - user choice is explicit via button selection
    - All three buttons set `imageSourceType` and `showImagePicker` to trigger the sheet
+
+## Database Schema and Server Implementation
+
+### Templates Table
+
+The system uses a normalized database design with a `templates` table:
+
+```sql
+CREATE TABLE templates (
+    name TEXT PRIMARY KEY,
+    placeholder_title TEXT NOT NULL,
+    placeholder_summary TEXT NOT NULL,
+    placeholder_body TEXT NOT NULL
+);
+
+-- Default templates
+INSERT INTO templates (name, placeholder_title, placeholder_summary, placeholder_body)
+VALUES
+    ('post', 'Title', 'Summary', 'Body'),
+    ('profile', 'name', 'mission', 'personal statement');
+```
+
+### Posts Table
+
+Posts reference templates via `template_name` column:
+
+```sql
+ALTER TABLE posts
+ADD COLUMN template_name TEXT DEFAULT 'post';
+
+-- Example: Set specific post to use profile template
+UPDATE posts
+SET template_name = 'profile'
+WHERE title = 'asnaroo';
+```
+
+### Server Database Queries
+
+All SELECT queries in `db.py` include a LEFT JOIN with templates:
+
+```python
+cur.execute("""
+    SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+           p.created_at, p.timezone, p.location_tag, p.ai_generated,
+           p.template_name,
+           t.placeholder_title, t.placeholder_summary, t.placeholder_body,
+           COALESCE(u.name, u.email) as author_name,
+           u.email as author_email,
+           COUNT(children.id) as child_count
+    FROM posts p
+    LEFT JOIN users u ON p.user_id = u.id
+    LEFT JOIN templates t ON p.template_name = t.name
+    LEFT JOIN posts children ON children.parent_id = p.id
+    GROUP BY p.id, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body
+    ORDER BY p.created_at DESC
+    LIMIT %s
+""", (limit,))
+```
+
+### Migration Scripts
+
+**create_templates.py**: Creates templates table, adds template_name column, migrates data, drops old columns
+**grant_template_permissions.py**: Grants SELECT permission on templates to firefly_user
+
+```python
+# Must use microserver user for schema changes
+db_config = {
+    'host': 'localhost',
+    'port': '5432',
+    'database': 'firefly',
+    'user': 'microserver',
+    'password': ''
+}
+
+# After creating templates table, grant permissions:
+cur.execute("GRANT SELECT ON templates TO firefly_user")
+```
+
+### Benefits of Templates Architecture
+
+1. **Reusability**: Multiple posts can share the same template
+2. **Maintainability**: Change placeholder text for all posts using a template by updating one row
+3. **Extensibility**: Add new templates without altering posts table schema
+4. **Separation of Concerns**: Template definitions separate from post data
+
+### API Response Format
+
+Posts returned from API include placeholder fields from the joined templates table:
+
+```json
+{
+    "id": 22,
+    "title": "asnaroo",
+    "summary": "fix all the things",
+    "body": "I'm a self-taught ninja...",
+    "template_name": "profile",
+    "placeholder_title": "name",
+    "placeholder_summary": "mission",
+    "placeholder_body": "personal statement",
+    ...
+}
+```
+
+The iOS app maps these via CodingKeys:
+- `placeholder_title` → `titlePlaceholder`
+- `placeholder_summary` → `summaryPlaceholder`
+- `placeholder_body` → `bodyPlaceholder`
