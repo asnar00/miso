@@ -6,27 +6,7 @@ trigger_phrases:
   - "update the docs"
   - "document what we did"
   - "clean up the implementation docs"
-delegate: true
 ---
-
-## ⚠️ DELEGATION REQUIRED
-
-**This skill must be executed by the instruction-follower subagent.**
-
-When you see this skill invoked, you MUST use the Task tool to delegate it:
-
-```
-Task(
-    subagent_type="instruction-follower",
-    description="[Brief 3-5 word description]",
-    prompt="Follow the instructions in .claude/skills/post-debug-cleanup/skill.md to [complete task description]."
-)
-```
-
-**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
-
----
-
 
 # Post-Debug Cleanup Skill
 
@@ -125,13 +105,23 @@ Double-check:
 
 ## Files to Update
 
-For feature at path `apps/firefly/features/posts/explore-posts/`:
+**IMPORTANT:** Feature markdown files live ALONGSIDE their implementation directories, not inside them.
 
-1. `explore-posts.md` - User-facing feature spec
-2. `imp/pseudocode.md` - Platform-agnostic implementation
-3. `imp/ios.md` - iOS implementation (if applicable)
-4. `imp/eos.md` - Android implementation (if applicable)
-5. `imp/py.md` - Python implementation (if applicable)
+For feature at path `apps/firefly/features/posts/edit-posts`:
+
+```
+apps/firefly/features/posts/
+├── edit-posts.md              <- Feature spec (ALONGSIDE the directory)
+└── edit-posts/                <- Implementation directory
+    └── imp/
+        ├── pseudocode.md      <- Platform-agnostic implementation
+        ├── ios.md             <- iOS implementation (if applicable)
+        ├── eos.md             <- Android implementation (if applicable)
+        └── py.md              <- Python implementation (if applicable)
+```
+
+**Correct structure:** `A.md` is alongside `A/imp/`
+**Incorrect structure:** `A/A.md` inside `A/imp/`
 
 ## Success Criteria
 

@@ -23,15 +23,26 @@ struct PostView: View {
     let onTap: () -> Void
     let onPostCreated: () -> Void
     let onNavigateToChildren: ((Int) -> Void)?
+    let onPostUpdated: ((Post) -> Void)?
     let serverURL = "http://185.96.221.52:8080"
 
     @State private var expansionFactor: CGFloat = 0.0
     @State private var imageAspectRatio: CGFloat = 1.0
+    @State private var originalImageAspectRatio: CGFloat = 1.0  // Save original for cancel
     @State private var bodyTextHeight: CGFloat = 200  // Start with reasonable default
     @State private var titleSummaryHeight: CGFloat = 60  // Estimate for now
     @State private var isMeasured: Bool = false
     @State private var isEditing: Bool = false
+    @State private var editableTitle: String = ""
+    @State private var editableSummary: String = ""
     @State private var editableBody: String = ""
+    @State private var editableImageUrl: String? = nil  // nil means image removed
+    @State private var showImageSourcePicker: Bool = false
+    @State private var showImagePicker: Bool = false
+    @State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
+    @State private var selectedImage: UIImage? = nil
+    @State private var newImageData: Data? = nil  // Processed image data ready for upload
+    @State private var newImage: UIImage? = nil  // Processed image for display
 
     // Check if current user owns this post
     private var isOwnPost: Bool {
@@ -52,6 +63,17 @@ struct PostView: View {
     // Linear interpolation helper
     func lerp(_ start: CGFloat, _ end: CGFloat, _ t: CGFloat) -> CGFloat {
         return start + (end - start) * t
+    }
+
+    // Calculate image height for layout
+    func calculatedImageHeight(availableWidth: CGFloat, imageAspectRatio: CGFloat, addImageButtonHeight: CGFloat) -> CGFloat {
+        if editableImageUrl != nil {
+            return availableWidth / imageAspectRatio
+        } else if isEditing {
+            return addImageButtonHeight
+        } else {
+            return 0
+        }
     }
 
     // Process body text with markdown
@@ -113,6 +135,242 @@ struct PostView: View {
         return size.height
     }
 
+    // Save post changes to server
+    func savePost() {
+        Logger.shared.info("[PostView] Saving post \(post.id) changes to server")
+
+        // Get logged in user email
+        let (email, _, _) = Storage.shared.getLoginState()
+        guard let userEmail = email else {
+            Logger.shared.error("[PostView] Cannot save: no user logged in")
+            return
+        }
+
+        // Build request
+        guard let url = URL(string: "\(serverURL)/api/posts/update") else {
+            Logger.shared.error("[PostView] Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+
+        // Check if we have a new image to upload
+        if let imageData = newImageData {
+            // Use multipart form data for image upload
+            let boundary = UUID().uuidString
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+            var body = Data()
+
+            // Add form fields
+            let fields = [
+                "post_id": String(post.id),
+                "email": userEmail,
+                "title": editableTitle,
+                "summary": editableSummary,
+                "body": editableBody
+            ]
+
+            for (key, value) in fields {
+                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+                body.append("\(value)\r\n".data(using: .utf8)!)
+            }
+
+            // Add image file
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"image\"; filename=\"image.jpg\"\r\n".data(using: .utf8)!)
+            body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+            body.append(imageData)
+            body.append("\r\n".data(using: .utf8)!)
+            body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+
+            request.httpBody = body
+            Logger.shared.info("[PostView] Uploading post with new image (\(imageData.count / 1024)KB)")
+        } else {
+            // Use regular form encoding if no new image
+            var formData = [
+                "post_id": String(post.id),
+                "email": userEmail,
+                "title": editableTitle,
+                "summary": editableSummary,
+                "body": editableBody
+            ]
+
+            // Add image_url field (empty string means removed)
+            formData["image_url"] = editableImageUrl ?? ""
+
+            request.httpBody = formData.map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")" }
+                .joined(separator: "&")
+                .data(using: .utf8)
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            Logger.shared.info("[PostView] Updating post without image change")
+        }
+
+        // Send request
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                Logger.shared.error("[PostView] Save failed: \(error.localizedDescription)")
+                return
+            }
+
+            if let data = data, let responseStr = String(data: data, encoding: .utf8) {
+                Logger.shared.info("[PostView] Save response: \(responseStr)")
+
+                // Parse response to get updated image URL if we uploaded a new image
+                if self.newImageData != nil,
+                   let jsonData = responseStr.data(using: .utf8),
+                   let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+                   let postData = json["post"] as? [String: Any],
+                   let imageUrl = postData["image_url"] as? String {
+                    Logger.shared.info("[PostView] Server returned image URL: \(imageUrl)")
+                    DispatchQueue.main.async {
+                        self.editableImageUrl = imageUrl
+                    }
+                }
+            }
+
+            DispatchQueue.main.async {
+                Logger.shared.info("[PostView] Post saved successfully, exiting edit mode")
+
+                // Create updated post with new values
+                var updatedPost = post
+                updatedPost.title = editableTitle
+                updatedPost.summary = editableSummary
+                updatedPost.body = editableBody
+                updatedPost.imageUrl = editableImageUrl
+
+                // Notify parent of the update
+                onPostUpdated?(updatedPost)
+
+                // Clear the new image data
+                newImageData = nil
+                isEditing = false
+            }
+        }.resume()
+    }
+
+    // Image display - shows new image or loads from URL
+    @ViewBuilder
+    private func imageView(width: CGFloat, height: CGFloat, imageUrl: String) -> some View {
+        if imageUrl == "new_image", let displayImage = newImage {
+            Image(uiImage: displayImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: width, height: height)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        } else {
+            let fullUrl = serverURL + imageUrl
+            AsyncImage(url: URL(string: fullUrl)) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: width, height: height)
+                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                case .failure(_), .empty:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: width, height: height)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                @unknown default:
+                    EmptyView()
+                }
+            }
+        }
+    }
+
+    // Add Image Button as a separate view to reduce body complexity
+    private var addImageButton: some View {
+        let availableWidth: CGFloat = 350
+        let addImageButtonHeight: CGFloat = 50
+        let buttonX: CGFloat = 18
+        let buttonY: CGFloat = 80 + 12
+
+        return Button(action: {
+            Logger.shared.info("[PostView] Add image button tapped")
+            showImageSourcePicker = true
+        }) {
+            HStack {
+                Image(systemName: "photo.badge.plus")
+                    .font(.system(size: 20))
+                Text("Add Image")
+                    .font(.system(size: 16))
+            }
+            .foregroundColor(.black)
+            .frame(width: availableWidth, height: addImageButtonHeight)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.gray.opacity(0.1))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.black.opacity(0.3), lineWidth: 2)
+                    )
+            )
+        }
+        .offset(x: buttonX, y: buttonY)
+        .confirmationDialog("Add Image", isPresented: $showImageSourcePicker) {
+            Button("Take Photo") {
+                imageSourceType = .camera
+                showImagePicker = true
+            }
+            Button("Choose from Library") {
+                imageSourceType = .photoLibrary
+                showImagePicker = true
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .sheet(isPresented: $showImagePicker) {
+            ImagePicker(image: $selectedImage, sourceType: imageSourceType)
+        }
+        .uiAutomationId("add-image-button") {
+            Logger.shared.info("[PostView] Add image button tapped (UI automation)")
+        }
+    }
+
+    func processImage(_ image: UIImage) {
+        Logger.shared.info("[PostView] Processing image...")
+
+        // Log both UIImage.size and actual CGImage pixel dimensions
+        if let cgImage = image.cgImage {
+            Logger.shared.info("[PostView] CGImage pixel dimensions: \(cgImage.width)x\(cgImage.height)")
+        }
+        Logger.shared.info("[PostView] UIImage.size (accounting for orientation): \(image.size)")
+        Logger.shared.info("[PostView] UIImage.imageOrientation: \(image.imageOrientation.rawValue)")
+
+        // Step 1: Reorient image to remove orientation metadata
+        let reorientedImage = image.reorientedImage()
+        Logger.shared.info("[PostView] Reoriented size: \(reorientedImage.size)")
+
+        // Step 2: Resize to max 1200px on longest edge
+        let maxDimension: CGFloat = 1200
+        let resizedImage = reorientedImage.resized(maxDimension: maxDimension)
+        Logger.shared.info("[PostView] Resized to: \(resizedImage.size)")
+
+        // Step 3: Convert to high-quality JPEG
+        guard let imageData = resizedImage.jpegData(compressionQuality: 0.9) else {
+            Logger.shared.error("[PostView] Failed to convert image to JPEG")
+            return
+        }
+        Logger.shared.info("[PostView] JPEG size: \(imageData.count / 1024)KB")
+
+        // Store the processed image data - it will be uploaded when user saves
+        newImageData = imageData
+        newImage = resizedImage
+
+        // Update aspect ratio for layout calculations
+        imageAspectRatio = resizedImage.size.width / resizedImage.size.height
+        Logger.shared.info("[PostView] New image aspect ratio: \(imageAspectRatio)")
+
+        // Set a marker URL so the display logic knows to show the new image
+        editableImageUrl = "new_image"
+        Logger.shared.info("[PostView] Image processed and ready for display and upload")
+    }
+
     var body: some View {
         // Log when body is evaluated with isExpanded = true
         let _ = {
@@ -125,13 +383,17 @@ struct PostView: View {
 
         // Calculate expanded height based on actual content
         let availableWidth: CGFloat = 350  // Approximate - account for padding
-        let imageHeight = post.imageUrl != nil ? (availableWidth / imageAspectRatio) : 0
+        let addImageButtonHeight: CGFloat = 50
+        let imageHeight = calculatedImageHeight(availableWidth: availableWidth, imageAspectRatio: imageAspectRatio, addImageButtonHeight: addImageButtonHeight)
         let authorHeight: CGFloat = 15  // Approximate height for author line
 
         // Calculate body text height using UIKit measurement
-        let measuredBodyHeight = calculateTextHeight(post.body, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
+        // Use editableBody if we're editing, otherwise use post.body
+        let bodyText = editableBody.isEmpty ? post.body : editableBody
+        let measuredBodyHeight = calculateTextHeight(bodyText, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
 
-        let expandedHeight: CGFloat = titleSummaryHeight + 16 + imageHeight + 16 + measuredBodyHeight + 24 + authorHeight + 16
+        // expandedHeight = titleSummary (80) + spacing (12) + image + spacing (4) + body + spacing (12) + author + bottom padding (28)
+        let expandedHeight: CGFloat = 80 + 12 + imageHeight + 4 + measuredBodyHeight + 12 + authorHeight + 28
 
         let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 
@@ -143,16 +405,35 @@ struct PostView: View {
 
             // Title and summary at the top
             VStack(alignment: .leading, spacing: 4) {
-                Text(post.title)
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.black)
-                    .lineLimit(1)
+                if isEditing {
+                    TextField("Title", text: $editableTitle)
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(.black)
+                        .textFieldStyle(.plain)
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                } else {
+                    Text(editableTitle)
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(.black)
+                        .lineLimit(1)
+                }
 
-                Text(post.summary)
-                    .font(.system(size: 15))
-                    .italic()
-                    .foregroundColor(.black.opacity(0.8))
-                    .lineLimit(2)
+                if isEditing {
+                    TextField("Summary", text: $editableSummary)
+                        .font(.system(size: 15))
+                        .italic()
+                        .foregroundColor(.black.opacity(0.8))
+                        .textFieldStyle(.plain)
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                } else {
+                    Text(editableSummary)
+                        .font(.system(size: 15))
+                        .italic()
+                        .foregroundColor(.black.opacity(0.8))
+                        .lineLimit(2)
+                }
             }
             .padding(.leading, 16)  // Increased from 8pt for more text indent
             .padding(.vertical, 8)
@@ -160,8 +441,16 @@ struct PostView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.trailing, post.imageUrl != nil ? 96 : 0)  // Leave room for thumbnail
             .background(
-                GeometryReader { geo in
-                    Color.clear.preference(key: TitleSummaryHeightKey.self, value: geo.size.height)
+                ZStack {
+                    // Grey background in edit mode
+                    if isEditing {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.gray.opacity(0.1))
+                    }
+                    // Height measurement
+                    GeometryReader { geo in
+                        Color.clear.preference(key: TitleSummaryHeightKey.self, value: geo.size.height)
+                    }
                 }
             )
             .onPreferenceChange(TitleSummaryHeightKey.self) { height in
@@ -173,23 +462,40 @@ struct PostView: View {
                 // Calculate current image dimensions and position
                 let compactImageHeight: CGFloat = 80
                 let compactImageY: CGFloat = (100 - 80) / 2 + 8
-                let expandedImageY = titleSummaryHeight + 16  // Match spacing in image positioning
-                let expandedImageHeight = availableWidth / imageAspectRatio
+                let expandedImageY: CGFloat = 80 + 12  // Hardcoded: 80pt title/summary + 12pt spacing (was 16)
+                // Use imageHeight which already accounts for removed images (0 when editableImageUrl is nil)
+                let expandedImageHeight = imageHeight
 
                 let currentImageY = lerp(compactImageY, expandedImageY, expansionFactor)
                 let currentImageHeight = lerp(compactImageHeight, expandedImageHeight, expansionFactor)
 
                 // Position text below the current image position
-                let bodyY = currentImageY + currentImageHeight + 16
+                let bodyY = currentImageY + currentImageHeight + 4  // 4pt spacing
                 let currentBodyHeight = lerp(0, measuredBodyHeight, expansionFactor)
 
                 ZStack(alignment: .topLeading) {
-                    Color.clear  // Transparent background
+                    // Grey background in edit mode
+                    if isEditing {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.gray.opacity(0.1))
+                    }
                     TextEditor(text: $editableBody)
                         .scrollContentBackground(.hidden)  // Hide default background
                         .foregroundColor(.black)
                         .frame(width: availableWidth, height: measuredBodyHeight, alignment: .top)
                         .scrollDisabled(true)
+                        .disabled(!isEditing)  // Only editable when isEditing is true
+                        .autocorrectionDisabled(true)  // Disable autocorrection
+                        .textInputAutocapitalization(.never)  // Disable auto-capitalization
+                        .onChange(of: editableBody) { _, newValue in
+                            // Log when text changes - height is automatically recalculated by body view
+                            let newHeight = calculateTextHeight(newValue, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
+                            Logger.shared.info("[PostView] Body text changed, new height: \(newHeight)")
+                        }
+                        .uiAutomationId("edit-body-text") {
+                            // Append test text for automation
+                            editableBody += "\n\nThis is additional text added by automation!"
+                        }
                 }
                 .frame(width: availableWidth, height: measuredBodyHeight)
                 .clipped()
@@ -206,31 +512,100 @@ struct PostView: View {
                 // Calculate position below body text
                 let compactImageHeight: CGFloat = 80
                 let compactImageY: CGFloat = (100 - 80) / 2 + 8
-                let expandedImageY = titleSummaryHeight + 8
-                let expandedImageHeight = availableWidth / imageAspectRatio
+                let expandedImageY: CGFloat = 80 + 12  // Same as body text calculation
+                // Use imageHeight which already accounts for removed images (0 when editableImageUrl is nil)
+                let expandedImageHeight = imageHeight
 
                 let currentImageY = lerp(compactImageY, expandedImageY, expansionFactor)
                 let currentImageHeight = lerp(compactImageHeight, expandedImageHeight, expansionFactor)
-                let authorY = currentImageY + currentImageHeight + 16 + measuredBodyHeight + 24  // Below body text with spacing
+
+                // Position author below body text: bodyY + bodyHeight + padding
+                let bodyY = currentImageY + currentImageHeight + 4  // Same as body text Y
+                let authorY = bodyY + measuredBodyHeight + 12  // Below body text with 12pt spacing (was 16pt, 24pt originally)
 
                 HStack {
-                    if post.aiGenerated {
-                        Text("👓 librarian")
-                            .font(.subheadline)
-                            .foregroundColor(.black.opacity(0.5))
-                    } else if let authorName = post.authorName {
-                        Text(authorName)
-                            .font(.subheadline)
-                            .foregroundColor(.black.opacity(0.5))
+                    // Author name on left - aligned with body text
+                    HStack {
+                        if post.aiGenerated {
+                            Text("👓 librarian")
+                                .font(.subheadline)
+                                .foregroundColor(.black.opacity(0.5))
+                        } else if let authorName = post.authorName {
+                            Text(authorName)
+                                .font(.subheadline)
+                                .foregroundColor(.black.opacity(0.5))
+                        }
+                    }
+                    .padding(.leading, 24)  // 18pt + 6pt = 24pt
+
+                    Spacer()
+
+                    // Edit/save/cancel buttons on right (only for own posts)
+                    if isOwnPost {
+                        HStack(spacing: 8) {
+                            if !isEditing {
+                                // Edit mode: single pencil button
+                                Button(action: {
+                                    Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
+                                    isEditing = true
+                                }) {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundColor(.black.opacity(0.6))
+                                }
+                                .uiAutomationId("edit-button") {
+                                    isEditing = true
+                                }
+                            } else {
+                                // Editing mode: undo and tick buttons
+                                Button(action: {
+                                    Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
+                                    editableTitle = post.title
+                                    editableSummary = post.summary
+                                    editableBody = post.body
+                                    editableImageUrl = post.imageUrl
+                                    newImageData = nil
+                                    newImage = nil
+                                    // Restore original aspect ratio
+                                    imageAspectRatio = originalImageAspectRatio
+                                    isEditing = false
+                                }) {
+                                    Image(systemName: "arrow.uturn.backward.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundColor(.red.opacity(0.6))
+                                }
+                                .uiAutomationId("cancel-button") {
+                                    editableTitle = post.title
+                                    editableSummary = post.summary
+                                    editableBody = post.body
+                                    editableImageUrl = post.imageUrl
+                                    isEditing = false
+                                }
+
+                                Button(action: {
+                                    savePost()
+                                }) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundColor(.green.opacity(0.6))
+                                }
+                                .uiAutomationId("save-button") {
+                                    savePost()
+                                }
+                            }
+                        }
+                        .padding(.trailing, 18)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .offset(x: 18, y: authorY)  // Increased from 10pt for more left indent
+                .offset(x: 0, y: authorY)
                 .opacity(expansionFactor)  // Fade in with expansion
             }
 
             // Animated image - interpolates from thumbnail to full-size
-            if let imageUrl = post.imageUrl {
+            // Use editableImageUrl (nil if removed in edit mode)
+            // Or show "Add Image" button if editing with no image
+            if let imageUrl = editableImageUrl {
                 let fullUrl = serverURL + imageUrl
 
                 // Compact state: 80x80 thumbnail on top-right with padding
@@ -243,7 +618,7 @@ struct PostView: View {
                 let expandedHeight = availableWidth / imageAspectRatio
                 let expandedX: CGFloat = 18  // Increased from 10pt to align with text indent
                 // Match the spacing used in height calculation (not the 8pt in outdated docs)
-                let expandedY = titleSummaryHeight + 16  // 16pt spacing matches expandedHeight formula
+                let expandedY: CGFloat = 80  // Hardcoded: 80pt title/summary height
 
                 // Interpolated values
                 let currentWidth = lerp(thumbnailSize, expandedWidth, expansionFactor)
@@ -251,40 +626,47 @@ struct PostView: View {
                 let currentX = lerp(compactX, expandedX, expansionFactor)
                 let currentY = lerp(compactY, expandedY, expansionFactor)
 
-                AsyncImage(url: URL(string: fullUrl)) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: currentWidth, height: currentHeight)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                    case .failure(_), .empty:
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: currentWidth, height: currentHeight)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
-                .offset(x: currentX, y: currentY)
-                .task {
-                    // Load aspect ratio when image first appears
-                    if imageAspectRatio == 1.0 {
-                        if let url = URL(string: fullUrl) {
-                            do {
-                                let (data, _) = try await URLSession.shared.data(from: url)
-                                if let uiImage = UIImage(data: data) {
-                                    imageAspectRatio = uiImage.size.width / uiImage.size.height
+                ZStack(alignment: .topTrailing) {
+                    imageView(width: currentWidth, height: currentHeight, imageUrl: imageUrl)
+                    .task {
+                        // Load aspect ratio when image first appears
+                        if imageAspectRatio == 1.0 {
+                            if let url = URL(string: fullUrl) {
+                                do {
+                                    let (data, _) = try await URLSession.shared.data(from: url)
+                                    if let uiImage = UIImage(data: data) {
+                                        let aspectRatio = uiImage.size.width / uiImage.size.height
+                                        imageAspectRatio = aspectRatio
+                                        originalImageAspectRatio = aspectRatio  // Save original
+                                    }
+                                } catch {
+                                    // Failed to load image, keep default aspect ratio
                                 }
-                            } catch {
-                                // Failed to load image, keep default aspect ratio
                             }
                         }
                     }
+
+                    // Trash button to remove image (only in edit mode when expanded)
+                    if isEditing && isExpanded {
+                        Button(action: {
+                            Logger.shared.info("[PostView] Remove image button tapped")
+                            editableImageUrl = nil
+                        }) {
+                            Image(systemName: "trash.circle.fill")
+                                .font(.system(size: 32))
+                                .foregroundColor(.red.opacity(0.8))
+                                .background(Circle().fill(Color.white))
+                        }
+                        .padding(8)
+                        .uiAutomationId("delete-image-button") {
+                            editableImageUrl = nil
+                        }
+                    }
                 }
+                .offset(x: currentX, y: currentY)
+            } else if isEditing && isExpanded {
+                // Show "Add Image" button when editing with no image
+                addImageButton
             }
 
             // Child indicator overlay (right arrow in opaque circle)
@@ -325,52 +707,6 @@ struct PostView: View {
                 .frame(height: currentHeight)
             }
 
-            // Edit button overlay (top-right corner when expanded and owned by user)
-            // Drawn AFTER image so it appears on top
-            if isExpanded && isOwnPost {
-                VStack {
-                    HStack {
-                        Spacer()
-
-                        // HStack for buttons - can hold one or two buttons
-                        HStack(spacing: 8) {
-                            if !isEditing {
-                                // Edit mode: single pencil button
-                                Button(action: {
-                                    Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
-                                    isEditing = true
-                                }) {
-                                    Image(systemName: "pencil.circle.fill")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.black.opacity(0.6))
-                                }
-                            } else {
-                                // Editing mode: X and tick buttons
-                                Button(action: {
-                                    Logger.shared.info("[PostView] Cancel button tapped")
-                                    isEditing = false
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.red.opacity(0.6))
-                                }
-
-                                Button(action: {
-                                    Logger.shared.info("[PostView] Save button tapped")
-                                    isEditing = false
-                                }) {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.green.opacity(0.6))
-                                }
-                            }
-                        }
-                        .padding(.trailing, 16)
-                        .padding(.top, 8)
-                    }
-                    Spacer()
-                }
-            }
         }
         .background(
             // Measure body text only when needed (when expanding)
@@ -395,7 +731,10 @@ struct PostView: View {
             }
         )
         .onTapGesture {
-            onTap()
+            // Disable collapse when editing
+            if !isEditing {
+                onTap()
+            }
         }
         .gesture(
             DragGesture(minimumDistance: 30)
@@ -411,15 +750,16 @@ struct PostView: View {
             if newValue {
                 // Expanding - calculate and log positions
                 let availableWidth: CGFloat = 350
-                let imageHeight = post.imageUrl != nil ? (availableWidth / imageAspectRatio) : 0
-                let measuredBodyHeight = calculateTextHeight(post.body, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
+                let imageHeight = editableImageUrl != nil ? (availableWidth / imageAspectRatio) : 0
+                let measuredBodyHeight = calculateTextHeight(editableBody, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
 
-                // Calculate positions when fully expanded
-                let expandedImageY = titleSummaryHeight + 16
-                let expandedBodyY = expandedImageY + imageHeight + 16
-                let expandedAuthorY = expandedBodyY + measuredBodyHeight + 24
+                // Calculate positions when fully expanded using hardcoded title/summary height
+                let expandedImageY: CGFloat = 80 + 12  // 80pt title/summary + 12pt spacing
+                let expandedBodyY = expandedImageY + imageHeight + 4  // 4pt spacing
+                let expandedAuthorY = expandedBodyY + measuredBodyHeight + 12  // 12pt spacing (was 16pt, 24pt originally)
 
                 Logger.shared.info("[PostView] Post \(post.id) EXPANDED POSITIONS:")
+                Logger.shared.info("  Title/Summary Height: 80 (hardcoded)")
                 Logger.shared.info("  Image Y: \(expandedImageY) (height: \(imageHeight))")
                 Logger.shared.info("  Body Y: \(expandedBodyY) (height: \(measuredBodyHeight))")
                 Logger.shared.info("  Author Y: \(expandedAuthorY)")
@@ -438,8 +778,134 @@ struct PostView: View {
         .onAppear {
             // Set initial expansion state without doing any heavy work
             expansionFactor = isExpanded ? 1.0 : 0.0
-            // Initialize editable body with post content
+            // Initialize editable content with post content
+            editableTitle = post.title
+            editableSummary = post.summary
             editableBody = post.body
+            editableImageUrl = post.imageUrl
         }
+        .onChange(of: selectedImage) { oldValue, newValue in
+            guard let image = newValue else { return }
+            Logger.shared.info("[PostView] Image selected, processing...")
+
+            // Process image - it will be uploaded when user saves
+            processImage(image)
+        }
+    }
+}
+
+// MARK: - UIImage Extensions for Image Processing
+
+extension UIImage {
+    /// Reorients the image to remove EXIF orientation metadata
+    /// Returns a new image with the pixel data rotated to match the orientation
+    func reorientedImage() -> UIImage {
+        // Always redraw the image to ensure pixel data matches display orientation
+        // UIImage.size already accounts for orientation, so we draw into that size
+        UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
+        defer { UIGraphicsEndImageContext() }
+
+        draw(in: CGRect(origin: .zero, size: size))
+
+        guard let redrawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
+            return self
+        }
+
+        return redrawnImage
+    }
+
+    /// Legacy orientation-based reorientation (kept for reference but not used)
+    func reorientedImageOld() -> UIImage {
+        // If image is already in .up orientation, return as-is
+        if imageOrientation == .up {
+            return self
+        }
+
+        // Calculate the transform needed to reorient the image
+        var transform = CGAffineTransform.identity
+
+        switch imageOrientation {
+        case .down, .downMirrored:
+            transform = transform.translatedBy(x: size.width, y: size.height)
+            transform = transform.rotated(by: .pi)
+        case .left, .leftMirrored:
+            transform = transform.translatedBy(x: size.width, y: 0)
+            transform = transform.rotated(by: .pi / 2)
+        case .right, .rightMirrored:
+            transform = transform.translatedBy(x: 0, y: size.height)
+            transform = transform.rotated(by: -.pi / 2)
+        default:
+            break
+        }
+
+        switch imageOrientation {
+        case .upMirrored, .downMirrored:
+            transform = transform.translatedBy(x: size.width, y: 0)
+            transform = transform.scaledBy(x: -1, y: 1)
+        case .leftMirrored, .rightMirrored:
+            transform = transform.translatedBy(x: size.height, y: 0)
+            transform = transform.scaledBy(x: -1, y: 1)
+        default:
+            break
+        }
+
+        // Create a context and apply the transform
+        guard let cgImage = self.cgImage,
+              let colorSpace = cgImage.colorSpace,
+              let context = CGContext(
+                data: nil,
+                width: Int(size.width),
+                height: Int(size.height),
+                bitsPerComponent: cgImage.bitsPerComponent,
+                bytesPerRow: 0,
+                space: colorSpace,
+                bitmapInfo: cgImage.bitmapInfo.rawValue
+              ) else {
+            return self
+        }
+
+        context.concatenate(transform)
+
+        // Draw the image
+        switch imageOrientation {
+        case .left, .leftMirrored, .right, .rightMirrored:
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: size.height, height: size.width))
+        default:
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        }
+
+        // Create new image from context
+        guard let newCGImage = context.makeImage() else {
+            return self
+        }
+
+        return UIImage(cgImage: newCGImage)
+    }
+
+    /// Resizes the image so the longest edge is at most maxDimension pixels
+    /// Maintains aspect ratio
+    func resized(maxDimension: CGFloat) -> UIImage {
+        let currentMaxDimension = max(size.width, size.height)
+
+        // If image is already smaller than max, return as-is
+        if currentMaxDimension <= maxDimension {
+            return self
+        }
+
+        // Calculate new size maintaining aspect ratio
+        let scale = maxDimension / currentMaxDimension
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+
+        // Create a graphics context and draw the resized image
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        defer { UIGraphicsEndImageContext() }
+
+        draw(in: CGRect(origin: .zero, size: newSize))
+
+        guard let resizedImage = UIGraphicsGetImageFromCurrentImageContext() else {
+            return self
+        }
+
+        return resizedImage
     }
 }

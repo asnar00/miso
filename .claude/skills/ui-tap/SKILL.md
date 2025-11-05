@@ -225,6 +225,31 @@ sleep 0.5  # Wait for sheet to appear
 
 ### Element Registration Pattern
 
+**Recommended: View Modifier Pattern** (Clean, declarative)
+
+In SwiftUI views, use the `.uiAutomationId()` modifier directly on buttons or other interactive elements:
+
+```swift
+Button(action: {
+    // Normal button action
+    isEditing = true
+}) {
+    Image(systemName: "pencil.circle.fill")
+}
+.uiAutomationId("edit-button") {
+    // Automation action (usually same as button action)
+    isEditing = true
+}
+```
+
+**Benefits**:
+- No state management in ViewModels required
+- Annotation lives right next to the UI element definition
+- Automatically registers on `.onAppear`, no manual registration needed
+- Works with SwiftUI's struct-based view system
+
+**Legacy: Manual Registration Pattern** (Verbose, requires plumbing)
+
 In SwiftUI views:
 ```swift
 .onAppear {
@@ -233,6 +258,8 @@ In SwiftUI views:
     }
 }
 ```
+
+**Note**: Manual registration is still useful for non-button elements like gesture recognizers or complex views. For buttons, prefer the modifier pattern.
 
 In Kotlin composables:
 ```kotlin

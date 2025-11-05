@@ -1,332 +1,359 @@
-18:06:34 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-18:06:34 [INFO] [APP] NoobTestApp init() called
-18:06:34 [INFO] [APP] User already logged in: test@example.com
-18:06:34 [INFO] [APP] About to start TestServer
-18:06:34 [INFO] [TESTSERVER] start() called with port 8081
-18:06:34 [INFO] [TESTSERVER] About to register tests
-18:06:34 [INFO] TestServer: Registered tests: storage, clear-login
-18:06:34 [INFO] [TESTSERVER] Tests registered
-18:06:34 [INFO] [TESTSERVER] Attempting to start on port 8081
-18:06:34 [INFO] [TESTSERVER] Creating TCP parameters
-18:06:34 [INFO] [TESTSERVER] TCP parameters created
-18:06:34 [INFO] [TESTSERVER] Creating NWListener
-18:06:34 [INFO] [TESTSERVER] NWListener created successfully
-18:06:34 [INFO] [TESTSERVER] About to start listener
-18:06:34 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-18:06:34 [INFO] [TESTSERVER] State changed to ready
-18:06:34 [INFO] [TESTSERVER] Listener is ready and accepting connections
-18:06:34 [INFO] [APP] TestServer.start() returned
-18:06:34 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-18:06:34 [INFO] [PostsListView] Fetching posts (parent: root)
-18:06:34 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:06:34 [INFO] [PostsListView] Loaded 12 posts
-18:06:34 [INFO] [PostsListView] Registered first-post automation for post 22
-18:06:39 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-18:06:39 [INFO] [APP] NoobTestApp init() called
-18:06:39 [INFO] [APP] User already logged in: test@example.com
-18:06:39 [INFO] [APP] About to start TestServer
-18:06:39 [INFO] [TESTSERVER] start() called with port 8081
-18:06:39 [INFO] [TESTSERVER] About to register tests
-18:06:39 [INFO] TestServer: Registered tests: storage, clear-login
-18:06:39 [INFO] [TESTSERVER] Tests registered
-18:06:39 [INFO] [TESTSERVER] Attempting to start on port 8081
-18:06:39 [INFO] [TESTSERVER] Creating TCP parameters
-18:06:39 [INFO] [TESTSERVER] TCP parameters created
-18:06:39 [INFO] [TESTSERVER] Creating NWListener
-18:06:39 [INFO] [TESTSERVER] NWListener created successfully
-18:06:39 [INFO] [TESTSERVER] About to start listener
-18:06:39 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-18:06:39 [INFO] [TESTSERVER] State changed to ready
-18:06:39 [INFO] [TESTSERVER] Listener is ready and accepting connections
-18:06:39 [INFO] [APP] TestServer.start() returned
-18:06:39 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-18:06:39 [INFO] [PostsListView] Fetching posts (parent: root)
-18:06:39 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:06:39 [INFO] [PostsListView] Loaded 12 posts
-18:06:39 [INFO] [PostsListView] Registered first-post automation for post 22
-18:06:47 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-18:06:47 [INFO] [APP] NoobTestApp init() called
-18:06:47 [INFO] [APP] User already logged in: test@example.com
-18:06:47 [INFO] [APP] About to start TestServer
-18:06:47 [INFO] [TESTSERVER] start() called with port 8081
-18:06:47 [INFO] [TESTSERVER] About to register tests
-18:06:47 [INFO] TestServer: Registered tests: storage, clear-login
-18:06:47 [INFO] [TESTSERVER] Tests registered
-18:06:47 [INFO] [TESTSERVER] Attempting to start on port 8081
-18:06:47 [INFO] [TESTSERVER] Creating TCP parameters
-18:06:47 [INFO] [TESTSERVER] TCP parameters created
-18:06:47 [INFO] [TESTSERVER] Creating NWListener
-18:06:47 [INFO] [TESTSERVER] NWListener created successfully
-18:06:47 [INFO] [TESTSERVER] About to start listener
-18:06:47 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-18:06:47 [INFO] [TESTSERVER] State changed to ready
-18:06:47 [INFO] [TESTSERVER] Listener is ready and accepting connections
-18:06:47 [INFO] [APP] TestServer.start() returned
-18:06:47 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-18:06:47 [INFO] [PostsListView] Fetching posts (parent: root)
-18:06:47 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:06:47 [INFO] [PostsListView] Loaded 12 posts
-18:06:47 [INFO] [PostsListView] Registered first-post automation for post 22
-18:07:33 [INFO] [TESTSERVER] New connection received
-18:07:33 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:07:33 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:07:33 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:07:33 [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
-18:07:33 [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
-18:07:33 [INFO] [PostsListView] expandedPostId is now: Optional(22)
-18:07:39 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:07:39 [INFO] [PostView] TextEditor body measured height: 0.0
-18:07:39 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
-18:07:39 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
-18:07:39 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:07:39 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:07:39 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:07:56 [INFO] [TESTSERVER] New connection received
-18:07:56 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:07:56 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:07:56 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:07:56 [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
-18:07:56 [INFO] [PostsListView] On main thread, current expandedPostId: Optional(22), setting to 22
-18:07:56 [INFO] [PostsListView] expandedPostId is now: Optional(22)
-18:07:59 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
-18:07:59 [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
-18:08:24 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-18:08:24 [INFO] [APP] NoobTestApp init() called
-18:08:24 [INFO] [APP] User already logged in: test@example.com
-18:08:24 [INFO] [APP] About to start TestServer
-18:08:24 [INFO] [TESTSERVER] start() called with port 8081
-18:08:24 [INFO] [TESTSERVER] About to register tests
-18:08:24 [INFO] TestServer: Registered tests: storage, clear-login
-18:08:24 [INFO] [TESTSERVER] Tests registered
-18:08:24 [INFO] [TESTSERVER] Attempting to start on port 8081
-18:08:24 [INFO] [TESTSERVER] Creating TCP parameters
-18:08:24 [INFO] [TESTSERVER] TCP parameters created
-18:08:24 [INFO] [TESTSERVER] Creating NWListener
-18:08:24 [INFO] [TESTSERVER] NWListener created successfully
-18:08:24 [INFO] [TESTSERVER] About to start listener
-18:08:24 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-18:08:24 [INFO] [TESTSERVER] State changed to ready
-18:08:24 [INFO] [TESTSERVER] Listener is ready and accepting connections
-18:08:24 [INFO] [APP] TestServer.start() returned
-18:08:24 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-18:08:24 [INFO] [PostsListView] Fetching posts (parent: root)
-18:08:24 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:08:24 [INFO] [PostsListView] Loaded 12 posts
-18:08:24 [INFO] [PostsListView] Registered first-post automation for post 22
-18:08:32 [INFO] [TESTSERVER] New connection received
-18:08:32 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:08:32 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:08:32 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:08:32 [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
-18:08:32 [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
-18:08:32 [INFO] [PostsListView] expandedPostId is now: Optional(22)
-18:09:37 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
-18:09:37 [INFO] [PostsListView] Fetching posts (parent: root)
-18:09:41 [INFO] [TESTSERVER] New connection received
-18:09:41 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:09:41 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:09:41 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:09:41 [INFO] [PostsListView] first-post automation triggered, setting expandedPostId to 22
-18:09:41 [INFO] [PostsListView] On main thread, current expandedPostId: nil, setting to 22
-18:09:41 [INFO] [PostsListView] About to call objectWillChange.send()
-18:09:41 [INFO] [PostsListView] Called objectWillChange.send(), now setting expandedPostId
-18:09:41 [INFO] [PostsListView] expandedPostId is now: Optional(22)
-18:12:00 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:12:00 [INFO] [PostsListView] Loaded 12 posts
-18:12:00 [INFO] [PostsListView] Registered first-post automation for post 22
-18:12:04 [INFO] [TESTSERVER] New connection received
-18:12:04 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:12:04 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:12:04 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:12:04 [INFO] [PostsListView] first-post automation triggered
-18:12:04 [INFO] [PostsListView] expandPost(22) called
-18:12:37 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:12:37 [INFO] [PostsListView] Loaded 12 posts
-18:12:37 [INFO] [PostsListView] Registered first-post automation for post 22
-18:12:41 [INFO] [TESTSERVER] New connection received
-18:12:41 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:12:41 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:12:41 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:12:41 [INFO] [PostsListView] first-post automation triggered
-18:12:41 [INFO] [PostsListView] Setting expandedPostId directly on viewModel
-18:12:41 [INFO] [PostsListView] viewModel.expandedPostId = Optional(22)
-18:13:12 [INFO] [PostsListView] expandPost(22) called
-18:13:12 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:13:12 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:13:12 [INFO] [PostView] TextEditor body measured height: 0.0
-18:13:12 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
-18:13:12 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
-18:13:12 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:13:12 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:13:12 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:13:26 [INFO] [PostsListView] expandPost(22) called
-18:13:26 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
-18:13:26 [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
-18:13:55 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-18:13:55 [INFO] [APP] NoobTestApp init() called
-18:13:55 [INFO] [APP] User already logged in: test@example.com
-18:13:55 [INFO] [APP] About to start TestServer
-18:13:55 [INFO] [TESTSERVER] start() called with port 8081
-18:13:55 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:13:59 [INFO] [TESTSERVER] New connection received
-18:13:59 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:13:59 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:13:59 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:13:59 [INFO] [PostsListView] first-post automation triggered, captured viewModel=ObjectIdentifier(0x000000011e3edb80)
-18:13:59 [INFO] [PostsListView] Setting expandedPostId directly on captured viewModel
-18:13:59 [INFO] [PostsListView] viewModel.expandedPostId = Optional(22)
-18:14:22 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000011ca0a900)
-18:14:22 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
-18:14:22 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
-18:14:22 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:14:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:14:22 [INFO] [PostView] TextEditor body measured height: 0.0
-18:14:22 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
-18:14:22 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
-18:14:22 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:14:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:14:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:15:18 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:15:18 [INFO] [PostsListView] Loaded 12 posts
-18:15:18 [INFO] [PostsListView] Registered first-post automation for post 22
-18:15:19 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000013be5f480)
-18:15:23 [INFO] [TESTSERVER] New connection received
-18:15:23 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:15:23 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:15:23 [INFO] [PostsListView] first-post automation triggered
-18:15:23 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:15:23 [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x000000013be5f480)
-18:15:23 [INFO] [PostsListView] Setting expandedPostId to 22
-18:15:23 [INFO] [PostsListView] expandedPostId now = Optional(22)
-18:15:23 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:15:23 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:15:23 [INFO] [PostView] TextEditor body measured height: 0.0
-18:15:23 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
-18:15:23 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
-18:15:23 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:15:23 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:15:23 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:15:36 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013be5f480)
-18:15:36 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
-18:15:36 [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
-18:15:37 [INFO] [PostsListView] expandPost(15) called, viewModel=ObjectIdentifier(0x000000013be5f480)
-18:15:37 [INFO] [PostsListView] Setting viewModel.expandedPostId to 15
-18:15:37 [INFO] [PostsListView] After setting, expandedPostId = Optional(15)
-18:15:37 [INFO] [PostView] Body evaluated for post 15: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:15:37 [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:15:37 [INFO] [PostView] TextEditor body measured height: 0.0
-18:15:37 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 15 isExpanded changed to true
-18:15:37 [INFO] [PostView] Post 15 expanding, setting expansionFactor to 1.0
-18:15:37 [INFO] [PostView] Body evaluated for post 15: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:15:37 [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:15:37 [INFO] [PostView] Post 15 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:15:38 [INFO] [PostsListView] expandPost(15) called, viewModel=ObjectIdentifier(0x000000013be5f480)
-18:15:38 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 15 isExpanded changed to false
-18:15:38 [INFO] [PostView] Post 15 collapsing, setting expansionFactor to 0.0
-18:15:40 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013be5f480)
-18:15:40 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
-18:15:40 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
-18:15:40 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:15:40 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:15:40 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
-18:15:40 [INFO] [PostView] Post 22 expanding, setting expansionFactor to 1.0
-18:15:40 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:17:01 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:17:01 [INFO] [PostsListView] Loaded 12 posts
-18:17:01 [INFO] [PostsListView] Registered first-post automation for post 22
-18:17:05 [INFO] [TESTSERVER] New connection received
-18:17:05 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:17:05 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:17:05 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:17:05 [INFO] [PostsListView] first-post automation triggered
-18:17:05 [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x0000000101be9600)
-18:17:05 [INFO] [PostsListView] Setting expandedPostId to 22
-18:17:05 [INFO] [PostsListView] expandedPostId now = Optional(22)
-18:17:05 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:17:05 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:17:05 [INFO] [PostView] TextEditor body measured height: 0.0
-18:17:05 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
-18:17:05 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
-18:17:05 [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
-18:17:05 [INFO]   Body Y: 563.0 (height: 104.0)
-18:17:05 [INFO]   Author Y: 691.0
-18:17:05 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:17:05 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:17:05 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:19:46 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-18:19:46 [INFO] [APP] NoobTestApp init() called
-18:19:46 [INFO] [APP] User already logged in: test@example.com
-18:19:46 [INFO] [APP] About to start TestServer
-18:19:46 [INFO] [TESTSERVER] start() called with port 8081
-18:19:46 [INFO] [TESTSERVER] About to register tests
-18:19:46 [INFO] TestServer: Registered tests: storage, clear-login
-18:19:46 [INFO] [TESTSERVER] Tests registered
-18:19:46 [INFO] [TESTSERVER] Attempting to start on port 8081
-18:19:46 [INFO] [TESTSERVER] Creating TCP parameters
-18:19:46 [INFO] [TESTSERVER] TCP parameters created
-18:19:46 [INFO] [TESTSERVER] Creating NWListener
-18:19:46 [INFO] [TESTSERVER] NWListener created successfully
-18:19:46 [INFO] [TESTSERVER] About to start listener
-18:19:46 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-18:19:46 [INFO] [TESTSERVER] State changed to ready
-18:19:46 [INFO] [TESTSERVER] Listener is ready and accepting connections
-18:19:46 [INFO] [APP] TestServer.start() returned
-18:19:46 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x0000000115cf64c0)
-18:19:50 [INFO] [TESTSERVER] New connection received
-18:19:50 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:19:50 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:19:50 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:19:50 [INFO] [PostsListView] first-post automation triggered
-18:19:50 [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x0000000115cf64c0)
-18:19:50 [INFO] [PostsListView] Setting expandedPostId to 22
-18:19:50 [INFO] [PostsListView] expandedPostId now = Optional(22)
-18:19:50 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:19:50 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:19:50 [INFO] [PostView] TextEditor body measured height: 0.0
-18:19:50 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
-18:19:50 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
-18:19:50 [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
-18:19:50 [INFO]   Body Y: 563.0 (height: 104.0)
-18:19:50 [INFO]   Author Y: 691.0
-18:19:50 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:19:50 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:19:50 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:21:59 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-18:21:59 [INFO] [APP] NoobTestApp init() called
-18:21:59 [INFO] [APP] User already logged in: test@example.com
-18:21:59 [INFO] [APP] About to start TestServer
-18:21:59 [INFO] [TESTSERVER] start() called with port 8081
-18:21:59 [INFO] [TESTSERVER] About to register tests
-18:21:59 [INFO] TestServer: Registered tests: storage, clear-login
-18:21:59 [INFO] [TESTSERVER] Tests registered
-18:21:59 [INFO] [TESTSERVER] Attempting to start on port 8081
-18:21:59 [INFO] [TESTSERVER] Creating TCP parameters
-18:21:59 [INFO] [TESTSERVER] TCP parameters created
-18:21:59 [INFO] [TESTSERVER] Creating NWListener
-18:21:59 [INFO] [TESTSERVER] NWListener created successfully
-18:21:59 [INFO] [TESTSERVER] About to start listener
-18:21:59 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
-18:21:59 [INFO] [TESTSERVER] State changed to ready
-18:21:59 [INFO] [TESTSERVER] Listener is ready and accepting connections
-18:21:59 [INFO] [APP] TestServer.start() returned
-18:21:59 [INFO] [PostsAPI] Successfully fetched 12 posts
-18:22:00 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000013fac8840)
-18:22:04 [INFO] [TESTSERVER] New connection received
-18:22:04 [INFO] [TESTSERVER] Request: POST /test/tap?id=first-post HTTP/1.1
-18:22:04 [INFO] [TESTSERVER] Triggering UI element: first-post
-18:22:04 [INFO] [TESTSERVER] Successfully triggered: first-post
-18:22:04 [INFO] [PostsListView] first-post automation triggered
-18:22:04 [INFO] [PostsListView] Using current viewModel=ObjectIdentifier(0x000000013fac8840)
-18:22:04 [INFO] [PostsListView] Setting expandedPostId to 22
-18:22:04 [INFO] [PostsListView] expandedPostId now = Optional(22)
-18:22:04 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:22:04 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:22:04 [INFO] [PostView] TextEditor body measured height: 0.0
-18:22:04 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
-18:22:04 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
-18:22:04 [INFO]   Image Y: 80.33333333333333 (height: 466.6666666666667)
-18:22:04 [INFO]   Body Y: 563.0 (height: 104.0)
-18:22:04 [INFO]   Author Y: 691.0
-18:22:04 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
-18:22:04 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
-18:22:04 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:22 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10:54:22 [INFO] [APP] NoobTestApp init() called
+10:54:22 [INFO] [APP] User already logged in: test@example.com
+10:54:22 [INFO] [APP] About to start TestServer
+10:54:22 [INFO] [TESTSERVER] start() called with port 8081
+10:54:22 [INFO] [TESTSERVER] About to register tests
+10:54:22 [INFO] TestServer: Registered tests: storage, clear-login
+10:54:22 [INFO] [TESTSERVER] Tests registered
+10:54:22 [INFO] [TESTSERVER] Attempting to start on port 8081
+10:54:22 [INFO] [TESTSERVER] Creating TCP parameters
+10:54:22 [INFO] [TESTSERVER] TCP parameters created
+10:54:22 [INFO] [TESTSERVER] Creating NWListener
+10:54:22 [INFO] [TESTSERVER] NWListener created successfully
+10:54:22 [INFO] [TESTSERVER] About to start listener
+10:54:22 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+10:54:22 [INFO] [TESTSERVER] State changed to ready
+10:54:22 [INFO] [TESTSERVER] Listener is ready and accepting connections
+10:54:22 [INFO] [APP] TestServer.start() returned
+10:54:22 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+10:54:22 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000010588d620)
+10:54:22 [INFO] [PostsListView] Fetching posts (parent: root)
+10:54:22 [INFO] [PostsAPI] Successfully fetched 12 posts
+10:54:22 [INFO] [PostsListView] Loaded 12 posts
+10:54:22 [INFO] [PostsListView] Registered first-post automation for post 22
+10:54:23 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x000000013fe4e280)
+10:54:25 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013fe4e280)
+10:54:25 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+10:54:25 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+10:54:25 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+10:54:25 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:25 [INFO] [PostView] TextEditor body measured height: 0.0
+10:54:25 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+10:54:25 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+10:54:25 [INFO]   Title/Summary Height: 80 (hardcoded)
+10:54:25 [INFO]   Image Y: 92.0 (height: 466.6666666666667)
+10:54:25 [INFO]   Body Y: 562.6666666666667 (height: 126.0)
+10:54:25 [INFO]   Author Y: 700.6666666666667
+10:54:25 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+10:54:25 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:25 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:29 [INFO] [PostView] Edit button tapped for post 22
+10:54:29 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:32 [INFO] [PostView] Remove image button tapped
+10:54:32 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:35 [INFO] [PostView] Add image button tapped
+10:54:35 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:41 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:46 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+10:54:46 [INFO] [PostView] Image selected, uploading...
+10:54:46 [INFO] [PostView] Uploading image...
+10:54:46 [INFO] [PostView] Original size: (5712.0, 4284.0), orientation: 1
+10:54:46 [INFO] [PostView] Reoriented size: (5712.0, 4284.0)
+10:54:46 [INFO] [PostView] Resized to: (1200.0, 900.0)
+10:54:46 [INFO] [PostView] JPEG size: 330KB
+10:54:46 [INFO] [PostView] Upload response: <!doctype html>
+11:00:41 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+11:00:41 [INFO] [APP] NoobTestApp init() called
+11:00:41 [INFO] [APP] User already logged in: test@example.com
+11:00:41 [INFO] [APP] About to start TestServer
+11:00:41 [INFO] [TESTSERVER] start() called with port 8081
+11:00:41 [INFO] [TESTSERVER] About to register tests
+11:00:41 [INFO] TestServer: Registered tests: storage, clear-login
+11:00:41 [INFO] [TESTSERVER] Tests registered
+11:00:41 [INFO] [TESTSERVER] Attempting to start on port 8081
+11:00:41 [INFO] [TESTSERVER] Creating TCP parameters
+11:00:41 [INFO] [TESTSERVER] TCP parameters created
+11:00:41 [INFO] [TESTSERVER] Creating NWListener
+11:00:41 [INFO] [TESTSERVER] NWListener created successfully
+11:00:41 [INFO] [TESTSERVER] About to start listener
+11:00:41 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+11:00:41 [INFO] [TESTSERVER] State changed to ready
+11:00:41 [INFO] [TESTSERVER] Listener is ready and accepting connections
+11:00:41 [INFO] [APP] TestServer.start() returned
+11:00:42 [INFO] [PostsListView] Loaded 12 posts
+11:00:42 [INFO] [PostsListView] Registered first-post automation for post 22
+11:00:42 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x00000001401359e0)
+11:00:44 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:00:44 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:00:44 [INFO] [PostView] TextEditor body measured height: 0.0
+11:00:44 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+11:00:44 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+11:00:44 [INFO]   Title/Summary Height: 80 (hardcoded)
+11:00:44 [INFO]   Image Y: 92.0 (height: 466.6666666666667)
+11:00:44 [INFO]   Body Y: 562.6666666666667 (height: 126.0)
+11:00:44 [INFO]   Author Y: 700.6666666666667
+11:00:44 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:00:47 [INFO] [PostView] Remove image button tapped
+11:00:47 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:00:53 [INFO] [PostView] Add image button tapped
+11:00:53 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:00:55 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:00:56 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:00:56 [INFO] [PostView] Image selected, processing...
+11:00:56 [INFO] [PostView] Processing image...
+11:00:56 [INFO] [PostView] Original size: (5712.0, 4284.0), orientation: 1
+11:00:56 [INFO] [PostView] Reoriented size: (5712.0, 4284.0)
+11:00:56 [INFO] [PostView] Resized to: (1200.0, 900.0)
+11:00:56 [INFO] [PostView] JPEG size: 330KB
+11:00:56 [INFO] [PostView] Image saved to temp file: /private/var/mobile/Containers/Data/Application/1E2166C9-A50A-423F-BAFF-B03378A2B12D/tmp/pending_E4389451-85F5-45AC-8C02-71F9DF202643.jpg
+11:00:56 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:39 [INFO] [PostsAPI] Successfully fetched 12 posts
+11:03:43 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013fcdde60)
+11:03:43 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+11:03:43 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+11:03:43 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:03:43 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:43 [INFO] [PostView] TextEditor body measured height: 0.0
+11:03:43 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+11:03:43 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+11:03:43 [INFO]   Title/Summary Height: 80 (hardcoded)
+11:03:43 [INFO]   Image Y: 92.0 (height: 466.6666666666667)
+11:03:43 [INFO]   Body Y: 562.6666666666667 (height: 126.0)
+11:03:43 [INFO]   Author Y: 700.6666666666667
+11:03:43 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:03:43 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:43 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:44 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013fcdde60)
+11:03:44 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to false
+11:03:44 [INFO] [PostView] Post 22 collapsing, setting expansionFactor to 0.0
+11:03:45 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000013fcdde60)
+11:03:45 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+11:03:45 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+11:03:45 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:03:45 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:45 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+11:03:45 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+11:03:45 [INFO]   Title/Summary Height: 80 (hardcoded)
+11:03:45 [INFO]   Image Y: 92.0 (height: 466.6666666666667)
+11:03:45 [INFO]   Body Y: 562.6666666666667 (height: 126.0)
+11:03:45 [INFO]   Author Y: 700.6666666666667
+11:03:45 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:46 [INFO] [PostView] Edit button tapped for post 22
+11:03:46 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:46 [INFO] [PostView] Remove image button tapped
+11:03:46 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:47 [INFO] [PostView] Add image button tapped
+11:03:47 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:49 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:53 [INFO] [PostView] Add image button tapped
+11:03:53 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:54 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:57 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:03:57 [INFO] [PostView] Image selected, processing...
+11:03:57 [INFO] [PostView] Processing image...
+11:03:57 [INFO] [PostView] CGImage pixel dimensions: 5712x4284
+11:03:57 [INFO] [PostView] UIImage.size (accounting for orientation): (5712.0, 4284.0)
+11:03:57 [INFO] [PostView] UIImage.imageOrientation: 1
+11:03:58 [INFO] [PostView] Reoriented size: (5712.0, 4284.0)
+11:03:58 [INFO] [PostView] Resized to: (1200.0, 900.0)
+11:03:58 [INFO] [PostView] JPEG size: 330KB
+11:03:58 [INFO] [PostView] Image saved to temp file: /private/var/mobile/Containers/Data/Application/BBB952F8-A7E2-4DC8-B948-4359B974052F/tmp/pending_8B8472D4-DE79-47E5-84EF-61FB1C00BCBA.jpg
+11:03:58 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:03 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+11:06:03 [INFO] [APP] NoobTestApp init() called
+11:06:03 [INFO] [APP] User already logged in: test@example.com
+11:06:03 [INFO] [APP] About to start TestServer
+11:06:03 [INFO] [TESTSERVER] start() called with port 8081
+11:06:03 [INFO] [TESTSERVER] About to register tests
+11:06:03 [INFO] TestServer: Registered tests: storage, clear-login
+11:06:03 [INFO] [TESTSERVER] Tests registered
+11:06:03 [INFO] [TESTSERVER] Attempting to start on port 8081
+11:06:03 [INFO] [TESTSERVER] Creating TCP parameters
+11:06:03 [INFO] [PostsListView] Loaded 12 posts
+11:06:03 [INFO] [PostsListView] Registered first-post automation for post 22
+11:06:06 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x0000000122203f30)
+11:06:06 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+11:06:06 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+11:06:06 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:06:06 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:06 [INFO] [PostView] TextEditor body measured height: 0.0
+11:06:06 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+11:06:06 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+11:06:06 [INFO]   Title/Summary Height: 80 (hardcoded)
+11:06:06 [INFO]   Image Y: 92.0 (height: 466.6666666666667)
+11:06:06 [INFO]   Body Y: 562.6666666666667 (height: 126.0)
+11:06:06 [INFO]   Author Y: 700.6666666666667
+11:06:06 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:06:06 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:06 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:07 [INFO] [PostView] Edit button tapped for post 22
+11:06:07 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:08 [INFO] [PostView] Remove image button tapped
+11:06:08 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:09 [INFO] [PostView] Add image button tapped
+11:06:09 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:11 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:14 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:06:14 [INFO] [PostView] Image selected, processing...
+11:06:14 [INFO] [PostView] Processing image...
+11:06:14 [INFO] [PostView] CGImage pixel dimensions: 5712x4284
+11:06:14 [INFO] [PostView] UIImage.size (accounting for orientation): (5712.0, 4284.0)
+11:06:14 [INFO] [PostView] UIImage.imageOrientation: 1
+11:06:14 [INFO] [PostView] Reoriented size: (5712.0, 4284.0)
+11:06:14 [INFO] [PostView] Resized to: (1200.0, 900.0)
+11:06:14 [INFO] [PostView] JPEG size: 330KB
+11:06:14 [INFO] [PostView] Image processed and ready for display and upload
+11:06:14 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:16 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+11:07:16 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x00000001103bc7e0)
+11:07:16 [INFO] [PostsListView] Fetching posts (parent: root)
+11:07:18 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000010ce72c40)
+11:07:18 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+11:07:18 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+11:07:18 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:07:18 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:18 [INFO] [PostView] TextEditor body measured height: 0.0
+11:07:18 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+11:07:18 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+11:07:18 [INFO]   Title/Summary Height: 80 (hardcoded)
+11:07:18 [INFO]   Image Y: 92.0 (height: 466.6666666666667)
+11:07:18 [INFO]   Body Y: 562.6666666666667 (height: 126.0)
+11:07:18 [INFO]   Author Y: 700.6666666666667
+11:07:18 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:07:18 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:18 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:20 [INFO] [PostView] Edit button tapped for post 22
+11:07:20 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:21 [INFO] [PostView] Remove image button tapped
+11:07:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:22 [INFO] [PostView] Add image button tapped
+11:07:22 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:24 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:25 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:25 [INFO] [PostView] Image selected, processing...
+11:07:25 [INFO] [PostView] Processing image...
+11:07:25 [INFO] [PostView] CGImage pixel dimensions: 5712x4284
+11:07:25 [INFO] [PostView] UIImage.size (accounting for orientation): (5712.0, 4284.0)
+11:07:25 [INFO] [PostView] UIImage.imageOrientation: 1
+11:07:25 [INFO] [PostView] Reoriented size: (5712.0, 4284.0)
+11:07:25 [INFO] [PostView] Resized to: (1200.0, 900.0)
+11:07:25 [INFO] [PostView] JPEG size: 330KB
+11:07:25 [INFO] [PostView] New image aspect ratio: 1.3333333333333333
+11:07:25 [INFO] [PostView] Image processed and ready for display and upload
+11:07:25 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:07:38 [INFO] [PostView] Cancel button tapped - reverting changes
+11:07:38 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:08:55 [INFO] [TESTSERVER] State changed to ready
+11:08:55 [INFO] [TESTSERVER] Listener is ready and accepting connections
+11:08:55 [INFO] [APP] TestServer.start() returned
+11:08:55 [INFO] [PostsAPI] Successfully fetched 12 posts
+11:08:57 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x000000015606dfe0)
+11:08:57 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+11:08:57 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+11:08:57 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:08:57 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:08:57 [INFO] [PostView] TextEditor body measured height: 0.0
+11:08:57 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+11:08:57 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+11:08:57 [INFO]   Title/Summary Height: 80 (hardcoded)
+11:08:57 [INFO]   Image Y: 92.0 (height: 466.6666666666667)
+11:08:57 [INFO]   Body Y: 562.6666666666667 (height: 126.0)
+11:08:57 [INFO]   Author Y: 700.6666666666667
+11:08:57 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:08:57 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:08:57 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:08:59 [INFO] [PostView] Edit button tapped for post 22
+11:08:59 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:09:00 [INFO] [PostView] Remove image button tapped
+11:09:00 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:09:02 [INFO] [PostView] Add image button tapped
+11:09:02 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:09:04 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:09:06 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:09:06 [INFO] [PostView] Image selected, processing...
+11:09:06 [INFO] [PostView] Processing image...
+11:09:06 [INFO] [PostView] CGImage pixel dimensions: 5712x4284
+11:09:06 [INFO] [PostView] UIImage.size (accounting for orientation): (5712.0, 4284.0)
+11:09:06 [INFO] [PostView] UIImage.imageOrientation: 1
+11:09:06 [INFO] [PostView] Reoriented size: (5712.0, 4284.0)
+11:09:07 [INFO] [PostView] Cancel button tapped - reverting changes
+11:09:07 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:12 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+11:10:12 [INFO] [APP] NoobTestApp init() called
+11:10:12 [INFO] [APP] User already logged in: test@example.com
+11:10:12 [INFO] [APP] About to start TestServer
+11:10:12 [INFO] [TESTSERVER] start() called with port 8081
+11:10:12 [INFO] [TESTSERVER] About to register tests
+11:10:12 [INFO] TestServer: Registered tests: storage, clear-login
+11:10:12 [INFO] [TESTSERVER] Tests registered
+11:10:12 [INFO] [TESTSERVER] Attempting to start on port 8081
+11:10:12 [INFO] [TESTSERVER] Creating TCP parameters
+11:10:12 [INFO] [TESTSERVER] TCP parameters created
+11:10:12 [INFO] [TESTSERVER] Creating NWListener
+11:10:12 [INFO] [TESTSERVER] NWListener created successfully
+11:10:12 [INFO] [TESTSERVER] About to start listener
+11:10:12 [INFO] [TESTSERVER] Listener.start() called, waiting for ready state...
+11:10:12 [INFO] [TESTSERVER] State changed to ready
+11:10:12 [INFO] [TESTSERVER] Listener is ready and accepting connections
+11:10:12 [INFO] [APP] TestServer.start() returned
+11:10:13 [INFO] [PostsAPI] Fetching recent posts (limit: 50)
+11:10:13 [INFO] [PostsListView] Set current viewModel to ObjectIdentifier(0x0000000103b736f0)
+11:10:13 [INFO] [PostsListView] Fetching posts (parent: root)
+11:10:13 [INFO] [PostsListView] Loaded 12 posts
+11:10:13 [INFO] [PostsListView] Registered first-post automation for post 22
+11:10:14 [INFO] [PostsListView] expandPost(22) called, viewModel=ObjectIdentifier(0x0000000103b730c0)
+11:10:14 [INFO] [PostsListView] Setting viewModel.expandedPostId to 22
+11:10:14 [INFO] [PostsListView] After setting, expandedPostId = Optional(22)
+11:10:14 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:10:14 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:14 [INFO] [PostView] TextEditor body measured height: 0.0
+11:10:14 [INFO] [PostView] ⭐️ EXPANSION ANIMATION STARTING - Post 22 isExpanded changed to true
+11:10:14 [INFO] [PostView] Post 22 EXPANDED POSITIONS:
+11:10:14 [INFO]   Title/Summary Height: 80 (hardcoded)
+11:10:14 [INFO]   Image Y: 92.0 (height: 466.6666666666667)
+11:10:14 [INFO]   Body Y: 562.6666666666667 (height: 126.0)
+11:10:14 [INFO]   Author Y: 700.6666666666667
+11:10:14 [INFO] [PostView] Body evaluated for post 22: isExpanded=true, expansionFactor=0.0 - should trigger animation
+11:10:14 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:14 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:16 [INFO] [PostView] Edit button tapped for post 22
+11:10:16 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:17 [INFO] [PostView] Remove image button tapped
+11:10:17 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:18 [INFO] [PostView] Add image button tapped
+11:10:18 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:20 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:21 [INFO] [PostView] Image selected, processing...
+11:10:21 [INFO] [PostView] Processing image...
+11:10:21 [INFO] [PostView] CGImage pixel dimensions: 5712x4284
+11:10:21 [INFO] [PostView] UIImage.size (accounting for orientation): (5712.0, 4284.0)
+11:10:21 [INFO] [PostView] UIImage.imageOrientation: 1
+11:10:21 [INFO] [PostView] Reoriented size: (5712.0, 4284.0)
+11:10:21 [INFO] [PostView] Resized to: (1200.0, 900.0)
+11:10:21 [INFO] [PostView] JPEG size: 330KB
+11:10:21 [INFO] [PostView] New image aspect ratio: 1.3333333333333333
+11:10:21 [INFO] [PostView] Image processed and ready for display and upload
+11:10:21 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:10:24 [INFO] [PostView] Cancel button tapped - reverting changes
+11:10:24 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:12 [INFO] [PostView] Edit button tapped for post 22
+11:11:12 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:14 [INFO] [PostView] Remove image button tapped
+11:11:14 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:15 [INFO] [PostView] Add image button tapped
+11:11:15 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:17 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:25 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:25 [INFO] [PostView] Image selected, processing...
+11:11:25 [INFO] [PostView] Processing image...
+11:11:25 [INFO] [PostView] CGImage pixel dimensions: 5712x4284
+11:11:25 [INFO] [PostView] UIImage.size (accounting for orientation): (4284.0, 5712.0)
+11:11:25 [INFO] [PostView] UIImage.imageOrientation: 3
+11:11:25 [INFO] [PostView] Reoriented size: (4284.0, 5712.0)
+11:11:25 [INFO] [PostView] Resized to: (900.0, 1200.0)
+11:11:25 [INFO] [PostView] JPEG size: 329KB
+11:11:25 [INFO] [PostView] New image aspect ratio: 0.75
+11:11:25 [INFO] [PostView] Image processed and ready for display and upload
+11:11:25 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:28 [INFO] [PostView] Saving post 22 changes to server
+11:11:28 [INFO] [PostView] Uploading post with new image (329KB)
+11:11:28 [INFO] [PostView] Save response: {"post":{"ai_generated":false,"author_email":"test@example.com","author_name":"asnaroo","body":"I\u2019m a self-taught non-ninja software confectioner, messing with agent-based coding and figuring out how to make a new kind of social media app based on semantic search. Let\u2019s see how it goes!","created_at":"Fri, 31 Oct 2025 12:57:21 GMT","id":22,"image_url":"/uploads/0547a8f0a3d84d21a198414652015f10.jpg","location_tag":null,"parent_id":-1,"summary":"fix all the things","timezone":"UTC","title":"asnaroo","user_id":5},"status":"success"}
+11:11:28 [INFO] [PostView] Server returned image URL: /uploads/0547a8f0a3d84d21a198414652015f10.jpg
+11:11:28 [INFO] [PostView] Post saved successfully, exiting edit mode
+11:11:28 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:36 [INFO] [PostsListView] Loaded 12 posts
+11:11:36 [INFO] [PostsListView] Registered first-post automation for post 22
+11:11:38 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true
+11:11:38 [INFO] [PostView] Post 22 authorEmail: 'test@example.com', logged in: 'test@example.com', matches: true

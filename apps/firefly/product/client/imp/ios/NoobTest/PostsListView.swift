@@ -1,8 +1,9 @@
 import SwiftUI
 
-// Observable object to manage expansion state (so it can be updated from closures)
+// Observable object to manage expansion and editing state (so it can be updated from closures)
 class PostsListViewModel: ObservableObject {
     @Published var expandedPostId: Int? = nil
+    @Published var editingPostId: Int? = nil
 
     // Singleton for automation access
     static var current: PostsListViewModel?
@@ -105,6 +106,11 @@ struct PostsListView: View {
                                         },
                                         onNavigateToChildren: { postId in
                                             navigationPath.append(postId)
+                                        },
+                                        onPostUpdated: { updatedPost in
+                                            if let index = posts.firstIndex(where: { $0.id == updatedPost.id }) {
+                                                posts[index] = updatedPost
+                                            }
                                         }
                                     )
                                     .id(post.id)

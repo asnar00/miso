@@ -6,10 +6,10 @@ struct Post: Codable, Identifiable, Hashable {
     let id: Int
     let userId: Int
     let parentId: Int?
-    let title: String
-    let summary: String
-    let body: String
-    let imageUrl: String?
+    var title: String
+    var summary: String
+    var body: String
+    var imageUrl: String?
     let createdAt: String
     let timezone: String
     let locationTag: String?

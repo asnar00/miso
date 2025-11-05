@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 class UIAutomationRegistry {
     static let shared = UIAutomationRegistry()
@@ -39,5 +40,23 @@ class UIAutomationRegistry {
             keys = Array(elements.keys)
         }
         return keys.sorted()
+    }
+}
+
+// SwiftUI view modifier to make any view UI-automatable
+struct UIAutomationModifier: ViewModifier {
+    let id: String
+    let action: () -> Void
+
+    func body(content: Content) -> some View {
+        content.onAppear {
+            UIAutomationRegistry.shared.register(id: id, action: action)
+        }
+    }
+}
+
+extension View {
+    func uiAutomationId(_ id: String, action: @escaping () -> Void) -> some View {
+        self.modifier(UIAutomationModifier(id: id, action: action))
     }
 }

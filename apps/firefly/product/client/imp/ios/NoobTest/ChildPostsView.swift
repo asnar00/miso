@@ -74,6 +74,11 @@ struct ChildPostsView: View {
                                         },
                                         onNavigateToChildren: { postId in
                                             navigationPath.append(postId)
+                                        },
+                                        onPostUpdated: { updatedPost in
+                                            if let index = posts.firstIndex(where: { $0.id == updatedPost.id }) {
+                                                posts[index] = updatedPost
+                                            }
                                         }
                                     )
                                     .id(post.id)
