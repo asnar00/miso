@@ -19,8 +19,11 @@ When the user taps the pencil button:
 - Summary: italic text field, up to 2 lines when not editing
 - Body: multi-line text editor with dynamic height
 - Edit buttons appear in the author bar next to the author's name
-- Image delete button: red trash icon (trash.circle.fill) in top-right corner
-- Add Image button: black text with black outline, "photo.badge.plus" icon
+- Image edit buttons (when image exists): three buttons overlaid on top-right corner
+  - Red trash icon (trash.circle.fill) - delete image
+  - Blue photo icon (photo.circle.fill) - replace from photo library
+  - Green camera icon (camera.circle.fill) - take new photo with camera
+- Add Image button (when no image): black text with black outline, "photo.badge.plus" icon
 - Cancel button: red undo arrow icon (arrow.uturn.backward.circle.fill)
 
 **Editing Experience:**
@@ -32,10 +35,16 @@ When the user taps the pencil button:
 - The post remains expanded until save or cancel is pressed
 
 **Image Editing:**
-When in edit mode:
-- Existing images show a red trash button for deletion
-- Tapping the trash button removes the image (pending save)
-- If no image or image deleted: "Add Image" button appears with options for camera or photo library
+When in edit mode with an existing image:
+- Three buttons appear overlaid in the top-right corner of the image
+- Delete button (red trash icon): removes the image (pending save)
+- Photo library button (blue photo icon): opens photo library to replace image
+- Camera button (green camera icon): opens camera to take new photo
+
+When in edit mode with no image:
+- "Add Image" button appears with dialog options for camera or photo library
+
+All image replacements and additions:
 - Selected images are processed automatically:
   - EXIF orientation metadata is removed and pixels are reoriented
   - Image is resized to maximum 1200 pixels on longest edge (preserving aspect ratio)

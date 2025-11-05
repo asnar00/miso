@@ -194,7 +194,7 @@ ZStack(alignment: .topLeading) {
 .offset(x: 18, y: bodyY)
 ```
 
-### Image Display with Delete Button
+### Image Display with Edit Buttons
 
 ```swift
 // Display image if we have one
@@ -209,17 +209,56 @@ if let imageUrl = editableImageUrl {
         imageView(width: imageWidth, height: imageHeight, imageUrl: imageUrl)
             .offset(x: imageX, y: imageY)
 
-        // Delete button (only in edit mode)
-        if isEditing {
-            Button(action: {
-                Logger.shared.info("[PostView] Delete image button tapped")
-                editableImageUrl = nil
-            }) {
-                Image(systemName: "trash.circle.fill")
-                    .font(.system(size: 32))
-                    .foregroundColor(.red.opacity(0.8))
+        // Image edit buttons (only in edit mode)
+        if isEditing && isExpanded {
+            HStack(spacing: 8) {
+                // Delete image button
+                Button(action: {
+                    Logger.shared.info("[PostView] Remove image button tapped")
+                    editableImageUrl = nil
+                }) {
+                    Image(systemName: "trash.circle.fill")
+                        .font(.system(size: 32))
+                        .foregroundColor(.red.opacity(0.8))
+                        .background(Circle().fill(Color.white))
+                }
+                .uiAutomationId("delete-image-button") {
+                    editableImageUrl = nil
+                }
+
+                // Replace from photo library button
+                Button(action: {
+                    Logger.shared.info("[PostView] Replace from photo library button tapped")
+                    imageSourceType = .photoLibrary
+                    showImagePicker = true
+                }) {
+                    Image(systemName: "photo.circle.fill")
+                        .font(.system(size: 32))
+                        .foregroundColor(.blue.opacity(0.8))
+                        .background(Circle().fill(Color.white))
+                }
+                .uiAutomationId("replace-photo-library-button") {
+                    imageSourceType = .photoLibrary
+                    showImagePicker = true
+                }
+
+                // Take new photo with camera button
+                Button(action: {
+                    Logger.shared.info("[PostView] Take new photo button tapped")
+                    imageSourceType = .camera
+                    showImagePicker = true
+                }) {
+                    Image(systemName: "camera.circle.fill")
+                        .font(.system(size: 32))
+                        .foregroundColor(.green.opacity(0.8))
+                        .background(Circle().fill(Color.white))
+                }
+                .uiAutomationId("replace-camera-button") {
+                    imageSourceType = .camera
+                    showImagePicker = true
+                }
             }
-            .offset(x: imageX + imageWidth - 12, y: imageY + 12)
+            .padding(8)
         }
     }
 }
@@ -625,7 +664,7 @@ func savePost() {
 }
 ```
 
-### Initialize State
+### Initialize State and Sheet Presentation
 
 ```swift
 .onAppear {
@@ -634,27 +673,16 @@ func savePost() {
     editableSummary = post.summary
     editableBody = post.body
     editableImageUrl = post.imageUrl
+}
+.onChange(of: selectedImage) { oldValue, newValue in
+    guard let image = newValue else { return }
+    Logger.shared.info("[PostView] Image selected, processing...")
 
-    // Load and save original aspect ratio
-    if let imageUrl = post.imageUrl, imageAspectRatio == 1.0 {
-        Task {
-            let fullUrl = serverURL + imageUrl
-            if let url = URL(string: fullUrl) {
-                do {
-                    let (data, _) = try await URLSession.shared.data(from: url)
-                    if let uiImage = UIImage(data: data) {
-                        let aspectRatio = uiImage.size.width / uiImage.size.height
-                        await MainActor.run {
-                            imageAspectRatio = aspectRatio
-                            originalImageAspectRatio = aspectRatio
-                        }
-                    }
-                } catch {
-                    // Failed to load image, keep default aspect ratio
-                }
-            }
-        }
-    }
+    // Process image - it will be uploaded when user saves
+    processImage(image)
+}
+.sheet(isPresented: $showImagePicker) {
+    ImagePicker(image: $selectedImage, sourceType: imageSourceType)
 }
 ```
 
@@ -786,12 +814,14 @@ echo "   ./get-logs.sh"
 - **Bottom padding below author:** 28pt
 - **Author name left indent:** 24pt (18pt base + 6pt adjustment)
 - **Button size:** 32pt
-- **Button spacing:** 8pt between buttons
-- **Button trailing padding:** 18pt
+- **Button spacing:** 8pt between buttons (in image edit buttons HStack)
+- **Button trailing padding:** 18pt (author bar edit buttons)
+- **Image edit buttons padding:** 8pt (entire button group)
 - **Grey background opacity:** 0.1 (10%)
 - **Corner radius:** 8pt for text fields, 12pt for images and Add Image button
 - **Add Image button:** 350pt wide, 50pt tall
 - **Image processing:** Max 1200px on longest edge, JPEG quality 0.9
+- **Image edit button colors:** Red (trash), Blue (photo library), Green (camera)
 
 ## Layout Formula
 
@@ -926,3 +956,12 @@ This prevents accidental collapse of the post while editing. The user must expli
 12. **ImagePicker Reuse**: Uses existing ImagePicker struct from NewPostView.swift, preventing duplicate definitions
 
 13. **Compiler Timeout Mitigation**: Complex views extracted to computed properties (`addImageButton`) and functions (`imageView()`) to reduce body complexity
+
+14. **Sheet Presentation**: The `.sheet(isPresented: $showImagePicker)` modifier is attached to the main view body (after `.onChange`), allowing any button in the view to trigger image selection by setting `showImagePicker = true`
+
+15. **Three-Button Image Editing**: When editing a post with an image, three buttons appear in an HStack:
+   - Trash button (red) directly removes the image
+   - Photo library button (blue) directly opens the photo picker with `.photoLibrary` source
+   - Camera button (green) directly opens the camera with `.camera` source
+   - No confirmation dialog needed - user choice is explicit via button selection
+   - All three buttons set `imageSourceType` and `showImagePicker` to trigger the sheet

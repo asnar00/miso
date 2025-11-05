@@ -272,13 +272,21 @@ As user edits text:
 - Author name: 24pt leading padding
 
 **Image Controls (Edit Mode Only):**
-- Delete image button: trash.circle.fill icon, 32pt, red 80% opacity
-- Add Image button: 350pt wide, 50pt tall, black text/outline
-  - Black text with "photo.badge.plus" icon
-  - Light grey background (10% opacity)
-  - Black border (30% opacity, 2pt width)
-  - 12pt corner radius
-  - Positioned at imageY coordinate
+
+When image exists - three buttons in HStack overlaid on top-right of image:
+- Delete image button: trash.circle.fill icon, 32pt, red 80% opacity, white circle background
+- Photo library button: photo.circle.fill icon, 32pt, blue 80% opacity, white circle background
+- Camera button: camera.circle.fill icon, 32pt, green 80% opacity, white circle background
+- HStack spacing: 8pt between buttons
+- Overall padding: 8pt around button group
+
+When no image exists - Add Image button:
+- 350pt wide, 50pt tall, black text/outline
+- Black text with "photo.badge.plus" icon
+- Light grey background (10% opacity)
+- Black border (30% opacity, 2pt width)
+- 12pt corner radius
+- Positioned at imageY coordinate
 
 ## Server API
 
@@ -448,10 +456,24 @@ function displayImage(imageUrl, width, height):
 ```
 if isEditing:
     if editableImageUrl != null:
-        // Show delete button over image
-        Button(icon: trash.circle.fill, color: red):
-            onClick: deleteImage()
-        // Position in top-right corner of image
+        // Show three buttons in HStack over image (top-right corner)
+        HStack(spacing: 8pt):
+            // Delete button
+            Button(icon: trash.circle.fill, color: red, background: white circle):
+                onClick: deleteImage()
+
+            // Photo library button
+            Button(icon: photo.circle.fill, color: blue, background: white circle):
+                onClick:
+                    imageSourceType = photoLibrary
+                    showImagePicker = true
+
+            // Camera button
+            Button(icon: camera.circle.fill, color: green, background: white circle):
+                onClick:
+                    imageSourceType = camera
+                    showImagePicker = true
+        // Position in top-right corner of image with 8pt padding
     else:
         // Show Add Image button
         Button(text: "Add Image", icon: photo.badge.plus):
@@ -459,6 +481,11 @@ if isEditing:
         // Confirmation dialog: Take Photo or Choose from Library
         // Opens image picker with selected source
         // When image selected: onImageSelected(selectedImage)
+
+// Image picker sheet (present when showImagePicker = true)
+Sheet(isPresented: showImagePicker):
+    ImagePicker(selectedImage, imageSourceType)
+    // When image selected: onImageSelected(selectedImage) via onChange
 ```
 
 **Initialize on Appear:**
@@ -518,9 +545,17 @@ register("save-button"):
 register("edit-body-text"):
     editableBody += "\n\nTest text added by automation!"
 
-register("delete-image"):
+register("delete-image-button"):
     editableImageUrl = null
 
-register("add-image"):
+register("replace-photo-library-button"):
+    imageSourceType = photoLibrary
+    showImagePicker = true
+
+register("replace-camera-button"):
+    imageSourceType = camera
+    showImagePicker = true
+
+register("add-image-button"):
     showImageSourcePicker = true
 ```

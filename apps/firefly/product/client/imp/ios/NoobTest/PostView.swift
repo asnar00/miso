@@ -646,21 +646,56 @@ struct PostView: View {
                         }
                     }
 
-                    // Trash button to remove image (only in edit mode when expanded)
+                    // Image edit buttons (only in edit mode when expanded)
                     if isEditing && isExpanded {
-                        Button(action: {
-                            Logger.shared.info("[PostView] Remove image button tapped")
-                            editableImageUrl = nil
-                        }) {
-                            Image(systemName: "trash.circle.fill")
-                                .font(.system(size: 32))
-                                .foregroundColor(.red.opacity(0.8))
-                                .background(Circle().fill(Color.white))
+                        HStack(spacing: 8) {
+                            // Delete image button
+                            Button(action: {
+                                Logger.shared.info("[PostView] Remove image button tapped")
+                                editableImageUrl = nil
+                            }) {
+                                Image(systemName: "trash.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.red.opacity(0.8))
+                                    .background(Circle().fill(Color.white))
+                            }
+                            .uiAutomationId("delete-image-button") {
+                                editableImageUrl = nil
+                            }
+
+                            // Replace from photo library button
+                            Button(action: {
+                                Logger.shared.info("[PostView] Replace from photo library button tapped")
+                                imageSourceType = .photoLibrary
+                                showImagePicker = true
+                            }) {
+                                Image(systemName: "photo.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.blue.opacity(0.8))
+                                    .background(Circle().fill(Color.white))
+                            }
+                            .uiAutomationId("replace-photo-library-button") {
+                                imageSourceType = .photoLibrary
+                                showImagePicker = true
+                            }
+
+                            // Take new photo with camera button
+                            Button(action: {
+                                Logger.shared.info("[PostView] Take new photo button tapped")
+                                imageSourceType = .camera
+                                showImagePicker = true
+                            }) {
+                                Image(systemName: "camera.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.green.opacity(0.8))
+                                    .background(Circle().fill(Color.white))
+                            }
+                            .uiAutomationId("replace-camera-button") {
+                                imageSourceType = .camera
+                                showImagePicker = true
+                            }
                         }
                         .padding(8)
-                        .uiAutomationId("delete-image-button") {
-                            editableImageUrl = nil
-                        }
                     }
                 }
                 .offset(x: currentX, y: currentY)
@@ -790,6 +825,9 @@ struct PostView: View {
 
             // Process image - it will be uploaded when user saves
             processImage(image)
+        }
+        .sheet(isPresented: $showImagePicker) {
+            ImagePicker(image: $selectedImage, sourceType: imageSourceType)
         }
     }
 }
