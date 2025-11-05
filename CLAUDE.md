@@ -8,7 +8,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Key philosophy**: This is a line of experiments. Each new experiment may start from scratch or build on previous work. Previous experiments are stored in branches, and the main branch is cleared for new experiments. When working in this repo, be aware that the current state may represent work-in-progress on the latest experiment.
 
+**Experiment Branches**: When starting a new experiment, create a branch for the current work before clearing main. Previous experiments remain accessible via their branches.
+
 **Current experiment focus**: Tree-based post exploration (experiment 22.1). Recent work includes implementing hierarchical post navigation with swipe gestures and preserved scroll positions.
+
+**Project Naming**: The Xcode project and Android package are named "NoobTest" (bundle ID: `com.miso.noobtest`), while "Firefly" is the product/marketing name. Use "NoobTest" for bundle identifiers, app management commands, and debugging.
 
 ## Core Architecture
 
@@ -110,6 +114,8 @@ ssh microserver@185.96.221.52 "cd ~/firefly-server && ./start.sh"
 curl http://185.96.221.52:8080/api/ping  # Verify
 ```
 
+**Local Server**: Runs on port 8080 (same as remote) for consistency.
+
 ## Current Application: Firefly
 
 Social media platform using semantic search on markdown snippets (`apps/firefly.md`).
@@ -196,7 +202,7 @@ TestRegistry.register("myfeature") {
 ```bash
 # From miso/platforms/ios/development/screen-capture/imp/
 ./screenshot.sh /tmp/screenshot.png  # Capture device screenshot
-# Useful for visual verification of UI changes
+# Critical for visual verification loop in miso workflow for UI changes
 ```
 
 **Android App Management** (from `apps/firefly/product/client/imp/eos/`):

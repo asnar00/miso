@@ -118,12 +118,32 @@ PostsListView(parentPostId: Int?):
         // Child level - custom back button
         CustomBackButton("< {parentPostTitle}")
 
+    // Add Post button conditional visibility
+    if shouldShowAddPostButton(parentPostId, currentUserId):
+        AddPostButton
+
     ScrollView:
         if posts.isEmpty:
             "No posts yet" message
         else:
             for each post in posts:
                 PostView(post, onNavigateToChildren)
+
+function shouldShowAddPostButton(parentPostId: Int?, currentUserEmail: String) -> Boolean:
+    if parentPostId == null:
+        // Root level - always show Add Post button
+        return true
+
+    // Child level - check if parent is a profile post and belongs to current user
+    parentPost = fetchParentPost(parentPostId)
+
+    // Profile posts have template = "profile"
+    isProfilePost = (parentPost.template == "profile")
+
+    // Check if profile belongs to current user by comparing emails
+    belongsToCurrentUser = (parentPost.authorEmail == currentUserEmail)
+
+    return isProfilePost and belongsToCurrentUser
 ```
 
 ## Gesture Handling
@@ -159,13 +179,30 @@ onTapBackButton():
 function shouldShowChildIndicator(post: Post) -> Boolean:
     return hasChildren(post)
 
-function renderChildIndicator():
-    // White circle: 42pt diameter, 90% opacity
-    // Black outline: 3pt stroke around circle
-    // Black chevron.right icon: size 20pt, bold weight, centered
-    // Positioned at right edge with -16pt trailing padding (straddles edge)
-    // Vertically centered in post height
-    // Only visible when post has children (childCount > 0)
+function renderChildIndicator(isExpanded: Boolean):
+    // White circle with two animated states:
+
+    // Collapsed state:
+    //   - 32pt diameter
+    //   - X position: 350 + 6 + 32 - (32/2) = 372pt from left edge
+    //   - Y position: vertically centered (currentHeight / 2)
+
+    // Expanded state:
+    //   - 42pt diameter
+    //   - X position: 350 - 16 + 32 - (42/2) = 345pt from left edge
+    //   - Y position: 16 + (42/2) = 37pt from top
+
+    // Both states:
+    //   - White fill: 95% opacity
+    //   - Deep shadow: color black 40% opacity, radius 8pt, x-offset 0, y-offset 4pt
+    //   - Black chevron.right icon: 20pt, bold weight
+
+    // Animation:
+    //   - Use expansionFactor (0.0 to 1.0) to interpolate between states
+    //   - Size: lerp(32, 42, expansionFactor)
+    //   - X position: lerp(collapsedX, expandedX, expansionFactor)
+    //   - Y position: lerp(collapsedY, expandedY, expansionFactor)
+    //   - Synchronized with card expansion animation (0.3s easeInOut)
 ```
 
 **Custom Back Button:**
@@ -200,6 +237,10 @@ The explore-posts feature refactors and extends view-posts:
    - When `parentPostId != null`: child level, fetch from `/api/posts/{parentPostId}/children`
    - Conditional fetching in `.onAppear`: only fetch root posts if `posts.isEmpty`
    - Conditional toolbar: only show custom back button when `parentPostId != null`
+   - Conditional Add Post button: show based on `shouldShowAddPostButton()` logic
+   - Access current user email from `Storage.shared.getLoginState().email`
+   - Compare parent post's `authorEmail` with current user's email
+   - Check parent post's `template` field to identify profile posts (template == "profile")
    - Add to Xcode project using project.pbxproj
 
 2. **Simplify PostsView.swift** to thin wrapper:

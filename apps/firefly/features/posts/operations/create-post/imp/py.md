@@ -108,6 +108,12 @@ def create_post():
 
         user_id = user['id']
 
+        # If parent_id not provided, default to user's profile post
+        if parent_id is None:
+            profile = db.get_user_profile(user_id)
+            if profile:
+                parent_id = profile['id']
+
         # Handle image upload if present
         image_url = None
         if 'image' in request.files:

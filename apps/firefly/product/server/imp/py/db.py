@@ -61,6 +61,38 @@ class Database:
         if self.connection_pool:
             self.connection_pool.closeall()
 
+    def migrate_add_last_activity(self):
+        """Add last_activity column to users table if it doesn't exist"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                # Add column if it doesn't exist
+                cur.execute("""
+                    ALTER TABLE users
+                    ADD COLUMN IF NOT EXISTS last_activity TIMESTAMP
+                """)
+
+                # Initialize with most recent post timestamp for existing users
+                cur.execute("""
+                    UPDATE users u
+                    SET last_activity = (
+                        SELECT MAX(p.created_at)
+                        FROM posts p
+                        WHERE p.user_id = u.id
+                    )
+                    WHERE EXISTS (
+                        SELECT 1 FROM posts p WHERE p.user_id = u.id
+                    ) AND last_activity IS NULL
+                """)
+
+                conn.commit()
+                print("Migration: last_activity column added and initialized")
+        except Exception as e:
+            conn.rollback()
+            print(f"Migration error: {e}")
+        finally:
+            self.return_connection(conn)
+
     # User operations
 
     def create_user(self, email: str) -> Optional[int]:
@@ -192,6 +224,13 @@ class Database:
                     (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding, template_name)
                 )
                 post_id = cur.fetchone()[0]
+
+                # Update user's last_activity timestamp
+                cur.execute(
+                    "UPDATE users SET last_activity = NOW() WHERE id = %s",
+                    (user_id,)
+                )
+
                 conn.commit()
                 return post_id
         except Exception as e:
@@ -547,6 +586,35 @@ class Database:
                 return cur.fetchall()
         except Exception as e:
             print(f"Error getting recent posts: {e}")
+            return []
+        finally:
+            self.return_connection(conn)
+
+    def get_recent_users(self) -> List[Dict[str, Any]]:
+        """Get users ordered by most recent activity, with their profile posts (parent_id = -1)"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute(
+                    """
+                    SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           p.template_name,
+                           t.placeholder_title, t.placeholder_summary, t.placeholder_body,
+                           COALESCE(u.name, u.email) as author_name,
+                           u.email as author_email,
+                           COUNT(children.id) as child_count
+                    FROM users u
+                    JOIN posts p ON p.user_id = u.id AND p.parent_id = -1
+                    LEFT JOIN templates t ON p.template_name = t.name
+                    LEFT JOIN posts children ON children.parent_id = p.id
+                    GROUP BY p.id, u.id, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body
+                    ORDER BY u.last_activity DESC
+                    """
+                )
+                return cur.fetchall()
+        except Exception as e:
+            print(f"Error getting recent users: {e}")
             return []
         finally:
             self.return_connection(conn)

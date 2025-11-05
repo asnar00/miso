@@ -58,31 +58,143 @@ struct SinglePostResponse: Codable {
 5. **NewPostView.swift** - DELETED (replaced by inline editing in PostView)
 6. **NoobTest.xcodeproj/project.pbxproj** - Removed references to deleted files
 
-### 1. PostsView.swift - Thin Wrapper
+### 1. PostsView.swift - Thin Wrapper with Conditional Add Button
 
-Simplified to just set up NavigationStack and route to PostsListView:
+Sets up NavigationStack and routes to PostsListView. For child navigation, uses ChildPostsListViewWrapper to determine Add Post button visibility:
 
 ```swift
+enum PostsDestination: Hashable {
+    case children(parentId: Int)
+    case profile(backLabel: String, profilePost: Post)
+}
+
 struct PostsView: View {
+    let initialPosts: [Post]
     let onPostCreated: () -> Void
-    @State private var navigationPath: [Int] = []
+    let showAddButton: Bool
+
+    @State private var navigationPath: [PostsDestination] = []
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
             PostsListView(
-                parentPostId: nil,  // nil = root level
+                parentPostId: nil,
+                backLabel: nil,
+                initialPosts: initialPosts,
                 onPostCreated: onPostCreated,
-                navigationPath: $navigationPath
+                navigationPath: $navigationPath,
+                showAddButton: showAddButton,
+                initialExpandedPostId: nil
             )
-            .navigationDestination(for: Int.self) { parentPostId in
+            .navigationDestination(for: PostsDestination.self) { destination in
+                switch destination {
+                case .children(let parentId):
+                    ChildPostsListViewWrapper(
+                        parentId: parentId,
+                        onPostCreated: onPostCreated,
+                        navigationPath: $navigationPath
+                    )
+                case .profile(let backLabel, let profilePost):
+                    PostsListView(
+                        parentPostId: nil,
+                        backLabel: backLabel,
+                        initialPosts: [profilePost],
+                        onPostCreated: onPostCreated,
+                        navigationPath: $navigationPath,
+                        showAddButton: false,
+                        initialExpandedPostId: profilePost.id
+                    )
+                }
+            }
+        }
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(Color(red: 128/255, green: 128/255, blue: 128/255), for: .navigationBar)
+        .toolbarColorScheme(.light, for: .navigationBar)
+    }
+}
+
+// Wrapper to fetch parent post and determine showAddButton state
+struct ChildPostsListViewWrapper: View {
+    let parentId: Int
+    let onPostCreated: () -> Void
+    @Binding var navigationPath: [PostsDestination]
+
+    @State private var parentPost: Post? = nil
+    @State private var isLoading = true
+
+    let serverURL = "http://185.96.221.52:8080"
+
+    var shouldShowAddPostButton: Bool {
+        guard let parent = parentPost else { return false }
+
+        // Profile posts have template = "profile"
+        let isProfilePost = (parent.template == "profile")
+
+        // Check if profile belongs to current user by comparing emails
+        let loginState = Storage.shared.getLoginState()
+        guard let currentEmail = loginState.email,
+              let authorEmail = parent.authorEmail else { return false }
+        let belongsToCurrentUser = (authorEmail == currentEmail)
+
+        return isProfilePost && belongsToCurrentUser
+    }
+
+    var body: some View {
+        Group {
+            if isLoading {
+                ZStack {
+                    Color(red: 128/255, green: 128/255, blue: 128/255)
+                        .ignoresSafeArea()
+                    ProgressView("Loading...")
+                        .foregroundColor(.black)
+                }
+            } else {
                 PostsListView(
-                    parentPostId: parentPostId,  // non-nil = child level
+                    parentPostId: parentId,
+                    backLabel: nil,
+                    initialPosts: [],
                     onPostCreated: onPostCreated,
-                    navigationPath: $navigationPath
+                    navigationPath: $navigationPath,
+                    showAddButton: shouldShowAddPostButton,
+                    initialExpandedPostId: nil
                 )
             }
         }
-        .navigationBarHidden(true)
+        .onAppear {
+            fetchParentPost()
+        }
+    }
+
+    func fetchParentPost() {
+        guard let url = URL(string: "\(serverURL)/api/posts/\(parentId)") else {
+            isLoading = false
+            return
+        }
+
+        Logger.shared.info("[ChildPostsListViewWrapper] Fetching parent post \(parentId)")
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+                return
+            }
+
+            do {
+                let postResponse = try JSONDecoder().decode(SinglePostResponse.self, from: data)
+                DispatchQueue.main.async {
+                    self.parentPost = postResponse.post
+                    self.isLoading = false
+                    Logger.shared.info("[ChildPostsListViewWrapper] Parent post fetched. parentId=\(postResponse.post.parentId), userId=\(postResponse.post.userId), showAddButton=\(shouldShowAddPostButton)")
+                }
+            } catch {
+                Logger.shared.error("[ChildPostsListViewWrapper] Error fetching parent: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+            }
+        }.resume()
     }
 }
 ```
@@ -95,7 +207,11 @@ struct PostsView: View {
 3. Body complexity fix (extracted 478-line body to `postContent` computed property)
 4. ImagePicker moved inline from deleted NewPostView.swift
 
-**Child indicator and swipe gesture:**
+**Child indicator with smooth animation and swipe gesture:**
+
+Target file: `NoobTest/PostView.swift`
+
+The button uses `expansionFactor` (0.0 to 1.0) to smoothly interpolate between collapsed and expanded states, matching the card's expansion animation.
 
 ```swift
 struct PostView: View {
@@ -103,32 +219,34 @@ struct PostView: View {
     let isExpanded: Bool
     let onTap: () -> Void
     let onPostCreated: () -> Void
-    let onNavigateToChildren: ((Int) -> Void)?  // NEW
+    let onNavigateToChildren: ((Int) -> Void)?
+
+    @State private var expansionFactor: CGFloat = 0.0  // Drives animation
 
     var body: some View {
         ZStack(alignment: .topLeading) {
             // Existing post content...
 
-            // Child indicator overlay (grey semi-transparent circle with white chevron)
+            // Child indicator overlay - animated using expansionFactor
             if (post.childCount ?? 0) > 0 {
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        ZStack {
-                            Circle()
-                                .fill(Color(red: 128/255, green: 128/255, blue: 128/255).opacity(0.8))
-                                .frame(width: 42, height: 42)
+                // Interpolate size and position based on expansionFactor
+                let collapsedSize: CGFloat = 32
+                let expandedSize: CGFloat = 42
+                let currentSize = lerp(collapsedSize, expandedSize, expansionFactor)
 
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(Color.white)
-                        }
-                        .padding(.trailing, -10)
-                    }
-                    Spacer()
-                }
-                .frame(height: currentHeight)
+                // Collapsed: right edge with -6pt padding + 32pt, vertically centered
+                // Expanded: 16pt from top, 16pt from right + 32pt
+                let collapsedX: CGFloat = 350 + 6 + 32 - (collapsedSize / 2)  // = 372pt
+                let expandedX: CGFloat = 350 - 16 + 32 - (expandedSize / 2)   // = 345pt
+                let currentX = lerp(collapsedX, expandedX, expansionFactor)
+
+                let collapsedY: CGFloat = currentHeight / 2  // Vertically centered
+                let expandedY: CGFloat = 16 + (expandedSize / 2)  // = 37pt from top
+                let currentY = lerp(collapsedY, expandedY, expansionFactor)
+
+                childIndicatorButton
+                    .frame(width: currentSize, height: currentSize)
+                    .offset(x: currentX - currentSize/2, y: currentY - currentSize/2)
             }
         }
         .onTapGesture {
@@ -143,9 +261,57 @@ struct PostView: View {
                     }
                 }
         )
+        .onChange(of: isExpanded) { oldValue, newValue in
+            if newValue {
+                // Expanding - animate expansionFactor to 1.0
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    expansionFactor = 1.0
+                }
+            } else {
+                // Collapsing - animate expansionFactor to 0.0
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    expansionFactor = 0.0
+                }
+            }
+        }
+    }
+
+    // Extracted child indicator button (reused throughout animation)
+    private var childIndicatorButton: some View {
+        ZStack {
+            Circle()
+                .fill(Color.white.opacity(0.95))
+                .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(Color.black)
+        }
+        .onTapGesture {
+            if let navigate = onNavigateToChildren {
+                navigate(post.id)
+            }
+        }
+        .onAppear {
+            // Register this post's navigation action for UI automation
+            UIAutomationRegistry.shared.register(id: "navigate-to-children-\(post.id)") {
+                if let navigate = onNavigateToChildren {
+                    DispatchQueue.main.async {
+                        navigate(post.id)
+                    }
+                }
+            }
+        }
     }
 }
 ```
+
+**Key implementation details:**
+- Uses single view structure throughout animation (not if/else branches)
+- Interpolates all properties: size, x-position, y-position
+- Synchronized with card expansion via shared `expansionFactor` state
+- Shadow creates depth without outline
+- Button is tappable throughout animation
 
 **Body complexity fix:**
 
@@ -258,6 +424,28 @@ struct PostsListView: View {
     @State private var parentPost: Post? = nil
 
     let serverURL = "http://185.96.221.52:8080"
+
+    // Determine if the Add Post button should be shown
+    private var shouldShowAddPostButton: Bool {
+        if parentPostId == nil {
+            // Root level - always show
+            return true
+        }
+
+        // Child level - only show if parent is a profile post and belongs to current user
+        guard let parent = parentPost else { return false }
+
+        // Profile posts have template = "profile"
+        let isProfilePost = (parent.template == "profile")
+
+        // Check if profile belongs to current user by comparing emails
+        let loginState = Storage.shared.getLoginState()
+        guard let currentEmail = loginState.email,
+              let authorEmail = parent.authorEmail else { return false }
+        let belongsToCurrentUser = (authorEmail == currentEmail)
+
+        return isProfilePost && belongsToCurrentUser
+    }
 
     var body: some View {
         ZStack {

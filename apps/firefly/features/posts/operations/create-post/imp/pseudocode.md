@@ -60,13 +60,14 @@
 2. Validate required fields (email, title, summary, body)
 3. If parent_id provided, validate it's a valid integer
 4. Look up user by email address
-5. If image file present:
+5. **If parent_id NOT provided, get user's profile post and set parent_id to profile post's ID**
+6. If image file present:
    - Validate file extension
    - Generate unique filename (UUID + extension)
    - Save to uploads folder
    - Store image URL as "/uploads/{filename}"
-6. Call database create_post function with parent_id (if provided)
-7. Retrieve and return the created post
+7. Call database create_post function with parent_id (either provided, or defaulted to profile post)
+8. Retrieve and return the created post
 
 **Error Handling**:
 - 400: Missing required fields

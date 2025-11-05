@@ -56,7 +56,7 @@ struct NoobTestApp: App {
                                 .font(.system(size: UIScreen.main.bounds.width / 12))
                                 .foregroundColor(.black)
 
-                            ProgressView("Loading posts...")
+                            ProgressView("Loading users...")
                                 .foregroundColor(.black)
                         }
                     } else if let error = postsError {
@@ -65,36 +65,36 @@ struct NoobTestApp: App {
                                 .foregroundColor(.red)
                                 .padding()
                             Button("Retry") {
-                                fetchRecentPosts()
+                                fetchRecentUsers()
                             }
                             .padding()
                             .background(Color.white.opacity(0.3))
                             .cornerRadius(8)
                         }
                     } else {
-                        PostsView(initialPosts: posts, onPostCreated: fetchRecentPosts)
+                        PostsView(initialPosts: posts, onPostCreated: fetchRecentUsers, showAddButton: false)
                     }
                 }
                 .onAppear {
                     if posts.isEmpty && !isLoadingPosts {
-                        fetchRecentPosts()
+                        fetchRecentUsers()
                     }
                 }
             }
         }
     }
 
-    func fetchRecentPosts() {
+    func fetchRecentUsers() {
         isLoadingPosts = true
         postsError = nil
 
-        PostsAPI.shared.fetchRecentPosts { result in
+        PostsAPI.shared.fetchRecentUsers { result in
             switch result {
-            case .success(let fetchedPosts):
+            case .success(let fetchedUsers):
                 // Preload first image, then display
-                preloadImagesOptimized(for: fetchedPosts) {
+                preloadImagesOptimized(for: fetchedUsers) {
                     DispatchQueue.main.async {
-                        self.posts = fetchedPosts
+                        self.posts = fetchedUsers
                         self.isLoadingPosts = false
                     }
                 }

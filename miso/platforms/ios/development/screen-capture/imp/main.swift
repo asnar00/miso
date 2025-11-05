@@ -64,7 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.isMovableByWindowBackground = true
         window.isOpaque = false
         window.backgroundColor = .clear
-        window.level = .floating
+        window.level = .normal
 
         // Replace content view with clickable view
         let clickableView = ClickableView(frame: window.contentView!.bounds)
@@ -73,8 +73,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         window.contentView = clickableView
 
-        // Add rounded corners and border
+        // Add rounded background, corners and border
         window.contentView?.wantsLayer = true
+        window.contentView?.layer?.backgroundColor = NSColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0).cgColor
         window.contentView?.layer?.cornerRadius = 45
         window.contentView?.layer?.masksToBounds = true
         window.contentView?.layer?.borderWidth = 8
@@ -222,7 +223,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
         consoleWindow?.title = "Console"
         consoleWindow?.isReleasedWhenClosed = false
-        consoleWindow?.level = .floating
+        consoleWindow?.level = .normal
 
         // Create text view for console
         let scrollView = NSScrollView(frame: consoleWindow!.contentView!.bounds)

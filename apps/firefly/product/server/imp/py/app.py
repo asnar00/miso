@@ -301,6 +301,13 @@ def create_post():
 
         user_id = user['id']
 
+        # If parent_id not provided, default to user's profile post
+        if parent_id is None:
+            profile = db.get_user_profile(user_id)
+            if profile:
+                parent_id = profile['id']
+                print(f"[CREATE_POST] No parent_id provided, defaulting to user's profile post: {parent_id}", file=sys.stderr, flush=True)
+
         # Handle image upload if present
         image_url = None
         if 'image' in request.files:
@@ -474,6 +481,23 @@ def get_recent_posts():
         })
     except Exception as e:
         print(f"Error getting recent posts: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/users/recent', methods=['GET'])
+def get_recent_users():
+    """Get users ordered by most recent activity, with their profile posts"""
+    try:
+        users = db.get_recent_users()
+
+        return jsonify({
+            'status': 'success',
+            'posts': users  # Return as 'posts' for compatibility with client
+        })
+    except Exception as e:
+        print(f"Error getting recent users: {e}")
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'

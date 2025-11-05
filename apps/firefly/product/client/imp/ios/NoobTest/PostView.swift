@@ -340,6 +340,34 @@ struct PostView: View {
     }
 
     // Add Image Button as a separate view to reduce body complexity
+    // Extracted child indicator button (reused in both collapsed and expanded states)
+    private var childIndicatorButton: some View {
+        ZStack {
+            Circle()
+                .fill(Color.white.opacity(0.95))
+                .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(Color.black)
+        }
+        .onTapGesture {
+            if let navigate = onNavigateToChildren {
+                navigate(post.id)
+            }
+        }
+        .onAppear {
+            // Register this post's navigation action for UI automation
+            UIAutomationRegistry.shared.register(id: "navigate-to-children-\(post.id)") {
+                if let navigate = onNavigateToChildren {
+                    DispatchQueue.main.async {
+                        navigate(post.id)
+                    }
+                }
+            }
+        }
+    }
+
     private var addImageButton: some View {
         let availableWidth: CGFloat = 350
         let addImageButtonHeight: CGFloat = 50
@@ -835,42 +863,26 @@ struct PostView: View {
                 addImageButton
             }
 
-            // Child indicator overlay (right arrow in opaque circle)
-            // Position at the right edge of the card, drawn AFTER image so it appears on top
+            // Child indicator overlay - animated between two states using expansionFactor
             if (post.childCount ?? 0) > 0 {
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        ZStack {
-                            Circle()
-                                .fill(Color(red: 128/255, green: 128/255, blue: 128/255).opacity(0.8))
-                                .frame(width: 42, height: 42)
+                // Interpolate size and position based on expansionFactor
+                let collapsedSize: CGFloat = 32
+                let expandedSize: CGFloat = 42
+                let currentSize = lerp(collapsedSize, expandedSize, expansionFactor)
 
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(Color.white)
-                        }
-                        .padding(.trailing, -10)  // Position straddling the right edge
-                        .onTapGesture {
-                            if let navigate = onNavigateToChildren {
-                                navigate(post.id)
-                            }
-                        }
-                        .onAppear {
-                            // Register this post's navigation action
-                            UIAutomationRegistry.shared.register(id: "navigate-to-children-\(post.id)") {
-                                if let navigate = onNavigateToChildren {
-                                    DispatchQueue.main.async {
-                                        navigate(post.id)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    Spacer()
-                }
-                .frame(height: currentHeight)
+                // Collapsed: right edge with -6pt padding + 32pt, vertically centered
+                // Expanded: 16pt from top, 16pt from right + 32pt
+                let collapsedX: CGFloat = 350 + 6 + 32 - (collapsedSize / 2)  // Right edge with -6pt padding + 32pt offset
+                let expandedX: CGFloat = 350 - 16 + 32 - (expandedSize / 2)   // 16pt from right edge + 32pt offset
+                let currentX = lerp(collapsedX, expandedX, expansionFactor)
+
+                let collapsedY: CGFloat = currentHeight / 2  // Vertically centered
+                let expandedY: CGFloat = 16 + (expandedSize / 2)  // 16pt from top
+                let currentY = lerp(collapsedY, expandedY, expansionFactor)
+
+                childIndicatorButton
+                    .frame(width: currentSize, height: currentSize)
+                    .offset(x: currentX - currentSize/2, y: currentY - currentSize/2)
             }
 
         }

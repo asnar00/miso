@@ -1,7 +1,9 @@
 # recent posts
 *fetch and display the 50 most recently created posts*
 
-When you open Firefly after signing in, the app automatically fetches the 50 most recent posts from the server and displays them using the view-posts component.
+This view fetches the 50 most recent posts from the server and displays them using the view-posts component.
+
+**Note**: The app now starts with the recent-users view instead of recent-posts. Users can navigate to recent-posts if needed.
 
 The posts are sorted by creation date, newest first, so the most recent post appears at the top of the feed.
 

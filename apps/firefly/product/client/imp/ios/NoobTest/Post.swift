@@ -116,6 +116,38 @@ class PostsAPI {
         }.resume()
     }
 
+    func fetchRecentUsers(completion: @escaping (Result<[Post], Error>) -> Void) {
+        guard let url = URL(string: "\(serverURL)/api/users/recent") else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
+            return
+        }
+
+        Logger.shared.info("[PostsAPI] Fetching recent users")
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                Logger.shared.error("[PostsAPI] Error fetching users: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                Logger.shared.error("[PostsAPI] No data received")
+                completion(.failure(NSError(domain: "No data", code: -1)))
+                return
+            }
+
+            do {
+                let usersResponse = try JSONDecoder().decode(PostsResponse.self, from: data)
+                Logger.shared.info("[PostsAPI] Successfully fetched \(usersResponse.posts.count) users")
+                completion(.success(usersResponse.posts))
+            } catch {
+                Logger.shared.error("[PostsAPI] JSON decode error: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+
     func fetchPost(id: Int, completion: @escaping (Result<Post, Error>) -> Void) {
         guard let url = URL(string: "\(serverURL)/api/posts/\(id)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
