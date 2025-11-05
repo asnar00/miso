@@ -52,10 +52,11 @@ struct SinglePostResponse: Codable {
 ### Files Modified
 
 1. **PostsView.swift** - Converted to thin wrapper with NavigationStack setup
-2. **PostsListView.swift** - NEW FILE - unified component for root and child posts
-3. **PostView.swift** - Added child indicator (white circle with black chevron) and left-swipe gesture
-4. **ChildPostsView.swift** - REMOVED (functionality unified into PostsListView)
-5. **NoobTest.xcodeproj/project.pbxproj** - Added PostsListView.swift reference
+2. **PostsListView.swift** - Unified component for root and child posts with custom capsule back button
+3. **PostView.swift** - Child indicator, left-swipe gesture, body complexity fix, inline ImagePicker
+4. **ChildPostsView.swift** - DELETED (functionality unified into PostsListView)
+5. **NewPostView.swift** - DELETED (replaced by inline editing in PostView)
+6. **NoobTest.xcodeproj/project.pbxproj** - Removed references to deleted files
 
 ### 1. PostsView.swift - Thin Wrapper
 
@@ -88,7 +89,13 @@ struct PostsView: View {
 
 ### 2. PostView.swift Changes
 
-Add child indicator overlay (white circle with black chevron) and swipe gesture:
+**Changes made:**
+1. Child indicator overlay (grey circle with white chevron)
+2. Left-swipe gesture for navigation to children
+3. Body complexity fix (extracted 478-line body to `postContent` computed property)
+4. ImagePicker moved inline from deleted NewPostView.swift
+
+**Child indicator and swipe gesture:**
 
 ```swift
 struct PostView: View {
@@ -136,6 +143,77 @@ struct PostView: View {
                     }
                 }
         )
+    }
+}
+```
+
+**Body complexity fix:**
+
+Swift compiler has a limit on view body complexity. PostView's body was 478 lines, causing "unable to type-check this expression in reasonable time" error. Fixed by extracting main content to a separate computed property:
+
+```swift
+struct PostView: View {
+    // ... properties ...
+
+    var body: some View {
+        postContent
+            .onAppear { /* ... */ }
+            .onChange(of: selectedImage) { /* ... */ }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(image: $selectedImage, sourceType: imageSourceType)
+            }
+    }
+
+    @ViewBuilder
+    private var postContent: some View {
+        // All the ZStack content (478 lines) goes here
+        // This allows the compiler to type-check the body in smaller chunks
+    }
+}
+```
+
+**ImagePicker inline:**
+
+Previously in NewPostView.swift (now deleted), moved inline to PostView.swift at end of file:
+
+```swift
+// MARK: - ImagePicker
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    let sourceType: UIImagePickerController.SourceType
+    @Environment(\.dismiss) var dismiss
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = sourceType
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: ImagePicker
+
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.image = uiImage
+            }
+            parent.dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.dismiss()
+        }
     }
 }
 ```
@@ -250,15 +328,27 @@ struct PostsListView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarHidden(parentPostId == nil)  // Hide nav bar for root, show for children
         .toolbar {
-            // Show parent title for child views
+            // Custom capsule back button for child views
             if parentPostId != nil {
-                ToolbarItem(placement: .principal) {
-                    Text(parentPost?.title ?? "...")
-                        .font(.system(size: 21, weight: .semibold))  // 25% bigger than default
-                        .foregroundColor(.black)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .offset(x: -88)  // Position to left of center, next to standard back button
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        navigationPath.removeLast()
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.black)
+
+                            Text(parentPost?.title ?? "...")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundColor(.black)
+                                .lineLimit(1)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.white.opacity(0.9))
+                        .clipShape(Capsule())
+                    }
                 }
             }
         }
@@ -363,10 +453,11 @@ struct PostsListView: View {
 2. **State Preservation**: Root view only fetches when `posts.isEmpty`, keeping scroll position intact when navigating back
 3. **Different Endpoints**: Root uses `/api/posts/recent?limit=50`, children use `/api/posts/{id}/children`
 4. **No Scroll-Blocking Gestures**: Removed `.highPriorityGesture` to allow ScrollView to scroll freely without interference
-5. **Standard Navigation**: Uses iOS standard back button to preserve swipe-right gesture, with parent title positioned next to it using `.toolbar` with `.principal` placement
+5. **Custom Capsule Back Button**: White oval button with chevron + parent title in `.navigationBarLeading` placement (replaces standard iOS back button)
 6. **Circle Indicator Design**: Grey semi-transparent circle (RGB 128/128/128, 80% opacity) with white chevron, no border
 7. **Edge Straddling**: Indicator positioned -10pt trailing so circle straddles post edge
 8. **UI Automation**: Programmatic scroll and navigation actions registered via UIAutomationRegistry for testing
+9. **Code Organization**: ImagePicker moved inline to PostView.swift; ChildPostsView and NewPostView deleted (functionality unified)
 
 ## API Endpoints Used
 
@@ -424,10 +515,12 @@ struct PostsListView: View {
 - Only visible when `(post.childCount ?? 0) > 0`
 
 **Navigation Bar (Child Views):**
-- Standard iOS back button: Dark grey circle with white `chevron.left`
-- Parent post title: 21pt semibold, black color, 1 line max
-- Title position: `.offset(x: -88)` to sit left of center, next to back button
-- Title alignment: `.leading` within `.maxWidth(.infinity)` frame
+- Custom capsule back button (white oval, 90% opacity)
+- Chevron icon: `chevron.left`, 20pt semibold, black
+- Parent post title: 17pt semibold, black, 1 line max
+- Button padding: 12pt horizontal, 8pt vertical
+- Icon-to-text spacing: 8pt
+- Placement: `.navigationBarLeading` (left side)
 - Navigation bar hidden for root view, shown for child views
 
 ## Gestures

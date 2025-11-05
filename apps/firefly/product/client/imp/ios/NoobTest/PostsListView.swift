@@ -154,13 +154,25 @@ struct PostsListView: View {
         .navigationBarHidden(parentPostId == nil)  // Hide nav bar for root, show for children
         .toolbar {
             if parentPostId != nil {
-                ToolbarItem(placement: .principal) {
-                    Text(parentPost?.title ?? "...")
-                        .font(.system(size: 21, weight: .semibold))  // 25% bigger (17 * 1.25 ≈ 21)
-                        .foregroundColor(.black)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .offset(x: -88)  // Move left 8pt more (was -80, now -88)
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        navigationPath.removeLast()
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.black)
+
+                            Text(parentPost?.title ?? "...")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundColor(.black)
+                                .lineLimit(1)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.white.opacity(0.9))
+                        .clipShape(Capsule())
+                    }
                 }
             }
         }

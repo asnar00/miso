@@ -425,6 +425,30 @@ struct PostView: View {
     }
 
     var body: some View {
+        postContent
+            .onAppear {
+                // Set initial expansion state without doing any heavy work
+                expansionFactor = isExpanded ? 1.0 : 0.0
+                // Initialize editable content with post content
+                editableTitle = post.title
+                editableSummary = post.summary
+                editableBody = post.body
+                editableImageUrl = post.imageUrl
+            }
+            .onChange(of: selectedImage) { oldValue, newValue in
+                guard let image = newValue else { return }
+                Logger.shared.info("[PostView] Image selected, processing...")
+
+                // Process image - it will be uploaded when user saves
+                processImage(image)
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(image: $selectedImage, sourceType: imageSourceType)
+            }
+    }
+
+    @ViewBuilder
+    private var postContent: some View {
         // Log when body is evaluated with isExpanded = true
         let _ = {
             if isExpanded && expansionFactor == 0.0 {
@@ -883,25 +907,6 @@ struct PostView: View {
                 }
             }
         }
-        .onAppear {
-            // Set initial expansion state without doing any heavy work
-            expansionFactor = isExpanded ? 1.0 : 0.0
-            // Initialize editable content with post content
-            editableTitle = post.title
-            editableSummary = post.summary
-            editableBody = post.body
-            editableImageUrl = post.imageUrl
-        }
-        .onChange(of: selectedImage) { oldValue, newValue in
-            guard let image = newValue else { return }
-            Logger.shared.info("[PostView] Image selected, processing...")
-
-            // Process image - it will be uploaded when user saves
-            processImage(image)
-        }
-        .sheet(isPresented: $showImagePicker) {
-            ImagePicker(image: $selectedImage, sourceType: imageSourceType)
-        }
     }
 }
 
@@ -1018,5 +1023,45 @@ extension UIImage {
         }
 
         return resizedImage
+    }
+}
+
+// MARK: - ImagePicker
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    let sourceType: UIImagePickerController.SourceType
+    @Environment(\.dismiss) var dismiss
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = sourceType
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: ImagePicker
+
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.image = uiImage
+            }
+            parent.dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.dismiss()
+        }
     }
 }
