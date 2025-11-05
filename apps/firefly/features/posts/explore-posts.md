@@ -7,9 +7,9 @@ Posts can have children, forming a tree structure. Users can navigate into child
 
 **Navigate to Children**: Swipe left on a post with children (at least 30 points of movement) to navigate to a view showing all its child posts.
 
-**Child Posts View**: Shows the child posts. The navigation bar displays a custom white capsule-shaped back button on the left side, containing a chevron arrow and the parent post's title (e.g., "< test post").
+**Child Posts View**: Shows the child posts. The navigation bar displays a custom back button on the left side, showing a chevron arrow and the parent post's title (e.g., "< test post").
 
-**Navigate Back**: Either tap the custom capsule back button or swipe from the left edge of the screen to return to the parent view. Standard iOS back swipe gesture works naturally.
+**Navigate Back**: Either tap the back button or swipe right from anywhere on the screen (at least 50 points of horizontal movement) to return to the parent view. The swipe must be more horizontal than vertical to trigger navigation.
 
 **Scroll Position Preserved**: When you navigate from the main posts list to view children, then return, your scroll position is preserved exactly where you left it.
 

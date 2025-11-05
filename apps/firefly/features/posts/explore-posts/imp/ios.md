@@ -327,8 +327,9 @@ struct PostsListView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarHidden(parentPostId == nil)  // Hide nav bar for root, show for children
+        .navigationBarBackButtonHidden(true)  // Hide standard back button
         .toolbar {
-            // Custom capsule back button for child views
+            // Custom back button for child views (no background)
             if parentPostId != nil {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
@@ -344,14 +345,28 @@ struct PostsListView: View {
                                 .foregroundColor(.black)
                                 .lineLimit(1)
                         }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(Color.white.opacity(0.9))
-                        .clipShape(Capsule())
                     }
                 }
             }
         }
+        .simultaneousGesture(
+            parentPostId != nil ?
+                DragGesture(minimumDistance: 30)
+                    .onChanged { value in
+                        Logger.shared.info("[PostsListView] Drag changed: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
+                    }
+                    .onEnded { value in
+                        Logger.shared.info("[PostsListView] Drag ended: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
+                        // Swipe right to go back (positive x translation, at least 50pt, and more horizontal than vertical)
+                        if value.translation.width > 50 && abs(value.translation.width) > abs(value.translation.height) {
+                            Logger.shared.info("[PostsListView] Swipe right detected! Going back...")
+                            navigationPath.removeLast()
+                        } else {
+                            Logger.shared.info("[PostsListView] Not a swipe right (width=\(value.translation.width), height=\(value.translation.height))")
+                        }
+                    }
+                : nil
+        )
         .sheet(isPresented: $showNewPostEditor) {
             NewPostEditor(onPostCreated: {
                 fetchPosts()
@@ -452,12 +467,14 @@ struct PostsListView: View {
 1. **Unified Component**: Single PostsListView handles both root and child posts via optional `parentPostId` parameter
 2. **State Preservation**: Root view only fetches when `posts.isEmpty`, keeping scroll position intact when navigating back
 3. **Different Endpoints**: Root uses `/api/posts/recent?limit=50`, children use `/api/posts/{id}/children`
-4. **No Scroll-Blocking Gestures**: Removed `.highPriorityGesture` to allow ScrollView to scroll freely without interference
-5. **Custom Capsule Back Button**: White oval button with chevron + parent title in `.navigationBarLeading` placement (replaces standard iOS back button)
-6. **Circle Indicator Design**: Grey semi-transparent circle (RGB 128/128/128, 80% opacity) with white chevron, no border
-7. **Edge Straddling**: Indicator positioned -10pt trailing so circle straddles post edge
-8. **UI Automation**: Programmatic scroll and navigation actions registered via UIAutomationRegistry for testing
-9. **Code Organization**: ImagePicker moved inline to PostView.swift; ChildPostsView and NewPostView deleted (functionality unified)
+4. **Custom Back Button**: Simple chevron + text without background, using `.navigationBarBackButtonHidden(true)` to hide standard button
+5. **Custom Swipe Gesture**: `.simultaneousGesture()` with DragGesture to allow swipe-right from anywhere (not just edge)
+6. **Swipe Detection**: Minimum 50pt horizontal movement, must be more horizontal than vertical (`abs(width) > abs(height)`)
+7. **Gesture Compatibility**: Uses `.simultaneousGesture()` to work alongside ScrollView's vertical scrolling
+8. **Circle Indicator Design**: Grey semi-transparent circle (RGB 128/128/128, 80% opacity) with white chevron, no border
+9. **Edge Straddling**: Indicator positioned -10pt trailing so circle straddles post edge
+10. **UI Automation**: Programmatic scroll and navigation actions registered via UIAutomationRegistry for testing
+11. **Code Organization**: ImagePicker moved inline to PostView.swift; ChildPostsView and NewPostView deleted (functionality unified)
 
 ## API Endpoints Used
 
@@ -515,12 +532,12 @@ struct PostsListView: View {
 - Only visible when `(post.childCount ?? 0) > 0`
 
 **Navigation Bar (Child Views):**
-- Custom capsule back button (white oval, 90% opacity)
+- Custom back button (no background)
 - Chevron icon: `chevron.left`, 20pt semibold, black
 - Parent post title: 17pt semibold, black, 1 line max
-- Button padding: 12pt horizontal, 8pt vertical
 - Icon-to-text spacing: 8pt
 - Placement: `.navigationBarLeading` (left side)
+- Standard back button hidden with `.navigationBarBackButtonHidden(true)`
 - Navigation bar hidden for root view, shown for child views
 
 ## Gestures
@@ -530,14 +547,19 @@ struct PostsListView: View {
 - Condition: Post must have children (`childCount > 0`)
 - Action: Navigate to child posts view (`navigationPath.append(postId)`)
 
-**Navigate Back:**
-- Method 1: Tap standard iOS back button in navigation bar
-- Method 2: Swipe from left edge (standard NavigationStack gesture)
-- Action: NavigationStack automatically removes last item from navigation path
+**Swipe Right to Go Back:**
+- Works from anywhere on the screen (not just edge)
+- Minimum distance: 30pt (DragGesture parameter)
+- Minimum horizontal movement: 50pt
+- Must be more horizontal than vertical: `abs(width) > abs(height)`
+- Implementation: `.simultaneousGesture()` with DragGesture
+- Action: `navigationPath.removeLast()`
+- Logging: Logs drag changes and final decision for debugging
 
-**No Custom Swipe-Right Gesture:**
-- Removed to allow ScrollView to scroll freely
-- Standard NavigationStack edge swipe works naturally
+**Custom Back Button:**
+- Tap action: `navigationPath.removeLast()`
+- Shows chevron + parent post title
+- No background (simple text button)
 
 ## UI Automation
 
@@ -585,14 +607,16 @@ curl http://localhost:8081/trigger/navigate-to-children-6
 1. View posts list with posts that have `childCount > 0`
 2. Verify grey semi-transparent circle (42pt, 80% opacity) with white chevron appears on right edge, straddling the boundary
 3. Swipe left on post with children (minimum 30pt) → child list appears
-4. Verify standard iOS back button appears in navigation bar
-5. Verify parent post title (21pt, semibold, black) appears to the right of back button
-6. Scroll down in root view, navigate to child, tap back button
-7. Verify root view scroll position is preserved (not reset to top)
-8. Navigate to child view, swipe from left edge → return to parent
-9. Verify ScrollView scrolls normally (up/down) without any gesture interference
-10. Navigate multiple levels deep (verify title updates at each level)
-11. Verify smooth NavigationStack slide animations between levels
+4. Verify custom back button appears in navigation bar (chevron + parent title, no background)
+5. Tap back button → return to parent view
+6. Navigate to child view again
+7. Swipe right from anywhere on the screen (minimum 50pt horizontal, more horizontal than vertical) → return to parent
+8. Scroll down in root view, navigate to child, go back
+9. Verify root view scroll position is preserved (not reset to top)
+10. Verify ScrollView scrolls normally (up/down) without gesture interference
+11. Navigate multiple levels deep (verify title updates at each level)
+12. Verify smooth NavigationStack slide animations between levels
+13. Check logs for drag gesture debugging output
 
 **Programmatic Test (via UI Automation):**
 ```bash

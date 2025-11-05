@@ -152,6 +152,7 @@ struct PostsListView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarHidden(parentPostId == nil)  // Hide nav bar for root, show for children
+        .navigationBarBackButtonHidden(true)  // Hide standard back button
         .toolbar {
             if parentPostId != nil {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -168,14 +169,28 @@ struct PostsListView: View {
                                 .foregroundColor(.black)
                                 .lineLimit(1)
                         }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(Color.white.opacity(0.9))
-                        .clipShape(Capsule())
                     }
                 }
             }
         }
+        .simultaneousGesture(
+            parentPostId != nil ?
+                DragGesture(minimumDistance: 30)
+                    .onChanged { value in
+                        Logger.shared.info("[PostsListView] Drag changed: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
+                    }
+                    .onEnded { value in
+                        Logger.shared.info("[PostsListView] Drag ended: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
+                        // Swipe right to go back (positive x translation, at least 50pt, and more horizontal than vertical)
+                        if value.translation.width > 50 && abs(value.translation.width) > abs(value.translation.height) {
+                            Logger.shared.info("[PostsListView] Swipe right detected! Going back...")
+                            navigationPath.removeLast()
+                        } else {
+                            Logger.shared.info("[PostsListView] Not a swipe right (width=\(value.translation.width), height=\(value.translation.height))")
+                        }
+                    }
+                : nil
+        )
         .onAppear {
             // Set as current viewModel for automation access
             if parentPostId == nil {  // Only for root view
