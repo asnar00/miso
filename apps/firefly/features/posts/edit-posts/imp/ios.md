@@ -2,14 +2,16 @@
 
 ## Files Modified
 
-- `NoobTest/Post.swift` - Made title, summary, body mutable (var instead of let)
-- `NoobTest/PostView.swift` - Main post view with edit functionality for all three fields
+- `NoobTest/Post.swift` - Made title, summary, body mutable (var instead of let); added optional placeholder fields
+- `NoobTest/PostView.swift` - Main post view with edit functionality for all three fields; custom placeholder support
 - `NoobTest/PostsListView.swift` - Added onPostUpdated callback handler
 - `NoobTest/ChildPostsView.swift` - Added onPostUpdated callback handler
 - `NoobTest/UIAutomationRegistry.swift` - Added .uiAutomationId() modifier
 - `reproduce.sh` - Simplified automated testing script
+- `server/imp/py/db.py` - Added placeholder columns to all SELECT queries
+- `server/imp/py/add_placeholders.py` - Database migration script
 
-## Post.swift - Mutable Fields
+## Post.swift - Mutable Fields and Placeholders
 
 ```swift
 struct Post: Codable, Identifiable, Hashable {
@@ -27,7 +29,29 @@ struct Post: Codable, Identifiable, Hashable {
     let authorName: String?
     let authorEmail: String?
     let childCount: Int?
-    // ... CodingKeys enum
+    let titlePlaceholder: String?    // Optional custom placeholder
+    let summaryPlaceholder: String?  // Optional custom placeholder
+    let bodyPlaceholder: String?     // Optional custom placeholder
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userId = "user_id"
+        case parentId = "parent_id"
+        case title
+        case summary
+        case body
+        case imageUrl = "image_url"
+        case createdAt = "created_at"
+        case timezone
+        case locationTag = "location_tag"
+        case aiGenerated = "ai_generated"
+        case authorName = "author_name"
+        case authorEmail = "author_email"
+        case childCount = "child_count"
+        case titlePlaceholder = "title_placeholder"
+        case summaryPlaceholder = "summary_placeholder"
+        case bodyPlaceholder = "body_placeholder"
+    }
 }
 ```
 
@@ -106,12 +130,16 @@ var body: some View {
 ```swift
 VStack(alignment: .leading, spacing: 4) {
     if isEditing {
-        TextField("Title", text: $editableTitle)
+        TextField("", text: $editableTitle, prompt: Text(post.titlePlaceholder ?? "Title").foregroundColor(Color.gray.opacity(0.55)))
             .font(.system(size: 22, weight: .bold))
             .foregroundColor(.black)
             .textFieldStyle(.plain)
             .autocorrectionDisabled(true)
             .textInputAutocapitalization(.never)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.2))
+            )
     } else {
         Text(editableTitle)
             .font(.system(size: 22, weight: .bold))
@@ -120,13 +148,17 @@ VStack(alignment: .leading, spacing: 4) {
     }
 
     if isEditing {
-        TextField("Summary", text: $editableSummary)
+        TextField("", text: $editableSummary, prompt: Text(post.summaryPlaceholder ?? "Summary").italic().foregroundColor(Color.gray.opacity(0.55)))
             .font(.system(size: 15))
             .italic()
             .foregroundColor(.black.opacity(0.8))
             .textFieldStyle(.plain)
             .autocorrectionDisabled(true)
             .textInputAutocapitalization(.never)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.2))
+            )
     } else {
         Text(editableSummary)
             .font(.system(size: 15))
@@ -140,18 +172,6 @@ VStack(alignment: .leading, spacing: 4) {
 .padding(.trailing, 8)
 .frame(maxWidth: .infinity, alignment: .leading)
 .padding(.trailing, post.imageUrl != nil ? 96 : 0)
-.background(
-    ZStack {
-        // Grey background in edit mode
-        if isEditing {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray.opacity(0.1))
-        }
-        GeometryReader { geo in
-            Color.clear.preference(key: TitleSummaryHeightKey.self, value: geo.size.height)
-        }
-    }
-)
 ```
 
 ### Body Text Editor
@@ -164,7 +184,7 @@ ZStack(alignment: .topLeading) {
     // Grey background in edit mode
     if isEditing {
         RoundedRectangle(cornerRadius: 8)
-            .fill(Color.gray.opacity(0.1))
+            .fill(Color.gray.opacity(0.2))
     }
 
     TextEditor(text: $editableBody)
@@ -183,6 +203,14 @@ ZStack(alignment: .topLeading) {
         .uiAutomationId("edit-body-text") {
             editableBody += "\n\nThis is additional text added by automation!"
         }
+
+    // Placeholder text for body
+    if isEditing && editableBody.isEmpty {
+        Text(post.bodyPlaceholder ?? "Body")
+            .foregroundColor(Color.gray.opacity(0.55))
+            .padding(.leading, 5)
+            .padding(.top, 8)
+    }
 }
 .frame(width: availableWidth, height: measuredBodyHeight)
 .clipped()

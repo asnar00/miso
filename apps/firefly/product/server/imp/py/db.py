@@ -157,7 +157,10 @@ class Database:
         image_url: Optional[str] = None,
         location_tag: Optional[str] = None,
         ai_generated: bool = False,
-        embedding: Optional[List[float]] = None
+        embedding: Optional[List[float]] = None,
+        title_placeholder: Optional[str] = None,
+        summary_placeholder: Optional[str] = None,
+        body_placeholder: Optional[str] = None
     ) -> Optional[int]:
         """
         Create a new post.
@@ -173,6 +176,9 @@ class Database:
             location_tag: Optional location tag
             ai_generated: Whether this post was AI-generated
             embedding: Vector embedding for semantic search
+            title_placeholder: Custom placeholder for title field
+            summary_placeholder: Custom placeholder for summary field
+            body_placeholder: Custom placeholder for body field
 
         Returns:
             Post ID if successful, None otherwise
@@ -183,11 +189,13 @@ class Database:
                 cur.execute(
                     """
                     INSERT INTO posts
-                    (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding,
+                     title_placeholder, summary_placeholder, body_placeholder)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
-                    (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding)
+                    (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding,
+                     title_placeholder, summary_placeholder, body_placeholder)
                 )
                 post_id = cur.fetchone()[0]
                 conn.commit()
@@ -249,6 +257,7 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           p.title_placeholder, p.summary_placeholder, p.body_placeholder,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email
                     FROM posts p
@@ -272,7 +281,8 @@ class Database:
                 cur.execute(
                     """
                     SELECT id, user_id, parent_id, title, summary, body, image_url,
-                           created_at, timezone, location_tag, ai_generated
+                           created_at, timezone, location_tag, ai_generated,
+                           title_placeholder, summary_placeholder, body_placeholder
                     FROM posts
                     WHERE user_id = %s
                     ORDER BY created_at DESC
@@ -296,6 +306,7 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           p.title_placeholder, p.summary_placeholder, p.body_placeholder,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email,
                            COUNT(children.id) as child_count
@@ -333,6 +344,7 @@ class Database:
                     SELECT
                         p.id, p.user_id, p.parent_id, p.title, p.summary, p.body,
                         p.image_url, p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                        p.title_placeholder, p.summary_placeholder, p.body_placeholder,
                         u.email as author_name,
                         0 as child_count
                     FROM posts p
@@ -484,6 +496,7 @@ class Database:
                     SELECT
                         id, user_id, parent_id, title, summary, body, image_url,
                         created_at, timezone, location_tag, ai_generated,
+                        title_placeholder, summary_placeholder, body_placeholder,
                         1 - (embedding <=> %s::vector) as similarity
                     FROM posts
                     WHERE embedding IS NOT NULL
@@ -509,6 +522,7 @@ class Database:
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           p.title_placeholder, p.summary_placeholder, p.body_placeholder,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email,
                            COUNT(children.id) as child_count

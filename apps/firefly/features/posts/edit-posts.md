@@ -14,10 +14,12 @@ When the user taps the pencil button:
 - Users can add a new image using an "Add Image" button (camera or photo library)
 
 **Visual Indicators:**
-- Grey background (10% opacity) highlights editable sections
+- Grey background (20% opacity) highlights editable sections
 - Title: single-line bold text field
 - Summary: italic text field, up to 2 lines when not editing
 - Body: multi-line text editor with dynamic height
+- Placeholder text (55% grey opacity) appears in empty fields with labels like "Title", "Summary", "Body"
+- Some posts have custom placeholder text (e.g., "name", "mission", "personal statement")
 - Edit buttons appear in the author bar next to the author's name
 - Image edit buttons (when image exists): three buttons overlaid on top-right corner
   - Red trash icon (trash.circle.fill) - delete image

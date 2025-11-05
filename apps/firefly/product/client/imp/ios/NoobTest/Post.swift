@@ -17,6 +17,9 @@ struct Post: Codable, Identifiable, Hashable {
     let authorName: String?
     let authorEmail: String?
     let childCount: Int?
+    let titlePlaceholder: String?
+    let summaryPlaceholder: String?
+    let bodyPlaceholder: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -33,6 +36,9 @@ struct Post: Codable, Identifiable, Hashable {
         case authorName = "author_name"
         case authorEmail = "author_email"
         case childCount = "child_count"
+        case titlePlaceholder = "title_placeholder"
+        case summaryPlaceholder = "summary_placeholder"
+        case bodyPlaceholder = "body_placeholder"
     }
 }
 

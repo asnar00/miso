@@ -10,6 +10,9 @@ Post {
     body: string (mutable)
     imageUrl: string? (mutable)
     authorEmail: string
+    titlePlaceholder: string? (optional custom placeholder for title field)
+    summaryPlaceholder: string? (optional custom placeholder for summary field)
+    bodyPlaceholder: string? (optional custom placeholder for body field)
     ... other fields
 }
 
@@ -256,8 +259,10 @@ As user edits text:
 ## Visual Design
 
 **Edit Mode Indicators:**
-- Grey background: `Color.gray.opacity(0.1)` with 8pt corner radius
-- Applied to title/summary container and body text container
+- Grey background: `Color.gray.opacity(0.2)` with 8pt corner radius
+- Applied individually to title, summary, and body text fields
+- Placeholder text: `Color.gray.opacity(0.55)` - displays "Title", "Summary", "Body" by default
+- Custom placeholders: Posts can specify custom placeholder text (e.g., "name", "mission", "personal statement")
 
 **Text Fields (Edit Mode):**
 - Title: 22pt bold, single line, plain style
@@ -287,6 +292,28 @@ When no image exists - Add Image button:
 - Black border (30% opacity, 2pt width)
 - 12pt corner radius
 - Positioned at imageY coordinate
+
+## Database Schema
+
+The posts table includes optional placeholder columns:
+
+```sql
+ALTER TABLE posts
+ADD COLUMN IF NOT EXISTS title_placeholder TEXT,
+ADD COLUMN IF NOT EXISTS summary_placeholder TEXT,
+ADD COLUMN IF NOT EXISTS body_placeholder TEXT;
+```
+
+These columns store custom placeholder text that overrides the default "Title", "Summary", "Body" labels in edit mode. When NULL, defaults are used.
+
+Example custom placeholders:
+```sql
+UPDATE posts
+SET title_placeholder = 'name',
+    summary_placeholder = 'mission',
+    body_placeholder = 'personal statement'
+WHERE title = 'asnaroo';
+```
 
 ## Server API
 
@@ -321,16 +348,22 @@ image: file (optional) - JPEG image data, max 1200px, quality 0.9
         "body": "Updated Body Text",
         "author_email": "test@example.com",
         "author_name": "asnaroo",
+        "title_placeholder": "name",
+        "summary_placeholder": "mission",
+        "body_placeholder": "personal statement",
         ...
     }
 }
 ```
+
+Note: Placeholder fields are optional and may be null for posts using default placeholders.
 
 ## Patching Instructions
 
 ### Post Model
 ```
 // Make title, summary, body, imageUrl mutable
+// Add optional placeholder fields
 struct Post:
     let id: Int
     var title: String      // Changed from let to var
@@ -338,7 +371,15 @@ struct Post:
     var body: String       // Changed from let to var
     var imageUrl: String?  // Changed from let to var
     let authorEmail: String
+    let titlePlaceholder: String?    // Add: custom placeholder for title
+    let summaryPlaceholder: String?  // Add: custom placeholder for summary
+    let bodyPlaceholder: String?     // Add: custom placeholder for body
     ... other fields
+
+// Add to CodingKeys enum:
+case titlePlaceholder = "title_placeholder"
+case summaryPlaceholder = "summary_placeholder"
+case bodyPlaceholder = "body_placeholder"
 ```
 
 ### PostView (or equivalent)
@@ -368,15 +409,27 @@ callback onPostUpdated: (Post) -> Void
 **Add Title/Summary Edit Fields (in title/summary section):**
 ```
 if isEditing:
-    TextField("Title", text: editableTitle)
+    TextField("", text: editableTitle,
+              prompt: Text(post.titlePlaceholder ?? "Title")
+                      .foregroundColor(Color.gray.opacity(0.55)))
         .font(size: 22, weight: bold)
         .autocorrectionDisabled()
         .autocapitalizationDisabled()
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.gray.opacity(0.2))
+        )
 
-    TextField("Summary", text: editableSummary)
+    TextField("", text: editableSummary,
+              prompt: Text(post.summaryPlaceholder ?? "Summary").italic()
+                      .foregroundColor(Color.gray.opacity(0.55)))
         .font(size: 15, italic)
         .autocorrectionDisabled()
         .autocapitalizationDisabled()
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.gray.opacity(0.2))
+        )
 else:
     Text(editableTitle)
         .font(size: 22, weight: bold)
@@ -385,11 +438,6 @@ else:
     Text(editableSummary)
         .font(size: 15, italic)
         .lineLimit(2)
-
-// Add grey background when editing
-if isEditing:
-    RoundedRectangle(cornerRadius: 8)
-        .fill(Color.gray.opacity(0.1))
 ```
 
 **Modify Body Text Display:**
@@ -397,7 +445,7 @@ if isEditing:
 ZStack:
     if isEditing:
         RoundedRectangle(cornerRadius: 8)
-            .fill(Color.gray.opacity(0.1))
+            .fill(Color.gray.opacity(0.2))
 
     TextEditor(text: editableBody)
         .disabled(not isEditing)
@@ -406,6 +454,13 @@ ZStack:
         .scrollDisabled(true)
         .onChange(editableBody):
             // Trigger height recalculation
+
+    // Placeholder text for body (only when editing and empty)
+    if isEditing and editableBody.isEmpty:
+        Text(post.bodyPlaceholder ?? "Body")
+            .foregroundColor(Color.gray.opacity(0.55))
+            .padding(.leading, 5pt)
+            .padding(.top, 8pt)
 ```
 
 **Add Edit Buttons in Author Bar:**

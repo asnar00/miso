@@ -406,7 +406,7 @@ struct PostView: View {
             // Title and summary at the top
             VStack(alignment: .leading, spacing: 4) {
                 if isEditing {
-                    TextField("Title", text: $editableTitle)
+                    TextField("", text: $editableTitle, prompt: Text(post.titlePlaceholder ?? "Title").foregroundColor(Color.gray.opacity(0.55)))
                         .font(.system(size: 22, weight: .bold))
                         .foregroundColor(.black)
                         .textFieldStyle(.plain)
@@ -424,7 +424,7 @@ struct PostView: View {
                 }
 
                 if isEditing {
-                    TextField("Summary", text: $editableSummary)
+                    TextField("", text: $editableSummary, prompt: Text(post.summaryPlaceholder ?? "Summary").italic().foregroundColor(Color.gray.opacity(0.55)))
                         .font(.system(size: 15))
                         .italic()
                         .foregroundColor(.black.opacity(0.8))
@@ -499,6 +499,14 @@ struct PostView: View {
                             // Append test text for automation
                             editableBody += "\n\nThis is additional text added by automation!"
                         }
+
+                    // Placeholder text for body
+                    if isEditing && editableBody.isEmpty {
+                        Text(post.bodyPlaceholder ?? "Body")
+                            .foregroundColor(Color.gray.opacity(0.55))
+                            .padding(.leading, 5)
+                            .padding(.top, 8)
+                    }
                 }
                 .frame(width: availableWidth, height: measuredBodyHeight)
                 .clipped()
