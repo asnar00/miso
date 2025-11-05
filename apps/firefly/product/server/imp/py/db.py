@@ -158,9 +158,7 @@ class Database:
         location_tag: Optional[str] = None,
         ai_generated: bool = False,
         embedding: Optional[List[float]] = None,
-        title_placeholder: Optional[str] = None,
-        summary_placeholder: Optional[str] = None,
-        body_placeholder: Optional[str] = None
+        template_name: str = 'post'
     ) -> Optional[int]:
         """
         Create a new post.
@@ -176,9 +174,7 @@ class Database:
             location_tag: Optional location tag
             ai_generated: Whether this post was AI-generated
             embedding: Vector embedding for semantic search
-            title_placeholder: Custom placeholder for title field
-            summary_placeholder: Custom placeholder for summary field
-            body_placeholder: Custom placeholder for body field
+            template_name: Name of template to use (defaults to 'post')
 
         Returns:
             Post ID if successful, None otherwise
@@ -189,20 +185,20 @@ class Database:
                 cur.execute(
                     """
                     INSERT INTO posts
-                    (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding,
-                     title_placeholder, summary_placeholder, body_placeholder)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding, template_name)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
-                    (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding,
-                     title_placeholder, summary_placeholder, body_placeholder)
+                    (user_id, parent_id, title, summary, body, image_url, timezone, location_tag, ai_generated, embedding, template_name)
                 )
                 post_id = cur.fetchone()[0]
                 conn.commit()
                 return post_id
         except Exception as e:
             conn.rollback()
-            print(f"Error creating post: {e}")
+            print(f"Error creating post: {e}", file=sys.stderr, flush=True)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
             return None
         finally:
             self.return_connection(conn)

@@ -18,11 +18,11 @@ struct PostsListView: View {
 
     @StateObject private var viewModel = PostsListViewModel()
     @State private var posts: [Post] = []
-    @State private var showNewPostEditor = false
     @State private var isLoading = true
     @State private var errorMessage: String?
     @State private var parentPost: Post? = nil
     @State private var scrollProxy: ScrollViewProxy? = nil
+    @State private var editingPostId: Int? = nil  // Track which post is being edited
 
     let serverURL = "http://185.96.221.52:8080"
 
@@ -68,7 +68,7 @@ struct PostsListView: View {
                         VStack(spacing: 8) {
                             // Add post button at the top
                             Button(action: {
-                                showNewPostEditor = true
+                                createNewPost()
                             }) {
                                 HStack {
                                     Image(systemName: "plus.circle.fill")
@@ -94,7 +94,12 @@ struct PostsListView: View {
                                     PostView(
                                         post: post,
                                         isExpanded: viewModel.expandedPostId == post.id,
+                                        isEditing: editingPostId == post.id,
                                         onTap: {
+                                            // If we're editing a different post, save it first
+                                            if let currentlyEditingId = editingPostId, currentlyEditingId != post.id {
+                                                // Auto-save will happen in PostView via onStartEditing callback
+                                            }
                                             expandPost(post.id)
                                             withAnimation(.easeInOut(duration: 0.3)) {
                                                 proxy.scrollTo(post.id, anchor: .top)
@@ -108,10 +113,32 @@ struct PostsListView: View {
                                             navigationPath.append(postId)
                                         },
                                         onPostUpdated: { updatedPost in
-                                            if let index = posts.firstIndex(where: { $0.id == updatedPost.id }) {
+                                            // Check if this is a new post being updated with real ID
+                                            if post.id < 0 && updatedPost.id > 0 {
+                                                // Replace temporary post with real one
+                                                if let index = posts.firstIndex(where: { $0.id == post.id }) {
+                                                    posts[index] = updatedPost
+                                                    // Update editing state to track new ID
+                                                    editingPostId = nil
+                                                    // Update expansion state to new ID
+                                                    viewModel.expandedPostId = updatedPost.id
+                                                }
+                                            } else if let index = posts.firstIndex(where: { $0.id == updatedPost.id }) {
+                                                // Regular update - same ID
                                                 posts[index] = updatedPost
                                             }
-                                        }
+                                        },
+                                        onStartEditing: {
+                                            editingPostId = post.id
+                                        },
+                                        onEndEditing: {
+                                            editingPostId = nil
+                                        },
+                                        onDelete: post.id < 0 ? {
+                                            // Delete new unsaved post
+                                            posts.removeAll { $0.id == post.id }
+                                            editingPostId = nil
+                                        } : nil
                                     )
                                     .id(post.id)
                                 }
@@ -136,12 +163,6 @@ struct PostsListView: View {
                         .offset(x: -88)  // Move left 8pt more (was -80, now -88)
                 }
             }
-        }
-        .sheet(isPresented: $showNewPostEditor) {
-            NewPostEditor(onPostCreated: {
-                fetchPosts()
-                onPostCreated()
-            }, onDismiss: nil, parentId: parentPostId)
         }
         .onAppear {
             // Set as current viewModel for automation access
@@ -257,5 +278,71 @@ struct PostsListView: View {
                 }
             }
         }.resume()
+    }
+
+    func createNewPost() {
+        Logger.shared.info("[PostsListView] Creating new blank post")
+
+        // Get current user email for author
+        let loginState = Storage.shared.getLoginState()
+        guard let userEmail = loginState.email else {
+            Logger.shared.error("[PostsListView] Cannot create post: no user logged in")
+            return
+        }
+
+        // Fetch user profile to get their name
+        guard let url = URL(string: "\(serverURL)/api/users/\(userEmail.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")/profile") else {
+            Logger.shared.error("[PostsListView] Invalid profile URL")
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let profile = json["profile"] as? [String: Any],
+                  let userName = profile["title"] as? String else {
+                Logger.shared.error("[PostsListView] Failed to fetch user name, using email")
+                // Fall back to using email as name
+                self.insertNewPost(email: userEmail, name: userEmail)
+                return
+            }
+
+            Logger.shared.info("[PostsListView] Fetched user name: \(userName)")
+            self.insertNewPost(email: userEmail, name: userName)
+        }.resume()
+    }
+
+    private func insertNewPost(email: String, name: String) {
+        DispatchQueue.main.async {
+            // Create a blank post with temporary negative ID
+            let newPost = Post(
+                id: -1,  // Temporary ID for unsaved post
+                userId: 0,  // Will be set by server
+                parentId: self.parentPostId,
+                title: "",
+                summary: "",
+                body: "",
+                imageUrl: nil,
+                createdAt: "",
+                timezone: "",
+                locationTag: nil,
+                aiGenerated: false,
+                authorName: name,  // Use actual user name
+                authorEmail: email,
+                childCount: 0,
+                titlePlaceholder: "Title",  // Default "post" template
+                summaryPlaceholder: "Summary",
+                bodyPlaceholder: "Body"
+            )
+
+            // Insert at beginning of posts array
+            self.posts.insert(newPost, at: 0)
+
+            // Expand it and enter edit mode
+            self.viewModel.expandedPostId = -1
+            self.editingPostId = -1
+
+            Logger.shared.info("[PostsListView] New post created and expanded in edit mode")
+        }
     }
 }

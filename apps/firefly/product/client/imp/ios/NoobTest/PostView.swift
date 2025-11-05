@@ -20,10 +20,14 @@ struct TitleSummaryHeightKey: PreferenceKey {
 struct PostView: View {
     let post: Post
     let isExpanded: Bool
+    var isEditing: Bool = false  // Passed from parent to control edit state
     let onTap: () -> Void
     let onPostCreated: () -> Void
     let onNavigateToChildren: ((Int) -> Void)?
     let onPostUpdated: ((Post) -> Void)?
+    let onStartEditing: (() -> Void)?  // Called when entering edit mode
+    let onEndEditing: (() -> Void)?  // Called when exiting edit mode
+    let onDelete: (() -> Void)?  // Called when deleting unsaved post (nil for saved posts)
     let serverURL = "http://185.96.221.52:8080"
 
     @State private var expansionFactor: CGFloat = 0.0
@@ -32,7 +36,6 @@ struct PostView: View {
     @State private var bodyTextHeight: CGFloat = 200  // Start with reasonable default
     @State private var titleSummaryHeight: CGFloat = 60  // Estimate for now
     @State private var isMeasured: Bool = false
-    @State private var isEditing: Bool = false
     @State private var editableTitle: String = ""
     @State private var editableSummary: String = ""
     @State private var editableBody: String = ""
@@ -140,14 +143,18 @@ struct PostView: View {
         Logger.shared.info("[PostView] Saving post \(post.id) changes to server")
 
         // Get logged in user email
-        let (email, _, _) = Storage.shared.getLoginState()
-        guard let userEmail = email else {
+        let loginState = Storage.shared.getLoginState()
+        guard let userEmail = loginState.email else {
             Logger.shared.error("[PostView] Cannot save: no user logged in")
             return
         }
 
+        // Determine if this is a new post (negative ID) or an update
+        let isNewPost = post.id < 0
+        let endpoint = isNewPost ? "/api/posts/create" : "/api/posts/update"
+
         // Build request
-        guard let url = URL(string: "\(serverURL)/api/posts/update") else {
+        guard let url = URL(string: "\(serverURL)\(endpoint)") else {
             Logger.shared.error("[PostView] Invalid URL")
             return
         }
@@ -164,13 +171,20 @@ struct PostView: View {
             var body = Data()
 
             // Add form fields
-            let fields = [
-                "post_id": String(post.id),
+            var fields: [String: String] = [
                 "email": userEmail,
                 "title": editableTitle,
-                "summary": editableSummary,
-                "body": editableBody
+                "summary": editableSummary.isEmpty ? "No summary" : editableSummary,
+                "body": editableBody.isEmpty ? "No content" : editableBody
             ]
+
+            // For updates, include post_id; for new posts, optionally include parent_id
+            if !isNewPost {
+                fields["post_id"] = String(post.id)
+            }
+            if let parentId = post.parentId {
+                fields["parent_id"] = String(parentId)
+            }
 
             for (key, value) in fields {
                 body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -190,22 +204,28 @@ struct PostView: View {
             Logger.shared.info("[PostView] Uploading post with new image (\(imageData.count / 1024)KB)")
         } else {
             // Use regular form encoding if no new image
-            var formData = [
-                "post_id": String(post.id),
+            var formData: [String: String] = [
                 "email": userEmail,
                 "title": editableTitle,
-                "summary": editableSummary,
-                "body": editableBody
+                "summary": editableSummary.isEmpty ? "No summary" : editableSummary,
+                "body": editableBody.isEmpty ? "No content" : editableBody
             ]
 
-            // Add image_url field (empty string means removed)
-            formData["image_url"] = editableImageUrl ?? ""
+            // For updates, include post_id; for new posts, optionally include parent_id
+            if !isNewPost {
+                formData["post_id"] = String(post.id)
+                // Add image_url field (empty string means removed)
+                formData["image_url"] = editableImageUrl ?? ""
+            }
+            if let parentId = post.parentId {
+                formData["parent_id"] = String(parentId)
+            }
 
             request.httpBody = formData.map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")" }
                 .joined(separator: "&")
                 .data(using: .utf8)
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            Logger.shared.info("[PostView] Updating post without image change")
+            Logger.shared.info("[PostView] \(isNewPost ? "Creating new post" : "Updating post") without image change")
         }
 
         // Send request
@@ -217,6 +237,16 @@ struct PostView: View {
 
             if let data = data, let responseStr = String(data: data, encoding: .utf8) {
                 Logger.shared.info("[PostView] Save response: \(responseStr)")
+
+                // Check if the response indicates an error
+                if let jsonData = responseStr.data(using: .utf8),
+                   let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+                   let status = json["status"] as? String, status == "error" {
+                    let message = json["message"] as? String ?? "Unknown error"
+                    Logger.shared.error("[PostView] Server error: \(message)")
+                    // Don't proceed with save - keep post in edit mode
+                    return
+                }
 
                 // Parse response to get updated image URL if we uploaded a new image
                 if self.newImageData != nil,
@@ -234,19 +264,42 @@ struct PostView: View {
             DispatchQueue.main.async {
                 Logger.shared.info("[PostView] Post saved successfully, exiting edit mode")
 
-                // Create updated post with new values
-                var updatedPost = post
-                updatedPost.title = editableTitle
-                updatedPost.summary = editableSummary
-                updatedPost.body = editableBody
-                updatedPost.imageUrl = editableImageUrl
+                if isNewPost {
+                    // For new posts, parse the response to get the real post ID
+                    if let data = data,
+                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                       let postData = json["post"] as? [String: Any],
+                       let newPostId = postData["id"] as? Int {
+                        Logger.shared.info("[PostView] New post created with ID: \(newPostId)")
 
-                // Notify parent of the update
-                onPostUpdated?(updatedPost)
+                        // Create updated post with real ID from server
+                        var updatedPost = self.post
+                        updatedPost.id = newPostId
+                        updatedPost.title = self.editableTitle
+                        updatedPost.summary = self.editableSummary
+                        updatedPost.body = self.editableBody
+                        updatedPost.imageUrl = self.editableImageUrl
 
-                // Clear the new image data
-                newImageData = nil
-                isEditing = false
+                        // Update the post in place (replaces temp post with real one)
+                        self.onPostUpdated?(updatedPost)
+                    } else {
+                        Logger.shared.error("[PostView] Failed to parse new post ID from response")
+                        // Fall back to refresh if parsing fails
+                        self.onPostCreated()
+                    }
+                } else {
+                    // For updates, just update the local post
+                    var updatedPost = self.post
+                    updatedPost.title = self.editableTitle
+                    updatedPost.summary = self.editableSummary
+                    updatedPost.body = self.editableBody
+                    updatedPost.imageUrl = self.editableImageUrl
+                    self.onPostUpdated?(updatedPost)
+                }
+
+                // Clear the new image data and exit edit mode
+                self.newImageData = nil
+                self.onEndEditing?()
             }
         }.resume()
     }
@@ -558,39 +611,48 @@ struct PostView: View {
                                 // Edit mode: single pencil button
                                 Button(action: {
                                     Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
-                                    isEditing = true
+                                    onStartEditing?()
                                 }) {
                                     Image(systemName: "pencil.circle.fill")
                                         .font(.system(size: 32))
                                         .foregroundColor(.black.opacity(0.6))
                                 }
                                 .uiAutomationId("edit-button") {
-                                    isEditing = true
+                                    onStartEditing?()
                                 }
                             } else {
                                 // Editing mode: undo and tick buttons
                                 Button(action: {
-                                    Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
-                                    editableTitle = post.title
-                                    editableSummary = post.summary
-                                    editableBody = post.body
-                                    editableImageUrl = post.imageUrl
-                                    newImageData = nil
-                                    newImage = nil
-                                    // Restore original aspect ratio
-                                    imageAspectRatio = originalImageAspectRatio
-                                    isEditing = false
+                                    if let onDelete = onDelete {
+                                        // New post: delete it
+                                        Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
+                                        onDelete()
+                                    } else {
+                                        // Existing post: revert changes
+                                        Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
+                                        editableTitle = post.title
+                                        editableSummary = post.summary
+                                        editableBody = post.body
+                                        editableImageUrl = post.imageUrl
+                                        newImageData = nil
+                                        newImage = nil
+                                        imageAspectRatio = originalImageAspectRatio
+                                        onEndEditing?()
+                                    }
                                 }) {
                                     Image(systemName: "arrow.uturn.backward.circle.fill")
                                         .font(.system(size: 32))
                                         .foregroundColor(.red.opacity(0.6))
                                 }
                                 .uiAutomationId("cancel-button") {
-                                    editableTitle = post.title
-                                    editableSummary = post.summary
-                                    editableBody = post.body
-                                    editableImageUrl = post.imageUrl
-                                    isEditing = false
+                                    if let onDelete = onDelete {
+                                        onDelete()
+                                    } else {
+                                        editableTitle = post.title
+                                        editableSummary = post.summary
+                                        editableBody = post.body
+                                        onEndEditing?()
+                                    }
                                 }
 
                                 Button(action: {

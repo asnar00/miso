@@ -2,13 +2,14 @@
 
 ## Files Modified
 
-- `NoobTest/Post.swift` - Made title, summary, body mutable (var instead of let); added optional placeholder fields from templates
-- `NoobTest/PostView.swift` - Main post view with edit functionality for all three fields; custom placeholder support
-- `NoobTest/PostsListView.swift` - Added onPostUpdated callback handler
-- `NoobTest/ChildPostsView.swift` - Added onPostUpdated callback handler
+- `NoobTest/Post.swift` - Made title, summary, body, imageUrl mutable (var instead of let); added optional placeholder fields from templates
+- `NoobTest/PostView.swift` - Main post view with unified edit functionality for both new and existing posts; handles create vs update; custom placeholder support
+- `NoobTest/PostsListView.swift` - Added inline post creation with createNewPost() function; removed modal sheet; added editing state tracking; updated onPostUpdated to handle temp post replacement
+- `NoobTest/ChildPostsView.swift` - Updated PostView calls to match new signature with edit callbacks
 - `NoobTest/UIAutomationRegistry.swift` - Added .uiAutomationId() modifier
 - `reproduce.sh` - Simplified automated testing script
-- `server/imp/py/db.py` - Added LEFT JOIN templates to all SELECT queries
+- `server/imp/py/db.py` - Fixed create_post() to use template_name instead of placeholder columns; added error logging with traceback
+- `server/imp/py/app.py` - Updated create_post call to pass template_name='post'; added detailed logging
 - `server/imp/py/create_templates.py` - Database migration script for templates system
 - `server/imp/py/grant_template_permissions.py` - Grant SELECT on templates to firefly_user
 
@@ -578,7 +579,7 @@ HStack {
 .opacity(expansionFactor)
 ```
 
-### Save Function
+### Save Function - Handles Both Create and Update
 
 ```swift
 func savePost() {
@@ -591,8 +592,12 @@ func savePost() {
         return
     }
 
+    // Determine if this is a new post (negative ID) or an update
+    let isNewPost = post.id < 0
+    let endpoint = isNewPost ? "/api/posts/create" : "/api/posts/update"
+
     // Build request
-    guard let url = URL(string: "\(serverURL)/api/posts/update") else {
+    guard let url = URL(string: "\(serverURL)\(endpoint)") else {
         Logger.shared.error("[PostView] Invalid URL")
         return
     }
@@ -602,8 +607,6 @@ func savePost() {
 
     // Check if we have a new image to upload
     if let imageData = newImageData {
-        Logger.shared.info("[PostView] Uploading new image with post update")
-
         // Use multipart form data for image upload
         let boundary = UUID().uuidString
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -611,13 +614,20 @@ func savePost() {
         var body = Data()
 
         // Add form fields
-        let fields = [
-            "post_id": String(post.id),
+        var fields: [String: String] = [
             "email": userEmail,
             "title": editableTitle,
-            "summary": editableSummary,
-            "body": editableBody
+            "summary": editableSummary.isEmpty ? "No summary" : editableSummary,
+            "body": editableBody.isEmpty ? "No content" : editableBody
         ]
+
+        // For updates, include post_id; for new posts, optionally include parent_id
+        if !isNewPost {
+            fields["post_id"] = String(post.id)
+        }
+        if let parentId = post.parentId {
+            fields["parent_id"] = String(parentId)
+        }
 
         for (key, value) in fields {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -634,20 +644,31 @@ func savePost() {
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
 
         request.httpBody = body
+        Logger.shared.info("[PostView] Uploading post with new image (\(imageData.count / 1024)KB)")
     } else {
         // Use regular form encoding if no new image
-        let formData = [
-            "post_id": String(post.id),
+        var formData: [String: String] = [
             "email": userEmail,
             "title": editableTitle,
-            "summary": editableSummary,
-            "body": editableBody
+            "summary": editableSummary.isEmpty ? "No summary" : editableSummary,
+            "body": editableBody.isEmpty ? "No content" : editableBody
         ]
+
+        // For updates, include post_id; for new posts, optionally include parent_id
+        if !isNewPost {
+            formData["post_id"] = String(post.id)
+            // Add image_url field (empty string means removed)
+            formData["image_url"] = editableImageUrl ?? ""
+        }
+        if let parentId = post.parentId {
+            formData["parent_id"] = String(parentId)
+        }
 
         request.httpBody = formData.map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")" }
             .joined(separator: "&")
             .data(using: .utf8)
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        Logger.shared.info("[PostView] \(isNewPost ? "Creating new post" : "Updating post") without image change")
     }
 
     // Send request
@@ -659,35 +680,69 @@ func savePost() {
 
         if let data = data, let responseStr = String(data: data, encoding: .utf8) {
             Logger.shared.info("[PostView] Save response: \(responseStr)")
+
+            // Check if the response indicates an error
+            if let jsonData = responseStr.data(using: .utf8),
+               let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+               let status = json["status"] as? String, status == "error" {
+                let message = json["message"] as? String ?? "Unknown error"
+                Logger.shared.error("[PostView] Server error: \(message)")
+                // Don't proceed with save - keep post in edit mode
+                return
+            }
+
+            // Parse response to get updated image URL if we uploaded a new image
+            if self.newImageData != nil,
+               let jsonData = responseStr.data(using: .utf8),
+               let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+               let postData = json["post"] as? [String: Any],
+               let imageUrl = postData["image_url"] as? String {
+                Logger.shared.info("[PostView] Server returned image URL: \(imageUrl)")
+                DispatchQueue.main.async {
+                    self.editableImageUrl = imageUrl
+                }
+            }
         }
 
         DispatchQueue.main.async {
             Logger.shared.info("[PostView] Post saved successfully, exiting edit mode")
 
-            // Create updated post with new values
-            var updatedPost = post
-            updatedPost.title = editableTitle
-            updatedPost.summary = editableSummary
-            updatedPost.body = editableBody
+            if isNewPost {
+                // For new posts, parse the response to get the real post ID
+                if let data = data,
+                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let postData = json["post"] as? [String: Any],
+                   let newPostId = postData["id"] as? Int {
+                    Logger.shared.info("[PostView] New post created with ID: \(newPostId)")
 
-            // Update image URL based on what happened
-            if editableImageUrl == nil {
-                updatedPost.imageUrl = nil  // Image was deleted
-            } else if editableImageUrl == "new_image" {
-                // New image was uploaded - parse response to get new URL
-                // For now, keep processing the response from server
-                // The server returns the full post with updated imageUrl
+                    // Create updated post with real ID from server
+                    var updatedPost = self.post
+                    updatedPost.id = newPostId
+                    updatedPost.title = self.editableTitle
+                    updatedPost.summary = self.editableSummary
+                    updatedPost.body = self.editableBody
+                    updatedPost.imageUrl = self.editableImageUrl
+
+                    // Update the post in place (replaces temp post with real one)
+                    self.onPostUpdated?(updatedPost)
+                } else {
+                    Logger.shared.error("[PostView] Failed to parse new post ID from response")
+                    // Fall back to refresh if parsing fails
+                    self.onPostCreated()
+                }
+            } else {
+                // For updates, just update the local post
+                var updatedPost = self.post
+                updatedPost.title = self.editableTitle
+                updatedPost.summary = self.editableSummary
+                updatedPost.body = self.editableBody
+                updatedPost.imageUrl = self.editableImageUrl
+                self.onPostUpdated?(updatedPost)
             }
 
-            // Clear temporary image state
-            newImageData = nil
-            newImage = nil
-            originalImageAspectRatio = imageAspectRatio  // Save current as new baseline
-
-            // Notify parent of the update
-            onPostUpdated?(updatedPost)
-
-            isEditing = false
+            // Clear the new image data and exit edit mode
+            self.newImageData = nil
+            self.onEndEditing?()
         }
     }.resume()
 }
@@ -715,13 +770,96 @@ func savePost() {
 }
 ```
 
-## PostsListView.swift - Update Handler
+## PostsListView.swift - Inline Post Creation
+
+### State Variables
+
+```swift
+@State private var editingPostId: Int? = nil  // Track which post is being edited
+```
+
+### Create New Post Function
+
+```swift
+func createNewPost() {
+    Logger.shared.info("[PostsListView] Creating new blank post")
+
+    // Get current user email for author
+    let loginState = Storage.shared.getLoginState()
+    guard let userEmail = loginState.email else {
+        Logger.shared.error("[PostsListView] Cannot create post: no user logged in")
+        return
+    }
+
+    // Fetch user profile to get their name
+    guard let url = URL(string: "\(serverURL)/api/users/\(userEmail.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")/profile") else {
+        Logger.shared.error("[PostsListView] Invalid profile URL")
+        return
+    }
+
+    URLSession.shared.dataTask(with: url) { data, response, error in
+        guard let data = data,
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let profile = json["profile"] as? [String: Any],
+              let userName = profile["title"] as? String else {
+            Logger.shared.error("[PostsListView] Failed to fetch user name, using email")
+            // Fall back to using email as name
+            self.insertNewPost(email: userEmail, name: userEmail)
+            return
+        }
+
+        Logger.shared.info("[PostsListView] Fetched user name: \(userName)")
+        self.insertNewPost(email: userEmail, name: userName)
+    }.resume()
+}
+
+private func insertNewPost(email: String, name: String) {
+    DispatchQueue.main.async {
+        // Create a blank post with temporary negative ID
+        let newPost = Post(
+            id: -1,  // Temporary ID for unsaved post
+            userId: 0,  // Will be set by server
+            parentId: self.parentPostId,
+            title: "",
+            summary: "",
+            body: "",
+            imageUrl: nil,
+            createdAt: "",
+            timezone: "",
+            locationTag: nil,
+            aiGenerated: false,
+            authorName: name,  // Use actual user name
+            authorEmail: email,
+            childCount: 0,
+            titlePlaceholder: "Title",  // Default "post" template
+            summaryPlaceholder: "Summary",
+            bodyPlaceholder: "Body"
+        )
+
+        // Insert at beginning of posts array
+        self.posts.insert(newPost, at: 0)
+
+        // Expand it and enter edit mode
+        self.viewModel.expandedPostId = -1
+        self.editingPostId = -1
+
+        Logger.shared.info("[PostsListView] New post created and expanded in edit mode")
+    }
+}
+```
+
+### PostView Integration
 
 ```swift
 PostView(
     post: post,
     isExpanded: viewModel.expandedPostId == post.id,
+    isEditing: editingPostId == post.id,
     onTap: {
+        // If we're editing a different post, save it first
+        if let currentlyEditingId = editingPostId, currentlyEditingId != post.id {
+            // Auto-save will happen in PostView via onStartEditing callback
+        }
         expandPost(post.id)
         withAnimation(.easeInOut(duration: 0.3)) {
             proxy.scrollTo(post.id, anchor: .top)
@@ -735,10 +873,32 @@ PostView(
         navigationPath.append(postId)
     },
     onPostUpdated: { updatedPost in
-        if let index = posts.firstIndex(where: { $0.id == updatedPost.id }) {
+        // Check if this is a new post being updated with real ID
+        if post.id < 0 && updatedPost.id > 0 {
+            // Replace temporary post with real one
+            if let index = posts.firstIndex(where: { $0.id == post.id }) {
+                posts[index] = updatedPost
+                // Update editing state to track new ID
+                editingPostId = nil
+                // Update expansion state to new ID
+                viewModel.expandedPostId = updatedPost.id
+            }
+        } else if let index = posts.firstIndex(where: { $0.id == updatedPost.id }) {
+            // Regular update - same ID
             posts[index] = updatedPost
         }
-    }
+    },
+    onStartEditing: {
+        editingPostId = post.id
+    },
+    onEndEditing: {
+        editingPostId = nil
+    },
+    onDelete: post.id < 0 ? {
+        // Delete new unsaved post
+        posts.removeAll { $0.id == post.id }
+        editingPostId = nil
+    } : nil
 )
 ```
 

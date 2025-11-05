@@ -3,7 +3,7 @@ import UIKit
 
 // Post model matching server schema
 struct Post: Codable, Identifiable, Hashable {
-    let id: Int
+    var id: Int
     let userId: Int
     let parentId: Int?
     var title: String

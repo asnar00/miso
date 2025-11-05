@@ -1,6 +1,19 @@
 # edit-posts
-*users can edit their own posts after creating them*
+*users can create and edit posts with inline editing*
 
+Users can create new posts inline at the top of the post list, and edit their own posts after creating them using the same unified editing interface.
+
+**Creating New Posts:**
+When the user taps the "Add Post" button at the top of the list:
+- A new blank post appears at the top, immediately expanded in edit mode
+- The post shows the user's actual name (fetched from their profile)
+- Template placeholders appear: "Title", "Summary", "Body"
+- The red undo button deletes the unsaved post
+- The green checkmark saves it to the server
+- After saving, the post stays expanded with its new server-assigned ID
+- No page refresh occurs - the list doesn't collapse or jump
+
+**Editing Existing Posts:**
 When viewing an expanded post, users who own the post see a pencil icon button in the author information bar at the bottom of the post.
 
 **Entering Edit Mode:**
@@ -65,10 +78,11 @@ When the user taps the green checkmark:
 
 **Canceling Edits:**
 When the user taps the red undo arrow:
-- All edits in all fields are discarded
-- Original text and image are restored
-- Original image aspect ratio is restored
-- Edit mode exits, showing the pencil button again
+- For new unsaved posts: the post is deleted from the list
+- For existing posts: all edits in all fields are discarded
+- Original text and image are restored (existing posts only)
+- Original image aspect ratio is restored (existing posts only)
+- Edit mode exits, showing the pencil button again (existing posts only)
 
 **Location:**
 Edit controls appear in the author information bar at the bottom of expanded posts, integrated with the author's name display.

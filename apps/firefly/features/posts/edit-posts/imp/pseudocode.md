@@ -31,6 +31,53 @@ EditState {
 
 ## Core Functions
 
+### createNewPost()
+```
+function createNewPost():
+    // Get current user's email
+    currentUserEmail = getLoginState().email
+    if currentUserEmail is null:
+        showError("No user logged in")
+        return
+
+    // Fetch user's display name from profile
+    profileUrl = "/api/users/{currentUserEmail}/profile"
+    response = fetch(profileUrl)
+
+    if response.success:
+        userName = response.profile.title
+    else:
+        userName = currentUserEmail  // Fallback to email
+
+    // Create temporary post with negative ID
+    newPost = Post {
+        id: -1,  // Temporary ID for unsaved post
+        userId: 0,
+        parentId: null,
+        title: "",
+        summary: "",
+        body: "",
+        imageUrl: null,
+        createdAt: "",
+        timezone: "",
+        locationTag: null,
+        aiGenerated: false,
+        authorName: userName,
+        authorEmail: currentUserEmail,
+        childCount: 0,
+        titlePlaceholder: "Title",
+        summaryPlaceholder: "Summary",
+        bodyPlaceholder: "Body"
+    }
+
+    // Insert at beginning of posts array
+    posts.insertAt(0, newPost)
+
+    // Expand and enter edit mode
+    expandedPostId = -1
+    editingPostId = -1
+```
+
 ### checkOwnership()
 ```
 function checkOwnership(post, currentUserEmail):
@@ -51,16 +98,23 @@ function enterEditMode():
 
 ### cancelEdit()
 ```
-function cancelEdit(post):
-    editableTitle = post.title  // Revert to saved state
-    editableSummary = post.summary
-    editableBody = post.body
-    editableImageUrl = post.imageUrl
-    newImage = null
-    newImageData = null
-    imageAspectRatio = originalImageAspectRatio  // Restore original aspect ratio
-    isEditing = false
-    // UI shows pencil button, all fields become read-only
+function cancelEdit(post, onDelete):
+    if post.id < 0 and onDelete != null:
+        // New unsaved post - delete it
+        onDelete()
+        // Post is removed from the list
+        editingPostId = null
+    else:
+        // Existing post - revert changes
+        editableTitle = post.title  // Revert to saved state
+        editableSummary = post.summary
+        editableBody = post.body
+        editableImageUrl = post.imageUrl
+        newImage = null
+        newImageData = null
+        imageAspectRatio = originalImageAspectRatio  // Restore original aspect ratio
+        isEditing = false
+        // UI shows pencil button, all fields become read-only
 ```
 
 ### deleteImage()
@@ -143,14 +197,22 @@ function redrawImage(image, targetSize):
 ### saveEdit(post)
 ```
 function saveEdit(post):
+    // Determine if this is a new post (negative ID) or update
+    isNewPost = (post.id < 0)
+    endpoint = isNewPost ? "/api/posts/create" : "/api/posts/update"
+
     if newImageData != null:
         // Use multipart form data for image upload
         request = createMultipartRequest()
-        request.url = "/api/posts/update"
+        request.url = endpoint
         request.method = POST
 
         // Add text fields
-        request.addField("post_id", post.id)
+        if not isNewPost:
+            request.addField("post_id", post.id)
+        if post.parentId != null:
+            request.addField("parent_id", post.parentId)
+
         request.addField("email", currentUserEmail)
         request.addField("title", editableTitle)
         request.addField("summary", editableSummary)
@@ -160,38 +222,65 @@ function saveEdit(post):
         request.addFile("image", filename: "image.jpg", data: newImageData, contentType: "image/jpeg")
     else:
         // Use regular form encoding if no new image
+        body = {
+            email: currentUserEmail,
+            title: editableTitle,
+            summary: editableSummary,
+            body: editableBody
+        }
+
+        if not isNewPost:
+            body.post_id = post.id
+            body.image_url = editableImageUrl ?? ""  // Empty string means removed
+        if post.parentId != null:
+            body.parent_id = post.parentId
+
         request = {
             method: POST,
-            url: "/api/posts/update",
+            url: endpoint,
             contentType: "application/x-www-form-urlencoded",
-            body: {
-                post_id: post.id,
-                email: currentUserEmail,
-                title: editableTitle,
-                summary: editableSummary,
-                body: editableBody
-            }
+            body: body
         }
 
     response = sendRequest(request)
 
+    // Check for server error
+    if response.status == "error":
+        showError(response.message)
+        return  // Keep post in edit mode
+
     if response.status == "success":
-        // Update the post object with new values
-        post.title = editableTitle
-        post.summary = editableSummary
-        post.body = editableBody
-        if editableImageUrl == null:
-            post.imageUrl = null  // Image was deleted
-        else if response.post.imageUrl != null:
-            post.imageUrl = response.post.imageUrl  // New image URL from server
+        if isNewPost:
+            // Parse the new post ID from response
+            newPostId = response.post.id
+
+            // Create updated post with real ID
+            updatedPost = post
+            updatedPost.id = newPostId
+            updatedPost.title = editableTitle
+            updatedPost.summary = editableSummary
+            updatedPost.body = editableBody
+            updatedPost.imageUrl = editableImageUrl
+
+            // Replace temp post with real one (no refresh)
+            onPostUpdated(updatedPost)
+        else:
+            // Update existing post
+            post.title = editableTitle
+            post.summary = editableSummary
+            post.body = editableBody
+            if editableImageUrl == null:
+                post.imageUrl = null  // Image was deleted
+            else if response.post.imageUrl != null:
+                post.imageUrl = response.post.imageUrl  // New image URL from server
+
+            // Notify parent to update posts array
+            onPostUpdated(post)
 
         // Clear temporary image state
         newImage = null
         newImageData = null
         originalImageAspectRatio = imageAspectRatio  // Save new ratio as baseline
-
-        // Notify parent to update posts array
-        onPostUpdated(post)
 
         isEditing = false
         // UI shows pencil button, all fields become read-only

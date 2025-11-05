@@ -58,6 +58,7 @@ struct ChildPostsView: View {
                                     PostView(
                                         post: post,
                                         isExpanded: expandedPostId == post.id,
+                                        isEditing: false,  // No editing in child views for now
                                         onTap: {
                                             if expandedPostId == post.id {
                                                 expandedPostId = nil
@@ -79,7 +80,10 @@ struct ChildPostsView: View {
                                             if let index = posts.firstIndex(where: { $0.id == updatedPost.id }) {
                                                 posts[index] = updatedPost
                                             }
-                                        }
+                                        },
+                                        onStartEditing: nil,
+                                        onEndEditing: nil,
+                                        onDelete: nil
                                     )
                                     .id(post.id)
                                 }

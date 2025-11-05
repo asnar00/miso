@@ -315,6 +315,7 @@ def create_post():
                 print(f"Uploaded image: {filename}")
 
         # Create post in database
+        print(f"[CREATE_POST] Creating post: email={email}, user_id={user_id}, parent_id={parent_id}, title={title[:30]}...", file=sys.stderr, flush=True)
         post_id = db.create_post(
             user_id=user_id,
             title=title,
@@ -324,16 +325,18 @@ def create_post():
             parent_id=parent_id,
             image_url=image_url,
             location_tag=location_tag,
-            ai_generated=ai_generated
+            ai_generated=ai_generated,
+            template_name='post'
         )
 
         if not post_id:
+            print(f"[CREATE_POST] ERROR: db.create_post returned None/False", file=sys.stderr, flush=True)
             return jsonify({
                 'status': 'error',
                 'message': 'Failed to create post'
             }), 500
 
-        print(f"Created post {post_id} by user {email} (ID: {user_id}), parent_id: {parent_id}")
+        print(f"[CREATE_POST] Created post {post_id} by user {email} (ID: {user_id}), parent_id: {parent_id}", file=sys.stderr, flush=True)
 
         # Fetch the created post to return it
         post = db.get_post_by_id(post_id)
