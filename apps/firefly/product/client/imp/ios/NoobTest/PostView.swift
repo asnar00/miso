@@ -412,6 +412,10 @@ struct PostView: View {
                         .textFieldStyle(.plain)
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.gray.opacity(0.2))
+                        )
                 } else {
                     Text(editableTitle)
                         .font(.system(size: 22, weight: .bold))
@@ -427,6 +431,10 @@ struct PostView: View {
                         .textFieldStyle(.plain)
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.gray.opacity(0.2))
+                        )
                 } else {
                     Text(editableSummary)
                         .font(.system(size: 15))
@@ -442,11 +450,6 @@ struct PostView: View {
             .padding(.trailing, post.imageUrl != nil ? 96 : 0)  // Leave room for thumbnail
             .background(
                 ZStack {
-                    // Grey background in edit mode
-                    if isEditing {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.gray.opacity(0.1))
-                    }
                     // Height measurement
                     GeometryReader { geo in
                         Color.clear.preference(key: TitleSummaryHeightKey.self, value: geo.size.height)
@@ -477,7 +480,7 @@ struct PostView: View {
                     // Grey background in edit mode
                     if isEditing {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.gray.opacity(0.1))
+                            .fill(Color.gray.opacity(0.2))
                     }
                     TextEditor(text: $editableBody)
                         .scrollContentBackground(.hidden)  // Hide default background
