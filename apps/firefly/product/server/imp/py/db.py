@@ -348,7 +348,8 @@ class Database:
                         p.image_url, p.created_at, p.timezone, p.location_tag, p.ai_generated,
                         p.template_name,
                         t.placeholder_title, t.placeholder_summary, t.placeholder_body,
-                        u.email as author_name,
+                        p.title as author_name,
+                        u.email as author_email,
                         0 as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id

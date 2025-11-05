@@ -12,9 +12,12 @@ class PostsListViewModel: ObservableObject {
 // Unified view for displaying a list of posts, either at root level or for a specific parent
 struct PostsListView: View {
     let parentPostId: Int?  // nil = root level, non-nil = child posts
+    let backLabel: String?  // Custom label for back button (if not using parentPost title)
     let initialPosts: [Post]
     let onPostCreated: () -> Void
-    @Binding var navigationPath: [Int]
+    @Binding var navigationPath: [PostsDestination]
+    let showAddButton: Bool  // Whether to show the "Add Post" button
+    let initialExpandedPostId: Int?  // Post ID to expand initially
 
     @StateObject private var viewModel = PostsListViewModel()
     @State private var posts: [Post] = []
@@ -66,24 +69,26 @@ struct PostsListView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 8) {
-                            // Add post button at the top
-                            Button(action: {
-                                createNewPost()
-                            }) {
-                                HStack {
-                                    Image(systemName: "plus.circle.fill")
-                                        .font(.system(size: 20))
-                                    Text("Add Post")
-                                        .font(.system(size: 17, weight: .medium))
+                            // Add post button at the top (only if showAddButton is true)
+                            if showAddButton {
+                                Button(action: {
+                                    createNewPost()
+                                }) {
+                                    HStack {
+                                        Image(systemName: "plus.circle.fill")
+                                            .font(.system(size: 20))
+                                        Text("Add Post")
+                                            .font(.system(size: 17, weight: .medium))
+                                    }
+                                    .foregroundColor(.black)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.white.opacity(0.3))
+                                    .cornerRadius(12)
                                 }
-                                .foregroundColor(.black)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.white.opacity(0.3))
-                                .cornerRadius(12)
+                                .padding(.horizontal, 8)
+                                .padding(.top, 8)
                             }
-                            .padding(.horizontal, 8)
-                            .padding(.top, 8)
 
                             if posts.isEmpty {
                                 Text("No posts yet")
@@ -110,7 +115,10 @@ struct PostsListView: View {
                                             onPostCreated()
                                         },
                                         onNavigateToChildren: { postId in
-                                            navigationPath.append(postId)
+                                            navigationPath.append(.children(parentId: postId))
+                                        },
+                                        onNavigateToProfile: { backLabel, profilePost in
+                                            navigationPath.append(.profile(backLabel: backLabel, profilePost: profilePost))
                                         },
                                         onPostUpdated: { updatedPost in
                                             // Check if this is a new post being updated with real ID
@@ -151,10 +159,10 @@ struct PostsListView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarHidden(parentPostId == nil)  // Hide nav bar for root, show for children
+        .navigationBarHidden(parentPostId == nil && backLabel == nil)  // Hide nav bar for root, show for children or profile
         .navigationBarBackButtonHidden(true)  // Hide standard back button
         .toolbar {
-            if parentPostId != nil {
+            if parentPostId != nil || backLabel != nil {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
                         navigationPath.removeLast()
@@ -162,19 +170,18 @@ struct PostsListView: View {
                         HStack(spacing: 8) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 20, weight: .semibold))
-                                .foregroundColor(.black)
 
-                            Text(parentPost?.title ?? "...")
+                            Text(backLabel ?? parentPost?.title ?? "...")
                                 .font(.system(size: 17, weight: .semibold))
-                                .foregroundColor(.black)
                                 .lineLimit(1)
                         }
+                        .foregroundColor(.black)
                     }
                 }
             }
         }
         .simultaneousGesture(
-            parentPostId != nil ?
+            (parentPostId != nil || backLabel != nil) ?
                 DragGesture(minimumDistance: 30)
                     .onChanged { value in
                         Logger.shared.info("[PostsListView] Drag changed: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
@@ -193,9 +200,15 @@ struct PostsListView: View {
         )
         .onAppear {
             // Set as current viewModel for automation access
-            if parentPostId == nil {  // Only for root view
+            if parentPostId == nil && backLabel == nil {  // Only for root view
                 PostsListViewModel.current = viewModel
                 Logger.shared.info("[PostsListView] Set current viewModel to \(ObjectIdentifier(viewModel))")
+            }
+
+            // Set initial expanded post if specified
+            if let expandPostId = initialExpandedPostId {
+                viewModel.expandedPostId = expandPostId
+                Logger.shared.info("[PostsListView] Set initial expandedPostId to \(expandPostId)")
             }
 
             if let parentId = parentPostId {
@@ -359,7 +372,8 @@ struct PostsListView: View {
                 childCount: 0,
                 titlePlaceholder: "Title",  // Default "post" template
                 summaryPlaceholder: "Summary",
-                bodyPlaceholder: "Body"
+                bodyPlaceholder: "Body",
+                template: "post"  // Default template
             )
 
             // Insert at beginning of posts array

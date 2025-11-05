@@ -20,6 +20,7 @@ struct Post: Codable, Identifiable, Hashable {
     let titlePlaceholder: String?
     let summaryPlaceholder: String?
     let bodyPlaceholder: String?
+    let template: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -39,6 +40,7 @@ struct Post: Codable, Identifiable, Hashable {
         case titlePlaceholder = "placeholder_title"
         case summaryPlaceholder = "placeholder_summary"
         case bodyPlaceholder = "placeholder_body"
+        case template = "template_name"
     }
 }
 

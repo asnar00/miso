@@ -24,6 +24,7 @@ struct PostView: View {
     let onTap: () -> Void
     let onPostCreated: () -> Void
     let onNavigateToChildren: ((Int) -> Void)?
+    let onNavigateToProfile: ((String, Post) -> Void)?  // backLabel, profilePost
     let onPostUpdated: ((Post) -> Void)?
     let onStartEditing: (() -> Void)?  // Called when entering edit mode
     let onEndEditing: (() -> Void)?  // Called when exiting edit mode
@@ -46,6 +47,7 @@ struct PostView: View {
     @State private var selectedImage: UIImage? = nil
     @State private var newImageData: Data? = nil  // Processed image data ready for upload
     @State private var newImage: UIImage? = nil  // Processed image for display
+    @State private var authorHasProfile: Bool = true  // Assume true until checked
 
     // Check if current user owns this post
     private var isOwnPost: Bool {
@@ -434,6 +436,8 @@ struct PostView: View {
                 editableSummary = post.summary
                 editableBody = post.body
                 editableImageUrl = post.imageUrl
+                // Check if author has a profile
+                checkAuthorProfile()
             }
             .onChange(of: selectedImage) { oldValue, newValue in
                 guard let image = newValue else { return }
@@ -612,16 +616,46 @@ struct PostView: View {
                 let authorY = bodyY + measuredBodyHeight + 12  // Below body text with 12pt spacing (was 16pt, 24pt originally)
 
                 HStack {
-                    // Author name on left - aligned with body text
-                    HStack {
+                    // Author name and date on left - aligned with body text
+                    HStack(spacing: 8) {
                         if post.aiGenerated {
                             Text("👓 librarian")
                                 .font(.subheadline)
                                 .foregroundColor(.black.opacity(0.5))
                         } else if let authorName = post.authorName {
-                            Text(authorName)
+                            // Make author name a button only if profile exists
+                            let isProfilePost = post.template == "profile"
+
+                            if isProfilePost || !authorHasProfile {
+                                // Profile posts or authors without profiles: just display text
+                                Text(authorName)
+                                    .font(.subheadline)
+                                    .foregroundColor(.black.opacity(0.5))
+                            } else {
+                                // Regular posts with profiles: make it a tappable button
+                                Button(action: {
+                                    if let authorEmail = post.authorEmail {
+                                        Logger.shared.info("[PostView] Author button tapped: \(authorName) (\(authorEmail))")
+                                        fetchAndNavigateToProfile(authorEmail: authorEmail)
+                                    }
+                                }) {
+                                    Text(authorName)
+                                        .font(.subheadline)
+                                        .foregroundColor(.black)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(Color(red: 0.85, green: 0.85, blue: 0.85))
+                                        .clipShape(Capsule())
+                                }
+                            }
+                        }
+
+                        // Add date with 16pt left padding
+                        if let formattedDate = formatPostDate(post.createdAt) {
+                            Text(formattedDate)
                                 .font(.subheadline)
                                 .foregroundColor(.black.opacity(0.5))
+                                .padding(.leading, 16)
                         }
                     }
                     .padding(.leading, 24)  // 18pt + 6pt = 24pt
@@ -904,6 +938,76 @@ struct PostView: View {
                 Logger.shared.info("[PostView] Post \(post.id) collapsing, setting expansionFactor to 0.0")
                 withAnimation(.easeInOut(duration: 0.3)) {
                     expansionFactor = 0.0
+                }
+            }
+        }
+    }
+
+    // Format date as "day monthname year" (e.g., "15 Oct 2025")
+    private func formatPostDate(_ dateString: String) -> String? {
+        // Date format from server: "Wed, 15 Oct 2025 14:37:09 GMT"
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        guard let date = inputFormatter.date(from: dateString) else {
+            return nil
+        }
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "d MMM yyyy"
+        return outputFormatter.string(from: date)
+    }
+
+    // Check if the author has a profile (called on appear)
+    private func checkAuthorProfile() {
+        // Skip check for AI-generated posts or profile posts
+        guard !post.aiGenerated, post.template != "profile", let authorEmail = post.authorEmail else {
+            return
+        }
+
+        Logger.shared.info("[PostView] Checking if author \(authorEmail) has a profile")
+
+        PostsAPI.shared.fetchUserProfile(userId: authorEmail) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profilePost):
+                    // Only consider it a valid profile if it has a non-empty title or summary
+                    if let profile = profilePost {
+                        let hasContent = !profile.title.isEmpty || !profile.summary.isEmpty
+                        self.authorHasProfile = hasContent
+                        Logger.shared.info("[PostView] Author \(authorEmail) has profile with content: \(hasContent)")
+                    } else {
+                        self.authorHasProfile = false
+                        Logger.shared.info("[PostView] Author \(authorEmail) has no profile")
+                    }
+                case .failure(let error):
+                    Logger.shared.warning("[PostView] Failed to check profile: \(error.localizedDescription)")
+                    self.authorHasProfile = false
+                }
+            }
+        }
+    }
+
+    // Fetch author's profile and navigate to it
+    private func fetchAndNavigateToProfile(authorEmail: String) {
+        Logger.shared.info("[PostView] Fetching profile for \(authorEmail)")
+
+        PostsAPI.shared.fetchUserProfile(userId: authorEmail) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profilePost):
+                    if let profile = profilePost {
+                        Logger.shared.info("[PostView] Profile found: \(profile.title), navigating...")
+                        // Navigate to profile view with current post title as back label
+                        if let navigate = onNavigateToProfile {
+                            navigate(post.title, profile)
+                        }
+                    } else {
+                        Logger.shared.warning("[PostView] No profile found for \(authorEmail)")
+                    }
+                case .failure(let error):
+                    Logger.shared.error("[PostView] Failed to fetch profile: \(error.localizedDescription)")
                 }
             }
         }

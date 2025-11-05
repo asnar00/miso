@@ -34,9 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var consoleButton: NSButton!
     var consoleWindow: NSWindow?
     var consoleTextView: NSTextView!
-    var logFileHandle: FileHandle?
-    var logFileOffset: UInt64 = 0
-    var logUpdateTimer: Timer?
+    var logStreamProcess: Process?
     var isSmallMode = false
     let fullSize = NSSize(width: 390, height: 844)
     let smallSize = NSSize(width: 195, height: 422)
@@ -47,6 +45,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Enable iOS screen capture devices
         enableiOSScreenCapture()
+
+        // Clean up on quit
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillTerminate),
+            name: NSApplication.willTerminateNotification,
+            object: nil
+        )
 
         window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 390, height: 844),
@@ -147,9 +153,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func setupConsoleButton() {
         // Create a small rounded square button at top right corner
-        let buttonSize: CGFloat = 30
-        let buttonX: CGFloat = fullSize.width - buttonSize - 10  // 10px padding from edge
-        let buttonY: CGFloat = fullSize.height - buttonSize - 10  // 10px padding from top
+        let buttonSize: CGFloat = 40
+        let buttonX: CGFloat = fullSize.width - buttonSize - 15  // 15px padding from edge
+        let buttonY: CGFloat = fullSize.height - buttonSize - 15  // 15px padding from top
         consoleButton = NSButton(frame: NSRect(x: buttonX, y: buttonY, width: buttonSize, height: buttonSize))
         consoleButton.title = ""
         consoleButton.bezelStyle = .rounded
@@ -157,22 +163,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         consoleButton.target = self
         consoleButton.action = #selector(toggleConsole)
 
-        // Style as a small rounded square
+        // Style as a small rounded square with higher visibility
         consoleButton.wantsLayer = true
-        consoleButton.layer?.backgroundColor = NSColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.8).cgColor
-        consoleButton.layer?.cornerRadius = 8
-        consoleButton.layer?.borderWidth = 1
-        consoleButton.layer?.borderColor = NSColor.white.withAlphaComponent(0.5).cgColor
+        consoleButton.layer?.backgroundColor = NSColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 0.95).cgColor
+        consoleButton.layer?.cornerRadius = 10
+        consoleButton.layer?.borderWidth = 2
+        consoleButton.layer?.borderColor = NSColor.white.withAlphaComponent(0.8).cgColor
+        consoleButton.layer?.shadowColor = NSColor.black.cgColor
+        consoleButton.layer?.shadowOpacity = 0.5
+        consoleButton.layer?.shadowOffset = NSSize(width: 0, height: -2)
+        consoleButton.layer?.shadowRadius = 3
 
         // Add chevron label centered in button
-        let label = NSTextField(frame: NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize))
+        let label = NSTextField(frame: NSRect(x: 0, y: -11, width: buttonSize, height: buttonSize))
         label.stringValue = ">"
         label.isEditable = false
         label.isBordered = false
         label.backgroundColor = .clear
         label.textColor = .black
         label.alignment = .center
-        label.font = NSFont.systemFont(ofSize: 18, weight: .bold)
+        label.font = NSFont.systemFont(ofSize: 20, weight: .bold)
         consoleButton.addSubview(label)
 
         window.contentView?.addSubview(consoleButton)
@@ -185,8 +195,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if consoleWindow!.isVisible {
             consoleWindow?.orderOut(nil)
-            logUpdateTimer?.invalidate()
-            logUpdateTimer = nil
+            stopLogStream()
         } else {
             // Position console to the right of the main window
             let mainFrame = window.frame
@@ -199,8 +208,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             consoleWindow?.setFrame(consoleFrame, display: true)
             consoleWindow?.makeKeyAndOrderFront(nil)
 
-            // Start updating logs
-            startLogUpdates()
+            // Start log stream
+            startLogStream()
         }
     }
 
@@ -231,104 +240,89 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         consoleWindow?.contentView?.addSubview(scrollView)
     }
 
-    func startLogUpdates() {
-        // Check if watch-logs.py is running, start it if not
-        ensureWatchLogsRunning()
+    func startLogStream() {
+        consoleTextView.string = "Starting log stream...\n\n"
 
-        // Find the device-logs.txt file
-        let logPath = "/Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/ios/device-logs.txt"
+        // Stop any existing process
+        stopLogStream()
 
-        // Wait a moment for watch-logs to create the file if it just started
-        Thread.sleep(forTimeInterval: 1.0)
+        // Create new process to run pymobiledevice3 syslog live
+        logStreamProcess = Process()
+        logStreamProcess?.executableURL = URL(fileURLWithPath: "/Library/Frameworks/Python.framework/Versions/3.12/bin/pymobiledevice3")
+        logStreamProcess?.arguments = ["syslog", "live"]
 
-        // Try to open file
-        if let fileHandle = FileHandle(forReadingAtPath: logPath) {
-            logFileHandle = fileHandle
+        // Set up pipes for output
+        let outputPipe = Pipe()
+        logStreamProcess?.standardOutput = outputPipe
+        logStreamProcess?.standardError = outputPipe
 
-            // Seek to end first time
-            if logFileOffset == 0 {
-                logFileOffset = fileHandle.seekToEndOfFile()
-            } else {
-                try? fileHandle.seek(toOffset: logFileOffset)
-            }
+        // Read output asynchronously
+        outputPipe.fileHandleForReading.readabilityHandler = { [weak self] handle in
+            guard let self = self else { return }
 
-            // Update immediately
-            updateConsoleLog()
+            let data = handle.availableData
+            guard data.count > 0 else { return }
 
-            // Start timer to update every 0.5 seconds
-            logUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
-                self?.updateConsoleLog()
-            }
-        } else {
-            consoleTextView.string = "Could not open log file:\n\(logPath)\n\nTrying to start watch-logs.py..."
-        }
-    }
+            if let output = String(data: data, encoding: .utf8) {
+                // Filter for app logs with [APP] prefix
+                let lines = output.components(separatedBy: .newlines)
+                let logPattern = try? NSRegularExpression(
+                    pattern: #"NoobTest\{[^}]+\}\[\d+\] <(DEBUG|INFO|NOTICE|WARNING|ERROR|FAULT)>: \[APP\] (.+)"#,
+                    options: []
+                )
 
-    func ensureWatchLogsRunning() {
-        // Check if watch-logs.py is already running
-        let checkTask = Process()
-        checkTask.executableURL = URL(fileURLWithPath: "/usr/bin/pgrep")
-        checkTask.arguments = ["-f", "watch-logs.py"]
+                for line in lines {
+                    if let match = logPattern?.firstMatch(
+                        in: line,
+                        options: [],
+                        range: NSRange(line.startIndex..., in: line)
+                    ) {
+                        // Extract level and message
+                        if let levelRange = Range(match.range(at: 1), in: line),
+                           let messageRange = Range(match.range(at: 2), in: line) {
+                            let level = String(line[levelRange])
+                            let message = String(line[messageRange])
 
-        let pipe = Pipe()
-        checkTask.standardOutput = pipe
+                            let timestamp = DateFormatter.localizedString(
+                                from: Date(),
+                                dateStyle: .none,
+                                timeStyle: .medium
+                            )
 
-        do {
-            try checkTask.run()
-            checkTask.waitUntilExit()
+                            let logLine = "\(timestamp) [\(level)] \(message)\n"
 
-            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-            if let output = String(data: data, encoding: .utf8), !output.isEmpty {
-                // watch-logs.py is already running
-                return
-            }
-        } catch {
-            // Error checking, assume not running
-        }
-
-        // Not running, start it
-        let watchLogsDir = "/Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/ios"
-        let startTask = Process()
-        startTask.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
-        startTask.arguments = ["\(watchLogsDir)/watch-logs.py"]
-        startTask.currentDirectoryURL = URL(fileURLWithPath: watchLogsDir)
-
-        // Redirect output to /dev/null so it runs in background
-        startTask.standardOutput = FileHandle.nullDevice
-        startTask.standardError = FileHandle.nullDevice
-
-        do {
-            try startTask.run()
-            consoleTextView.string = "Started watch-logs.py...\n\n"
-        } catch {
-            consoleTextView.string = "Failed to start watch-logs.py: \(error.localizedDescription)\n"
-        }
-    }
-
-    func updateConsoleLog() {
-        guard let fileHandle = logFileHandle else { return }
-
-        // Read new data
-        let data = fileHandle.availableData
-
-        if data.count > 0 {
-            if let newText = String(data: data, encoding: .utf8) {
-                DispatchQueue.main.async {
-                    // Check if the new text contains the separator line
-                    if newText.contains("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━") {
-                        // Clear the console and start fresh
-                        self.consoleTextView.string = newText
-                    } else {
-                        // Append as normal
-                        self.consoleTextView.string += newText
+                            DispatchQueue.main.async {
+                                self.consoleTextView.string += logLine
+                                self.consoleTextView.scrollToEndOfDocument(nil)
+                            }
+                        }
                     }
-                    self.consoleTextView.scrollToEndOfDocument(nil)
                 }
             }
-
-            // Update offset
-            logFileOffset = fileHandle.offsetInFile
         }
+
+        // Start the process
+        do {
+            try logStreamProcess?.run()
+            DispatchQueue.main.async {
+                self.consoleTextView.string += "Log stream started successfully\n\n"
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.consoleTextView.string = "Failed to start log stream: \(error.localizedDescription)\n"
+            }
+        }
+    }
+
+    func stopLogStream() {
+        if let process = logStreamProcess, process.isRunning {
+            process.terminate()
+            logStreamProcess = nil
+        }
+    }
+
+    @objc func applicationWillTerminate(_ notification: Notification) {
+        stopLogStream()
     }
 
     func checkForDevice() {
@@ -504,6 +498,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             previewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
             previewLayer?.frame = insetFrame
             previewLayer?.videoGravity = .resizeAspectFill
+            previewLayer?.zPosition = -1  // Put video behind other layers
             window.contentView?.layer = CALayer()
             window.contentView?.wantsLayer = true
             window.contentView?.layer?.cornerRadius = 45
@@ -516,6 +511,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             // Re-add status label and console button on top
             window.contentView?.addSubview(statusLabel)
             window.contentView?.addSubview(consoleButton)
+
+            // Ensure button's layer is on top
+            consoleButton.wantsLayer = true
+            if let buttonLayer = consoleButton.layer {
+                buttonLayer.zPosition = 100  // Put button on top
+            }
 
             // Start capture
             log("Starting capture session...")
@@ -631,9 +632,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Update console button position for new size
-        let buttonSize: CGFloat = 30
-        let buttonX: CGFloat = targetSize.width - buttonSize - 10  // 10px padding from edge
-        let buttonY: CGFloat = targetSize.height - buttonSize - 10  // 10px padding from top
+        let buttonSize: CGFloat = 40
+        let buttonX: CGFloat = targetSize.width - buttonSize - 15  // 15px padding from edge
+        let buttonY: CGFloat = targetSize.height - buttonSize - 15  // 15px padding from top
         consoleButton.frame = NSRect(x: buttonX, y: buttonY, width: buttonSize, height: buttonSize)
 
         log(isSmallMode ? "Switched to small mode" : "Switched to full size")

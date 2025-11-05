@@ -219,19 +219,56 @@ if isExpanded && isMeasured {
     let authorY = currentImageY + currentImageHeight + 16 + bodyTextHeight + 24
 
     HStack {
-        if post.aiGenerated {
-            Text("👓 librarian")
-                .font(.subheadline)
-                .foregroundColor(.black.opacity(0.5))
-        } else if let authorName = post.authorName {
-            Text(authorName)
-                .font(.subheadline)
-                .foregroundColor(.black.opacity(0.5))
+        // Author name and date with 8pt spacing
+        HStack(spacing: 8) {
+            if post.aiGenerated {
+                Text("👓 librarian")
+                    .font(.subheadline)
+                    .foregroundColor(.black.opacity(0.5))
+            } else if let authorName = post.authorName {
+                Text(authorName)
+                    .font(.subheadline)
+                    .foregroundColor(.black.opacity(0.5))
+            }
+
+            // Add formatted date with 16pt left padding
+            if let formattedDate = formatPostDate(post.createdAt) {
+                Text(formattedDate)
+                    .font(.subheadline)
+                    .foregroundColor(.black.opacity(0.5))
+                    .padding(.leading, 16)
+            }
         }
+        .padding(.leading, 24)  // 18pt + 6pt = 24pt
+
+        Spacer()
+
+        // Edit/save/cancel buttons (if applicable)
+        // ...
     }
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .offset(x: 18, y: authorY)  // Increased from 10pt for more left indent
+    .frame(maxWidth: .infinity)
+    .offset(x: 0, y: authorY)
     .opacity(expansionFactor)  // fade in with expansion
+}
+```
+
+**Date Formatting Function:**
+
+```swift
+// Format date as "day monthname year" (e.g., "15 Oct 2025")
+private func formatPostDate(_ dateString: String) -> String? {
+    // Date format from server: "Wed, 15 Oct 2025 14:37:09 GMT"
+    let inputFormatter = DateFormatter()
+    inputFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+    inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+    guard let date = inputFormatter.date(from: dateString) else {
+        return nil
+    }
+
+    let outputFormatter = DateFormatter()
+    outputFormatter.dateFormat = "d MMM yyyy"
+    return outputFormatter.string(from: date)
 }
 ```
 
@@ -239,7 +276,10 @@ if isExpanded && isMeasured {
 - Only rendered when `isExpanded && isMeasured` (not visible in compact view)
 - Position tracks image via same recalculation pattern
 - Opacity tied to `expansionFactor` for smooth fade-in
-- Left-aligned with content at x: 10
+- Author name and date in HStack with 8pt spacing
+- Date has additional 16pt left padding for visual separation
+- Date format: "day monthname year" (e.g., "5 Nov 2025")
+- Input format from server: "Wed, 05 Nov 2025 14:37:09 GMT"
 
 ## Complete Layout Structure
 
@@ -465,3 +505,273 @@ func lerp(_ start: CGFloat, _ end: CGFloat, _ t: CGFloat) -> CGFloat {
 4. **Efficient interpolation**: Simple linear interpolation is fast and smooth
 
 This implementation creates a smooth, continuous animation that can be interrupted and reversed at any point without visual glitches.
+
+## Author Navigation
+
+### Author Button Display
+
+Author names are displayed as clickable lozenge buttons only if the author has a profile with content (non-empty title or summary). Profile posts themselves and authors without profiles show plain text:
+
+```swift
+// State to track if author has a profile
+@State private var authorHasProfile: Bool = true  // Assume true until checked
+
+// Author name and date section
+HStack(spacing: 8) {
+    if post.aiGenerated {
+        Text("👓 librarian")
+            .font(.subheadline)
+            .foregroundColor(.black.opacity(0.5))
+    } else if let authorName = post.authorName {
+        // Make author name a button only if profile exists
+        let isProfilePost = post.template == "profile"
+
+        if isProfilePost || !authorHasProfile {
+            // Profile posts or authors without profiles: just display text
+            Text(authorName)
+                .font(.subheadline)
+                .foregroundColor(.black.opacity(0.5))
+        } else {
+            // Regular posts with profiles: make it a tappable button
+            Button(action: {
+                if let authorEmail = post.authorEmail {
+                    Logger.shared.info("[PostView] Author button tapped: \(authorName) (\(authorEmail))")
+                    fetchAndNavigateToProfile(authorEmail: authorEmail)
+                }
+            }) {
+                Text(authorName)
+                    .font(.subheadline)
+                    .foregroundColor(.black)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color(red: 0.85, green: 0.85, blue: 0.85))
+                    .clipShape(Capsule())
+            }
+        }
+    }
+
+    // Add date with 16pt left padding
+    if let formattedDate = formatPostDate(post.createdAt) {
+        Text(formattedDate)
+            .font(.subheadline)
+            .foregroundColor(.black.opacity(0.5))
+            .padding(.leading, 16)
+    }
+}
+```
+
+### Date Formatting
+
+```swift
+// Format date as "day monthname year" (e.g., "5 Nov 2025")
+private func formatPostDate(_ dateString: String) -> String? {
+    // Date format from server: "Wed, 15 Oct 2025 14:37:09 GMT"
+    let inputFormatter = DateFormatter()
+    inputFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+    inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+    guard let date = inputFormatter.date(from: dateString) else {
+        return nil
+    }
+
+    let outputFormatter = DateFormatter()
+    outputFormatter.dateFormat = "d MMM yyyy"
+    return outputFormatter.string(from: date)
+}
+```
+
+### Profile Check on Appear
+
+When the view appears, check if the author has a profile with content to determine whether to show the button:
+
+```swift
+// Check if the author has a profile (called on appear)
+private func checkAuthorProfile() {
+    // Skip check for AI-generated posts or profile posts
+    guard !post.aiGenerated, post.template != "profile", let authorEmail = post.authorEmail else {
+        return
+    }
+
+    Logger.shared.info("[PostView] Checking if author \(authorEmail) has a profile")
+
+    PostsAPI.shared.fetchUserProfile(userId: authorEmail) { result in
+        DispatchQueue.main.async {
+            switch result {
+            case .success(let profilePost):
+                // Only consider it a valid profile if it has a non-empty title or summary
+                if let profile = profilePost {
+                    let hasContent = !profile.title.isEmpty || !profile.summary.isEmpty
+                    self.authorHasProfile = hasContent
+                    Logger.shared.info("[PostView] Author \(authorEmail) has profile with content: \(hasContent)")
+                } else {
+                    self.authorHasProfile = false
+                    Logger.shared.info("[PostView] Author \(authorEmail) has no profile")
+                }
+            case .failure(let error):
+                Logger.shared.warning("[PostView] Failed to check profile: \(error.localizedDescription)")
+                self.authorHasProfile = false
+            }
+        }
+    }
+}
+
+// Called in onAppear
+.onAppear {
+    // Set initial expansion state without animation
+    expansionFactor = isExpanded ? 1.0 : 0.0
+    // Initialize editable content with post content
+    editableTitle = post.title
+    editableSummary = post.summary
+    editableBody = post.body
+    editableImageUrl = post.imageUrl
+    // Check if author has a profile
+    checkAuthorProfile()
+}
+```
+
+### Profile Fetching and Navigation
+
+```swift
+// Fetch author's profile and navigate to it
+private func fetchAndNavigateToProfile(authorEmail: String) {
+    Logger.shared.info("[PostView] Fetching profile for \(authorEmail)")
+
+    PostsAPI.shared.fetchUserProfile(userId: authorEmail) { result in
+        DispatchQueue.main.async {
+            switch result {
+            case .success(let profilePost):
+                if let profile = profilePost {
+                    Logger.shared.info("[PostView] Profile found: \(profile.title), navigating...")
+                    // Navigate to profile view with current post title as back label
+                    if let navigate = onNavigateToProfile {
+                        navigate(post.title, profile)
+                    }
+                } else {
+                    Logger.shared.warning("[PostView] No profile found for \(authorEmail)")
+                }
+            case .failure(let error):
+                Logger.shared.error("[PostView] Failed to fetch profile: \(error.localizedDescription)")
+            }
+        }
+    }
+}
+```
+
+### Navigation Structure
+
+PostView receives an `onNavigateToProfile` callback that takes `(backLabel: String, profilePost: Post)`:
+
+```swift
+// In PostView
+let onNavigateToProfile: ((String, Post) -> Void)?
+
+// In PostsListView
+PostView(
+    post: post,
+    // ... other params ...
+    onNavigateToProfile: { backLabel, profilePost in
+        navigationPath.append(.profile(backLabel: backLabel, profilePost: profilePost))
+    }
+)
+```
+
+### Navigation Destination Handling
+
+```swift
+// In PostsView.swift
+enum PostsDestination: Hashable {
+    case children(parentId: Int)  // Show children of a post
+    case profile(backLabel: String, profilePost: Post)  // Show single profile post
+}
+
+.navigationDestination(for: PostsDestination.self) { destination in
+    switch destination {
+    case .children(let parentId):
+        PostsListView(
+            parentPostId: parentId,
+            backLabel: nil,
+            initialPosts: [],
+            onPostCreated: onPostCreated,
+            navigationPath: $navigationPath,
+            showAddButton: true,
+            initialExpandedPostId: nil
+        )
+    case .profile(let backLabel, let profilePost):
+        PostsListView(
+            parentPostId: nil,
+            backLabel: backLabel,
+            initialPosts: [profilePost],
+            onPostCreated: onPostCreated,
+            navigationPath: $navigationPath,
+            showAddButton: false,
+            initialExpandedPostId: profilePost.id
+        )
+    }
+}
+```
+
+### Post Model
+
+The Post struct includes a `template` field mapped to `template_name` in the API:
+
+```swift
+struct Post: Codable, Identifiable, Hashable {
+    // ... other fields ...
+    let template: String?
+
+    enum CodingKeys: String, CodingKey {
+        // ... other cases ...
+        case template = "template_name"
+    }
+}
+```
+
+### Server API
+
+**Endpoint**: `GET /api/users/{email}/profile`
+
+**Response**:
+```json
+{
+    "status": "success",
+    "profile": {
+        "id": 22,
+        "user_id": 5,
+        "parent_id": -1,
+        "title": "asnaroo",
+        "summary": "fix all the things",
+        "body": "I'm a self-taught...",
+        "image_url": "/uploads/407431e70f764516ae11b45bcae71a92.jpg",
+        "created_at": "Fri, 31 Oct 2025 12:57:21 GMT",
+        "timezone": "UTC",
+        "location_tag": null,
+        "ai_generated": false,
+        "template_name": "profile",
+        "placeholder_title": "name",
+        "placeholder_summary": "mission",
+        "placeholder_body": "personal statement",
+        "author_name": "asnaroo",
+        "author_email": "test@example.com",
+        "child_count": 0
+    }
+}
+```
+
+**Critical**: The profile API must return both `author_name` (the profile title) and `author_email` (the user's email) for proper display and edit button functionality.
+
+**Database query** (`db.py:get_user_profile`):
+```sql
+SELECT
+    p.id, p.user_id, p.parent_id, p.title, p.summary, p.body,
+    p.image_url, p.created_at, p.timezone, p.location_tag, p.ai_generated,
+    p.template_name,
+    t.placeholder_title, t.placeholder_summary, t.placeholder_body,
+    p.title as author_name,
+    u.email as author_email,
+    0 as child_count
+FROM posts p
+LEFT JOIN users u ON p.user_id = u.id
+LEFT JOIN templates t ON p.template_name = t.name
+WHERE p.user_id = %s AND p.parent_id = -1
+LIMIT 1
+```
