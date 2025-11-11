@@ -10,6 +10,9 @@ from werkzeug.utils import secure_filename
 import uuid
 from db import db
 import sys
+import numpy as np
+import torch
+import embeddings
 
 app = Flask(__name__)
 
@@ -830,6 +833,89 @@ def update_profile():
             'status': 'error',
             'message': f'Server error: {str(e)}'
         }), 500
+
+@app.route('/api/search', methods=['GET'])
+def search_posts():
+    """Search for posts using semantic similarity"""
+    try:
+        # Get query parameter
+        query = request.args.get('q', '').strip()
+        if not query:
+            return jsonify({'error': 'Query parameter q is required'}), 400
+
+        limit = int(request.args.get('limit', 20))
+
+        print(f"[SEARCH] Query: {query}, Limit: {limit}", file=sys.stderr, flush=True)
+
+        # Load all embeddings
+        all_embeddings, index = load_all_embeddings()
+        print(f"[SEARCH] Loaded {len(index)} fragments from {len(set(pid for pid, _ in index))} posts", file=sys.stderr, flush=True)
+
+        # Generate query embedding
+        model = embeddings.get_model()
+        query_emb = model.encode([query], convert_to_numpy=True)[0]  # Shape: (768,)
+
+        # Compute similarity scores
+        scores = compute_similarity_gpu(query_emb, all_embeddings)
+
+        # Group by post_id and take max score
+        post_scores = {}
+        for i, (post_id, frag_idx) in enumerate(index):
+            if post_id not in post_scores:
+                post_scores[post_id] = scores[i]
+            else:
+                post_scores[post_id] = max(post_scores[post_id], scores[i])
+
+        # Sort by score and apply limit
+        ranked_posts = sorted(post_scores.items(), key=lambda x: x[1], reverse=True)[:limit]
+
+        print(f"[SEARCH] Top {len(ranked_posts)} posts:", file=sys.stderr, flush=True)
+        for post_id, score in ranked_posts[:5]:
+            print(f"  Post {post_id}: {score:.3f}", file=sys.stderr, flush=True)
+
+        # Return just post IDs and scores - client will fetch full details
+        results = [{'id': post_id, 'relevance_score': float(score)} for post_id, score in ranked_posts]
+        return jsonify(results)
+
+    except Exception as e:
+        print(f"[SEARCH] Error: {e}", file=sys.stderr, flush=True)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
+        return jsonify({'error': str(e)}), 500
+
+def load_all_embeddings():
+    """Load all post embeddings from disk"""
+    embedding_files = []
+    for filename in os.listdir('data/embeddings'):
+        if filename.startswith('post_') and filename.endswith('.npy'):
+            post_id = int(filename.replace('post_', '').replace('.npy', ''))
+            embedding_files.append((post_id, f'data/embeddings/{filename}'))
+
+    embedding_files.sort()
+
+    all_embeddings = []
+    index = []
+
+    for post_id, filepath in embedding_files:
+        emb = np.load(filepath)
+        all_embeddings.append(emb)
+        for frag_idx in range(emb.shape[0]):
+            index.append((post_id, frag_idx))
+
+    all_embeddings = np.vstack(all_embeddings)
+    return all_embeddings, index
+
+def compute_similarity_gpu(query_emb_float, all_embeddings_float):
+    """Compute cosine similarity on GPU"""
+    # Convert to PyTorch tensors on GPU
+    device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+    query_tensor = torch.tensor(query_emb_float, device=device).unsqueeze(0)
+    all_tensor = torch.tensor(all_embeddings_float, device=device)
+
+    # Compute cosine similarity
+    scores = torch.nn.functional.cosine_similarity(query_tensor, all_tensor)
+
+    return scores.cpu().numpy()
 
 @app.route('/api/shutdown', methods=['POST'])
 def shutdown():

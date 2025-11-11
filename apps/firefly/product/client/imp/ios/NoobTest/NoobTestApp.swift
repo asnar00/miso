@@ -8,6 +8,10 @@ struct NoobTestApp: App {
     @State private var posts: [Post] = []
     @State private var isLoadingPosts = false
     @State private var postsError: String?
+    @State private var searchText = ""
+    @State private var searchResultIds: [Int] = []
+    @State private var isSearching = false
+    @FocusState private var isSearchFieldFocused: Bool
 
     init() {
         Logger.shared.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
@@ -47,37 +51,80 @@ struct NoobTestApp: App {
                 NewUserView(email: email ?? "unknown", hasSeenWelcome: $hasSeenWelcome)
             } else {
                 ZStack {
-                    Color(red: 64/255, green: 224/255, blue: 208/255)  // Turquoise
-                        .ignoresSafeArea()
+                    // Main content layer
+                    ZStack {
+                        Color(red: 64/255, green: 224/255, blue: 208/255)  // Turquoise
+                            .ignoresSafeArea()
 
-                    if isLoadingPosts {
-                        VStack(spacing: 20) {
-                            Text("ᕦ(ツ)ᕤ")
-                                .font(.system(size: UIScreen.main.bounds.width / 12))
-                                .foregroundColor(.black)
+                        if isLoadingPosts {
+                            VStack(spacing: 20) {
+                                Text("ᕦ(ツ)ᕤ")
+                                    .font(.system(size: UIScreen.main.bounds.width / 12))
+                                    .foregroundColor(.black)
 
-                            ProgressView("Loading users...")
-                                .foregroundColor(.black)
-                        }
-                    } else if let error = postsError {
-                        VStack {
-                            Text("Error: \(error)")
-                                .foregroundColor(.red)
-                                .padding()
-                            Button("Retry") {
-                                fetchRecentUsers()
+                                ProgressView("Loading users...")
+                                    .foregroundColor(.black)
                             }
-                            .padding()
-                            .background(Color.white.opacity(0.3))
-                            .cornerRadius(8)
+                        } else if let error = postsError {
+                            VStack {
+                                Text("Error: \(error)")
+                                    .foregroundColor(.red)
+                                    .padding()
+                                Button("Retry") {
+                                    fetchRecentUsers()
+                                }
+                                .padding()
+                                .background(Color.white.opacity(0.3))
+                                .cornerRadius(8)
+                            }
+                        } else {
+                            // Keep both views alive, control visibility with ZStack
+                            ZStack {
+                                // Main posts view - always alive to preserve navigation state
+                                PostsView(
+                                    initialPosts: posts,
+                                    onPostCreated: fetchRecentUsers,
+                                    showAddButton: false
+                                )
+                                .opacity(isSearching ? 0 : 1)
+                                .allowsHitTesting(!isSearching)
+
+                                // Search results view - overlays when searching
+                                if isSearching {
+                                    SearchResultsView(postIds: searchResultIds, onPostCreated: fetchRecentUsers)
+                                }
+
+                                // Invisible overlay to dismiss keyboard - only when keyboard is focused
+                                if isSearchFieldFocused {
+                                    Color.clear
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            isSearchFieldFocused = false
+                                        }
+                                }
+                            }
                         }
-                    } else {
-                        PostsView(initialPosts: posts, onPostCreated: fetchRecentUsers, showAddButton: false)
                     }
-                }
-                .onAppear {
-                    if posts.isEmpty && !isLoadingPosts {
-                        fetchRecentUsers()
+                    .onAppear {
+                        if posts.isEmpty && !isLoadingPosts {
+                            fetchRecentUsers()
+                        }
+                    }
+
+                    // Floating search bar overlay
+                    VStack {
+                        Spacer()
+                        FloatingSearchBar(
+                            searchText: $searchText,
+                            isFocused: $isSearchFieldFocused,
+                            onSearch: { query in
+                                performSearch(query)
+                            },
+                            onClear: {
+                                isSearching = false
+                                searchResultIds = []
+                            }
+                        )
                     }
                 }
             }
@@ -132,5 +179,54 @@ struct NoobTestApp: App {
                 }
             }
         }
+    }
+
+    func performSearch(_ query: String) {
+        guard !query.isEmpty else {
+            Logger.shared.info("[SEARCH] Query is empty, skipping search")
+            return
+        }
+
+        Logger.shared.info("[SEARCH] Setting isSearching = true")
+        isSearching = true
+
+        let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let urlString = "http://185.96.221.52:8080/api/search?q=\(encodedQuery)&limit=20"
+
+        guard let url = URL(string: urlString) else {
+            Logger.shared.error("[SEARCH] Invalid URL: \(urlString)")
+            return
+        }
+
+        Logger.shared.info("[SEARCH] Searching for: \(query)")
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                Logger.shared.error("[SEARCH] Error: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                Logger.shared.error("[SEARCH] No data received")
+                return
+            }
+
+            do {
+                struct SearchResult: Codable {
+                    let id: Int
+                    let relevance_score: Double
+                }
+                let results = try JSONDecoder().decode([SearchResult].self, from: data)
+                Logger.shared.info("[SEARCH] Found \(results.count) results, dispatching to main thread")
+                DispatchQueue.main.async {
+                    Logger.shared.info("[SEARCH] On main thread, setting searchResultIds to \(results.count) IDs")
+                    Logger.shared.info("[SEARCH] Current isSearching = \(self.isSearching)")
+                    self.searchResultIds = results.map { $0.id }
+                    Logger.shared.info("[SEARCH] searchResultIds updated: \(self.searchResultIds), UI should refresh now")
+                }
+            } catch {
+                Logger.shared.error("[SEARCH] Decoding error: \(error.localizedDescription)")
+            }
+        }.resume()
     }
 }

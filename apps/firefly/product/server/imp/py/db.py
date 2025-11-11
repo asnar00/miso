@@ -10,6 +10,7 @@ from typing import Optional, List, Dict, Any
 import os
 from datetime import datetime
 import sys
+import embeddings
 
 class Database:
     """Database connection and operations manager"""
@@ -232,6 +233,10 @@ class Database:
                 )
 
                 conn.commit()
+
+                # Generate embeddings for the new post
+                embeddings.generate_embeddings(post_id, title, summary, body)
+
                 return post_id
         except Exception as e:
             conn.rollback()
@@ -275,6 +280,10 @@ class Database:
                     (title, summary, body, image_url, post_id)
                 )
                 conn.commit()
+
+                # Regenerate embeddings for the updated post
+                embeddings.generate_embeddings(post_id, title, summary, body)
+
                 return True
         except Exception as e:
             conn.rollback()
@@ -295,7 +304,8 @@ class Database:
                            p.template_name,
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body,
                            COALESCE(u.name, u.email) as author_name,
-                           u.email as author_email
+                           u.email as author_email,
+                           (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
                     LEFT JOIN templates t ON p.template_name = t.name

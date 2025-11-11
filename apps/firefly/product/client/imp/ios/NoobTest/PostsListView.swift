@@ -199,6 +199,8 @@ struct PostsListView: View {
                 : nil
         )
         .onAppear {
+            Logger.shared.info("[PostsListView] onAppear called, initialPosts.count=\(initialPosts.count), posts.count=\(posts.count)")
+
             // Set as current viewModel for automation access
             if parentPostId == nil && backLabel == nil {  // Only for root view
                 PostsListViewModel.current = viewModel
@@ -217,11 +219,21 @@ struct PostsListView: View {
             } else if posts.isEmpty {
                 // Root level: use initial posts if available, otherwise fetch
                 if !initialPosts.isEmpty {
+                    Logger.shared.info("[PostsListView] Using initialPosts, count=\(initialPosts.count)")
                     posts = initialPosts
                     isLoading = false
                 } else {
+                    Logger.shared.info("[PostsListView] No initialPosts, fetching from server")
                     fetchPosts()
                 }
+            }
+        }
+        .onChange(of: initialPosts) { oldValue, newValue in
+            Logger.shared.info("[PostsListView] initialPosts changed! old.count=\(oldValue.count), new.count=\(newValue.count)")
+            if parentPostId == nil {
+                Logger.shared.info("[PostsListView] Root view: updating posts to new initialPosts")
+                posts = newValue
+                isLoading = false
             }
         }
     }

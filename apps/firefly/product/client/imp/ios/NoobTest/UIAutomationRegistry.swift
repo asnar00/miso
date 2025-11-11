@@ -5,6 +5,7 @@ class UIAutomationRegistry {
     static let shared = UIAutomationRegistry()
 
     private var elements: [String: () -> Void] = [:]
+    private var textFields: [String: (String) -> Void] = [:]
     private let queue = DispatchQueue(label: "com.miso.ui-automation", attributes: .concurrent)
 
     private init() {}
@@ -12,6 +13,12 @@ class UIAutomationRegistry {
     func register(id: String, action: @escaping () -> Void) {
         queue.async(flags: .barrier) {
             self.elements[id] = action
+        }
+    }
+
+    func registerTextField(id: String, setText: @escaping (String) -> Void) {
+        queue.async(flags: .barrier) {
+            self.textFields[id] = setText
         }
     }
 
@@ -29,6 +36,25 @@ class UIAutomationRegistry {
         // Execute on main thread
         DispatchQueue.main.async {
             action()
+        }
+
+        return true
+    }
+
+    func setTextFieldValue(id: String, text: String) -> Bool {
+        var setText: ((String) -> Void)?
+
+        queue.sync {
+            setText = textFields[id]
+        }
+
+        guard let setText = setText else {
+            return false
+        }
+
+        // Execute on main thread
+        DispatchQueue.main.async {
+            setText(text)
         }
 
         return true

@@ -4,15 +4,56 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-`miso` is an experimental system for natural language programming. It enables non-programmers to create and maintain software by specifying programs as trees of short natural-language markdown documents called "features".
+`miso` is a line of experiments exploring "modular specifications" - trees of short natural-language text documents called "features" that describe programs. It enables non-programmers ("domain experts") to create and maintain software by specifying programs in plain language.
 
-**Key philosophy**: This is a line of experiments. Each new experiment may start from scratch or build on previous work. Previous experiments are stored in branches, and the main branch is cleared for new experiments. When working in this repo, be aware that the current state may represent work-in-progress on the latest experiment.
+**Core philosophy**:
+- Find better ways for users, engineers, and agents to collaborate building software
+- Create a "natural-language normal form" representation of programs
+- Consider this form as defining a *family of programs* with working examples
+- Allow features to be added, removed, or modified at any time
+- Output stable, predictable implementations on any platform
+- Specifications are kept up-to-date so code can be rebuilt from scratch or ported to multiple platforms
+
+**Experimental nature**: Each new experiment may start from scratch or build on previous work. Previous experiments are stored in branches, and the main branch is cleared for new experiments. When working in this repo, be aware that the current state may represent work-in-progress on the latest experiment.
 
 **Experiment Branches**: When starting a new experiment, create a branch for the current work before clearing main. Previous experiments remain accessible via their branches.
 
-**Current experiment focus**: Tree-based post exploration (experiment 22.1). Recent work includes implementing hierarchical post navigation with swipe gestures and preserved scroll positions.
+**Current experiment focus**: Tree-based post exploration with semantic search (experiment 22.1). Recent work includes hierarchical navigation, swipe gestures, preserved scroll positions, and fragment-level semantic search with GPU acceleration.
 
 **Project Naming**: The Xcode project and Android package are named "NoobTest" (bundle ID: `com.miso.noobtest`), while "Firefly" is the product/marketing name. Use "NoobTest" for bundle identifiers, app management commands, and debugging.
+
+## Quick Reference
+
+**Most Common Commands**:
+```bash
+# Implement feature changes
+# (from repo root, after editing feature markdown files)
+# Use the 'miso' skill or: git diff to find changes, then follow implementation.md
+
+# Deploy to iOS device
+cd apps/firefly/product/client/imp/ios/
+./install-device.sh  # ~8-10 seconds
+
+# Deploy to Android device
+cd apps/firefly/product/client/imp/eos/
+export JAVA_HOME="/opt/homebrew/opt/openjdk"
+./gradlew assembleDebug && adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# Deploy to remote server
+cd apps/firefly/product/server/imp/py/
+./remote-shutdown.sh
+scp *.py *.txt *.sh microserver@185.96.221.52:~/firefly-server/
+ssh microserver@185.96.221.52 "cd ~/firefly-server && ./start.sh"
+
+# Test a feature
+cd apps/firefly/features/infrastructure/testing/imp
+pymobiledevice3 usbmux forward 8081 8081 &  # Once per session
+./test-feature.sh <feature-name>
+
+# View logs
+cd apps/firefly/product/client/imp/ios/
+./get-logs.sh && cat device-logs.txt
+```
 
 ## Core Architecture
 
@@ -116,6 +157,11 @@ curl http://185.96.221.52:8080/api/ping  # Verify
 
 **Local Server**: Runs on port 8080 (same as remote) for consistency.
 
+**Key Dependencies**:
+- PostgreSQL database (required for production server)
+- Sentence transformers (all-mpnet-base-v2 model for embeddings)
+- PyTorch/GPU support for vector similarity computation
+
 ## Current Application: Firefly
 
 Social media platform using semantic search on markdown snippets (`apps/firefly.md`).
@@ -145,6 +191,16 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - **recent-posts**: Fetch and display recent posts
 - **new-post**: Create new posts
 - **explore-posts**: Navigate through tree of posts and children with swipe gestures, preserved scroll position, multi-level hierarchy
+- **search**: Semantic search across all posts using fragment-level embeddings with GPU-accelerated vector similarity
+
+**Search Implementation**:
+- Fragment-based embeddings: Each post split into title, summary, and body sentences
+- Vector model: all-mpnet-base-v2 (768-dimensional embeddings)
+- GPU-accelerated cosine similarity for fast vector comparison
+- Posts ranked by highest-scoring fragment
+- Debounced search (0.5s after typing stops)
+- Floating search UI: Circular button (bottom left) expands to search bar (max 600pt width)
+- Navigation preserved when switching between search results and normal view
 
 **iOS View Architecture**: Uses `PostsListView` as a unified component for both root-level and child post lists, with `navigationPath: [Int]` for hierarchical navigation. PostView handles individual post display, expand/collapse, and navigation triggers.
 
@@ -193,9 +249,11 @@ TestRegistry.register("myfeature") {
 
 **iOS App Management** (from `apps/firefly/product/client/imp/ios/`):
 ```bash
-./restart-app.sh  # Restart app on device
-./stop-app.sh     # Stop app on device
-./get-logs.sh     # Download app.log from device
+./install-device.sh  # Build and deploy to device (~8-10 seconds)
+./restart-app.sh     # Restart app on device without rebuilding
+./stop-app.sh        # Stop app on device
+./get-logs.sh        # Download app.log from device to device-logs.txt
+./list-devices.sh    # List connected iOS devices
 ```
 
 **iOS Screenshot Capture**:
@@ -207,15 +265,19 @@ TestRegistry.register("myfeature") {
 
 **Android App Management** (from `apps/firefly/product/client/imp/eos/`):
 ```bash
-adb shell am force-stop com.miso.noobtest          # Stop app
-adb shell am start -n com.miso.noobtest/.MainActivity  # Start app
-./mirror.sh  # Mirror project structure (if available)
+export JAVA_HOME="/opt/homebrew/opt/openjdk"  # Required for Gradle
+./gradlew assembleDebug  # Build APK
+adb install -r app/build/outputs/apk/debug/app-debug.apk  # Install
+adb shell am start -n com.miso.noobtest/.MainActivity      # Start app
+adb shell am force-stop com.miso.noobtest                  # Stop app
+adb logcat | grep "NoobTest"  # View live logs
 ```
 
 **Server Management** (from `apps/firefly/product/server/imp/py/`):
 ```bash
-./start.sh   # Start local Flask server
-./stop.sh    # Stop local Flask server
+./start.sh            # Start local Flask server on port 8080
+./stop.sh             # Stop local Flask server
+./remote-shutdown.sh  # Stop remote server (185.96.221.52)
 ```
 
 **Debugging with Device Logs**:
@@ -294,42 +356,6 @@ This repository includes a comprehensive skills system in `.claude/skills/` that
 **UI Automation Skills** (`.claude/skills/`):
 - `ui-tap` - Trigger UI elements programmatically via HTTP for automated testing. Use when you need to press buttons, interact with UI, or verify UI changes without manual intervention. Invoke with "tap the X button", "press X", "trigger X".
 
-### Skill Delegation Pattern
-
-Complex skills use **delegation** to save context:
-- Skills with `delegate: true` in frontmatter spawn autonomous sub-agents
-- Agent executes the skill independently using its own context budget
-- Only final result returns to foreground conversation
-- **Saves 80-90% of context tokens** for multi-step workflows
-
-Delegated skills: `ios-deploy-usb`, `eos-deploy-usb`, `py-deploy-remote`, `miso`
-
-Inline skills: All restart, stop, logs, and screen capture commands (simpler, faster)
-
-**Delegation Behavior (Repository Convention)**:
-
-When invoking a skill, always check the YAML frontmatter for `delegate: true`. If present, you MUST:
-
-1. Use the Task tool with `subagent_type="instruction-follower"`
-2. Provide the skill file path in the prompt: `.claude/skills/{skill-name}/skill.md`
-3. Give clear context: "Follow the instructions in .claude/skills/{skill-name}/skill.md to [brief description]"
-4. Let the sub-agent execute autonomously without intervention
-5. When the sub-agent completes, summarize its final report for the user
-
-Example delegation:
-```python
-# User says: "Deploy to iPhone"
-# Skill loads, you see delegate: true in frontmatter
-
-Task(
-    subagent_type="instruction-follower",
-    description="Deploy iOS app to device",
-    prompt="Follow the instructions in .claude/skills/ios-deploy-usb/skill.md to build and deploy the iOS app to the connected iPhone via USB."
-)
-```
-
-This pattern ensures complex workflows execute efficiently without consuming foreground context.
-
 ### Using Skills
 
 Skills are invoked automatically when you use trigger phrases:
@@ -353,6 +379,20 @@ Or explicitly by name via the Skill tool in Claude Code.
 
 **The Implementation Process** (detailed in `miso/features/implementation.md`):
 When features change, propagate through: feature → pseudocode → platform code → product code → build/test. The miso skill automates this workflow. For UI changes, includes iterative visual verification with screenshots.
+
+**Git Workflow for Experiments**:
+```bash
+# Starting a new experiment - preserve current work first
+git checkout -b experiment-N  # Create branch for current experiment
+git push -u origin experiment-N
+git checkout main
+git rm -rf *  # Clear main for new experiment
+git commit -m "Start experiment N+1"
+
+# View previous experiments
+git branch -a  # List all branches to see past experiments
+git checkout experiment-N  # Switch to previous experiment
+```
 
 ## Repository Structure
 

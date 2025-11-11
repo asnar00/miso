@@ -1,6 +1,62 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+next steps:
+- show tags
+- shortcuts = tags
+- all lists are semantic-searchable (filter)
+- query type: recurring search using an agent.
+
+I think location of post also makes a huge difference;
+and being able to interrogate and specify that via LLM.
+
+"find me posts in soho about events next week"
+
+=> tag, RAG set, post-process prompt. Easy.
+
+-------------
+
+how about the same as below, except the infrastructure doesn't specify what the tags are - that's up to the people running the database.
+
+so there's actually two levels of users:
+
+    - moderators (those who run the server)
+    - users (those who don't)
+
+the framework is just: tagged posts, agent-based query.
+
+----------------
+
+how's this for the toolbar:
+
+users: all users, searchable (find people who do x)
+posts: all posts, searchable (find posts about x)
+queries: all queries, searchable (find queries about x)
+projects: all projects, searchable
+
+so I think definitely tag: profile, post, query, project
+=> we can have other tags later I suppose.
+eg. events certainly seems to be one.
+
+but the idea of "each button on toolbar is a tag"
+seems like a good one.
+
+for politics, you also need "groups"
+I think eg. marylebone ward contains people who post;
+so you can see all posts about x.
+
+tags could be:
+
+group
+person
+post
+query
+event
+
+and so on. I think that's a good idea.
+------------------------
+
+
 start again with claude.
 literally tell it: I want to start from scratch - this is now old. -> advise design based on the last one.
 

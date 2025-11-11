@@ -164,6 +164,11 @@ class TestServer {
             return handleTap(path: path)
         }
 
+        // Handle POST /test/set-text
+        if method == "POST" && path.hasPrefix("/test/set-text") {
+            return handleSetText(path: path)
+        }
+
         // Handle GET /test/{feature}
         guard method == "GET" else {
             Logger.shared.error("[TESTSERVER] Method not allowed: \(method)")
@@ -204,6 +209,31 @@ class TestServer {
         } else {
             Logger.shared.error("[TESTSERVER] Element not found: \(id)")
             let json = #"{"status": "error", "message": "Element not found: \#(id)"}"#
+            return httpResponse(json, status: "404 Not Found", contentType: "application/json")
+        }
+    }
+
+    private func handleSetText(path: String) -> String {
+        // Extract id and text from query string: /test/set-text?id=search-field&text=hello
+        guard let urlComponents = URLComponents(string: path),
+              let queryItems = urlComponents.queryItems,
+              let id = queryItems.first(where: { $0.name == "id" })?.value,
+              let text = queryItems.first(where: { $0.name == "text" })?.value else {
+            Logger.shared.error("[TESTSERVER] Missing id or text parameter in set-text request")
+            let json = #"{"status": "error", "message": "Missing id or text parameter"}"#
+            return httpResponse(json, status: "400 Bad Request", contentType: "application/json")
+        }
+
+        Logger.shared.info("[TESTSERVER] Setting text field \(id) to: \(text)")
+        let success = UIAutomationRegistry.shared.setTextFieldValue(id: id, text: text)
+
+        if success {
+            Logger.shared.info("[TESTSERVER] Successfully set text field: \(id)")
+            let json = #"{"status": "success", "id": "\#(id)", "text": "\#(text)"}"#
+            return httpResponse(json, status: "200 OK", contentType: "application/json")
+        } else {
+            Logger.shared.error("[TESTSERVER] Text field not found: \(id)")
+            let json = #"{"status": "error", "message": "Text field not found: \#(id)"}"#
             return httpResponse(json, status: "404 Not Found", contentType: "application/json")
         }
     }
