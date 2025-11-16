@@ -21,6 +21,7 @@ struct Post: Codable, Identifiable, Hashable {
     let summaryPlaceholder: String?
     let bodyPlaceholder: String?
     let template: String?
+    let pluralName: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -41,6 +42,7 @@ struct Post: Codable, Identifiable, Hashable {
         case summaryPlaceholder = "placeholder_summary"
         case bodyPlaceholder = "placeholder_body"
         case template = "template_name"
+        case pluralName = "plural_name"
     }
 }
 
@@ -148,6 +150,59 @@ class PostsAPI {
         }.resume()
     }
 
+    func fetchRecentTaggedPosts(tags: [String], byUser: String, completion: @escaping (Result<[Post], Error>) -> Void) {
+        var components = URLComponents(string: "\(serverURL)/api/posts/recent-tagged")!
+        var queryItems: [URLQueryItem] = []
+
+        // Add tags parameter (empty array means omit parameter)
+        if !tags.isEmpty {
+            queryItems.append(URLQueryItem(name: "tags", value: tags.joined(separator: ",")))
+        }
+
+        // Add by_user parameter
+        queryItems.append(URLQueryItem(name: "by_user", value: byUser))
+
+        // If byUser is "current", add user_email parameter
+        if byUser == "current" {
+            let loginState = Storage.shared.getLoginState()
+            if let userEmail = loginState.email {
+                queryItems.append(URLQueryItem(name: "user_email", value: userEmail))
+            }
+        }
+
+        components.queryItems = queryItems
+
+        guard let url = components.url else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
+            return
+        }
+
+        Logger.shared.info("[PostsAPI] Fetching recent tagged posts (tags: \(tags), byUser: \(byUser))")
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                Logger.shared.error("[PostsAPI] Error fetching tagged posts: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                Logger.shared.error("[PostsAPI] No data received")
+                completion(.failure(NSError(domain: "No data", code: -1)))
+                return
+            }
+
+            do {
+                let postsResponse = try JSONDecoder().decode(PostsResponse.self, from: data)
+                Logger.shared.info("[PostsAPI] Successfully fetched \(postsResponse.posts.count) tagged posts")
+                completion(.success(postsResponse.posts))
+            } catch {
+                Logger.shared.error("[PostsAPI] JSON decode error: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+
     func fetchPost(id: Int, completion: @escaping (Result<Post, Error>) -> Void) {
         guard let url = URL(string: "\(serverURL)/api/posts/\(id)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
@@ -180,7 +235,7 @@ class PostsAPI {
         }.resume()
     }
 
-    func createPost(title: String, summary: String, body: String, image: UIImage?, parentId: Int? = nil, completion: @escaping (Result<Post, Error>) -> Void) {
+    func createPost(title: String, summary: String, body: String, image: UIImage?, parentId: Int? = nil, templateName: String? = nil, completion: @escaping (Result<Post, Error>) -> Void) {
         guard let url = URL(string: "\(serverURL)/api/posts/create") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return
@@ -218,6 +273,10 @@ class PostsAPI {
 
         if let parentId = parentId {
             fields["parent_id"] = String(parentId)
+        }
+
+        if let templateName = templateName {
+            fields["template_name"] = templateName
         }
 
         for (key, value) in fields {

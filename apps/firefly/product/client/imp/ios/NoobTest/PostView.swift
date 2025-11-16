@@ -25,6 +25,7 @@ struct PostView: View {
     let onPostCreated: () -> Void
     let onNavigateToChildren: ((Int) -> Void)?
     let onNavigateToProfile: ((String, Post) -> Void)?  // backLabel, profilePost
+    let onNavigateToQueryResults: ((String, String) -> Void)?  // query, backLabel
     let onPostUpdated: ((Post) -> Void)?
     let onStartEditing: (() -> Void)?  // Called when entering edit mode
     let onEndEditing: (() -> Void)?  // Called when exiting edit mode
@@ -180,12 +181,15 @@ struct PostView: View {
                 "body": editableBody.isEmpty ? "No content" : editableBody
             ]
 
-            // For updates, include post_id; for new posts, optionally include parent_id
+            // For updates, include post_id; for new posts, optionally include parent_id and template_name
             if !isNewPost {
                 fields["post_id"] = String(post.id)
             }
             if let parentId = post.parentId {
                 fields["parent_id"] = String(parentId)
+            }
+            if isNewPost, let templateName = post.template {
+                fields["template_name"] = templateName
             }
 
             for (key, value) in fields {
@@ -213,7 +217,7 @@ struct PostView: View {
                 "body": editableBody.isEmpty ? "No content" : editableBody
             ]
 
-            // For updates, include post_id; for new posts, optionally include parent_id
+            // For updates, include post_id; for new posts, optionally include parent_id and template_name
             if !isNewPost {
                 formData["post_id"] = String(post.id)
                 // Add image_url field (empty string means removed)
@@ -221,6 +225,9 @@ struct PostView: View {
             }
             if let parentId = post.parentId {
                 formData["parent_id"] = String(parentId)
+            }
+            if isNewPost, let templateName = post.template {
+                formData["template_name"] = templateName
             }
 
             request.httpBody = formData.map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")" }
@@ -352,16 +359,33 @@ struct PostView: View {
                 .foregroundColor(Color.black)
         }
         .onTapGesture {
-            if let navigate = onNavigateToChildren {
-                navigate(post.id)
+            // Check if this is a query post
+            if post.template == "query" {
+                // Navigate to query results
+                if let navigate = onNavigateToQueryResults {
+                    navigate(post.title, post.title)  // Use title as both query and back label
+                }
+            } else {
+                // Navigate to children as normal
+                if let navigate = onNavigateToChildren {
+                    navigate(post.id)
+                }
             }
         }
         .onAppear {
             // Register this post's navigation action for UI automation
             UIAutomationRegistry.shared.register(id: "navigate-to-children-\(post.id)") {
-                if let navigate = onNavigateToChildren {
-                    DispatchQueue.main.async {
-                        navigate(post.id)
+                if post.template == "query" {
+                    if let navigate = onNavigateToQueryResults {
+                        DispatchQueue.main.async {
+                            navigate(post.title, post.title)
+                        }
+                    }
+                } else {
+                    if let navigate = onNavigateToChildren {
+                        DispatchQueue.main.async {
+                            navigate(post.id)
+                        }
                     }
                 }
             }
@@ -863,8 +887,8 @@ struct PostView: View {
                 addImageButton
             }
 
-            // Child indicator overlay - animated between two states using expansionFactor
-            if (post.childCount ?? 0) > 0 {
+            // Child indicator overlay - show if post has children OR if it's a query (search button)
+            if (post.childCount ?? 0) > 0 || post.template == "query" {
                 // Interpolate size and position based on expansionFactor
                 let collapsedSize: CGFloat = 32
                 let expandedSize: CGFloat = 42
@@ -918,8 +942,13 @@ struct PostView: View {
             DragGesture(minimumDistance: 30)
                 .onEnded { value in
                     // Detect left swipe (negative translation)
-                    if value.translation.width < -30 && (post.childCount ?? 0) > 0 {
-                        onNavigateToChildren?(post.id)
+                    if value.translation.width < -30 && ((post.childCount ?? 0) > 0 || post.template == "query") {
+                        // Check if this is a query post
+                        if post.template == "query" {
+                            onNavigateToQueryResults?(post.title, post.title)
+                        } else {
+                            onNavigateToChildren?(post.id)
+                        }
                     }
                 }
         )

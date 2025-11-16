@@ -13,6 +13,18 @@ import sys
 import numpy as np
 import torch
 import embeddings
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -92,10 +104,10 @@ def send_email(destination, subject, body):
             server.ehlo()
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, destination, message.as_string())
-            print(f"Email sent successfully to {destination}")
+            logger.info(f"Email sent successfully to {destination}")
             return 'success'
     except Exception as e:
-        print(f"Failed to send email. Error: {e}")
+        logger.info(f"Failed to send email. Error: {e}")
         return f'failed: {e}'
 
 # Authentication helper functions
@@ -162,7 +174,7 @@ def send_code():
     # Check if user exists, create if not
     user = db.get_user_by_email(email)
     if not user:
-        print(f"Creating new user: {email}")
+        logger.info(f"Creating new user: {email}")
         user_id = db.create_user(email)
         if not user_id:
             return jsonify({
@@ -177,7 +189,7 @@ def send_code():
         "timestamp": datetime.now()
     }
 
-    print(f"Generated code {code} for {email}")
+    logger.info(f"Generated code {code} for {email}")
 
     # Send email
     if send_verification_email(email, code):
@@ -239,12 +251,12 @@ def verify_code():
     # Add device to user
     success = db.add_device_to_user(user['id'], device_id)
     if not success:
-        print(f"Warning: Failed to add device {device_id} to user {user['id']}")
+        logger.warning(f"Warning: Failed to add device {device_id} to user {user['id']}")
 
     # Remove used code
     del pending_codes[email]
 
-    print(f"User {email} authenticated successfully with device {device_id} (new_user: {is_new_user})")
+    logger.info(f"User {email} authenticated successfully with device {device_id} (new_user: {is_new_user})")
 
     return jsonify({
         'status': 'success',
@@ -287,6 +299,9 @@ def create_post():
                     'message': 'parent_id must be a valid integer'
                 }), 400
 
+        # Get optional template_name (defaults to 'post')
+        template_name = request.form.get('template_name', 'post').strip()
+
         # Validate required fields
         if not email or not title or not summary or not body:
             return jsonify({
@@ -309,7 +324,7 @@ def create_post():
             profile = db.get_user_profile(user_id)
             if profile:
                 parent_id = profile['id']
-                print(f"[CREATE_POST] No parent_id provided, defaulting to user's profile post: {parent_id}", file=sys.stderr, flush=True)
+                logger.info(f"[CREATE_POST] No parent_id provided, defaulting to user's profile post: {parent_id}")
 
         # Handle image upload if present
         image_url = None
@@ -322,10 +337,10 @@ def create_post():
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 image_url = f"/uploads/{filename}"
-                print(f"Uploaded image: {filename}")
+                logger.info(f"Uploaded image: {filename}")
 
         # Create post in database
-        print(f"[CREATE_POST] Creating post: email={email}, user_id={user_id}, parent_id={parent_id}, title={title[:30]}...", file=sys.stderr, flush=True)
+        logger.info(f"[CREATE_POST] Creating post: email={email}, user_id={user_id}, parent_id={parent_id}, title={title[:30]}..., template_name={template_name}")
         post_id = db.create_post(
             user_id=user_id,
             title=title,
@@ -336,17 +351,17 @@ def create_post():
             image_url=image_url,
             location_tag=location_tag,
             ai_generated=ai_generated,
-            template_name='post'
+            template_name=template_name
         )
 
         if not post_id:
-            print(f"[CREATE_POST] ERROR: db.create_post returned None/False", file=sys.stderr, flush=True)
+            logger.info(f"[CREATE_POST] ERROR: db.create_post returned None/False")
             return jsonify({
                 'status': 'error',
                 'message': 'Failed to create post'
             }), 500
 
-        print(f"[CREATE_POST] Created post {post_id} by user {email} (ID: {user_id}), parent_id: {parent_id}", file=sys.stderr, flush=True)
+        logger.info(f"[CREATE_POST] Created post {post_id} by user {email} (ID: {user_id}), parent_id: {parent_id}")
 
         # Fetch the created post to return it
         post = db.get_post_by_id(post_id)
@@ -362,7 +377,7 @@ def create_post():
         })
 
     except Exception as e:
-        print(f"Error creating post: {e}")
+        logger.error(f"Error creating post: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -430,7 +445,7 @@ def update_post():
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 image_url = f"/uploads/{filename}"
-                print(f"Uploaded new image: {filename}")
+                logger.info(f"Uploaded new image: {filename}")
 
                 # TODO: Delete old image file if it exists
 
@@ -449,7 +464,7 @@ def update_post():
                 'message': 'Failed to update post'
             }), 500
 
-        print(f"Updated post {post_id} by user {email} (ID: {user_id})")
+        logger.info(f"Updated post {post_id} by user {email} (ID: {user_id})")
 
         # Fetch the updated post to return it
         post = db.get_post_by_id(post_id)
@@ -465,7 +480,7 @@ def update_post():
         })
 
     except Exception as e:
-        print(f"Error updating post: {e}")
+        logger.error(f"Error updating post: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -483,7 +498,7 @@ def get_recent_posts():
             'posts': posts
         })
     except Exception as e:
-        print(f"Error getting recent posts: {e}")
+        logger.error(f"Error getting recent posts: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -500,7 +515,43 @@ def get_recent_users():
             'posts': users  # Return as 'posts' for compatibility with client
         })
     except Exception as e:
-        print(f"Error getting recent users: {e}")
+        logger.error(f"Error getting recent users: {e}", exc_info=True)
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/posts/recent-tagged', methods=['GET'])
+def get_recent_tagged_posts():
+    """Get recent posts filtered by template tags and user"""
+    try:
+        tags_param = request.args.get('tags', '')
+        by_user = request.args.get('by_user', 'any')
+        user_email = request.args.get('user_email', '').strip().lower()
+        limit = request.args.get('limit', 50, type=int)
+
+        # Parse tags
+        tags = [tag.strip() for tag in tags_param.split(',') if tag.strip()] if tags_param else []
+
+        # Get current user ID if needed
+        user_id = None
+        if by_user == 'current' and user_email:
+            user = db.get_user_by_email(user_email)
+            if user:
+                user_id = user['id']
+            logger.info(f"[RECENT-TAGGED] by_user=current, email={user_email}, user_id={user_id}")
+
+        # Fetch posts
+        logger.info(f"[RECENT-TAGGED] Fetching: tags={tags}, user_id={user_id}, limit={limit}")
+        posts = db.get_recent_tagged_posts(tags=tags, user_id=user_id, limit=limit)
+        logger.info(f"[RECENT-TAGGED] Found {len(posts)} posts")
+
+        return jsonify({
+            'status': 'success',
+            'posts': posts
+        })
+    except Exception as e:
+        logger.error(f"Error getting recent tagged posts: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -522,7 +573,7 @@ def get_post(post_id):
             'post': post
         })
     except Exception as e:
-        print(f"Error getting post: {e}")
+        logger.error(f"Error getting post: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -558,7 +609,7 @@ def reparent_post():
             }), 400
 
     except Exception as e:
-        print(f"Error reparenting post: {e}")
+        logger.error(f"Error reparenting post: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -577,7 +628,7 @@ def get_post_children(post_id):
             'count': len(children)
         })
     except Exception as e:
-        print(f"Error getting child posts: {e}")
+        logger.error(f"Error getting child posts: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -587,27 +638,27 @@ def get_post_children(post_id):
 def get_user_profile(user_id):
     """Get a user's profile post (user_id can be email or numeric ID)"""
     try:
-        print(f"[PROFILE] Fetching profile for user_id: {user_id}", file=sys.stderr, flush=True)
+        logger.info(f"[PROFILE] Fetching profile for user_id: {user_id}")
 
         # If user_id is an email, look up the numeric user ID
         if '@' in str(user_id):
-            print(f"[PROFILE] Looking up user by email: {user_id}", file=sys.stderr, flush=True)
+            logger.info(f"[PROFILE] Looking up user by email: {user_id}")
             user = db.get_user_by_email(user_id)
             if not user:
-                print(f"[PROFILE] User not found: {user_id}", file=sys.stderr, flush=True)
+                logger.info(f"[PROFILE] User not found: {user_id}")
                 return jsonify({
                     'status': 'error',
                     'message': 'User not found'
                 }), 404
             user_id = user['id']
-            print(f"[PROFILE] Found user ID: {user_id}", file=sys.stderr, flush=True)
+            logger.info(f"[PROFILE] Found user ID: {user_id}")
 
         profile = db.get_user_profile(user_id)
-        print(f"[PROFILE] Profile result: {profile}", file=sys.stderr, flush=True)
+        logger.info(f"[PROFILE] Profile result: {profile}")
 
         # If profile doesn't exist, create a blank one
         if profile is None:
-            print(f"[PROFILE] No profile found for user {user_id}, creating blank profile", file=sys.stderr, flush=True)
+            logger.info(f"[PROFILE] No profile found for user {user_id}, creating blank profile")
             try:
                 profile_id = db.create_profile_post(
                     user_id=user_id,
@@ -617,25 +668,21 @@ def get_user_profile(user_id):
                     image_url=None,
                     timezone="UTC"
                 )
-                print(f"[PROFILE] Created profile with ID: {profile_id}", file=sys.stderr, flush=True)
+                logger.info(f"[PROFILE] Created profile with ID: {profile_id}")
                 if profile_id is None:
-                    print(f"[PROFILE] WARNING: create_profile_post returned None - check database logs", file=sys.stderr, flush=True)
+                    logger.info(f"[PROFILE] WARNING: create_profile_post returned None - check database logs")
                 # Fetch the newly created profile
                 profile = db.get_user_profile(user_id)
-                print(f"[PROFILE] Fetched newly created profile: {profile}", file=sys.stderr, flush=True)
+                logger.info(f"[PROFILE] Fetched newly created profile: {profile}")
             except Exception as create_error:
-                print(f"[PROFILE] Exception during profile creation: {create_error}", file=sys.stderr, flush=True)
-                import traceback
-                traceback.print_exc(file=sys.stderr)
+                logger.error(f"[PROFILE] Exception during profile creation: {create_error}", exc_info=True)
 
         return jsonify({
             'status': 'success',
             'profile': profile
         })
     except Exception as e:
-        print(f"[PROFILE] Error getting user profile: {e}", file=sys.stderr, flush=True)
-        import traceback
-        traceback.print_exc()
+        logger.error(f"[PROFILE] Error getting user profile: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -688,7 +735,7 @@ def create_profile():
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 image_url = f"/uploads/{filename}"
-                print(f"Uploaded profile image: {filename}")
+                logger.info(f"Uploaded profile image: {filename}")
 
         # Create profile post
         post_id = db.create_profile_post(
@@ -706,7 +753,7 @@ def create_profile():
                 'message': 'Failed to create profile'
             }), 500
 
-        print(f"Created profile {post_id} for user {email} (ID: {user_id})")
+        logger.info(f"Created profile {post_id} for user {email} (ID: {user_id})")
 
         # Fetch the created profile to return it
         profile = db.get_post_by_id(post_id)
@@ -722,7 +769,7 @@ def create_profile():
         })
 
     except Exception as e:
-        print(f"Error creating profile: {e}")
+        logger.error(f"Error creating profile: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -795,7 +842,7 @@ def update_profile():
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 image_url = f"/uploads/{filename}"
-                print(f"Uploaded new profile image: {filename}")
+                logger.info(f"Uploaded new profile image: {filename}")
 
         # Update the profile post
         success = db.update_post(
@@ -812,7 +859,7 @@ def update_profile():
                 'message': 'Failed to update profile'
             }), 500
 
-        print(f"Updated profile {post_id} for user {email} (ID: {user_id})")
+        logger.info(f"Updated profile {post_id} for user {email} (ID: {user_id})")
 
         # Fetch the updated profile to return it
         profile = db.get_post_by_id(post_id)
@@ -828,11 +875,52 @@ def update_profile():
         })
 
     except Exception as e:
-        print(f"Error updating profile: {e}")
+        logger.error(f"Error updating profile: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
         }), 500
+
+@app.route('/api/templates/<template_name>', methods=['GET'])
+def get_template(template_name):
+    """Get template information including plural name"""
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT name, placeholder_title, placeholder_summary, placeholder_body, plural_name
+                FROM templates
+                WHERE name = %s
+            """, (template_name,))
+
+            row = cur.fetchone()
+            if not row:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Template not found'
+                }), 404
+
+            template = {
+                'name': row[0],
+                'placeholder_title': row[1],
+                'placeholder_summary': row[2],
+                'placeholder_body': row[3],
+                'plural_name': row[4]
+            }
+
+            return jsonify({
+                'status': 'success',
+                'template': template
+            })
+
+    except Exception as e:
+        logger.error(f"Error fetching template: {e}", exc_info=True)
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+    finally:
+        db.return_connection(conn)
 
 @app.route('/api/search', methods=['GET'])
 def search_posts():
@@ -845,11 +933,11 @@ def search_posts():
 
         limit = int(request.args.get('limit', 20))
 
-        print(f"[SEARCH] Query: {query}, Limit: {limit}", file=sys.stderr, flush=True)
+        logger.info(f"[SEARCH] Query: {query}, Limit: {limit}")
 
         # Load all embeddings
         all_embeddings, index = load_all_embeddings()
-        print(f"[SEARCH] Loaded {len(index)} fragments from {len(set(pid for pid, _ in index))} posts", file=sys.stderr, flush=True)
+        logger.info(f"[SEARCH] Loaded {len(index)} fragments from {len(set(pid for pid, _ in index))} posts")
 
         # Generate query embedding
         model = embeddings.get_model()
@@ -866,21 +954,28 @@ def search_posts():
             else:
                 post_scores[post_id] = max(post_scores[post_id], scores[i])
 
-        # Sort by score and apply limit
-        ranked_posts = sorted(post_scores.items(), key=lambda x: x[1], reverse=True)[:limit]
+        # Sort by score
+        ranked_posts = sorted(post_scores.items(), key=lambda x: x[1], reverse=True)
 
-        print(f"[SEARCH] Top {len(ranked_posts)} posts:", file=sys.stderr, flush=True)
-        for post_id, score in ranked_posts[:5]:
+        # Filter out query posts (check template_name in database)
+        filtered_posts = []
+        for post_id, score in ranked_posts:
+            post = db.get_post_by_id(post_id)
+            if post and post.get('template_name') != 'query':
+                filtered_posts.append((post_id, score))
+            if len(filtered_posts) >= limit:
+                break
+
+        logger.info(f"[SEARCH] Top {len(filtered_posts)} posts (after filtering queries):")
+        for post_id, score in filtered_posts[:5]:
             print(f"  Post {post_id}: {score:.3f}", file=sys.stderr, flush=True)
 
         # Return just post IDs and scores - client will fetch full details
-        results = [{'id': post_id, 'relevance_score': float(score)} for post_id, score in ranked_posts]
+        results = [{'id': post_id, 'relevance_score': float(score)} for post_id, score in filtered_posts]
         return jsonify(results)
 
     except Exception as e:
-        print(f"[SEARCH] Error: {e}", file=sys.stderr, flush=True)
-        import traceback
-        traceback.print_exc(file=sys.stderr)
+        logger.error(f"[SEARCH] Error: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 def load_all_embeddings():
@@ -920,6 +1015,7 @@ def compute_similarity_gpu(query_emb_float, all_embeddings_float):
 @app.route('/api/shutdown', methods=['POST'])
 def shutdown():
     """Shutdown the server remotely"""
+    logger.info("Shutdown requested via /api/shutdown endpoint")
     # Send SIGTERM to the process
     os.kill(os.getpid(), signal.SIGTERM)
     return jsonify({
@@ -927,10 +1023,31 @@ def shutdown():
         'message': 'Server is shutting down'
     })
 
+def handle_sigterm(signum, frame):
+    """Handle SIGTERM signal for graceful shutdown"""
+    logger.info(f"Received signal {signum} (SIGTERM), shutting down gracefully")
+    sys.exit(0)
+
 if __name__ == '__main__':
-    # Run on all interfaces so it's accessible from network
-    # Port 8080 as specified
-    print("Starting Firefly server on http://0.0.0.0:8080")
-    print(f"Local IP: http://192.168.1.76:8080")
-    print(f"Public IP: http://185.96.221.52:8080")
-    app.run(host='0.0.0.0', port=8080, debug=False)
+    # Register signal handler
+    signal.signal(signal.SIGTERM, handle_sigterm)
+
+    # Log startup information
+    logger.info("=" * 60)
+    logger.info("Starting Firefly server")
+    logger.info(f"Host: 0.0.0.0")
+    logger.info(f"Port: 8080")
+    logger.info(f"Debug mode: False")
+    logger.info(f"Local IP: http://192.168.1.76:8080")
+    logger.info(f"Public IP: http://185.96.221.52:8080")
+    logger.info(f"Upload folder: {UPLOAD_FOLDER}")
+    logger.info(f"Max file size: {app.config['MAX_CONTENT_LENGTH'] / (1024*1024):.0f}MB")
+    logger.info("=" * 60)
+
+    try:
+        app.run(host='0.0.0.0', port=8080, debug=False)
+    except Exception as e:
+        logger.critical(f"Fatal error during server execution: {e}", exc_info=True)
+        sys.exit(1)
+    finally:
+        logger.info("Server stopped")

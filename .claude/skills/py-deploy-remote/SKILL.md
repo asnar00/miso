@@ -1,27 +1,7 @@
 ---
 name: py-deploy-remote
 description: Deploy Flask server to remote machine (185.96.221.52). Stops remote server, copies files via scp, restarts server, and verifies. Use when deploying Python server updates to remote Mac mini.
-delegate: true
 ---
-
-## ⚠️ DELEGATION REQUIRED
-
-**This skill must be executed by the instruction-follower subagent.**
-
-When you see this skill invoked, you MUST use the Task tool to delegate it:
-
-```
-Task(
-    subagent_type="instruction-follower",
-    description="[Brief 3-5 word description]",
-    prompt="Follow the instructions in .claude/skills/py-deploy-remote/skill.md to [complete task description]."
-)
-```
-
-**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
-
----
-
 
 # Python Remote Server Deploy
 

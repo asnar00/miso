@@ -629,6 +629,71 @@ class Database:
         finally:
             self.return_connection(conn)
 
+    def get_recent_tagged_posts(self, tags: List[str] = None, user_id: Optional[int] = None, limit: int = 50) -> List[Dict[str, Any]]:
+        """Get recent posts filtered by template tags and optionally by user"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Build query
+                query = """
+                    SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                           p.template_name,
+                           t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name,
+                           COALESCE(u.name, u.email) as author_name,
+                           u.email as author_email,
+                           COUNT(children.id) as child_count
+                    FROM posts p
+                    LEFT JOIN users u ON p.user_id = u.id
+                    LEFT JOIN templates t ON p.template_name = t.name
+                    LEFT JOIN posts children ON children.parent_id = p.id
+                """
+
+                conditions = []
+                params = []
+
+                # Filter by tags if provided
+                if tags:
+                    placeholders = ','.join(['%s'] * len(tags))
+                    conditions.append(f"p.template_name IN ({placeholders})")
+                    params.extend(tags)
+
+                # Filter by user if provided
+                if user_id is not None:
+                    conditions.append("p.user_id = %s")
+                    params.append(user_id)
+
+                # Add WHERE clause if conditions exist
+                if conditions:
+                    query += " WHERE " + " AND ".join(conditions)
+
+                # Group by
+                query += " GROUP BY p.id, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name"
+
+                # Sort order - if profile tag, sort by user activity, otherwise by post date
+                if tags and "profile" in tags:
+                    query += """
+                        ORDER BY (
+                            SELECT MAX(created_at)
+                            FROM posts
+                            WHERE user_id = p.user_id
+                        ) DESC
+                    """
+                else:
+                    query += " ORDER BY p.created_at DESC"
+
+                # Add limit
+                query += " LIMIT %s"
+                params.append(limit)
+
+                cur.execute(query, params)
+                return cur.fetchall()
+        except Exception as e:
+            print(f"Error getting recent tagged posts: {e}")
+            return []
+        finally:
+            self.return_connection(conn)
+
     def set_post_parent(self, post_id: int, parent_id: Optional[int]) -> bool:
         """
         Set or update the parent of a post.

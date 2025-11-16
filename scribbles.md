@@ -1,6 +1,22 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+OK so what we'll do as v1: SUPER SIMPLE.
+
+toolbar with three buttons:
+- my posts (create post button at top)
+- my queries (create query button at top)
+- my bookmarks
+
+each post viewer has 'star' button where edit button goes (can only star other peoples' posts, so makes sense).
+
+This will do for now.
+when you go to a profile page, you can see their posts, but not their queries or bookmarks.
+
+
+
+------------------
+
 next steps:
 - show tags
 - shortcuts = tags
@@ -10,7 +26,7 @@ next steps:
 I think location of post also makes a huge difference;
 and being able to interrogate and specify that via LLM.
 
-"find me posts in soho about events next week"
+"find meat posts in soho about events next week"
 
 => tag, RAG set, post-process prompt. Easy.
 

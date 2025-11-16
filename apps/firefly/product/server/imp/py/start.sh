@@ -4,8 +4,14 @@
 # Kill any existing server on port 8080
 lsof -ti:8080 | xargs kill -9 2>/dev/null
 
-# Start the server in background
-nohup python3 app.py > server.log 2>&1 &
+# Add timestamp separator to log
+echo "" >> server.log
+echo "==================================================" >> server.log
+echo "Server starting at $(date)" >> server.log
+echo "==================================================" >> server.log
+
+# Start the server in background (append to log instead of overwrite)
+nohup python3 app.py >> server.log 2>&1 &
 echo $! > server.pid
 
 echo "Firefly server started on port 8080"

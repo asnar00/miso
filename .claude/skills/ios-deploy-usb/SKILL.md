@@ -1,27 +1,7 @@
 ---
 name: ios-deploy-usb
 description: Build and deploy iOS app to connected iPhone via USB. Fast deployment (~8-10 seconds) for development iteration. Use when deploying, installing, or building apps to physical iPhone.
-delegate: true
 ---
-
-## ⚠️ DELEGATION REQUIRED
-
-**This skill must be executed by the instruction-follower subagent.**
-
-When you see this skill invoked, you MUST use the Task tool to delegate it:
-
-```
-Task(
-    subagent_type="instruction-follower",
-    description="[Brief 3-5 word description]",
-    prompt="Follow the instructions in .claude/skills/ios-deploy-usb/skill.md to [complete task description]."
-)
-```
-
-**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
-
----
-
 
 # iOS USB Deploy
 

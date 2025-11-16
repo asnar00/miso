@@ -4,12 +4,14 @@ import SwiftUI
 enum PostsDestination: Hashable {
     case children(parentId: Int)  // Show children of a post
     case profile(backLabel: String, profilePost: Post)  // Show single profile post
+    case queryResults(query: String, backLabel: String)  // Show search results for a query
 }
 
 struct PostsView: View {
     let initialPosts: [Post]
     let onPostCreated: () -> Void
     let showAddButton: Bool
+    let templateName: String?  // Template name for empty state message
 
     @State private var navigationPath: [PostsDestination] = []
 
@@ -22,7 +24,8 @@ struct PostsView: View {
                 onPostCreated: onPostCreated,
                 navigationPath: $navigationPath,
                 showAddButton: showAddButton,
-                initialExpandedPostId: nil
+                initialExpandedPostId: nil,
+                templateName: templateName
             )
             .navigationDestination(for: PostsDestination.self) { destination in
                 switch destination {
@@ -40,7 +43,15 @@ struct PostsView: View {
                         onPostCreated: onPostCreated,
                         navigationPath: $navigationPath,
                         showAddButton: false,
-                        initialExpandedPostId: profilePost.id
+                        initialExpandedPostId: profilePost.id,
+                        templateName: nil  // Profile view doesn't need template name
+                    )
+                case .queryResults(let query, let backLabel):
+                    QueryResultsViewWrapper(
+                        query: query,
+                        backLabel: backLabel,
+                        onPostCreated: onPostCreated,
+                        navigationPath: $navigationPath
                     )
                 }
             }
@@ -105,7 +116,8 @@ struct ChildPostsListViewWrapper: View {
                     onPostCreated: onPostCreated,
                     navigationPath: $navigationPath,
                     showAddButton: shouldShowAddPostButton,
-                    initialExpandedPostId: nil
+                    initialExpandedPostId: nil,
+                    templateName: nil  // Child posts don't need template name
                 )
             }
         }
@@ -147,6 +159,145 @@ struct ChildPostsListViewWrapper: View {
     }
 }
 
+// Wrapper view that fetches search results for a query
+struct QueryResultsViewWrapper: View {
+    let query: String
+    let backLabel: String
+    let onPostCreated: () -> Void
+    @Binding var navigationPath: [PostsDestination]
+
+    @State private var posts: [Post] = []
+    @State private var isLoading = true
+
+    let serverURL = "http://185.96.221.52:8080"
+
+    var body: some View {
+        Group {
+            if isLoading {
+                ZStack {
+                    Color(red: 128/255, green: 128/255, blue: 128/255)
+                        .ignoresSafeArea()
+                    ProgressView("Searching...")
+                        .foregroundColor(.black)
+                }
+            } else {
+                PostsListView(
+                    parentPostId: nil,
+                    backLabel: backLabel,
+                    initialPosts: posts,
+                    onPostCreated: onPostCreated,
+                    navigationPath: $navigationPath,
+                    showAddButton: false,
+                    initialExpandedPostId: nil,
+                    templateName: nil
+                )
+            }
+        }
+        .onAppear {
+            performSearch()
+        }
+    }
+
+    func performSearch() {
+        guard !query.isEmpty else {
+            Logger.shared.info("[QueryResultsViewWrapper] Query is empty, skipping search")
+            isLoading = false
+            return
+        }
+
+        Logger.shared.info("[QueryResultsViewWrapper] Searching for: \(query)")
+
+        let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let urlString = "\(serverURL)/api/search?q=\(encodedQuery)&limit=20"
+
+        guard let url = URL(string: urlString) else {
+            Logger.shared.error("[QueryResultsViewWrapper] Invalid URL: \(urlString)")
+            isLoading = false
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                Logger.shared.error("[QueryResultsViewWrapper] Error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+                return
+            }
+
+            guard let data = data else {
+                Logger.shared.error("[QueryResultsViewWrapper] No data received")
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+                return
+            }
+
+            do {
+                struct SearchResult: Codable {
+                    let id: Int
+                    let relevance_score: Double
+                }
+                let results = try JSONDecoder().decode([SearchResult].self, from: data)
+                Logger.shared.info("[QueryResultsViewWrapper] Found \(results.count) results")
+
+                // Fetch full post details for each result
+                fetchPosts(ids: results.map { $0.id })
+            } catch {
+                Logger.shared.error("[QueryResultsViewWrapper] Decoding error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+            }
+        }.resume()
+    }
+
+    func fetchPosts(ids: [Int]) {
+        guard !ids.isEmpty else {
+            DispatchQueue.main.async {
+                posts = []
+                isLoading = false
+            }
+            return
+        }
+
+        var fetchedPosts: [Post] = []
+        let group = DispatchGroup()
+
+        for postId in ids {
+            group.enter()
+            guard let url = URL(string: "\(serverURL)/api/posts/\(postId)") else {
+                group.leave()
+                continue
+            }
+
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                defer { group.leave() }
+
+                guard let data = data else {
+                    Logger.shared.error("[QueryResultsViewWrapper] No data for post \(postId)")
+                    return
+                }
+
+                do {
+                    let postResponse = try JSONDecoder().decode(SinglePostResponse.self, from: data)
+                    fetchedPosts.append(postResponse.post)
+                    Logger.shared.info("[QueryResultsViewWrapper] Fetched post \(postId)")
+                } catch {
+                    Logger.shared.error("[QueryResultsViewWrapper] Failed to decode post \(postId): \(error.localizedDescription)")
+                }
+            }.resume()
+        }
+
+        group.notify(queue: .main) {
+            Logger.shared.info("[QueryResultsViewWrapper] Fetched \(fetchedPosts.count) of \(ids.count) posts")
+            // Sort by original order
+            self.posts = ids.compactMap { id in fetchedPosts.first(where: { $0.id == id }) }
+            self.isLoading = false
+        }
+    }
+}
+
 #Preview {
-    PostsView(initialPosts: [], onPostCreated: {}, showAddButton: true)
+    PostsView(initialPosts: [], onPostCreated: {}, showAddButton: true, templateName: nil)
 }

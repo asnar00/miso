@@ -13,7 +13,8 @@ struct SearchResultsView: View {
         PostsView(
             initialPosts: posts,
             onPostCreated: onPostCreated,
-            showAddButton: false
+            showAddButton: false,
+            templateName: nil  // Search results don't need template name
         )
         .onAppear {
             fetchPosts()

@@ -18,6 +18,43 @@ struct PostsListView: View {
     @Binding var navigationPath: [PostsDestination]
     let showAddButton: Bool  // Whether to show the "Add Post" button
     let initialExpandedPostId: Int?  // Post ID to expand initially
+    let templateName: String?  // Template name for this list (e.g., "query", "post", "profile")
+
+    // Computed property: determine if we should show add button and what template to use
+    private var shouldShowAddButton: Bool {
+        // Don't show for child posts (only root level)
+        guard parentPostId == nil else { return false }
+        // Don't show for profiles
+        guard let firstPost = posts.first else { return showAddButton }
+        return firstPost.template != "profile"
+    }
+
+    private var addButtonTemplate: String {
+        // Determine template from first post
+        if let firstPost = posts.first, let template = firstPost.template {
+            return template
+        }
+        // Default to "query" for root level (since that's what we're showing now)
+        // TODO: Make this more robust by passing template type explicitly
+        return parentPostId == nil ? "query" : "post"
+    }
+
+    private var addButtonText: String {
+        // Capitalize first letter of template name
+        let template = addButtonTemplate
+        return "Add " + template.prefix(1).uppercased() + template.dropFirst()
+    }
+
+    private var emptyStateMessage: String {
+        // Use fetched plural name first, then fall back to first post's template
+        if let pluralName = pluralName {
+            return "No \(pluralName) yet"
+        }
+        if let firstPost = initialPosts.first, let pluralName = firstPost.pluralName {
+            return "No \(pluralName) yet"
+        }
+        return "No posts yet"
+    }
 
     @StateObject private var viewModel = PostsListViewModel()
     @State private var posts: [Post] = []
@@ -26,6 +63,7 @@ struct PostsListView: View {
     @State private var parentPost: Post? = nil
     @State private var scrollProxy: ScrollViewProxy? = nil
     @State private var editingPostId: Int? = nil  // Track which post is being edited
+    @State private var pluralName: String? = nil  // Fetched plural name for template
 
     let serverURL = "http://185.96.221.52:8080"
 
@@ -69,15 +107,15 @@ struct PostsListView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 8) {
-                            // Add post button at the top (only if showAddButton is true)
-                            if showAddButton {
+                            // Add post button at the top (smart detection based on template)
+                            if shouldShowAddButton {
                                 Button(action: {
                                     createNewPost()
                                 }) {
                                     HStack {
                                         Image(systemName: "plus.circle.fill")
                                             .font(.system(size: 20))
-                                        Text("Add Post")
+                                        Text(addButtonText)
                                             .font(.system(size: 17, weight: .medium))
                                     }
                                     .foregroundColor(.black)
@@ -91,7 +129,7 @@ struct PostsListView: View {
                             }
 
                             if posts.isEmpty {
-                                Text("No posts yet")
+                                Text(emptyStateMessage)
                                     .foregroundColor(.black)
                                     .padding()
                             } else {
@@ -119,6 +157,9 @@ struct PostsListView: View {
                                         },
                                         onNavigateToProfile: { backLabel, profilePost in
                                             navigationPath.append(.profile(backLabel: backLabel, profilePost: profilePost))
+                                        },
+                                        onNavigateToQueryResults: { query, backLabel in
+                                            navigationPath.append(.queryResults(query: query, backLabel: backLabel))
                                         },
                                         onPostUpdated: { updatedPost in
                                             // Check if this is a new post being updated with real ID
@@ -213,18 +254,24 @@ struct PostsListView: View {
                 Logger.shared.info("[PostsListView] Set initial expandedPostId to \(expandPostId)")
             }
 
+            // Fetch plural name for template if provided
+            if let template = templateName {
+                fetchPluralName(for: template)
+            }
+
             if let parentId = parentPostId {
                 fetchParentPost(parentId)
                 fetchPosts()
             } else if posts.isEmpty {
-                // Root level: use initial posts if available, otherwise fetch
+                // Root level: use initial posts (provided by parent view)
                 if !initialPosts.isEmpty {
                     Logger.shared.info("[PostsListView] Using initialPosts, count=\(initialPosts.count)")
                     posts = initialPosts
                     isLoading = false
                 } else {
-                    Logger.shared.info("[PostsListView] No initialPosts, fetching from server")
-                    fetchPosts()
+                    Logger.shared.info("[PostsListView] No initialPosts yet, waiting for parent to provide them")
+                    // Don't fetch - wait for initialPosts to be provided via onChange
+                    isLoading = false
                 }
             }
         }
@@ -236,6 +283,43 @@ struct PostsListView: View {
                 isLoading = false
             }
         }
+    }
+
+    func fetchPluralName(for templateName: String) {
+        guard let url = URL(string: "\(serverURL)/api/templates/\(templateName)") else {
+            return
+        }
+
+        Logger.shared.info("[PostsListView] Fetching plural name for template: \(templateName)")
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else { return }
+
+            do {
+                struct TemplateResponse: Codable {
+                    let status: String
+                    let template: TemplateInfo
+                }
+
+                struct TemplateInfo: Codable {
+                    let name: String
+                    let pluralName: String?
+
+                    enum CodingKeys: String, CodingKey {
+                        case name
+                        case pluralName = "plural_name"
+                    }
+                }
+
+                let templateResponse = try JSONDecoder().decode(TemplateResponse.self, from: data)
+                DispatchQueue.main.async {
+                    self.pluralName = templateResponse.template.pluralName
+                    Logger.shared.info("[PostsListView] Set plural name to: \(self.pluralName ?? "nil")")
+                }
+            } catch {
+                Logger.shared.error("[PostsListView] Error fetching template: \(error.localizedDescription)")
+            }
+        }.resume()
     }
 
     func fetchParentPost(_ postId: Int) {
@@ -366,6 +450,9 @@ struct PostsListView: View {
 
     private func insertNewPost(email: String, name: String) {
         DispatchQueue.main.async {
+            // Use the template from the current list
+            let templateName = self.addButtonTemplate
+
             // Create a blank post with temporary negative ID
             let newPost = Post(
                 id: -1,  // Temporary ID for unsaved post
@@ -382,10 +469,11 @@ struct PostsListView: View {
                 authorName: name,  // Use actual user name
                 authorEmail: email,
                 childCount: 0,
-                titlePlaceholder: "Title",  // Default "post" template
+                titlePlaceholder: "Title",  // Will be updated from template
                 summaryPlaceholder: "Summary",
                 bodyPlaceholder: "Body",
-                template: "post"  // Default template
+                template: templateName,  // Use template from current list
+                pluralName: nil  // Will be fetched from server when post is saved
             )
 
             // Insert at beginning of posts array
