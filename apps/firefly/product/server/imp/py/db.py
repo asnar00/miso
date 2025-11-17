@@ -399,11 +399,11 @@ class Database:
                         t.placeholder_title, t.placeholder_summary, t.placeholder_body,
                         p.title as author_name,
                         u.email as author_email,
-                        0 as child_count
+                        (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
                     LEFT JOIN templates t ON p.template_name = t.name
-                    WHERE p.user_id = %s AND p.parent_id = -1
+                    WHERE p.user_id = %s AND p.template_name = 'profile'
                     LIMIT 1
                 """, (user_id,))
                 result = cur.fetchone()

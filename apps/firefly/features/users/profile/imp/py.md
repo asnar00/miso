@@ -9,7 +9,10 @@ Add these methods to the `Database` class (after the post operations):
 ```python
 def get_user_profile(self, user_id: int) -> Optional[Dict[str, Any]]:
     """
-    Get a user's profile post (post with parent_id = -1).
+    Get a user's profile post (identified by template_name = 'profile').
+
+    IMPORTANT: Profile posts are identified by template_name, not parent_id.
+    This ensures we don't accidentally return query posts or other root-level posts.
 
     Args:
         user_id: The user's ID
@@ -24,11 +27,15 @@ def get_user_profile(self, user_id: int) -> Optional[Dict[str, Any]]:
                 SELECT
                     p.id, p.user_id, p.parent_id, p.title, p.summary, p.body,
                     p.image_url, p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                    u.email as author_name,
-                    0 as child_count
+                    p.template_name,
+                    t.placeholder_title, t.placeholder_summary, t.placeholder_body,
+                    p.title as author_name,
+                    u.email as author_email,
+                    (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) as child_count
                 FROM posts p
                 LEFT JOIN users u ON p.user_id = u.id
-                WHERE p.user_id = %s AND p.parent_id = -1
+                LEFT JOIN templates t ON p.template_name = t.name
+                WHERE p.user_id = %s AND p.template_name = 'profile'
                 LIMIT 1
             """, (user_id,))
             result = cur.fetchone()

@@ -28,62 +28,115 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 - No text labels, icons only
 
 **Button Icons:**
-- Home: "house" icon
-- Post: "plus" icon
+- Make Post: "bubble.left" icon (speech bubble)
 - Search: "magnifyingglass" icon (note: one word, no dot)
-- Profile: "person" icon
+- Users: "person.2" icon (two people)
 
 **Active State Highlighting:**
-- One button is always highlighted to show current view
-- Default: "home" button is highlighted on launch
-- Highlight persists after button press
-- Visual treatment: Gray rounded square background behind the active button icon
+- Not currently implemented (each button shows independent view)
+- Future: Could highlight active explorer
 
 ## State Management
 
-**Active Button State:**
+**Explorer State:**
 ```
-enum ToolbarButton:
-    home, post, search, profile
+// Each button shows a different explorer view that remembers its state
+enum ToolbarExplorer:
+    makePost, search, users
 
-state activeButton: ToolbarButton = home  // Default to home
+state currentExplorer: ToolbarExplorer = makePost  // Default explorer
+
+// Three separate post arrays (fetched on startup, cached in memory)
+state makePostPosts: [Post] = []
+state searchPosts: [Post] = []
+state usersPosts: [Post] = []
+
+// Loading states for each explorer
+state isLoadingMakePost: Boolean = true
+state isLoadingSearch: Boolean = true
+state isLoadingUsers: Boolean = true
+
+// Error states for each explorer
+state makePostError: String? = null
+state searchError: String? = null
+state usersError: String? = null
+```
+
+## Data Fetching (On Startup)
+
+All three explorers fetch their data in parallel when the app starts:
+
+**Make Post Explorer:**
+```
+function fetchMakePostPosts():
+    isLoadingMakePost = true
+    makePostError = null
+
+    API.fetchRecentTaggedPosts(tags: ["post"], byUser: "current"):
+        onSuccess(posts):
+            preloadFirstImage(posts)
+            makePostPosts = posts
+            isLoadingMakePost = false
+        onFailure(error):
+            makePostError = error.message
+            isLoadingMakePost = false
+```
+
+**Search Explorer:**
+```
+function fetchSearchPosts():
+    isLoadingSearch = true
+    searchError = null
+
+    API.fetchRecentTaggedPosts(tags: ["query"], byUser: "current"):
+        onSuccess(posts):
+            preloadFirstImage(posts)
+            searchPosts = posts
+            isLoadingSearch = false
+        onFailure(error):
+            searchError = error.message
+            isLoadingSearch = false
+```
+
+**Users Explorer:**
+```
+function fetchUsersPosts():
+    isLoadingUsers = true
+    usersError = null
+
+    API.fetchRecentTaggedPosts(tags: ["profile"], byUser: "any"):
+        onSuccess(posts):
+            preloadFirstImage(posts)
+            usersPosts = posts
+            isLoadingUsers = false
+        onFailure(error):
+            usersError = error.message
+            isLoadingUsers = false
 ```
 
 ## Button Actions
 
-**Home Button:**
-```
-function onHomeButtonTap():
-    activeButton = home
-    // Navigate to root level (clear navigation path)
-    navigationPath = []
-    // This returns user to "most recent posts" view
-```
+Each button simply switches the currentExplorer state. No data fetching happens on button tap (data is already loaded):
 
-**Post Button:**
+**Make Post Button:**
 ```
-function onPostButtonTap():
-    activeButton = post
-    // Open new post editor modal
-    // Pass current parentPostId if in child view, null if at root
-    currentParentId = navigationPath.isEmpty ? null : navigationPath.last
-    showNewPostEditor(parentId: currentParentId)
+function onMakePostButtonTap():
+    currentExplorer = makePost
+    // Immediately shows cached makePostPosts
 ```
 
 **Search Button:**
 ```
 function onSearchButtonTap():
-    activeButton = search
-    // TODO: Navigate to semantic search page
-    // For now, no-op or show "coming soon" message
+    currentExplorer = search
+    // Immediately shows cached searchPosts
 ```
 
-**Profile Button:**
+**Users Button:**
 ```
-function onProfileButtonTap():
-    activeButton = profile
-    // TODO: Navigate to user's main profile post
-    // For now, no-op or show "coming soon" message
+function onUsersButtonTap():
+    currentExplorer = users
+    // Immediately shows cached usersPosts
 ```
 
 ## Integration
@@ -96,40 +149,84 @@ function onProfileButtonTap():
 
 **Patching Instructions:**
 
-1. **Modify PostsView.swift** (or equivalent):
-   - Wrap existing NavigationStack in ZStack
+1. **Modify ContentView.swift** (or main app view):
+   - Add state for current explorer and three post arrays
+   - Add loading and error states for each explorer
+   - Create three fetch functions (fetchMakePostPosts, fetchSearchPosts, fetchUsersPosts)
+   - Call all three fetch functions in .onAppear
+   - Switch between three PostsView instances based on currentExplorer
+   - Show loading/error states appropriately
    - Add Toolbar component at bottom of ZStack
-   - Pass navigationPath binding to toolbar (for home button)
-   - Pass showNewPostEditor state to toolbar (for post button)
-   - Wire up button actions
 
-2. **Create Toolbar component** (new file):
-   - Takes parameters:
-     - navigationPath: Binding to [Int] (for home button)
-     - onPostButtonTap: () -> Void (for post button)
-     - onSearchButtonTap: () -> Void (for search button - optional/future)
-     - onProfileButtonTap: () -> Void (for profile button - optional/future)
-   - Returns a view with 4 buttons in horizontal layout
+2. **Create Toolbar.swift** (new file):
+   - Define ToolbarExplorer enum (makePost, search, users)
+   - Create Toolbar view that takes currentExplorer binding
+   - Create ToolbarButton view for individual buttons
+   - Returns a view with 3 buttons in horizontal layout
    - Floats at bottom with white background and shadow
+   - Each button updates currentExplorer when tapped
+
+3. **No new explorer views needed:**
+   - All three explorers use PostsView (separate instances)
+   - Each PostsView instance gets its own initialPosts array
+   - Each PostsView instance maintains its own @State for navigationPath
+   - Explorer-specific parameters: showAddButton, templateName
 
 ## Layout Pseudo-Structure
 
 ```
-PostsView:
+ContentView:
+    .onAppear:
+        fetchMakePostPosts()  // Parallel fetch
+        fetchSearchPosts()    // Parallel fetch
+        fetchUsersPosts()     // Parallel fetch
+
     ZStack:
-        // Main content layer
-        NavigationStack(path: navigationPath):
-            PostsListView(...)
+        Background(gray)
+
+        // Main content layer - switch between explorers
+        switch currentExplorer:
+            case .makePost:
+                if isLoadingMakePost:
+                    LoadingView("Loading posts...")
+                else if makePostError:
+                    ErrorView(makePostError, retryAction: fetchMakePostPosts)
+                else:
+                    PostsView(
+                        initialPosts: makePostPosts,
+                        onPostCreated: fetchMakePostPosts,
+                        showAddButton: true,
+                        templateName: "post"
+                    )
+            case .search:
+                if isLoadingSearch:
+                    LoadingView("Loading queries...")
+                else if searchError:
+                    ErrorView(searchError, retryAction: fetchSearchPosts)
+                else:
+                    PostsView(
+                        initialPosts: searchPosts,
+                        onPostCreated: fetchSearchPosts,
+                        showAddButton: true,
+                        templateName: "query"
+                    )
+            case .users:
+                if isLoadingUsers:
+                    LoadingView("Loading users...")
+                else if usersError:
+                    ErrorView(usersError, retryAction: fetchUsersPosts)
+                else:
+                    PostsView(
+                        initialPosts: usersPosts,
+                        onPostCreated: fetchUsersPosts,
+                        showAddButton: false,
+                        templateName: "profile"
+                    )
 
         // Toolbar layer (floating on top)
         VStack:
             Spacer()  // Push toolbar to bottom
-            Toolbar(
-                navigationPath: $navigationPath,
-                onPostButtonTap: { showNewPostEditor = true },
-                onSearchButtonTap: { /* TODO */ },
-                onProfileButtonTap: { /* TODO */ }
-            )
+            Toolbar(currentExplorer: $currentExplorer)
 ```
 
 ## Platform Notes
@@ -137,33 +234,34 @@ PostsView:
 **iOS (SwiftUI):**
 - Use ZStack for layering
 - Use VStack with Spacer to push toolbar to bottom
-- SF Symbols for icons: "house", "plus", "magnifyingglass", "person"
+- SF Symbols for icons: "bubble.left", "magnifyingglass", "person.2"
 - Note: "magnifyingglass" is one word (not "magnifying.glass")
 
 **Android (Jetpack Compose):**
 - Use Box for layering
 - Use Scaffold with bottomBar or manual overlay
-- Material Icons: "Home", "Add", "Search", "Person"
+- Material Icons: "ChatBubbleOutline" (or "Message"), "Search", "People", "Person"
 
 ## Behavior Details
 
 **Toolbar Persistence:**
-- Toolbar visible at all levels of navigation (root and child views)
-- Toolbar floats above scrolling content
+- Toolbar visible at all times
+- Toolbar floats above content in each explorer
 - Does not scroll away with content
+- Remains accessible from any view
 
-**Post Button Context:**
-- At root level: creates top-level post (parentId = null)
-- In child view: creates child post with current post as parent
+**Explorer State Persistence:**
+- Each explorer remembers its own state independently
+- Switching between explorers preserves scroll position and navigation state
+- User can switch between explorers and return to where they left off
 
-**Home Button:**
-- At root level: no-op (already home)
-- In child view: pops entire navigation stack to return to root
-- Can optimize: only show/enable when navigationPath is not empty
+**Initial State:**
+- App launches showing Make Post explorer by default
+- Other explorers are created lazily when first accessed
 
 ## Future Enhancements
 
-- Search button: implement semantic search navigation
-- Profile button: navigate to user's profile post
-- Active state highlighting: highlight current section (e.g., home button when at root)
-- Badge notifications: show count of new posts/messages
+- Implement actual explorer views (currently only structure is defined)
+- Add active state highlighting to show which explorer is current
+- Badge notifications: show count of new posts/messages/queries
+- Smooth transitions between explorers

@@ -46,49 +46,7 @@ struct NoobTestApp: App {
                 let (email, _, _) = Storage.shared.getLoginState()
                 NewUserView(email: email ?? "unknown", hasSeenWelcome: $hasSeenWelcome)
             } else {
-                ZStack {
-                    // Main content layer
-                    ZStack {
-                        Color(red: 64/255, green: 224/255, blue: 208/255)  // Turquoise
-                            .ignoresSafeArea()
-
-                        if isLoadingPosts {
-                            VStack(spacing: 20) {
-                                Text("ᕦ(ツ)ᕤ")
-                                    .font(.system(size: UIScreen.main.bounds.width / 12))
-                                    .foregroundColor(.black)
-
-                                ProgressView("Loading users...")
-                                    .foregroundColor(.black)
-                            }
-                        } else if let error = postsError {
-                            VStack {
-                                Text("Error: \(error)")
-                                    .foregroundColor(.red)
-                                    .padding()
-                                Button("Retry") {
-                                    fetchRecentUsers()
-                                }
-                                .padding()
-                                .background(Color.white.opacity(0.3))
-                                .cornerRadius(8)
-                            }
-                        } else {
-                            // Main posts view
-                            PostsView(
-                                initialPosts: posts,
-                                onPostCreated: fetchRecentUsers,
-                                showAddButton: true,
-                                templateName: "query"
-                            )
-                        }
-                    }
-                    .onAppear {
-                        if posts.isEmpty && !isLoadingPosts {
-                            fetchRecentUsers()
-                        }
-                    }
-                }
+                ContentView()
             }
         }
     }

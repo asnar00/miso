@@ -1,47 +1,32 @@
 import SwiftUI
 
-enum ToolbarTab {
-    case home, post, search, profile
+enum ToolbarExplorer {
+    case makePost, search, users
 }
 
 struct Toolbar: View {
-    @Binding var navigationPath: [Int]
-    @Binding var activeTab: ToolbarTab
-    let onPostButtonTap: () -> Void
-    let onSearchButtonTap: () -> Void
-    let onProfileButtonTap: () -> Void
+    @Binding var currentExplorer: ToolbarExplorer
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                // Home button
-                ToolbarButton(icon: "house", isActive: activeTab == .home) {
-                    activeTab = .home
-                    navigationPath = []
-                }
-
-                Spacer()
-
-                // Post button
-                ToolbarButton(icon: "plus", isActive: activeTab == .post) {
-                    activeTab = .post
-                    onPostButtonTap()
+                // Make Post button
+                ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost) {
+                    currentExplorer = .makePost
                 }
 
                 Spacer()
 
                 // Search button
-                ToolbarButton(icon: "magnifyingglass", isActive: activeTab == .search) {
-                    activeTab = .search
-                    onSearchButtonTap()
+                ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search) {
+                    currentExplorer = .search
                 }
 
                 Spacer()
 
-                // Profile button
-                ToolbarButton(icon: "person", isActive: activeTab == .profile) {
-                    activeTab = .profile
-                    onProfileButtonTap()
+                // Users button
+                ToolbarButton(icon: "person.2", isActive: currentExplorer == .users) {
+                    currentExplorer = .users
                 }
             }
             .padding(.horizontal, 40)
@@ -59,24 +44,16 @@ struct Toolbar: View {
         .shadow(radius: 2)
         .onAppear {
             // Register toolbar buttons with UI automation
-            UIAutomationRegistry.shared.register(id: "toolbar-home") {
-                activeTab = .home
-                navigationPath = []
-            }
-
-            UIAutomationRegistry.shared.register(id: "toolbar-plus") {
-                activeTab = .post
-                onPostButtonTap()
+            UIAutomationRegistry.shared.register(id: "toolbar-makepost") {
+                currentExplorer = .makePost
             }
 
             UIAutomationRegistry.shared.register(id: "toolbar-search") {
-                activeTab = .search
-                onSearchButtonTap()
+                currentExplorer = .search
             }
 
-            UIAutomationRegistry.shared.register(id: "toolbar-profile") {
-                activeTab = .profile
-                onProfileButtonTap()
+            UIAutomationRegistry.shared.register(id: "toolbar-users") {
+                currentExplorer = .users
             }
         }
     }

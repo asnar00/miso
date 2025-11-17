@@ -2,17 +2,19 @@
 
 ## Overview
 
-Every user has a profile page that is essentially a special post. The profile post is distinguished by having `parent_id = -1` (a special marker indicating it's a profile post, not a regular post).
+Every user has a profile page that is essentially a special post. The profile post is distinguished by having `template_name = 'profile'`. Profile posts can have children (user's posts attached to their profile).
 
 ## Data Model
 
 **Profile Post Structure:**
-- `parent_id`: -1 (special marker for profile posts)
+- `template_name`: 'profile' (identifies this as a profile post)
+- `parent_id`: -1 (by convention, profile posts are root-level)
 - `title`: User's name
 - `summary`: User's profession/mission/tagline
 - `body`: Up to 300 words of text (whatever the user wants)
 - `image_url`: Optional photograph
 - `user_id`: Links to the user who owns this profile
+- `child_count`: Number of posts attached to this profile (calculated dynamically)
 
 ## Functions
 
@@ -20,9 +22,13 @@ Every user has a profile page that is essentially a special post. The profile po
 **Purpose:** Fetch a user's profile post
 
 **Process:**
-1. Query the database for a post where `user_id = user_id` AND `parent_id = -1`
-2. If found, return the profile post
-3. If not found, return None
+1. Query the database for a post where `user_id = user_id` AND `template_name = 'profile'`
+2. Calculate child_count using subquery: `(SELECT COUNT(*) FROM posts WHERE parent_id = p.id)`
+3. Include template metadata (placeholder_title, placeholder_summary, placeholder_body)
+4. If found, return the profile post with all fields including child_count
+5. If not found, return None
+
+**IMPORTANT:** Filter by template_name, not parent_id, to avoid returning query posts or other root-level posts that also have parent_id = -1.
 
 ### create_profile_post(user_id, title, summary, body, image)
 **Purpose:** Create a new profile post for a user

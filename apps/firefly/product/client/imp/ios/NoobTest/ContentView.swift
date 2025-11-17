@@ -2,121 +2,218 @@ import SwiftUI
 import OSLog
 
 struct ContentView: View {
-    // Server configuration
-    let serverURL = "http://185.96.221.52:8080"
+    @State private var currentExplorer: ToolbarExplorer = .makePost
 
-    // Logger
-    let logger = Logger.shared
+    // Three separate post arrays for each explorer
+    @State private var makePostPosts: [Post] = []
+    @State private var searchPosts: [Post] = []
+    @State private var usersPosts: [Post] = []
 
-    // State variables for ping and background features
-    @State private var backgroundColor = Color(red: 139/255, green: 0, blue: 0)
-    @State private var timer: Timer?
+    // Loading states
+    @State private var isLoadingMakePost = true
+    @State private var isLoadingSearch = true
+    @State private var isLoadingUsers = true
 
-    init() {
-        // Register ping test
-        TestRegistry.shared.register(feature: "ping") {
-            return Self.testPingFeature()
-        }
-    }
+    // Error states
+    @State private var makePostError: String?
+    @State private var searchError: String?
+    @State private var usersError: String?
 
     var body: some View {
         ZStack {
-            // Background color changes based on connection status
-            backgroundColor
+            // Background color
+            Color(red: 128/255, green: 128/255, blue: 128/255)
                 .ignoresSafeArea()
 
-            // Logo at 75% width - using GeometryReader to calculate size
-            GeometryReader { geometry in
-                Text("ᕦ(ツ)ᕤ")
-                    .font(.system(size: geometry.size.width * 0.75 * 0.25))
-                    .foregroundColor(.black)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-            }
-        }
-        .onAppear { startPeriodicCheck() }
-        .onDisappear { timer?.invalidate() }
-    }
-
-    func startPeriodicCheck() {
-        // Check immediately on startup
-        testConnection()
-
-        // Then check every 1 second
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            testConnection()
-        }
-    }
-
-    func testConnection() {
-        guard let url = URL(string: "\(serverURL)/api/ping") else {
-            backgroundColor = Color(red: 139/255, green: 0, blue: 0)
-            return
-        }
-
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    // Connection failed - dark red background
-                    backgroundColor = Color(red: 139/255, green: 0, blue: 0)
-                    return
-                }
-
-                if let httpResponse = response as? HTTPURLResponse {
-                    if httpResponse.statusCode == 200 {
-                        // Connection successful - grey background
-                        backgroundColor = Color(red: 128/255, green: 128/255, blue: 128/255)
+            // Main content - three separate PostsView instances
+            // Each maintains its own navigation state
+            Group {
+                switch currentExplorer {
+                case .makePost:
+                    if isLoadingMakePost {
+                        VStack(spacing: 20) {
+                            Text("ᕦ(ツ)ᕤ")
+                                .font(.system(size: UIScreen.main.bounds.width / 12))
+                                .foregroundColor(.black)
+                            ProgressView("Loading posts...")
+                                .foregroundColor(.black)
+                        }
+                    } else if let error = makePostError {
+                        VStack {
+                            Text("Error: \(error)")
+                                .foregroundColor(.red)
+                                .padding()
+                            Button("Retry") {
+                                fetchMakePostPosts()
+                            }
+                            .padding()
+                            .background(Color.white.opacity(0.3))
+                            .cornerRadius(8)
+                        }
                     } else {
-                        // Server returned error - dark red background
-                        backgroundColor = Color(red: 139/255, green: 0, blue: 0)
+                        PostsView(initialPosts: makePostPosts, onPostCreated: { fetchMakePostPosts() }, showAddButton: true, templateName: "post")
+                    }
+
+                case .search:
+                    if isLoadingSearch {
+                        VStack(spacing: 20) {
+                            Text("ᕦ(ツ)ᕤ")
+                                .font(.system(size: UIScreen.main.bounds.width / 12))
+                                .foregroundColor(.black)
+                            ProgressView("Loading queries...")
+                                .foregroundColor(.black)
+                        }
+                    } else if let error = searchError {
+                        VStack {
+                            Text("Error: \(error)")
+                                .foregroundColor(.red)
+                                .padding()
+                            Button("Retry") {
+                                fetchSearchPosts()
+                            }
+                            .padding()
+                            .background(Color.white.opacity(0.3))
+                            .cornerRadius(8)
+                        }
+                    } else {
+                        PostsView(initialPosts: searchPosts, onPostCreated: { fetchSearchPosts() }, showAddButton: true, templateName: "query")
+                    }
+
+                case .users:
+                    if isLoadingUsers {
+                        VStack(spacing: 20) {
+                            Text("ᕦ(ツ)ᕤ")
+                                .font(.system(size: UIScreen.main.bounds.width / 12))
+                                .foregroundColor(.black)
+                            ProgressView("Loading users...")
+                                .foregroundColor(.black)
+                        }
+                    } else if let error = usersError {
+                        VStack {
+                            Text("Error: \(error)")
+                                .foregroundColor(.red)
+                                .padding()
+                            Button("Retry") {
+                                fetchUsersPosts()
+                            }
+                            .padding()
+                            .background(Color.white.opacity(0.3))
+                            .cornerRadius(8)
+                        }
+                    } else {
+                        PostsView(initialPosts: usersPosts, onPostCreated: { fetchUsersPosts() }, showAddButton: false, templateName: "profile")
                     }
                 }
             }
-        }.resume()
+
+            // Floating toolbar at bottom - always on top
+            VStack {
+                Spacer()
+                Toolbar(currentExplorer: $currentExplorer)
+                    .ignoresSafeArea(.keyboard)  // Keep toolbar visible when keyboard appears
+            }
+        }
+        .onAppear {
+            // Fetch all three explorers' data on startup
+            fetchMakePostPosts()
+            fetchSearchPosts()
+            fetchUsersPosts()
+        }
     }
 
-    // Test function for ping feature
-    static func testPingFeature() -> TestResult {
-        Logger.shared.info("[TEST:ping] Starting ping test")
+    // MARK: - Fetch Functions
 
-        let serverURL = "http://185.96.221.52:8080"
-        Logger.shared.info("[TEST:ping] Server URL: \(serverURL)")
-        guard let url = URL(string: "\(serverURL)/api/ping") else {
-            Logger.shared.error("[TEST:ping] Invalid server URL")
-            return TestResult(success: false, error: "Invalid server URL")
-        }
+    func fetchMakePostPosts() {
+        isLoadingMakePost = true
+        makePostError = nil
 
-        var result = TestResult(success: false, error: "Timeout")
-        let semaphore = DispatchSemaphore(value: 0)
-
-        Logger.shared.info("[TEST:ping] Sending HTTP request...")
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                Logger.shared.error("[TEST:ping] Connection failed: \(error.localizedDescription)")
-                result = TestResult(success: false, error: "Connection failed: \(error.localizedDescription)")
-                semaphore.signal()
-                return
-            }
-
-            if let httpResponse = response as? HTTPURLResponse {
-                Logger.shared.info("[TEST:ping] Received response with status: \(httpResponse.statusCode)")
-                if httpResponse.statusCode == 200 {
-                    Logger.shared.info("[TEST:ping] Ping successful!")
-                    result = TestResult(success: true)
-                } else {
-                    Logger.shared.error("[TEST:ping] Unexpected status code: \(httpResponse.statusCode)")
-                    result = TestResult(success: false, error: "Server returned status \(httpResponse.statusCode)")
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["post"], byUser: "current") { result in
+            switch result {
+            case .success(let fetchedPosts):
+                preloadImagesOptimized(for: fetchedPosts) {
+                    DispatchQueue.main.async {
+                        self.makePostPosts = fetchedPosts
+                        self.isLoadingMakePost = false
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.makePostError = error.localizedDescription
+                    self.isLoadingMakePost = false
                 }
             }
-            semaphore.signal()
-        }.resume()
+        }
+    }
 
-        Logger.shared.info("[TEST:ping] Waiting for response (timeout: 2s)...")
-        let timedOut = semaphore.wait(timeout: .now() + 2.0)
-        if timedOut == .timedOut {
-            Logger.shared.error("[TEST:ping] Request timed out")
+    func fetchSearchPosts() {
+        isLoadingSearch = true
+        searchError = nil
+
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["query"], byUser: "current") { result in
+            switch result {
+            case .success(let fetchedPosts):
+                preloadImagesOptimized(for: fetchedPosts) {
+                    DispatchQueue.main.async {
+                        self.searchPosts = fetchedPosts
+                        self.isLoadingSearch = false
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.searchError = error.localizedDescription
+                    self.isLoadingSearch = false
+                }
+            }
+        }
+    }
+
+    func fetchUsersPosts() {
+        isLoadingUsers = true
+        usersError = nil
+
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["profile"], byUser: "any") { result in
+            switch result {
+            case .success(let fetchedPosts):
+                preloadImagesOptimized(for: fetchedPosts) {
+                    DispatchQueue.main.async {
+                        self.usersPosts = fetchedPosts
+                        self.isLoadingUsers = false
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.usersError = error.localizedDescription
+                    self.isLoadingUsers = false
+                }
+            }
+        }
+    }
+
+    func preloadImagesOptimized(for posts: [Post], completion: @escaping () -> Void) {
+        let serverURL = "http://185.96.221.52:8080"
+        let imageUrls = posts.compactMap { post -> String? in
+            guard let imageUrl = post.imageUrl else { return nil }
+            return serverURL + imageUrl
         }
 
-        return result
+        guard !imageUrls.isEmpty else {
+            completion()
+            return
+        }
+
+        // Load first image, then display
+        let firstUrl = imageUrls[0]
+        ImageCache.shared.preload(urls: [firstUrl]) {
+            completion()
+
+            // Continue loading remaining images in background
+            if imageUrls.count > 1 {
+                let remainingUrls = Array(imageUrls[1...])
+                ImageCache.shared.preload(urls: remainingUrls) {
+                    // Background loading complete
+                }
+            }
+        }
     }
 }
 
