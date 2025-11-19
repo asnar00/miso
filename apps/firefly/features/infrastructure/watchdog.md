@@ -5,33 +5,32 @@ The watchdog monitors the Firefly server health every minute and automatically r
 
 ## Health Checks
 
-The watchdog performs two checks:
-- **Server responsiveness**: Checks if `/api/ping` endpoint responds with status "ok"
-- **PostgreSQL status**: Verifies PostgreSQL is running
+The watchdog performs two checks **in this critical order**:
+1. **PostgreSQL status** (checked FIRST): Verifies PostgreSQL is running
+2. **Server responsiveness**: Checks if `/api/ping` endpoint responds with status "ok"
+
+**Why PostgreSQL first?** The server requires PostgreSQL to initialize its database connection pool during startup. Checking PostgreSQL first prevents cascade failures where a stopped database causes the server to crash during restart attempts.
 
 ## Automatic Recovery
 
-When a failure is detected, the watchdog:
+When PostgreSQL is down:
+1. **Saves crash logs** to `~/firefly-server/bad/YYYYMMDD_HHMMSS/`
+2. **Restarts PostgreSQL** and waits 3 seconds
+3. **Restarts the server** (since it likely failed without PostgreSQL)
+4. **Verifies recovery** by checking server health
+5. **Sends email** with recovery status and log location
 
-1. **Preserves evidence**: Creates a timestamped folder in `~/firefly-server/bad/YYYYMMDD_HHMMSS/` containing:
-   - Server log with all output leading to the crash
-   - Watchdog log showing detection and recovery
-   - System info (running processes, port usage, disk space)
+When server is down (but PostgreSQL is running):
+1. **Checks for intentional shutdown** (looks for `.intentional_shutdown` marker file)
+2. **Saves crash logs** to `~/firefly-server/bad/YYYYMMDD_HHMMSS/`
+3. **Restarts the server** and waits 3 seconds
+4. **Verifies recovery** by checking `/api/ping`
+5. **Sends email** (only if not intentional) with recovery status
 
-2. **Restarts services**:
-   - Starts PostgreSQL if it's down
-   - Restarts the Flask server
-   - Waits 3 seconds for stabilization
-
-3. **Verifies recovery**:
-   - Tests if server responds to `/api/ping`
-   - Logs success or failure
-
-4. **Sends notification**:
-   - Emails administrator with failure details (only for unexpected failures)
-   - Skips email if shutdown was intentional via `/api/shutdown` or `/api/restart` endpoints
-   - Includes recovery status (RECOVERED or FAILED TO RECOVER)
-   - Provides path to saved logs for investigation
+**Evidence preservation**: Each crash creates a folder containing:
+- Server log with all output leading to the crash
+- Watchdog log showing detection and recovery
+- System info (running processes, port usage, disk space)
 
 ## Intentional Shutdown Detection
 

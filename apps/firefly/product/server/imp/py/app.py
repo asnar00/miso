@@ -1101,9 +1101,54 @@ def handle_sigterm(signum, frame):
     logger.info(f"Received signal {signum} (SIGTERM), shutting down gracefully")
     sys.exit(0)
 
+def startup_health_check():
+    """Perform health checks before starting the server"""
+    logger.info("=" * 60)
+    logger.info("Performing startup health checks...")
+    logger.info("=" * 60)
+
+    # Check 1: PostgreSQL is running
+    logger.info("[HEALTH] Checking PostgreSQL status...")
+    if not db.check_postgresql_running():
+        logger.warning("[HEALTH] PostgreSQL is not running, attempting to start...")
+        if db.restart_postgresql():
+            logger.info("[HEALTH] PostgreSQL started successfully")
+        else:
+            logger.critical("[HEALTH] Failed to start PostgreSQL - server cannot start")
+            sys.exit(1)
+    else:
+        logger.info("[HEALTH] PostgreSQL is running")
+
+    # Check 2: Initialize database connection pool
+    logger.info("[HEALTH] Initializing database connection pool...")
+    try:
+        db.initialize_pool()
+        logger.info("[HEALTH] Database connection pool initialized successfully")
+    except Exception as e:
+        logger.critical(f"[HEALTH] Failed to initialize database pool: {e}")
+        logger.critical("[HEALTH] Server cannot start without database connection")
+        sys.exit(1)
+
+    # Check 3: Test database connection
+    logger.info("[HEALTH] Testing database connection...")
+    try:
+        conn = db.get_connection()
+        db.return_connection(conn)
+        logger.info("[HEALTH] Database connection test successful")
+    except Exception as e:
+        logger.critical(f"[HEALTH] Database connection test failed: {e}")
+        sys.exit(1)
+
+    logger.info("=" * 60)
+    logger.info("[HEALTH] All startup checks passed!")
+    logger.info("=" * 60)
+
 if __name__ == '__main__':
     # Register signal handler
     signal.signal(signal.SIGTERM, handle_sigterm)
+
+    # Perform startup health checks
+    startup_health_check()
 
     # Log startup information
     logger.info("=" * 60)

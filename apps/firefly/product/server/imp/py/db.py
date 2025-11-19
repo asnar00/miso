@@ -13,6 +13,7 @@ import sys
 import embeddings
 import subprocess
 import time
+import threading
 
 class Database:
     """Database connection and operations manager"""
@@ -36,6 +37,20 @@ class Database:
 
         self.db_config = db_config
         self.connection_pool = None
+        self._pool_lock = threading.Lock()  # Thread safety for pool initialization
+
+    def check_postgresql_running(self):
+        """Check if PostgreSQL is running"""
+        try:
+            result = subprocess.run([
+                '/opt/homebrew/opt/postgresql@16/bin/pg_ctl',
+                '-D', '/opt/homebrew/var/postgresql@16',
+                'status'
+            ], capture_output=True, text=True, timeout=5)
+            return result.returncode == 0
+        except Exception as e:
+            print(f"[DB] Error checking PostgreSQL status: {e}")
+            return False
 
     def restart_postgresql(self):
         """Restart PostgreSQL if it's not responding"""
@@ -61,29 +76,35 @@ class Database:
             return False
 
     def initialize_pool(self, minconn=1, maxconn=10, retry_with_restart=True):
-        """Initialize the connection pool"""
-        try:
-            self.connection_pool = psycopg2.pool.SimpleConnectionPool(
-                minconn, maxconn, **self.db_config
-            )
-            print(f"Database connection pool initialized: {self.db_config['host']}:{self.db_config['port']}/{self.db_config['database']}")
-        except Exception as e:
-            print(f"Error initializing database pool: {e}")
+        """Initialize the connection pool with thread safety"""
+        with self._pool_lock:
+            # Check again inside the lock to avoid double initialization
+            if self.connection_pool is not None:
+                print("[DB] Pool already initialized, skipping")
+                return
 
-            # Try to restart PostgreSQL and retry
-            if retry_with_restart and "Connection refused" in str(e):
-                print("[DB] Attempting to restart PostgreSQL and retry...")
-                if self.restart_postgresql():
-                    try:
-                        self.connection_pool = psycopg2.pool.SimpleConnectionPool(
-                            minconn, maxconn, **self.db_config
-                        )
-                        print(f"[DB] Database connection pool initialized after restart")
-                        return
-                    except Exception as e2:
-                        print(f"[DB] Failed to initialize pool after restart: {e2}")
+            try:
+                self.connection_pool = psycopg2.pool.SimpleConnectionPool(
+                    minconn, maxconn, **self.db_config
+                )
+                print(f"Database connection pool initialized: {self.db_config['host']}:{self.db_config['port']}/{self.db_config['database']}")
+            except Exception as e:
+                print(f"Error initializing database pool: {e}")
 
-            raise
+                # Try to restart PostgreSQL and retry
+                if retry_with_restart and "Connection refused" in str(e):
+                    print("[DB] Attempting to restart PostgreSQL and retry...")
+                    if self.restart_postgresql():
+                        try:
+                            self.connection_pool = psycopg2.pool.SimpleConnectionPool(
+                                minconn, maxconn, **self.db_config
+                            )
+                            print(f"[DB] Database connection pool initialized after restart")
+                            return
+                        except Exception as e2:
+                            print(f"[DB] Failed to initialize pool after restart: {e2}")
+
+                raise
 
     def get_connection(self):
         """Get a connection from the pool"""

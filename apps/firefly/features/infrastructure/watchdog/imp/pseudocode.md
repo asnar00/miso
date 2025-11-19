@@ -23,21 +23,59 @@ SMTP_PASS = "Conf1dant!"
 function watchdog_check():
     log("Watchdog check started")
 
-    if check_server():
-        log("Server is healthy")
-    else:
-        log("ERROR: Server not responding!")
+    # CRITICAL: Check PostgreSQL FIRST
+    if not check_postgres():
+        log("CRITICAL: PostgreSQL is down!")
 
         # Preserve evidence
         bad_dir = save_bad_logs()
         log("Logs saved to: " + bad_dir)
 
-        # Restart services
-        if not check_postgres():
-            log("ERROR: PostgreSQL is down!")
-            restart_postgres()
-            wait(3 seconds)
+        # Restart PostgreSQL
+        restart_postgres()
+        wait(3 seconds)
 
+        # Verify PostgreSQL recovered
+        if not check_postgres():
+            log("CRITICAL: PostgreSQL failed to restart!")
+            send_email("PostgreSQL Failure - Cannot Restart", bad_dir)
+            log("Email notification sent")
+            return  # Cannot proceed without PostgreSQL
+
+        log("PostgreSQL restarted successfully")
+
+        # PostgreSQL was down, server likely needs restart too
+        restart_server()
+        wait(3 seconds)
+
+        # Verify server recovery
+        if check_server():
+            log("SUCCESS: Server recovered after PostgreSQL restart")
+            send_email("PostgreSQL + Server Recovered", bad_dir)
+        else:
+            log("ERROR: Server still down after PostgreSQL restart")
+            send_email("Server Failed to Recover After PostgreSQL Restart", bad_dir)
+
+        log("Email notification sent")
+        log("Watchdog check completed")
+        return
+
+    # PostgreSQL is running, now check server
+    if not check_server():
+        log("ERROR: Server not responding (PostgreSQL is OK)")
+
+        # Check for intentional shutdown
+        intentional = check_intentional_shutdown_marker()
+        if intentional:
+            log("Detected intentional shutdown marker")
+            remove_marker_file()
+            log("Removed shutdown marker file")
+
+        # Preserve evidence
+        bad_dir = save_bad_logs()
+        log("Logs saved to: " + bad_dir)
+
+        # Restart server (PostgreSQL already confirmed running)
         restart_server()
         wait(3 seconds)
 
@@ -49,9 +87,14 @@ function watchdog_check():
             log("ERROR: Server still down after restart")
             recovery_status = "FAILED TO RECOVER"
 
-        # Notify admin
-        send_email(recovery_status, bad_dir)
-        log("Email notification sent")
+        # Send email only if NOT intentional shutdown
+        if not intentional:
+            send_email("Server Failure - " + recovery_status, bad_dir)
+            log("Email notification sent")
+        else:
+            log("Skipped email notification (intentional shutdown)")
+    else:
+        log("Server is healthy")
 
     log("Watchdog check completed")
 ```
@@ -66,6 +109,14 @@ function check_server() -> boolean:
 function check_postgres() -> boolean:
     processes = get_running_processes()
     return processes.contains("postgres.*postgresql@16")
+
+function check_intentional_shutdown_marker() -> boolean:
+    marker_file = "~/firefly-server/.intentional_shutdown"
+    return file_exists(marker_file)
+
+function remove_marker_file():
+    marker_file = "~/firefly-server/.intentional_shutdown"
+    delete_file(marker_file)
 ```
 
 ## Log Preservation
@@ -196,14 +247,16 @@ Verify with: `networksetup -getdnsservers Wi-Fi`
 
 ## Critical Details
 
-1. **Connection timeout**: HTTP health check must timeout after 5 seconds to avoid hanging
-2. **Restart delays**: Wait 2-3 seconds after service restarts before verification
-3. **Log preservation**: Always save logs BEFORE restarting to capture failure state
-4. **Email reliability**: Requires working DNS - Google's 8.8.8.8 is most reliable
-5. **Process detection**: Use `grep -v grep` to avoid matching the grep command itself
-6. **File permissions**: Watchdog script must be executable (`chmod +x`)
-7. **Cron environment**: Cron runs with minimal PATH - use absolute paths for commands
-8. **SMTP authentication**: Office365 requires EHLO, STARTTLS, EHLO sequence
+1. **PostgreSQL-first checking**: MUST check PostgreSQL before server to prevent cascade failures. If PostgreSQL is down, the server will crash when trying to initialize its database connection pool, creating a restart loop.
+2. **Connection timeout**: HTTP health check must timeout after 5 seconds to avoid hanging
+3. **Restart delays**: Wait 2-3 seconds after service restarts before verification
+4. **Log preservation**: Always save logs BEFORE restarting to capture failure state
+5. **Email reliability**: Requires working DNS - Google's 8.8.8.8 is most reliable
+6. **Process detection**: Use `grep -v grep` to avoid matching the grep command itself
+7. **File permissions**: Watchdog script must be executable (`chmod +x`)
+8. **Cron environment**: Cron runs with minimal PATH - use absolute paths for commands
+9. **SMTP authentication**: Office365 requires EHLO, STARTTLS, EHLO sequence
+10. **Intentional shutdown marker**: Server creates `.intentional_shutdown` file when shut down via API to suppress false-positive email alerts
 
 ## Error Handling
 

@@ -119,9 +119,76 @@ restart_server() {
 # Main watchdog logic
 log "Watchdog check started"
 
-# Check server health
+# CRITICAL: Check PostgreSQL FIRST before checking server
+if ! check_postgres; then
+    log "CRITICAL: PostgreSQL is down!"
+
+    # Save logs before restarting
+    bad_dir=$(save_bad_logs)
+    log "Logs saved to: $bad_dir"
+
+    # Restart PostgreSQL
+    restart_postgres
+    sleep 3
+
+    # Verify PostgreSQL is now running
+    if ! check_postgres; then
+        log "CRITICAL: PostgreSQL failed to restart!"
+        subject="[Firefly] PostgreSQL Failure - Cannot Restart"
+        body="PostgreSQL failed to restart on the Mac mini at $(date).
+
+Logs saved to: $bad_dir
+
+This requires manual intervention.
+
+- Firefly Watchdog"
+        send_email "$subject" "$body"
+        log "Email notification sent to $NOTIFY_EMAIL"
+        log "Watchdog check completed"
+        exit 1
+    fi
+
+    log "PostgreSQL restarted successfully"
+
+    # PostgreSQL was down, server likely needs restart too
+    restart_server
+    sleep 3
+
+    # Verify recovery
+    if check_server; then
+        log "SUCCESS: Server recovered after PostgreSQL restart"
+        subject="[Firefly] PostgreSQL + Server Recovered"
+        body="PostgreSQL was down and has been restarted at $(date).
+
+Server was also restarted and is now healthy.
+
+Logs saved to: $bad_dir
+Server URL: http://185.96.221.52:8080
+
+- Firefly Watchdog"
+        send_email "$subject" "$body"
+        log "Email notification sent to $NOTIFY_EMAIL"
+    else
+        log "ERROR: Server still down after PostgreSQL restart"
+        subject="[Firefly] Server Failed to Recover After PostgreSQL Restart"
+        body="PostgreSQL was restarted but server is still down at $(date).
+
+Logs saved to: $bad_dir
+
+This requires manual intervention.
+
+- Firefly Watchdog"
+        send_email "$subject" "$body"
+        log "Email notification sent to $NOTIFY_EMAIL"
+    fi
+
+    log "Watchdog check completed"
+    exit 0
+fi
+
+# PostgreSQL is running, now check server health
 if ! check_server; then
-    log "ERROR: Server not responding!"
+    log "ERROR: Server not responding (PostgreSQL is OK)"
 
     # Check if this was an intentional shutdown
     MARKER_FILE="$SCRIPT_DIR/.intentional_shutdown"
@@ -137,14 +204,7 @@ if ! check_server; then
     bad_dir=$(save_bad_logs)
     log "Logs saved to: $bad_dir"
 
-    # Check PostgreSQL
-    if ! check_postgres; then
-        log "ERROR: PostgreSQL is down!"
-        restart_postgres
-        sleep 3
-    fi
-
-    # Restart server
+    # Restart server (PostgreSQL already confirmed running)
     restart_server
     sleep 3
 
