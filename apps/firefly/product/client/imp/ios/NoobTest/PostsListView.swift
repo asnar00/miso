@@ -23,6 +23,11 @@ struct PostsListView: View {
 
     @ObservedObject var tunables = TunableConstants.shared
 
+    // Corner roundness helper
+    private var cornerRoundness: CGFloat {
+        tunables.getDouble("corner-roundness", default: 1.0)
+    }
+
     // Computed property: determine if we should show add button and what template to use
     private var shouldShowAddButton: Bool {
         // Don't show for child posts (only root level)
@@ -110,7 +115,7 @@ struct PostsListView: View {
                     }
                     .padding()
                     .background(Color.white.opacity(0.3))
-                    .cornerRadius(8)
+                    .cornerRadius(8 * cornerRoundness)
                 }
             } else {
                 ScrollViewReader { proxy in
@@ -131,7 +136,7 @@ struct PostsListView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding()
                                     .background(Color.white.opacity(0.3))
-                                    .cornerRadius(12)
+                                    .cornerRadius(12 * cornerRoundness)
                                 }
                                 .padding(.horizontal, 8)
                                 .padding(.top, 4)
