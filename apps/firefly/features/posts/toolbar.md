@@ -5,10 +5,11 @@ The `toolbar` is a sleek rounded lozenge at the bottom of the screen; it floats 
 
 **Visual Design:**
 - Rounded lozenge shape (25pt corner radius)
-- Light grey background (RGB 0.7, 0.7, 0.7)
+- Background color: RGB where R=G=B="button-colour" tunable (default 0.5)
 - Maximum width of 300pt, centered on screen
 - Strong shadow for depth (40% black opacity, 12pt blur, 4pt downward offset)
 - Positioned 12pt from bottom edge, nestled in the screen curve
+- Color matches all other UI buttons (add-post button, author button, child navigation button)
 
 The toolbar has three buttons:
 
@@ -19,3 +20,7 @@ The toolbar has three buttons:
 - **"users"** (two people icon) : shows a list of all users in the system
 
 Each button highlights when active with a darker grey background (50% grey opacity) for clear visual feedback.
+
+**State Persistence**: When you switch between explorers, each view remembers its navigation state - scroll position, which posts are expanded, and where you were in the hierarchy. Switching back returns you exactly where you left off.
+
+**Reset Behavior**: Tapping the currently active toolbar button resets that explorer back to its initial state - clearing navigation history and returning to the top-level view.

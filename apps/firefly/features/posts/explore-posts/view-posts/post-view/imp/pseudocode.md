@@ -143,9 +143,10 @@ lineLimit = 2 (truncates with ellipsis)
 
 ### Author
 ```
-font = subheadline (typically ~15pt)
+font = 15pt * fontScale * author-font-size (tunables)
 color = black 50% opacity
 prefix = "👓 librarian" if AI-generated, otherwise author name
+button color (when clickable) = RGB where R=G=B=button-colour tunable (default 0.5)
 ```
 
 ## Layout Strategy

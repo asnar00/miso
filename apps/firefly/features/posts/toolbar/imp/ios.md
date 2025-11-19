@@ -27,32 +27,52 @@ enum ToolbarExplorer {
 
 struct Toolbar: View {
     @Binding var currentExplorer: ToolbarExplorer
+    @ObservedObject var tunables = TunableConstants.shared
+    let onResetMakePost: () -> Void
+    let onResetSearch: () -> Void
+    let onResetUsers: () -> Void
 
     var body: some View {
         HStack(spacing: 0) {
             // Make Post button
             ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost) {
-                currentExplorer = .makePost
+                if currentExplorer == .makePost {
+                    onResetMakePost()
+                } else {
+                    currentExplorer = .makePost
+                }
             }
 
             Spacer()
 
             // Search button
             ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search) {
-                currentExplorer = .search
+                if currentExplorer == .search {
+                    onResetSearch()
+                } else {
+                    currentExplorer = .search
+                }
             }
 
             Spacer()
 
             // Users button
             ToolbarButton(icon: "person.2", isActive: currentExplorer == .users) {
-                currentExplorer = .users
+                if currentExplorer == .users {
+                    onResetUsers()
+                } else {
+                    currentExplorer = .users
+                }
             }
         }
         .padding(.horizontal, 33)  // Internal horizontal padding
         .padding(.vertical, 14)     // Internal vertical padding
         .background(
-            Color(red: 0.7, green: 0.7, blue: 0.7)  // Light grey
+            Color(
+                red: tunables.getDouble("button-colour", default: 0.5),
+                green: tunables.getDouble("button-colour", default: 0.5),
+                blue: tunables.getDouble("button-colour", default: 0.5)
+            )
                 .cornerRadius(25)
                 .shadow(color: Color.black.opacity(0.4), radius: 12, x: 0, y: 4)
         )
@@ -123,17 +143,23 @@ struct ContentView: View {
     @State private var searchError: String?
     @State private var usersError: String?
 
+    // Reset triggers - changing these IDs forces view recreation
+    @State private var makePostViewId = UUID()
+    @State private var searchViewId = UUID()
+    @State private var usersViewId = UUID()
+
     var body: some View {
         ZStack {
             // Background color
             Color(red: 128/255, green: 128/255, blue: 128/255)
                 .ignoresSafeArea()
 
-            // Main content - three separate PostsView instances
-            // Each maintains its own navigation state
-            Group {
-                switch currentExplorer {
-                case .makePost:
+            // Main content - three separate PostsView instances kept in memory
+            // Each maintains its own navigation state independently
+            // Use ZStack to layer them and show/hide with opacity
+            ZStack {
+                // Make Post view
+                Group {
                     if isLoadingMakePost {
                         VStack(spacing: 20) {
                             Text("ᕦ(ツ)ᕤ")
@@ -155,10 +181,16 @@ struct ContentView: View {
                             .cornerRadius(8)
                         }
                     } else {
-                        PostsView(initialPosts: makePostPosts, onPostCreated: { fetchMakePostPosts() }, showAddButton: true, templateName: "post")
+                        PostsView(initialPosts: makePostPosts, onPostCreated: { fetchMakePostPosts() }, showAddButton: true, templateName: "post", customAddButtonText: nil)
+                            .id(makePostViewId)
                     }
+                }
+                .opacity(currentExplorer == .makePost ? 1 : 0)
+                .allowsHitTesting(currentExplorer == .makePost)
+                .zIndex(currentExplorer == .makePost ? 1 : 0)
 
-                case .search:
+                // Search view
+                Group {
                     if isLoadingSearch {
                         VStack(spacing: 20) {
                             Text("ᕦ(ツ)ᕤ")
@@ -180,10 +212,16 @@ struct ContentView: View {
                             .cornerRadius(8)
                         }
                     } else {
-                        PostsView(initialPosts: searchPosts, onPostCreated: { fetchSearchPosts() }, showAddButton: true, templateName: "query")
+                        PostsView(initialPosts: searchPosts, onPostCreated: { fetchSearchPosts() }, showAddButton: true, templateName: "query", customAddButtonText: nil)
+                            .id(searchViewId)
                     }
+                }
+                .opacity(currentExplorer == .search ? 1 : 0)
+                .allowsHitTesting(currentExplorer == .search)
+                .zIndex(currentExplorer == .search ? 1 : 0)
 
-                case .users:
+                // Users view
+                Group {
                     if isLoadingUsers {
                         VStack(spacing: 20) {
                             Text("ᕦ(ツ)ᕤ")
@@ -205,16 +243,25 @@ struct ContentView: View {
                             .cornerRadius(8)
                         }
                     } else {
-                        PostsView(initialPosts: usersPosts, onPostCreated: { fetchUsersPosts() }, showAddButton: false, templateName: "profile")
+                        PostsView(initialPosts: usersPosts, onPostCreated: { fetchUsersPosts() }, showAddButton: true, templateName: "profile", customAddButtonText: "Invite Friend")
+                            .id(usersViewId)
                     }
                 }
+                .opacity(currentExplorer == .users ? 1 : 0)
+                .allowsHitTesting(currentExplorer == .users)
+                .zIndex(currentExplorer == .users ? 1 : 0)
             }
 
             // Floating toolbar at bottom - always on top
             VStack {
                 Spacer()
-                Toolbar(currentExplorer: $currentExplorer)
-                    .ignoresSafeArea(.keyboard)  // Keep toolbar visible when keyboard appears
+                Toolbar(
+                    currentExplorer: $currentExplorer,
+                    onResetMakePost: { makePostViewId = UUID() },
+                    onResetSearch: { searchViewId = UUID() },
+                    onResetUsers: { usersViewId = UUID() }
+                )
+                .ignoresSafeArea(.keyboard)  // Keep toolbar visible when keyboard appears
             }
         }
         .onAppear {
@@ -370,12 +417,25 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
 **Users button**: Switches to users explorer showing all users
 
 **Explorer State Independence**:
-- Each PostsView instance maintains its own @State variables
-- When you switch away and back, the explorer remembers:
+- All three PostsView instances exist simultaneously in a ZStack
+- Hidden views use `opacity(0)` and `allowsHitTesting(false)`
+  - Not rendered to screen (GPU skips drawing)
+  - No touch events processed
+  - Still consume memory and perform layout calculations
+- Each PostsView instance maintains its own @State variables (navigationPath, scroll, etc.)
+- When you switch away and back, the explorer remembers everything:
   - Navigation path (which child posts you were viewing)
   - Scroll position
-  - Loaded posts
-- SwiftUI preserves state for views that exist but aren't currently visible
+  - Expanded/collapsed state
+  - All loaded data
+- SwiftUI preserves state because views remain in hierarchy
+
+**Reset Mechanism:**
+- Each PostsView has a unique `.id(viewId)` where viewId is a UUID
+- Tapping the active toolbar button calls a reset callback
+- Reset callback generates a new UUID: `viewId = UUID()`
+- Changing the view ID forces SwiftUI to destroy and recreate that PostsView
+- Recreated view starts fresh with no navigation history
 
 ## Notes
 

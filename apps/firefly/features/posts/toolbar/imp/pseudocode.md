@@ -10,10 +10,11 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 **Toolbar Container:**
 - Position: Floating lozenge at bottom of screen, 12pt from bottom edge
 - Shape: Rounded rectangle with 25pt corner radius
-- Background: Solid light grey (RGB 0.7, 0.7, 0.7)
+- Background: RGB color where R=G=B=button-colour tunable (default 0.5)
 - Maximum width: 300pt (centered on screen with 16pt horizontal insets)
 - Shadow: Strong depth shadow (40% black opacity, 12pt blur radius, 4pt y-offset)
 - Internal padding: 33pt horizontal, 14pt vertical
+- Color matches all other UI buttons (add-post, author button, child navigation button)
 
 **Button Layout:**
 - Three buttons arranged horizontally with equal spacing
@@ -33,8 +34,8 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 - Users: "person.2" icon (two people)
 
 **Active State Highlighting:**
-- Not currently implemented (each button shows independent view)
-- Future: Could highlight active explorer
+- Active button shows darker grey background (50% opacity)
+- Clicking already-active button triggers reset behavior
 
 ## State Management
 
@@ -116,28 +117,48 @@ function fetchUsersPosts():
 
 ## Button Actions
 
-Each button simply switches the currentExplorer state. No data fetching happens on button tap (data is already loaded):
+Each button either switches to that explorer OR resets it if already active:
 
 **Make Post Button:**
 ```
 function onMakePostButtonTap():
-    currentExplorer = makePost
-    // Immediately shows cached makePostPosts
+    if currentExplorer == makePost:
+        resetMakePostView()  // Generate new view ID to force recreation
+    else:
+        currentExplorer = makePost
 ```
 
 **Search Button:**
 ```
 function onSearchButtonTap():
-    currentExplorer = search
-    // Immediately shows cached searchPosts
+    if currentExplorer == search:
+        resetSearchView()  // Generate new view ID to force recreation
+    else:
+        currentExplorer = search
 ```
 
 **Users Button:**
 ```
 function onUsersButtonTap():
-    currentExplorer = users
-    // Immediately shows cached usersPosts
+    if currentExplorer == users:
+        resetUsersView()  // Generate new view ID to force recreation
+    else:
+        currentExplorer = users
 ```
+
+## State Persistence
+
+**View Lifecycle:**
+- All three PostsView instances are kept in memory simultaneously
+- Hidden views use opacity=0 and allowsHitTesting=false (not rendered to screen, no touch events)
+- Each PostsView maintains its own @State for navigationPath, scroll position, expanded posts
+- Switching between explorers preserves all state (navigation, scroll, expansion)
+
+**Reset Mechanism:**
+- Each PostsView has a stable `.id(viewId)` based on a UUID
+- Changing the UUID forces SwiftUI to destroy and recreate that view
+- Reset callbacks generate new UUIDs: `viewId = UUID()`
+- Recreated view loads fresh from cached post data with no navigation history
 
 ## Integration
 

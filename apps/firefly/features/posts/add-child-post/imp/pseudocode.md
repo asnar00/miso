@@ -36,7 +36,7 @@ function shouldShowChildButton(post, currentUserId):
 - Smooth interpolation during expansion animation
 
 **Styling**:
-- White circular background with tunable opacity ("button-colour", default 0.5)
+- Circular background: RGB color where R=G=B=button-colour tunable (default 0.5)
 - Black icon (size 20pt, bold weight)
 - Shadow: black at 0.4 opacity, radius 8pt, offset (0, 4pt)
 - Matches Add Post button, Toolbar, and Author button styling

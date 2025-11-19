@@ -22,17 +22,23 @@ struct ContentView: View {
     // Restart state
     @State private var isRestarting = false
 
+    // Reset triggers - changing these IDs forces view recreation
+    @State private var makePostViewId = UUID()
+    @State private var searchViewId = UUID()
+    @State private var usersViewId = UUID()
+
     var body: some View {
         ZStack {
             // Background color
             Color(red: 128/255, green: 128/255, blue: 128/255)
                 .ignoresSafeArea()
 
-            // Main content - three separate PostsView instances
-            // Each maintains its own navigation state
-            Group {
-                switch currentExplorer {
-                case .makePost:
+            // Main content - three separate PostsView instances kept in memory
+            // Each maintains its own navigation state independently
+            // Use ZStack to layer them and show/hide with opacity
+            ZStack {
+                // Make Post view
+                Group {
                     if isLoadingMakePost {
                         VStack(spacing: 20) {
                             Text("ᕦ(ツ)ᕤ")
@@ -61,9 +67,15 @@ struct ContentView: View {
                         }
                     } else {
                         PostsView(initialPosts: makePostPosts, onPostCreated: { fetchMakePostPosts() }, showAddButton: true, templateName: "post", customAddButtonText: nil)
+                            .id(makePostViewId)
                     }
+                }
+                .opacity(currentExplorer == .makePost ? 1 : 0)
+                .allowsHitTesting(currentExplorer == .makePost)
+                .zIndex(currentExplorer == .makePost ? 1 : 0)
 
-                case .search:
+                // Search view
+                Group {
                     if isLoadingSearch {
                         VStack(spacing: 20) {
                             Text("ᕦ(ツ)ᕤ")
@@ -92,9 +104,15 @@ struct ContentView: View {
                         }
                     } else {
                         PostsView(initialPosts: searchPosts, onPostCreated: { fetchSearchPosts() }, showAddButton: true, templateName: "query", customAddButtonText: nil)
+                            .id(searchViewId)
                     }
+                }
+                .opacity(currentExplorer == .search ? 1 : 0)
+                .allowsHitTesting(currentExplorer == .search)
+                .zIndex(currentExplorer == .search ? 1 : 0)
 
-                case .users:
+                // Users view
+                Group {
                     if isLoadingUsers {
                         VStack(spacing: 20) {
                             Text("ᕦ(ツ)ᕤ")
@@ -123,15 +141,24 @@ struct ContentView: View {
                         }
                     } else {
                         PostsView(initialPosts: usersPosts, onPostCreated: { fetchUsersPosts() }, showAddButton: true, templateName: "profile", customAddButtonText: "Invite Friend")
+                            .id(usersViewId)
                     }
                 }
+                .opacity(currentExplorer == .users ? 1 : 0)
+                .allowsHitTesting(currentExplorer == .users)
+                .zIndex(currentExplorer == .users ? 1 : 0)
             }
 
             // Floating toolbar at bottom - always on top
             VStack {
                 Spacer()
-                Toolbar(currentExplorer: $currentExplorer)
-                    .ignoresSafeArea(.keyboard)  // Keep toolbar visible when keyboard appears
+                Toolbar(
+                    currentExplorer: $currentExplorer,
+                    onResetMakePost: { makePostViewId = UUID() },
+                    onResetSearch: { searchViewId = UUID() },
+                    onResetUsers: { usersViewId = UUID() }
+                )
+                .ignoresSafeArea(.keyboard)  // Keep toolbar visible when keyboard appears
             }
         }
         .onAppear {

@@ -7,26 +7,41 @@ enum ToolbarExplorer {
 struct Toolbar: View {
     @Binding var currentExplorer: ToolbarExplorer
     @ObservedObject var tunables = TunableConstants.shared
+    let onResetMakePost: () -> Void
+    let onResetSearch: () -> Void
+    let onResetUsers: () -> Void
 
     var body: some View {
         HStack(spacing: 0) {
             // Make Post button
             ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost) {
-                currentExplorer = .makePost
+                if currentExplorer == .makePost {
+                    onResetMakePost()
+                } else {
+                    currentExplorer = .makePost
+                }
             }
 
             Spacer()
 
             // Search button
             ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search) {
-                currentExplorer = .search
+                if currentExplorer == .search {
+                    onResetSearch()
+                } else {
+                    currentExplorer = .search
+                }
             }
 
             Spacer()
 
             // Users button
             ToolbarButton(icon: "person.2", isActive: currentExplorer == .users) {
-                currentExplorer = .users
+                if currentExplorer == .users {
+                    onResetUsers()
+                } else {
+                    currentExplorer = .users
+                }
             }
         }
         .padding(.horizontal, 33)  // 10% more (was 30)
