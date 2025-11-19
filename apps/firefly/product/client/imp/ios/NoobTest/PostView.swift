@@ -680,7 +680,7 @@ struct PostView: View {
                 HStack(spacing: 8) {
                     if post.aiGenerated {
                         Text("👓 librarian")
-                            .font(.system(size: 15 * fontScale))
+                            .font(.system(size: 15 * fontScale * tunables.getDouble("author-font-size", default: 1.0)))
                             .foregroundColor(.black.opacity(0.5))
                     } else if let authorName = post.authorName {
                         // Make author name a button only if profile exists
@@ -689,7 +689,7 @@ struct PostView: View {
                         if isProfilePost || !authorHasProfile {
                             // Profile posts or authors without profiles: just display text
                             Text(authorName)
-                                .font(.system(size: 15 * fontScale))
+                                .font(.system(size: 15 * fontScale * tunables.getDouble("author-font-size", default: 1.0)))
                                 .foregroundColor(.black.opacity(0.5))
                         } else {
                             // Regular posts with profiles: make it a tappable button
@@ -700,7 +700,7 @@ struct PostView: View {
                                 }
                             }) {
                                 Text(authorName)
-                                    .font(.system(size: 15 * fontScale))
+                                    .font(.system(size: 15 * fontScale * tunables.getDouble("author-font-size", default: 1.0)))
                                     .foregroundColor(.black)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
@@ -717,7 +717,7 @@ struct PostView: View {
                     // Add date with 16pt left padding
                     if let formattedDate = formatPostDate(post.createdAt) {
                         Text(formattedDate)
-                            .font(.system(size: 15 * fontScale))
+                            .font(.system(size: 15 * fontScale * tunables.getDouble("author-font-size", default: 1.0)))
                             .foregroundColor(.black.opacity(0.5))
                             .padding(.leading, 16)
                     }
