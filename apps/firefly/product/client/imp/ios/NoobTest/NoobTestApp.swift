@@ -13,6 +13,10 @@ struct NoobTestApp: App {
         Logger.shared.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         Logger.shared.info("[APP] NoobTestApp init() called")
 
+        // Initialize tunable constants
+        _ = TunableConstants.shared
+        Logger.shared.info("[APP] TunableConstants initialized")
+
         // Configure larger URLCache for images
         let memoryCapacity = 50 * 1024 * 1024  // 50 MB
         let diskCapacity = 100 * 1024 * 1024   // 100 MB

@@ -1,7 +1,17 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
-change to sqlite.
+notes: there's a "navigational overhead" when working in the feature tree.
+
+this is why it's better for the agent to maintain the tree for you; you just search it
+
+the best interface is actually conversational;
+but contextual - looking at source at the same time.
+
+
+----------------
+todo
+change to sqlite. NUP
 claude-api search.
 toolbar sub-UI state retention.
 invite button => display download link.

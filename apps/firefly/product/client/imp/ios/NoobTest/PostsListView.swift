@@ -21,6 +21,8 @@ struct PostsListView: View {
     let templateName: String?  // Template name for this list (e.g., "query", "post", "profile")
     let customAddButtonText: String?  // Optional custom text for the add button
 
+    @ObservedObject var tunables = TunableConstants.shared
+
     // Computed property: determine if we should show add button and what template to use
     private var shouldShowAddButton: Bool {
         // Don't show for child posts (only root level)
@@ -113,7 +115,7 @@ struct PostsListView: View {
             } else {
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(spacing: 8) {
+                        VStack(spacing: 8 * tunables.getDouble("spacing", default: 1.0)) {
                             // Add post button at the top (smart detection based on template)
                             if shouldShowAddButton {
                                 Button(action: {
@@ -200,7 +202,7 @@ struct PostsListView: View {
                                 }
                             }
                         }
-                        .padding(.horizontal, 8)  // Halved from 16pt to make posts wider
+                        .padding(.horizontal, 8 * tunables.getDouble("spacing", default: 1.0))  // Side margins
                         .padding(.bottom)
                     }
                 }

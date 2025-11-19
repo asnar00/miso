@@ -159,6 +159,21 @@ class TestServer {
         let method = parts[0]
         let path = parts[1]
 
+        // Handle GET /tune - get all constants
+        if method == "GET" && path == "/tune" {
+            return handleGetTunables()
+        }
+
+        // Handle PUT /tune/:key/:value - set single constant
+        if method == "PUT" && path.hasPrefix("/tune/") {
+            return handleSetTunable(path: path)
+        }
+
+        // Handle POST /tune - set all constants
+        if method == "POST" && path == "/tune" {
+            return handleSetAllTunables(request: request)
+        }
+
         // Handle POST /test/tap
         if method == "POST" && path.hasPrefix("/test/tap") {
             return handleTap(path: path)
@@ -254,5 +269,56 @@ class TestServer {
         connection.send(content: data, completion: .contentProcessed { _ in
             connection.cancel()
         })
+    }
+
+    private func handleGetTunables() -> String {
+        let constants = TunableConstants.shared.getAll()
+        if let jsonData = try? JSONSerialization.data(withJSONObject: constants, options: .prettyPrinted),
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            Logger.shared.info("[TESTSERVER] Returning all tunables")
+            return httpResponse(jsonString, status: "200 OK", contentType: "application/json")
+        }
+        return httpResponse("Error serializing constants", status: "500 Internal Server Error")
+    }
+
+    private func handleSetTunable(path: String) -> String {
+        // Extract key and value from path: /tune/:key/:value
+        let pathComponents = path.split(separator: "/")
+        guard pathComponents.count >= 3 else {
+            return httpResponse("Invalid path format", status: "400 Bad Request")
+        }
+
+        let key = String(pathComponents[1])
+        let valueStr = String(pathComponents[2])
+
+        // Try to parse as number first, then string
+        let value: Any
+        if let doubleValue = Double(valueStr) {
+            value = doubleValue
+        } else {
+            value = valueStr
+        }
+
+        TunableConstants.shared.set(key, value: value)
+        Logger.shared.info("[TESTSERVER] Set tunable \(key) = \(value)")
+        return httpResponse("Set \(key) = \(value)", status: "200 OK")
+    }
+
+    private func handleSetAllTunables(request: String) -> String {
+        // Extract body from request
+        let lines = request.components(separatedBy: "\r\n")
+        guard let bodyIndex = lines.firstIndex(where: { $0.isEmpty }) else {
+            return httpResponse("No body found", status: "400 Bad Request")
+        }
+
+        let body = lines[(bodyIndex + 1)...].joined(separator: "\r\n")
+        guard let bodyData = body.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: bodyData) as? [String: Any] else {
+            return httpResponse("Invalid JSON", status: "400 Bad Request")
+        }
+
+        TunableConstants.shared.setAll(json)
+        Logger.shared.info("[TESTSERVER] Updated all tunables")
+        return httpResponse("Updated all constants", status: "200 OK")
     }
 }

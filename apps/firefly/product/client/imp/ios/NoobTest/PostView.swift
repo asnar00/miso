@@ -28,9 +28,21 @@ struct PostView: View {
     let onNavigateToQueryResults: ((String, String) -> Void)?  // query, backLabel
     let onPostUpdated: ((Post) -> Void)?
     let onStartEditing: (() -> Void)?  // Called when entering edit mode
+
+    @ObservedObject var tunables = TunableConstants.shared
     let onEndEditing: (() -> Void)?  // Called when exiting edit mode
     let onDelete: (() -> Void)?  // Called when deleting unsaved post (nil for saved posts)
     let serverURL = "http://185.96.221.52:8080"
+
+    // Font scaling helper
+    private var fontScale: CGFloat {
+        tunables.getDouble("font-scale", default: 1.0)
+    }
+
+    // Corner roundness helper
+    private var cornerRoundness: CGFloat {
+        tunables.getDouble("corner-roundness", default: 1.0)
+    }
 
     @State private var expansionFactor: CGFloat = 0.0
     @State private var imageAspectRatio: CGFloat = 1.0
@@ -104,7 +116,7 @@ struct PostView: View {
                     result.append(AttributedString("\n"))
                 }
                 var heading = AttributedString(trimmedLine.dropFirst(3))
-                heading.font = .system(size: 18, weight: .bold)
+                heading.font = .system(size: 18 * fontScale, weight: .bold)
                 result.append(heading)
                 result.append(AttributedString("\n"))
             } else if trimmedLine.hasPrefix("- ") {
@@ -322,7 +334,7 @@ struct PostView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: width, height: height)
                 .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
         } else {
             let fullUrl = serverURL + imageUrl
             AsyncImage(url: URL(string: fullUrl)) { phase in
@@ -333,12 +345,12 @@ struct PostView: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: width, height: height)
                         .clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
                 case .failure(_), .empty:
                     Rectangle()
                         .fill(Color.gray.opacity(0.3))
                         .frame(width: width, height: height)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
                 @unknown default:
                     EmptyView()
                 }
@@ -411,10 +423,10 @@ struct PostView: View {
             .foregroundColor(.black)
             .frame(width: availableWidth, height: addImageButtonHeight)
             .background(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: 12 * cornerRoundness)
                     .fill(Color.gray.opacity(0.1))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 12)
+                        RoundedRectangle(cornerRadius: 12 * cornerRoundness)
                             .stroke(Color.black.opacity(0.3), lineWidth: 2)
                     )
             )
@@ -531,8 +543,8 @@ struct PostView: View {
         let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 
         ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white.opacity(0.9))
+            RoundedRectangle(cornerRadius: 12 * cornerRoundness)
+                .fill(Color.white.opacity(tunables.getDouble("post-background-brightness", default: 0.9)))
                 .frame(height: currentHeight)
                 .shadow(radius: 2)
 
@@ -540,37 +552,37 @@ struct PostView: View {
             VStack(alignment: .leading, spacing: 4) {
                 if isEditing {
                     TextField("", text: $editableTitle, prompt: Text(post.titlePlaceholder ?? "Title").foregroundColor(Color.gray.opacity(0.55)))
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.system(size: 22 * fontScale, weight: .bold))
                         .foregroundColor(.black)
                         .textFieldStyle(.plain)
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .background(
-                            RoundedRectangle(cornerRadius: 8)
+                            RoundedRectangle(cornerRadius: 8 * cornerRoundness)
                                 .fill(Color.gray.opacity(0.2))
                         )
                 } else {
                     Text(editableTitle)
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.system(size: 22 * fontScale, weight: .bold))
                         .foregroundColor(.black)
                         .lineLimit(1)
                 }
 
                 if isEditing {
                     TextField("", text: $editableSummary, prompt: Text(post.summaryPlaceholder ?? "Summary").italic().foregroundColor(Color.gray.opacity(0.55)))
-                        .font(.system(size: 15))
+                        .font(.system(size: 15 * fontScale))
                         .italic()
                         .foregroundColor(.black.opacity(0.8))
                         .textFieldStyle(.plain)
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .background(
-                            RoundedRectangle(cornerRadius: 8)
+                            RoundedRectangle(cornerRadius: 8 * cornerRoundness)
                                 .fill(Color.gray.opacity(0.2))
                         )
                 } else {
                     Text(editableSummary)
-                        .font(.system(size: 15))
+                        .font(.system(size: 15 * fontScale))
                         .italic()
                         .foregroundColor(.black.opacity(0.8))
                         .lineLimit(2)
@@ -612,7 +624,7 @@ struct PostView: View {
                 ZStack(alignment: .topLeading) {
                     // Grey background in edit mode
                     if isEditing {
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: 8 * cornerRoundness)
                             .fill(Color.gray.opacity(0.2))
                     }
                     TextEditor(text: $editableBody)
@@ -673,7 +685,7 @@ struct PostView: View {
                 HStack(spacing: 8) {
                     if post.aiGenerated {
                         Text("👓 librarian")
-                            .font(.subheadline)
+                            .font(.system(size: 15 * fontScale))
                             .foregroundColor(.black.opacity(0.5))
                     } else if let authorName = post.authorName {
                         // Make author name a button only if profile exists
@@ -682,7 +694,7 @@ struct PostView: View {
                         if isProfilePost || !authorHasProfile {
                             // Profile posts or authors without profiles: just display text
                             Text(authorName)
-                                .font(.subheadline)
+                                .font(.system(size: 15 * fontScale))
                                 .foregroundColor(.black.opacity(0.5))
                         } else {
                             // Regular posts with profiles: make it a tappable button
@@ -693,12 +705,16 @@ struct PostView: View {
                                 }
                             }) {
                                 Text(authorName)
-                                    .font(.subheadline)
+                                    .font(.system(size: 15 * fontScale))
                                     .foregroundColor(.black)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
-                                    .background(Color(red: 0.85, green: 0.85, blue: 0.85))
-                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                    .background(Color(
+                                        red: 0.85 * tunables.getDouble("post-background-brightness", default: 0.9) * tunables.getDouble("author-button-darkness", default: 0.9),
+                                        green: 0.85 * tunables.getDouble("post-background-brightness", default: 0.9) * tunables.getDouble("author-button-darkness", default: 0.9),
+                                        blue: 0.85 * tunables.getDouble("post-background-brightness", default: 0.9) * tunables.getDouble("author-button-darkness", default: 0.9)
+                                    ))
+                                    .clipShape(RoundedRectangle(cornerRadius: 6 * cornerRoundness))
                             }
                         }
                     }
@@ -706,7 +722,7 @@ struct PostView: View {
                     // Add date with 16pt left padding
                     if let formattedDate = formatPostDate(post.createdAt) {
                         Text(formattedDate)
-                            .font(.subheadline)
+                            .font(.system(size: 15 * fontScale))
                             .foregroundColor(.black.opacity(0.5))
                             .padding(.leading, 16)
                     }
