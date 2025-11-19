@@ -286,28 +286,10 @@ struct PostView: View {
                 Logger.shared.info("[PostView] Post saved successfully, exiting edit mode")
 
                 if isNewPost {
-                    // For new posts, parse the response to get the real post ID
-                    if let data = data,
-                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                       let postData = json["post"] as? [String: Any],
-                       let newPostId = postData["id"] as? Int {
-                        Logger.shared.info("[PostView] New post created with ID: \(newPostId)")
-
-                        // Create updated post with real ID from server
-                        var updatedPost = self.post
-                        updatedPost.id = newPostId
-                        updatedPost.title = self.editableTitle
-                        updatedPost.summary = self.editableSummary
-                        updatedPost.body = self.editableBody
-                        updatedPost.imageUrl = self.editableImageUrl
-
-                        // Update the post in place (replaces temp post with real one)
-                        self.onPostUpdated?(updatedPost)
-                    } else {
-                        Logger.shared.error("[PostView] Failed to parse new post ID from response")
-                        // Fall back to refresh if parsing fails
-                        self.onPostCreated()
-                    }
+                    // For new posts, trigger full refresh to update all views
+                    // This ensures parent posts get updated child counts and root lists get new posts
+                    Logger.shared.info("[PostView] New post created, triggering full refresh")
+                    self.onPostCreated()
                 } else {
                     // For updates, just update the local post
                     var updatedPost = self.post
@@ -361,45 +343,58 @@ struct PostView: View {
     // Add Image Button as a separate view to reduce body complexity
     // Extracted child indicator button (reused in both collapsed and expanded states)
     private var childIndicatorButton: some View {
-        ZStack {
+        // Determine icon based on post state
+        let iconName: String = {
+            if (post.childCount ?? 0) > 0 || post.template == "query" {
+                return "chevron.right"
+            } else {
+                return "plus"
+            }
+        }()
+
+        let buttonColour = tunables.getDouble("button-colour", default: 0.5)
+
+        return ZStack {
             Circle()
-                .fill(Color.white.opacity(0.95))
+                .fill(Color(red: buttonColour, green: buttonColour, blue: buttonColour))
                 .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
 
-            Image(systemName: "chevron.right")
+            Image(systemName: iconName)
                 .font(.system(size: 20, weight: .bold))
                 .foregroundColor(Color.black)
         }
         .onTapGesture {
-            // Check if this is a query post
-            if post.template == "query" {
-                // Navigate to query results
-                if let navigate = onNavigateToQueryResults {
-                    navigate(post.title, post.title)  // Use title as both query and back label
-                }
-            } else {
-                // Navigate to children as normal
-                if let navigate = onNavigateToChildren {
-                    navigate(post.id)
-                }
-            }
+            handleChildButtonTap()
         }
         .onAppear {
             // Register this post's navigation action for UI automation
             UIAutomationRegistry.shared.register(id: "navigate-to-children-\(post.id)") {
-                if post.template == "query" {
-                    if let navigate = onNavigateToQueryResults {
-                        DispatchQueue.main.async {
-                            navigate(post.title, post.title)
-                        }
-                    }
-                } else {
-                    if let navigate = onNavigateToChildren {
-                        DispatchQueue.main.async {
-                            navigate(post.id)
-                        }
-                    }
+                DispatchQueue.main.async {
+                    self.handleChildButtonTap()
                 }
+            }
+        }
+    }
+
+    // Handle child button tap with different behavior based on post state
+    private func handleChildButtonTap() {
+        let hasChildren = (post.childCount ?? 0) > 0
+
+        if post.template == "query" {
+            // Query posts: navigate to search results
+            if let navigate = onNavigateToQueryResults {
+                navigate(post.title, post.title)
+            }
+        } else if hasChildren {
+            // Posts with children: navigate to children view
+            if let navigate = onNavigateToChildren {
+                navigate(post.id)
+            }
+        } else if isOwnPost {
+            // Own posts with zero children: navigate and signal auto-create
+            if let navigate = onNavigateToChildren {
+                navigate(post.id)
+                // PostsListView will detect this and auto-create a child post
             }
         }
     }
@@ -710,9 +705,9 @@ struct PostView: View {
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
                                     .background(Color(
-                                        red: 0.85 * tunables.getDouble("post-background-brightness", default: 0.9) * tunables.getDouble("author-button-darkness", default: 0.9),
-                                        green: 0.85 * tunables.getDouble("post-background-brightness", default: 0.9) * tunables.getDouble("author-button-darkness", default: 0.9),
-                                        blue: 0.85 * tunables.getDouble("post-background-brightness", default: 0.9) * tunables.getDouble("author-button-darkness", default: 0.9)
+                                        red: tunables.getDouble("button-colour", default: 0.5),
+                                        green: tunables.getDouble("button-colour", default: 0.5),
+                                        blue: tunables.getDouble("button-colour", default: 0.5)
                                     ))
                                     .clipShape(RoundedRectangle(cornerRadius: 6 * cornerRoundness))
                             }
@@ -903,8 +898,8 @@ struct PostView: View {
                 addImageButton
             }
 
-            // Child indicator overlay - show if post has children OR if it's a query (search button)
-            if (post.childCount ?? 0) > 0 || post.template == "query" {
+            // Child indicator overlay - show if post has children OR if it's a query (search button) OR if it's an own post with no children
+            if (post.childCount ?? 0) > 0 || post.template == "query" || ((post.childCount ?? 0) == 0 && isOwnPost) {
                 // Interpolate size and position based on expansionFactor
                 let collapsedSize: CGFloat = 32
                 let expandedSize: CGFloat = 42

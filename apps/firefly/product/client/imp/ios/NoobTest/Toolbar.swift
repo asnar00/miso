@@ -6,6 +6,7 @@ enum ToolbarExplorer {
 
 struct Toolbar: View {
     @Binding var currentExplorer: ToolbarExplorer
+    @ObservedObject var tunables = TunableConstants.shared
 
     var body: some View {
         HStack(spacing: 0) {
@@ -31,7 +32,11 @@ struct Toolbar: View {
         .padding(.horizontal, 33)  // 10% more (was 30)
         .padding(.vertical, 14)     // 10% more (was 13)
         .background(
-            Color(red: 0.7, green: 0.7, blue: 0.7)
+            Color(
+                red: tunables.getDouble("button-colour", default: 0.5),
+                green: tunables.getDouble("button-colour", default: 0.5),
+                blue: tunables.getDouble("button-colour", default: 0.5)
+            )
                 .cornerRadius(25)
                 .shadow(color: Color.black.opacity(0.4), radius: 12, x: 0, y: 4)
         )

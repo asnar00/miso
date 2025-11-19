@@ -30,11 +30,21 @@ struct PostsListView: View {
 
     // Computed property: determine if we should show add button and what template to use
     private var shouldShowAddButton: Bool {
-        // Don't show for child posts (only root level)
-        guard parentPostId == nil else { return false }
         // If custom text provided, always show button
         if customAddButtonText != nil { return true }
-        // Don't show for profiles (unless custom text)
+
+        // For child posts, only show if parent is owned by current user
+        if let parentId = parentPostId {
+            if let parent = parentPost {
+                let loginState = Storage.shared.getLoginState()
+                if let userEmail = loginState.email, let parentEmail = parent.authorEmail {
+                    return userEmail.lowercased() == parentEmail.lowercased()
+                }
+            }
+            return false  // Parent not loaded yet or not owned
+        }
+
+        // Root level: show unless it's a profile list
         guard let firstPost = posts.first else { return showAddButton }
         return firstPost.template != "profile"
     }
@@ -135,7 +145,11 @@ struct PostsListView: View {
                                     .foregroundColor(.black)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.white.opacity(0.3))
+                                    .background(Color(
+                                        red: tunables.getDouble("button-colour", default: 0.5),
+                                        green: tunables.getDouble("button-colour", default: 0.5),
+                                        blue: tunables.getDouble("button-colour", default: 0.5)
+                                    ))
                                     .cornerRadius(12 * cornerRoundness)
                                 }
                                 .padding(.horizontal, 8)
@@ -397,6 +411,15 @@ struct PostsListView: View {
                         let childrenResponse = try JSONDecoder().decode(ChildrenResponse.self, from: data)
                         Logger.shared.info("[PostsListView] Loaded \(childrenResponse.children.count) posts")
                         self.posts = childrenResponse.children
+
+                        // Auto-create a child post if we navigated to an empty child list
+                        // (user tapped "+" button on their own post with no children)
+                        if childrenResponse.children.isEmpty {
+                            if let parent = self.parentPost, parent.authorEmail == Storage.shared.getLoginState().email {
+                                Logger.shared.info("[PostsListView] Empty child list for owned post - auto-creating first child")
+                                self.createNewPost()
+                            }
+                        }
                     } else {
                         // Root posts
                         let postsResponse = try JSONDecoder().decode(PostsResponse.self, from: data)
