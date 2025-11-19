@@ -1,6 +1,16 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+change to sqlite.
+claude-api search.
+toolbar sub-UI state retention.
+invite button => display download link.
+install android
+remote client for claude code?
+demo/test.
+
+--------------------
+
 OK so what we'll do as v1: SUPER SIMPLE.
 
 toolbar with three buttons:

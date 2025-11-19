@@ -3,7 +3,7 @@
 
 ## Overview
 
-Implements a floating toolbar at the bottom of the screen using SwiftUI's ZStack layering. The toolbar contains three SF Symbol icons (speech bubble, magnifying glass, two people) arranged horizontally with equal spacing. Each button switches to a different explorer view.
+Implements a sleek, rounded lozenge toolbar at the bottom of the screen using SwiftUI. The toolbar floats above content with a strong shadow, creating a modern, polished appearance. It contains three SF Symbol icons (speech bubble, magnifying glass, two people) arranged horizontally with equal spacing in a light grey pill-shaped container. Each button switches to a different explorer view showing different filtered content.
 
 ## Files to Modify
 
@@ -29,40 +29,36 @@ struct Toolbar: View {
     @Binding var currentExplorer: ToolbarExplorer
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 0) {
-                // Make Post button
-                ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost) {
-                    currentExplorer = .makePost
-                }
-
-                Spacer()
-
-                // Search button
-                ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search) {
-                    currentExplorer = .search
-                }
-
-                Spacer()
-
-                // Users button
-                ToolbarButton(icon: "person.2", isActive: currentExplorer == .users) {
-                    currentExplorer = .users
-                }
+        HStack(spacing: 0) {
+            // Make Post button
+            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost) {
+                currentExplorer = .makePost
             }
-            .padding(.horizontal, 40)
-            .padding(.top, 15)  // Move buttons down 15pt
-            .frame(height: 50)  // Toolbar height
 
-            // Spacer to extend background to bottom
             Spacer()
-                .frame(height: 0)
+
+            // Search button
+            ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search) {
+                currentExplorer = .search
+            }
+
+            Spacer()
+
+            // Users button
+            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users) {
+                currentExplorer = .users
+            }
         }
+        .padding(.horizontal, 33)  // Internal horizontal padding
+        .padding(.vertical, 14)     // Internal vertical padding
         .background(
-            Color.white.opacity(0.95)
-                .ignoresSafeArea(edges: .bottom)
+            Color(red: 0.7, green: 0.7, blue: 0.7)  // Light grey
+                .cornerRadius(25)
+                .shadow(color: Color.black.opacity(0.4), radius: 12, x: 0, y: 4)
         )
-        .shadow(radius: 2)
+        .frame(maxWidth: 300)       // Maximum toolbar width
+        .padding(.horizontal, 16)   // Screen edge insets
+        .offset(y: 12)              // Position from bottom edge
         .onAppear {
             // Register toolbar buttons with UI automation
             UIAutomationRegistry.shared.register(id: "toolbar-makepost") {
@@ -92,7 +88,7 @@ struct ToolbarButton: View {
                 .foregroundColor(.black)
                 .frame(width: 44, height: 44)
                 .background(
-                    isActive ? Color.gray.opacity(0.3) : Color.clear
+                    isActive ? Color.gray.opacity(0.5) : Color.clear  // Active state highlight
                 )
                 .cornerRadius(8)
         }
@@ -235,7 +231,7 @@ struct ContentView: View {
         isLoadingMakePost = true
         makePostError = nil
 
-        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["post"], byUser: "current") { result in
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["post"], byUser: "any") { result in
             switch result {
             case .success(let fetchedPosts):
                 preloadImagesOptimized(for: fetchedPosts) {
@@ -330,15 +326,17 @@ struct ContentView: View {
 
 1. **State Management**: Three separate post arrays (makePostPosts, searchPosts, usersPosts) with corresponding loading and error states
 2. **Data Fetching**: Three fetch functions that call `PostsAPI.shared.fetchRecentTaggedPosts()` with different tags:
-   - Make Post: `tags: ["post"], byUser: "current"`
-   - Search: `tags: ["query"], byUser: "current"`
-   - Users: `tags: ["profile"], byUser: "any"`
+   - Make Post: `tags: ["post"], byUser: "any"` (shows all users' posts)
+   - Search: `tags: ["query"], byUser: "current"` (shows only current user's queries)
+   - Users: `tags: ["profile"], byUser: "any"` (shows all users)
 3. **Parallel Loading**: All three explorers fetch data in parallel on app startup (.onAppear)
 4. **Loading States**: Each explorer shows "ᕦ(ツ)ᕤ" logo with ProgressView while loading
 5. **Error Handling**: Each explorer has error state with retry button
 6. **Explorer Switching**: Switch statement shows appropriate PostsView based on currentExplorer
 7. **Image Preloading**: First image preloaded before display, remaining images load in background
-8. **Toolbar Layer**: Floats at bottom above all content, ignores keyboard
+8. **Toolbar Design**: Sleek rounded lozenge (300pt max width, 25pt corner radius, light grey background)
+9. **Toolbar Shadow**: Strong depth shadow (40% opacity, 12pt blur, 4pt offset) for elevated appearance
+10. **Toolbar Position**: 12pt from bottom edge, centered with 16pt screen insets
 
 ## Xcode Project Integration
 
@@ -352,21 +350,22 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
 
 ## Visual Appearance
 
-- **Button container height**: 50pt (.frame(height: 50))
-- **Button vertical position**: 15pt from top (.padding(.top, 15))
+- **Toolbar shape**: Rounded lozenge with 25pt corner radius (.cornerRadius(25))
+- **Maximum width**: 300pt (.frame(maxWidth: 300))
+- **Background**: Light grey (Color(red: 0.7, green: 0.7, blue: 0.7))
+- **Shadow**: Strong depth shadow (40% black opacity, 12pt blur radius, 4pt y-offset)
+- **Position**: 12pt from bottom edge (.offset(y: 12))
+- **Screen insets**: 16pt horizontal padding (.padding(.horizontal, 16))
+- **Internal padding**: 33pt horizontal, 14pt vertical
 - **Icon size**: 24pt (.system(size: 24))
 - **Tappable area**: 44x44pt per button (.frame(width: 44, height: 44))
-- **Background**: White at 95% opacity (Color.white.opacity(0.95))
-- **Background extends to screen bottom**: Uses .ignoresSafeArea(edges: .bottom)
-- **Shadow**: 2pt radius (.shadow(radius: 2))
-- **Horizontal padding**: 40pt (.padding(.horizontal, 40)) - buttons moved inward from edges
-- **Layout**: VStack with HStack containing 4 buttons with Spacers between them for equal distribution
-- **Bottom alignment**: VStack with zero-height Spacer extends background to screen bottom
+- **Active button highlight**: 50% grey opacity (Color.gray.opacity(0.5))
+- **Layout**: HStack containing 3 buttons with Spacers between them for equal distribution
 - **Icons**: SF Symbols - "bubble.left", "magnifyingglass" (one word!), "person.2"
 
 ## Behavior
 
-**Make Post button**: Switches to makePost explorer showing current user's posts
+**Make Post button**: Switches to makePost explorer showing all recent posts from all users
 **Search button**: Switches to search explorer showing current user's queries
 **Users button**: Switches to users explorer showing all users
 
@@ -390,6 +389,11 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
 - **Button positioning**: Buttons positioned 15pt from top edge for optimal thumb reach and visual balance
 - **Three explorers**: All use PostsView, each is a separate instance with independent state
 - **Each explorer shows different content**:
-  - Make Post: current user's posts
+  - Make Post: all users' posts (social feed experience)
   - Search: current user's queries
   - Users: all users
+
+**Add Post button positioning** (in PostsListView.swift):
+  - Top padding removed from VStack (.padding(.bottom) instead of .padding(.vertical))
+  - Button now sits close to top of screen with minimal dark space above it
+  - Creates better visual balance with toolbar at bottom

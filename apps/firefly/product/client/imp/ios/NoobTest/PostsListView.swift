@@ -19,12 +19,15 @@ struct PostsListView: View {
     let showAddButton: Bool  // Whether to show the "Add Post" button
     let initialExpandedPostId: Int?  // Post ID to expand initially
     let templateName: String?  // Template name for this list (e.g., "query", "post", "profile")
+    let customAddButtonText: String?  // Optional custom text for the add button
 
     // Computed property: determine if we should show add button and what template to use
     private var shouldShowAddButton: Bool {
         // Don't show for child posts (only root level)
         guard parentPostId == nil else { return false }
-        // Don't show for profiles
+        // If custom text provided, always show button
+        if customAddButtonText != nil { return true }
+        // Don't show for profiles (unless custom text)
         guard let firstPost = posts.first else { return showAddButton }
         return firstPost.template != "profile"
     }
@@ -40,6 +43,10 @@ struct PostsListView: View {
     }
 
     private var addButtonText: String {
+        // Use custom text if provided
+        if let customText = customAddButtonText {
+            return customText
+        }
         // Capitalize first letter of template name
         let template = addButtonTemplate
         return "Add " + template.prefix(1).uppercased() + template.dropFirst()
@@ -125,7 +132,7 @@ struct PostsListView: View {
                                     .cornerRadius(12)
                                 }
                                 .padding(.horizontal, 8)
-                                .padding(.top, 8)
+                                .padding(.top, 4)
                             }
 
                             if posts.isEmpty {
@@ -194,7 +201,7 @@ struct PostsListView: View {
                             }
                         }
                         .padding(.horizontal, 8)  // Halved from 16pt to make posts wider
-                        .padding(.vertical)
+                        .padding(.bottom)
                     }
                 }
             }
@@ -417,6 +424,12 @@ struct PostsListView: View {
     }
 
     func createNewPost() {
+        // Do nothing if custom button text is provided (demo button)
+        if customAddButtonText != nil {
+            Logger.shared.info("[PostsListView] Custom button tapped (no action)")
+            return
+        }
+
         Logger.shared.info("[PostsListView] Creating new blank post")
 
         // Get current user email for author

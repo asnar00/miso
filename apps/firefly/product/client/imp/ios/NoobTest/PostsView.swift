@@ -12,6 +12,7 @@ struct PostsView: View {
     let onPostCreated: () -> Void
     let showAddButton: Bool
     let templateName: String?  // Template name for empty state message
+    let customAddButtonText: String?  // Optional custom button text
 
     @State private var navigationPath: [PostsDestination] = []
 
@@ -25,7 +26,8 @@ struct PostsView: View {
                 navigationPath: $navigationPath,
                 showAddButton: showAddButton,
                 initialExpandedPostId: nil,
-                templateName: templateName
+                templateName: templateName,
+                customAddButtonText: customAddButtonText
             )
             .navigationDestination(for: PostsDestination.self) { destination in
                 switch destination {
@@ -44,7 +46,8 @@ struct PostsView: View {
                         navigationPath: $navigationPath,
                         showAddButton: false,
                         initialExpandedPostId: profilePost.id,
-                        templateName: nil  // Profile view doesn't need template name
+                        templateName: nil,  // Profile view doesn't need template name
+                        customAddButtonText: nil
                     )
                 case .queryResults(let query, let backLabel):
                     QueryResultsViewWrapper(
@@ -117,7 +120,8 @@ struct ChildPostsListViewWrapper: View {
                     navigationPath: $navigationPath,
                     showAddButton: shouldShowAddPostButton,
                     initialExpandedPostId: nil,
-                    templateName: nil  // Child posts don't need template name
+                    templateName: nil,  // Child posts don't need template name
+                    customAddButtonText: nil
                 )
             }
         }
@@ -189,7 +193,8 @@ struct QueryResultsViewWrapper: View {
                     navigationPath: $navigationPath,
                     showAddButton: false,
                     initialExpandedPostId: nil,
-                    templateName: nil
+                    templateName: nil,
+                    customAddButtonText: nil
                 )
             }
         }
@@ -242,7 +247,7 @@ struct QueryResultsViewWrapper: View {
                 Logger.shared.info("[QueryResultsViewWrapper] Found \(results.count) results")
 
                 // Fetch full post details for each result
-                fetchPosts(ids: results.map { $0.id })
+                fetchPosts(ids: results.map { $0.id }, scores: results.map { ($0.id, $0.relevance_score) })
             } catch {
                 Logger.shared.error("[QueryResultsViewWrapper] Decoding error: \(error.localizedDescription)")
                 DispatchQueue.main.async {
@@ -252,7 +257,7 @@ struct QueryResultsViewWrapper: View {
         }.resume()
     }
 
-    func fetchPosts(ids: [Int]) {
+    func fetchPosts(ids: [Int], scores: [(Int, Double)]) {
         guard !ids.isEmpty else {
             DispatchQueue.main.async {
                 posts = []
@@ -293,11 +298,21 @@ struct QueryResultsViewWrapper: View {
             Logger.shared.info("[QueryResultsViewWrapper] Fetched \(fetchedPosts.count) of \(ids.count) posts")
             // Sort by original order
             self.posts = ids.compactMap { id in fetchedPosts.first(where: { $0.id == id }) }
+
+            // Log search results with titles and scores
+            Logger.shared.info("=== SEARCH RESULTS ===")
+            for (postId, score) in scores {
+                if let post = self.posts.first(where: { $0.id == postId }) {
+                    Logger.shared.info("[\(String(format: "%.4f", score))] \(post.title)")
+                }
+            }
+            Logger.shared.info("=== END SEARCH RESULTS ===")
+
             self.isLoading = false
         }
     }
 }
 
 #Preview {
-    PostsView(initialPosts: [], onPostCreated: {}, showAddButton: true, templateName: nil)
+    PostsView(initialPosts: [], onPostCreated: {}, showAddButton: true, templateName: nil, customAddButtonText: nil)
 }

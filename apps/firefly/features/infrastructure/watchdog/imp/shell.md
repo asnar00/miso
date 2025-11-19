@@ -133,6 +133,16 @@ log "Watchdog check started"
 if ! check_server; then
     log "ERROR: Server not responding!"
 
+    # Check if this was an intentional shutdown
+    MARKER_FILE="$SCRIPT_DIR/.intentional_shutdown"
+    intentional_shutdown=false
+    if [ -f "$MARKER_FILE" ]; then
+        log "Detected intentional shutdown marker file"
+        intentional_shutdown=true
+        rm -f "$MARKER_FILE"
+        log "Removed shutdown marker file"
+    fi
+
     # Save logs before restarting
     bad_dir=$(save_bad_logs)
     log "Logs saved to: $bad_dir"
@@ -157,8 +167,9 @@ if ! check_server; then
         recovery_status="FAILED TO RECOVER"
     fi
 
-    # Send email notification
-    subject="[Firefly] Server Failure Detected - $recovery_status"
+    # Send email notification only if this was NOT an intentional shutdown
+    if [ "$intentional_shutdown" = false ]; then
+        subject="[Firefly] Server Failure Detected - $recovery_status"
     body="The Firefly server on the Mac mini experienced a failure at $(date).
 
 Status: $recovery_status
@@ -176,8 +187,11 @@ Please check the logs for details.
 
 - Firefly Watchdog"
 
-    send_email "$subject" "$body"
-    log "Email notification sent to $NOTIFY_EMAIL"
+        send_email "$subject" "$body"
+        log "Email notification sent to $NOTIFY_EMAIL"
+    else
+        log "Skipped email notification (intentional shutdown via API)"
+    fi
 
 else
     log "Server is healthy"

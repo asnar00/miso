@@ -8,23 +8,23 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 ## Visual Specification
 
 **Toolbar Container:**
-- Position: Bottom of screen, floating above content
-- Background: White with 95% opacity, extends to bottom edge of screen
-- Shadow: Subtle shadow to lift toolbar above content (2pt radius)
-- Button area height: 50 points
-- Buttons positioned 15pt from top edge of toolbar
-- Background extends below buttons to screen bottom (using ignoresSafeArea)
+- Position: Floating lozenge at bottom of screen, 12pt from bottom edge
+- Shape: Rounded rectangle with 25pt corner radius
+- Background: Solid light grey (RGB 0.7, 0.7, 0.7)
+- Maximum width: 300pt (centered on screen with 16pt horizontal insets)
+- Shadow: Strong depth shadow (40% black opacity, 12pt blur radius, 4pt y-offset)
+- Internal padding: 33pt horizontal, 14pt vertical
 
 **Button Layout:**
-- Four buttons arranged horizontally with equal spacing
+- Three buttons arranged horizontally with equal spacing
 - Each button centered in its allocated space
-- Horizontal padding: 40 points (buttons moved inward from edges)
-- Buttons evenly distributed across remaining width with Spacers
+- Buttons evenly distributed across width with Spacers between them
 
 **Button Design:**
 - Icon size: 24 points
-- Icon color: Black (normal state), highlighted when active
+- Icon color: Black
 - Tappable area: 44x44 points minimum (accessibility)
+- Active state: Dark grey rounded background (50% grey opacity, 8pt corner radius)
 - No text labels, icons only
 
 **Button Icons:**
@@ -72,7 +72,7 @@ function fetchMakePostPosts():
     isLoadingMakePost = true
     makePostError = null
 
-    API.fetchRecentTaggedPosts(tags: ["post"], byUser: "current"):
+    API.fetchRecentTaggedPosts(tags: ["post"], byUser: "any"):
         onSuccess(posts):
             preloadFirstImage(posts)
             makePostPosts = posts

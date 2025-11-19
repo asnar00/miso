@@ -512,7 +512,7 @@ struct PostView: View {
             }
         }()
 
-        let compactHeight: CGFloat = 100
+        let compactHeight: CGFloat = 110  // Increased to fit title, summary, and author/date
 
         // Calculate expanded height based on actual content
         let availableWidth: CGFloat = 350  // Approximate - account for padding
@@ -597,7 +597,7 @@ struct PostView: View {
             if isExpanded {
                 // Calculate current image dimensions and position
                 let compactImageHeight: CGFloat = 80
-                let compactImageY: CGFloat = (100 - 80) / 2 + 8
+                let compactImageY: CGFloat = (110 - 80) / 2 + 8  // Updated for new compact height
                 let expandedImageY: CGFloat = 80 + 12  // Hardcoded: 80pt title/summary + 12pt spacing (was 16)
                 // Use imageHeight which already accounts for removed images (0 when editableImageUrl is nil)
                 let expandedImageHeight = imageHeight
@@ -651,139 +651,139 @@ struct PostView: View {
                 .offset(x: 18, y: bodyY)
             }
 
-            // Author - fades in when expanded
-            if isExpanded {
-                // Calculate position below body text
-                let compactImageHeight: CGFloat = 80
-                let compactImageY: CGFloat = (100 - 80) / 2 + 8
-                let expandedImageY: CGFloat = 80 + 12  // Same as body text calculation
-                // Use imageHeight which already accounts for removed images (0 when editableImageUrl is nil)
-                let expandedImageHeight = imageHeight
+            // Author and date - visible in both compact and expanded views
+            // In compact: below title/summary
+            // In expanded: below body text
+            let compactAuthorY: CGFloat = 80 - 4  // Below title/summary (80pt height - 4pt to move up slightly)
 
-                let currentImageY = lerp(compactImageY, expandedImageY, expansionFactor)
-                let currentImageHeight = lerp(compactImageHeight, expandedImageHeight, expansionFactor)
+            // Calculate expanded position below body text
+            let compactImageHeight: CGFloat = 80
+            let compactImageY: CGFloat = (110 - 80) / 2 + 8  // Updated for new compact height
+            let expandedImageY: CGFloat = 80 + 12
+            let expandedImageHeight = imageHeight
+            let currentImageY = lerp(compactImageY, expandedImageY, expansionFactor)
+            let currentImageHeight = lerp(compactImageHeight, expandedImageHeight, expansionFactor)
+            let bodyY = currentImageY + currentImageHeight + 4
+            let expandedAuthorY = bodyY + measuredBodyHeight + 12
 
-                // Position author below body text: bodyY + bodyHeight + padding
-                let bodyY = currentImageY + currentImageHeight + 4  // Same as body text Y
-                let authorY = bodyY + measuredBodyHeight + 12  // Below body text with 12pt spacing (was 16pt, 24pt originally)
+            let authorY = lerp(compactAuthorY, expandedAuthorY, expansionFactor)
 
-                HStack {
-                    // Author name and date on left - aligned with body text
-                    HStack(spacing: 8) {
-                        if post.aiGenerated {
-                            Text("👓 librarian")
+            HStack {
+                // Author name and date on left - aligned with body text
+                HStack(spacing: 8) {
+                    if post.aiGenerated {
+                        Text("👓 librarian")
+                            .font(.subheadline)
+                            .foregroundColor(.black.opacity(0.5))
+                    } else if let authorName = post.authorName {
+                        // Make author name a button only if profile exists
+                        let isProfilePost = post.template == "profile"
+
+                        if isProfilePost || !authorHasProfile {
+                            // Profile posts or authors without profiles: just display text
+                            Text(authorName)
                                 .font(.subheadline)
                                 .foregroundColor(.black.opacity(0.5))
-                        } else if let authorName = post.authorName {
-                            // Make author name a button only if profile exists
-                            let isProfilePost = post.template == "profile"
-
-                            if isProfilePost || !authorHasProfile {
-                                // Profile posts or authors without profiles: just display text
+                        } else {
+                            // Regular posts with profiles: make it a tappable button
+                            Button(action: {
+                                if let authorEmail = post.authorEmail {
+                                    Logger.shared.info("[PostView] Author button tapped: \(authorName) (\(authorEmail))")
+                                    fetchAndNavigateToProfile(authorEmail: authorEmail)
+                                }
+                            }) {
                                 Text(authorName)
                                     .font(.subheadline)
-                                    .foregroundColor(.black.opacity(0.5))
-                            } else {
-                                // Regular posts with profiles: make it a tappable button
-                                Button(action: {
-                                    if let authorEmail = post.authorEmail {
-                                        Logger.shared.info("[PostView] Author button tapped: \(authorName) (\(authorEmail))")
-                                        fetchAndNavigateToProfile(authorEmail: authorEmail)
-                                    }
-                                }) {
-                                    Text(authorName)
-                                        .font(.subheadline)
-                                        .foregroundColor(.black)
-                                        .padding(.horizontal, 12)
-                                        .padding(.vertical, 6)
-                                        .background(Color(red: 0.85, green: 0.85, blue: 0.85))
-                                        .clipShape(Capsule())
-                                }
+                                    .foregroundColor(.black)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color(red: 0.85, green: 0.85, blue: 0.85))
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
                             }
-                        }
-
-                        // Add date with 16pt left padding
-                        if let formattedDate = formatPostDate(post.createdAt) {
-                            Text(formattedDate)
-                                .font(.subheadline)
-                                .foregroundColor(.black.opacity(0.5))
-                                .padding(.leading, 16)
                         }
                     }
-                    .padding(.leading, 24)  // 18pt + 6pt = 24pt
 
-                    Spacer()
-
-                    // Edit/save/cancel buttons on right (only for own posts)
-                    if isOwnPost {
-                        HStack(spacing: 8) {
-                            if !isEditing {
-                                // Edit mode: single pencil button
-                                Button(action: {
-                                    Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
-                                    onStartEditing?()
-                                }) {
-                                    Image(systemName: "pencil.circle.fill")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.black.opacity(0.6))
-                                }
-                                .uiAutomationId("edit-button") {
-                                    onStartEditing?()
-                                }
-                            } else {
-                                // Editing mode: undo and tick buttons
-                                Button(action: {
-                                    if let onDelete = onDelete {
-                                        // New post: delete it
-                                        Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
-                                        onDelete()
-                                    } else {
-                                        // Existing post: revert changes
-                                        Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
-                                        editableTitle = post.title
-                                        editableSummary = post.summary
-                                        editableBody = post.body
-                                        editableImageUrl = post.imageUrl
-                                        newImageData = nil
-                                        newImage = nil
-                                        imageAspectRatio = originalImageAspectRatio
-                                        onEndEditing?()
-                                    }
-                                }) {
-                                    Image(systemName: "arrow.uturn.backward.circle.fill")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.red.opacity(0.6))
-                                }
-                                .uiAutomationId("cancel-button") {
-                                    if let onDelete = onDelete {
-                                        onDelete()
-                                    } else {
-                                        editableTitle = post.title
-                                        editableSummary = post.summary
-                                        editableBody = post.body
-                                        onEndEditing?()
-                                    }
-                                }
-
-                                Button(action: {
-                                    savePost()
-                                }) {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.green.opacity(0.6))
-                                }
-                                .uiAutomationId("save-button") {
-                                    savePost()
-                                }
-                            }
-                        }
-                        .padding(.trailing, 18)
+                    // Add date with 16pt left padding
+                    if let formattedDate = formatPostDate(post.createdAt) {
+                        Text(formattedDate)
+                            .font(.subheadline)
+                            .foregroundColor(.black.opacity(0.5))
+                            .padding(.leading, 16)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .offset(x: 0, y: authorY)
-                .opacity(expansionFactor)  // Fade in with expansion
+                .padding(.leading, 16)  // Align with body text, moved 2pts left
+
+                Spacer()
+
+                // Edit/save/cancel buttons on right (only for own posts in expanded view)
+                if isOwnPost && isExpanded {
+                    HStack(spacing: 8) {
+                        if !isEditing {
+                            // Edit mode: single pencil button
+                            Button(action: {
+                                Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
+                                onStartEditing?()
+                            }) {
+                                Image(systemName: "pencil.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.black.opacity(0.6))
+                            }
+                            .uiAutomationId("edit-button") {
+                                onStartEditing?()
+                            }
+                        } else {
+                            // Editing mode: undo and tick buttons
+                            Button(action: {
+                                if let onDelete = onDelete {
+                                    // New post: delete it
+                                    Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
+                                    onDelete()
+                                } else {
+                                    // Existing post: revert changes
+                                    Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
+                                    editableTitle = post.title
+                                    editableSummary = post.summary
+                                    editableBody = post.body
+                                    editableImageUrl = post.imageUrl
+                                    newImageData = nil
+                                    newImage = nil
+                                    imageAspectRatio = originalImageAspectRatio
+                                    onEndEditing?()
+                                }
+                            }) {
+                                Image(systemName: "arrow.uturn.backward.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.red.opacity(0.6))
+                            }
+                            .uiAutomationId("cancel-button") {
+                                if let onDelete = onDelete {
+                                    onDelete()
+                                } else {
+                                    editableTitle = post.title
+                                    editableSummary = post.summary
+                                    editableBody = post.body
+                                    onEndEditing?()
+                                }
+                            }
+
+                            Button(action: {
+                                savePost()
+                            }) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.green.opacity(0.6))
+                            }
+                            .uiAutomationId("save-button") {
+                                savePost()
+                            }
+                        }
+                    }
+                    .padding(.trailing, 18)
+                    .opacity(expansionFactor)  // Fade in with expansion
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .offset(x: 0, y: authorY)
 
             // Animated image - interpolates from thumbnail to full-size
             // Use editableImageUrl (nil if removed in edit mode)
@@ -794,7 +794,7 @@ struct PostView: View {
                 // Compact state: 80x80 thumbnail on top-right with padding
                 let thumbnailSize: CGFloat = 80
                 let compactX = availableWidth - 80 + 20  // Right-aligned, moved right by 12pt for reduced list padding
-                let compactY: CGFloat = (100 - thumbnailSize) / 2  // Vertically centered in 100px compact post view
+                let compactY: CGFloat = (110 - thumbnailSize) / 2  // Vertically centered in compact post view
 
                 // Expanded state: full-width centered below summary (matching content rectangle)
                 let expandedWidth = availableWidth

@@ -156,6 +156,33 @@ def ping():
         'message': 'Firefly server is running'
     })
 
+@app.route('/api/health', methods=['GET'])
+def health():
+    """Detailed health check including database connectivity"""
+    health_status = {
+        'server': 'ok',
+        'database': 'unknown',
+        'timestamp': datetime.now().isoformat()
+    }
+
+    try:
+        # Try to get a database connection
+        conn = db.get_connection()
+        if conn:
+            health_status['database'] = 'ok'
+            db.return_connection(conn)
+        else:
+            health_status['database'] = 'failed'
+            health_status['status'] = 'degraded'
+    except Exception as e:
+        health_status['database'] = 'failed'
+        health_status['database_error'] = str(e)
+        health_status['status'] = 'degraded'
+        logger.error(f"Health check database error: {e}")
+
+    status_code = 200 if health_status.get('database') == 'ok' else 503
+    return jsonify(health_status), status_code
+
 @app.route('/api/auth/send-code', methods=['POST'])
 def send_code():
     """Send verification code to user's email"""
@@ -957,9 +984,12 @@ def search_posts():
         # Sort by score
         ranked_posts = sorted(post_scores.items(), key=lambda x: x[1], reverse=True)
 
-        # Filter out query posts (check template_name in database)
+        # Filter out query posts and low-scoring results (check template_name in database)
         filtered_posts = []
         for post_id, score in ranked_posts:
+            # Skip results with relevance score below 0.25
+            if score < 0.25:
+                continue
             post = db.get_post_by_id(post_id)
             if post and post.get('template_name') != 'query':
                 filtered_posts.append((post_id, score))
@@ -1012,10 +1042,53 @@ def compute_similarity_gpu(query_emb_float, all_embeddings_float):
 
     return scores.cpu().numpy()
 
+@app.route('/api/restart', methods=['POST'])
+def restart():
+    """Restart the server (triggers background restart script)"""
+    logger.info("Restart requested via /api/restart endpoint")
+
+    # Create marker file to indicate intentional shutdown
+    marker_file = os.path.join(os.path.dirname(__file__), '.intentional_shutdown')
+    try:
+        with open(marker_file, 'w') as f:
+            f.write(f"{datetime.now().isoformat()}\n")
+        logger.info(f"Created intentional shutdown marker: {marker_file}")
+    except Exception as e:
+        logger.error(f"Failed to create shutdown marker: {e}")
+
+    # Trigger background restart script
+    script_dir = os.path.dirname(__file__)
+    restart_script = os.path.join(script_dir, 'auto-restart.sh')
+    try:
+        # Launch restart script in background (it will wait, then restart us)
+        import subprocess
+        subprocess.Popen([restart_script],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        start_new_session=True)
+        logger.info("Background restart script launched")
+    except Exception as e:
+        logger.error(f"Failed to launch restart script: {e}")
+
+    return jsonify({
+        'status': 'restarting',
+        'message': 'Server is restarting (will be back in ~5 seconds)'
+    })
+
 @app.route('/api/shutdown', methods=['POST'])
 def shutdown():
     """Shutdown the server remotely"""
     logger.info("Shutdown requested via /api/shutdown endpoint")
+
+    # Create marker file to indicate intentional shutdown
+    marker_file = os.path.join(os.path.dirname(__file__), '.intentional_shutdown')
+    try:
+        with open(marker_file, 'w') as f:
+            f.write(f"{datetime.now().isoformat()}\n")
+        logger.info(f"Created intentional shutdown marker: {marker_file}")
+    except Exception as e:
+        logger.error(f"Failed to create shutdown marker: {e}")
+
     # Send SIGTERM to the process
     os.kill(os.getpid(), signal.SIGTERM)
     return jsonify({

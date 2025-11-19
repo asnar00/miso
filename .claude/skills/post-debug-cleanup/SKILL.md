@@ -33,7 +33,7 @@ Ask the user which feature was implemented, or infer from context. Determine:
 ### Step 2: Review the Implementation
 
 Read the actual product code files that were modified during the implementation:
-- Use git to see what files changed
+- Ask the user which files were changed, or infer from the conversation context
 - Read the final versions of those files
 - Note specific details: exact measurements, colors, thresholds, API endpoints, etc.
 
@@ -88,8 +88,8 @@ Double-check:
 
 **Skill response:**
 1. Find feature at `apps/firefly/features/posts/explore-posts/`
-2. Check git diff to see what files changed
-3. Read PostsView.swift, PostView.swift, ChildPostsView.swift, Post.swift
+2. Review conversation to identify which files were changed (PostsView.swift, PostView.swift, ChildPostsView.swift, Post.swift)
+3. Read those files to capture the actual implementation
 4. Update `explore-posts.md` with user-facing description
 5. Update `imp/pseudocode.md` with accurate specs (e.g., "swipe threshold: 30pt", "arrow size: 32pt")
 6. Update `imp/ios.md` with complete code from actual files

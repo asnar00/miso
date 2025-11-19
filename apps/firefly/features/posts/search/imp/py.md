@@ -47,6 +47,7 @@ def search_posts():
    - Group fragments by post_id
    - Take maximum score per post (best matching fragment)
    - Sort posts by score (descending)
+   - Filter out results with score < 0.25 (low relevance threshold)
    - Apply limit
 
 5. **Return minimal results**:
@@ -145,15 +146,27 @@ def search_posts():
             else:
                 post_scores[post_id] = max(post_scores[post_id], scores[i])
 
-        # Sort by score and apply limit
-        ranked_posts = sorted(post_scores.items(), key=lambda x: x[1], reverse=True)[:limit]
+        # Sort by score
+        ranked_posts = sorted(post_scores.items(), key=lambda x: x[1], reverse=True)
 
-        print(f"[SEARCH] Top {len(ranked_posts)} posts:")
-        for post_id, score in ranked_posts[:5]:
+        # Filter out query posts and low-scoring results (check template_name in database)
+        filtered_posts = []
+        for post_id, score in ranked_posts:
+            # Skip results with relevance score below 0.25
+            if score < 0.25:
+                continue
+            post = db.get_post_by_id(post_id)
+            if post and post.get('template_name') != 'query':
+                filtered_posts.append((post_id, score))
+            if len(filtered_posts) >= limit:
+                break
+
+        print(f"[SEARCH] Top {len(filtered_posts)} posts (after filtering):")
+        for post_id, score in filtered_posts[:5]:
             print(f"  Post {post_id}: {score:.3f}")
 
         # Return just post IDs and scores - client will fetch full details
-        results = [{'id': post_id, 'relevance_score': float(score)} for post_id, score in ranked_posts]
+        results = [{'id': post_id, 'relevance_score': float(score)} for post_id, score in filtered_posts]
         return jsonify(results)
 
     except Exception as e:

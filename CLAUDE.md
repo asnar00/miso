@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Experiment Branches**: When starting a new experiment, create a branch for the current work before clearing main. Previous experiments remain accessible via their branches.
 
-**Current experiment focus**: Tree-based post exploration with semantic search (experiment 22.1). Recent work includes hierarchical navigation, swipe gestures, preserved scroll positions, and fragment-level semantic search with GPU acceleration.
+**Current experiment focus**: Multi-platform social media app with template-based content types and semantic search. Recent work includes toolbar navigation, post templates (profiles, queries), inline editing, and fragment-level semantic search with GPU acceleration.
 
 **Project Naming**: The Xcode project and Android package are named "NoobTest" (bundle ID: `com.miso.noobtest`), while "Firefly" is the product/marketing name. Use "NoobTest" for bundle identifiers, app management commands, and debugging.
 
@@ -155,12 +155,33 @@ ssh microserver@185.96.221.52 "cd ~/firefly-server && ./start.sh"
 curl http://185.96.221.52:8080/api/ping  # Verify
 ```
 
+**Remote Server Details**:
+- Runs on port 8080 with PostgreSQL database backend
+- Automated watchdog monitoring (cron: every minute)
+- Automatic crash recovery with evidence preservation in `~/firefly-server/bad/` folders
+- Email notifications for unexpected failures
+
 **Local Server**: Runs on port 8080 (same as remote) for consistency.
+
+**Server Configuration**:
+```bash
+# From apps/firefly/product/server/imp/py/
+# First time setup: Copy .env.example to .env
+cp .env.example .env
+# Edit .env to add your Anthropic API key (currently optional, embeddings use local model)
+```
+
+**First-time Model Download** (required for semantic search):
+```bash
+cd apps/firefly/product/server/imp/py/
+python3 download_model.py  # Downloads all-mpnet-base-v2 model (~420MB)
+```
 
 **Key Dependencies**:
 - PostgreSQL database (required for production server)
-- Sentence transformers (all-mpnet-base-v2 model for embeddings)
-- PyTorch/GPU support for vector similarity computation
+- Sentence transformers (all-mpnet-base-v2 model for local embeddings, ~420MB download)
+- PyTorch with MPS (Metal Performance Shaders) for M2 GPU acceleration
+- Local model is cached in ~/.cache/torch/sentence_transformers/
 
 ## Current Application: Firefly
 
@@ -175,6 +196,12 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - **email**: Send verification codes for passwordless login
 - **testing**: Remote feature testing from Mac to device
 - **storage**: Local data persistence (login state, cache, media)
+- **watchdog**: Automatic server health monitoring and recovery system
+  - Runs every minute via cron on remote server
+  - Monitors `/api/ping` endpoint and PostgreSQL status
+  - Automatic recovery: preserves crash logs in timestamped `bad/` folders, restarts services
+  - Email notifications for unexpected failures (distinguishes from intentional shutdowns via marker file)
+  - DNS requirement: Uses Google DNS (8.8.8.8, 8.8.4.4) for reliable email delivery
 
 **users** (`apps/firefly/features/users.md`):
 - User accounts with email-based authentication
@@ -187,11 +214,12 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - User-generated content with hierarchical structure (title, summary, optional image, body)
 - Vector embeddings for semantic search
 - Post metadata (timestamp, timezone, location, author, AI-generated flag)
-- **view-posts**: Display posts with compact/expanded views, markdown formatting, image caching with thumbnails
-- **recent-posts**: Fetch and display recent posts
-- **new-post**: Create new posts
+- **templates**: Reusable field label sets for different post types (post, profile, query)
 - **explore-posts**: Navigate through tree of posts and children with swipe gestures, preserved scroll position, multi-level hierarchy
+- **recent-tagged-posts**: Fetch and display posts filtered by template tags and user, with adaptive loading/empty states
+- **edit-posts**: Inline post creation and editing with image management (add/replace/delete), EXIF stripping, auto-resize
 - **search**: Semantic search across all posts using fragment-level embeddings with GPU-accelerated vector similarity
+- **toolbar**: Bottom navigation bar with three buttons (make post, search, users) in rounded lozenge design
 
 **Search Implementation**:
 - Fragment-based embeddings: Each post split into title, summary, and body sentences
@@ -202,7 +230,12 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - Floating search UI: Circular button (bottom left) expands to search bar (max 600pt width)
 - Navigation preserved when switching between search results and normal view
 
-**iOS View Architecture**: Uses `PostsListView` as a unified component for both root-level and child post lists, with `navigationPath: [Int]` for hierarchical navigation. PostView handles individual post display, expand/collapse, and navigation triggers.
+**iOS View Architecture**: Uses `PostsListView` as a unified component for both root-level and child post lists, with `navigationPath: [Int]` for hierarchical navigation. PostView handles individual post display, expand/collapse, and navigation triggers. Posts use template-based placeholder text for editing.
+
+**Toolbar Navigation**: Three-button navigation bar at bottom of screen:
+- Make Post: Shows recent posts with "Add Post" button
+- Search: Shows user's saved queries with search interface
+- Users: Shows all users (profiles) in the system
 
 **visual** (`apps/firefly/features/`):
 - **background**: UI background color
@@ -278,6 +311,22 @@ adb logcat | grep "NoobTest"  # View live logs
 ./start.sh            # Start local Flask server on port 8080
 ./stop.sh             # Stop local Flask server
 ./remote-shutdown.sh  # Stop remote server (185.96.221.52)
+
+# View watchdog logs on remote server
+ssh microserver@185.96.221.52 "tail -f ~/firefly-server/watchdog.log"
+
+# Check saved crash logs
+ssh microserver@185.96.221.52 "ls -lt ~/firefly-server/bad/"
+```
+
+**Server Development/Debugging Scripts** (from `apps/firefly/product/server/imp/py/`):
+```bash
+./regenerate_embeddings.py  # Rebuild all post embeddings from scratch
+./debug_search.py           # Test search functionality with sample queries
+./test_similarity.py        # Test embedding similarity computation
+./emergency-restart.sh      # Force restart server with cleanup
+./auto-restart.sh           # Restart server with automatic recovery
+./send_watchdog_email.py    # Test watchdog email notifications
 ```
 
 **Debugging with Device Logs**:

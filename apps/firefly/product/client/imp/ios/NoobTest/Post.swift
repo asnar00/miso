@@ -596,4 +596,28 @@ class PostsAPI {
             }
         }.resume()
     }
+
+    func restartServer(completion: @escaping (Result<String, Error>) -> Void) {
+        guard let url = URL(string: "\(serverURL)/api/restart") else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        Logger.shared.info("[PostsAPI] Requesting server restart...")
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                Logger.shared.error("[PostsAPI] Error restarting server: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+
+            Logger.shared.info("[PostsAPI] Server restart initiated - waiting 6 seconds...")
+            completion(.success("Server restarting..."))
+        }.resume()
+    }
 }

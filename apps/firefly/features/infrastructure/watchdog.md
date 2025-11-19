@@ -28,13 +28,22 @@ When a failure is detected, the watchdog:
    - Logs success or failure
 
 4. **Sends notification**:
-   - Emails administrator with failure details
+   - Emails administrator with failure details (only for unexpected failures)
+   - Skips email if shutdown was intentional via `/api/shutdown` or `/api/restart` endpoints
    - Includes recovery status (RECOVERED or FAILED TO RECOVER)
    - Provides path to saved logs for investigation
 
+## Intentional Shutdown Detection
+
+The watchdog distinguishes between crashes and intentional shutdowns:
+- When the server shuts down via `/api/shutdown` or `/api/restart`, it creates a marker file `.intentional_shutdown`
+- The watchdog detects this marker and skips sending email notifications
+- The marker is automatically removed after detection
+- This prevents false alerts during deployments or manual restarts
+
 ## Email Notifications
 
-Emails are sent to the administrator when failures occur. Each notification includes:
+Emails are sent to the administrator when **unexpected** failures occur. Each notification includes:
 - Timestamp of failure
 - Actions taken by watchdog
 - Recovery status

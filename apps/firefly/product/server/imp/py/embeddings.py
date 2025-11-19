@@ -1,6 +1,6 @@
 """
 Embedding generation and storage for semantic search.
-Uses sentence-transformers with all-mpnet-base-v2 model.
+Uses sentence-transformers with all-mpnet-base-v2 model (768-dim, best quality).
 """
 
 import os
