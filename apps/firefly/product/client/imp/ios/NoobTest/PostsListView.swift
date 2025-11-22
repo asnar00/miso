@@ -20,6 +20,7 @@ struct PostsListView: View {
     let initialExpandedPostId: Int?  // Post ID to expand initially
     let templateName: String?  // Template name for this list (e.g., "query", "post", "profile")
     let customAddButtonText: String?  // Optional custom text for the add button
+    @Binding var isAnyPostEditing: Bool  // Track if any post is being edited (for toolbar fade)
 
     @ObservedObject var tunables = TunableConstants.shared
 
@@ -88,6 +89,8 @@ struct PostsListView: View {
     @State private var scrollProxy: ScrollViewProxy? = nil
     @State private var editingPostId: Int? = nil  // Track which post is being edited
     @State private var pluralName: String? = nil  // Fetched plural name for template
+    @State private var badgeStates: [Int: Bool] = [:]  // Track badge state per post ID
+    @State private var pollingTimer: Timer? = nil  // Timer for badge polling
 
     let serverURL = "http://185.96.221.52:8080"
 
@@ -166,6 +169,7 @@ struct PostsListView: View {
                                         post: post,
                                         isExpanded: viewModel.expandedPostId == post.id,
                                         isEditing: editingPostId == post.id,
+                                        showNotificationBadge: badgeStates[post.id] ?? false,
                                         onTap: {
                                             // If we're editing a different post, save it first
                                             if let currentlyEditingId = editingPostId, currentlyEditingId != post.id {
@@ -186,8 +190,8 @@ struct PostsListView: View {
                                         onNavigateToProfile: { backLabel, profilePost in
                                             navigationPath.append(.profile(backLabel: backLabel, profilePost: profilePost))
                                         },
-                                        onNavigateToQueryResults: { query, backLabel in
-                                            navigationPath.append(.queryResults(query: query, backLabel: backLabel))
+                                        onNavigateToQueryResults: { queryPostId, backLabel in
+                                            navigationPath.append(.queryResults(queryPostId: queryPostId, backLabel: backLabel))
                                         },
                                         onPostUpdated: { updatedPost in
                                             // Check if this is a new post being updated with real ID
@@ -197,6 +201,7 @@ struct PostsListView: View {
                                                     posts[index] = updatedPost
                                                     // Update editing state to track new ID
                                                     editingPostId = nil
+                                                    isAnyPostEditing = false
                                                     // Update expansion state to new ID
                                                     viewModel.expandedPostId = updatedPost.id
                                                 }
@@ -207,15 +212,23 @@ struct PostsListView: View {
                                         },
                                         onStartEditing: {
                                             editingPostId = post.id
+                                            isAnyPostEditing = true
                                         },
                                         onEndEditing: {
                                             editingPostId = nil
+                                            isAnyPostEditing = false
                                         },
-                                        onDelete: post.id < 0 ? {
-                                            // Delete new unsaved post
+                                        onDelete: {
+                                            // Delete post (either unsaved or after server deletion)
                                             posts.removeAll { $0.id == post.id }
                                             editingPostId = nil
-                                        } : nil
+                                            isAnyPostEditing = false
+                                            // If it was a saved post, refresh to update parent's child count
+                                            if post.id > 0 {
+                                                fetchPosts()
+                                                onPostCreated()  // Notify parent to refresh
+                                            }
+                                        }
                                     )
                                     .id(post.id)
                                 }
@@ -245,6 +258,16 @@ struct PostsListView: View {
                                 .lineLimit(1)
                         }
                         .foregroundColor(.black)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(
+                            Color(
+                                red: tunables.getDouble("button-colour", default: 0.5),
+                                green: tunables.getDouble("button-colour", default: 0.5),
+                                blue: tunables.getDouble("button-colour", default: 0.5)
+                            )
+                        )
+                        .cornerRadius(20 * cornerRoundness)
                     }
                 }
             }
@@ -302,6 +325,17 @@ struct PostsListView: View {
                     isLoading = false
                 }
             }
+
+            // Start badge polling for query lists
+            pollQueryBadges()  // Poll immediately
+            pollingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+                pollQueryBadges()
+            }
+        }
+        .onDisappear {
+            // Stop polling when view disappears
+            pollingTimer?.invalidate()
+            pollingTimer = nil
         }
         .onChange(of: initialPosts) { oldValue, newValue in
             Logger.shared.info("[PostsListView] initialPosts changed! old.count=\(oldValue.count), new.count=\(newValue.count)")
@@ -311,6 +345,62 @@ struct PostsListView: View {
                 isLoading = false
             }
         }
+        .onReceive(PostDeletionNotifier.shared.$deletedPostId) { deletedPostId in
+            guard let deletedId = deletedPostId else { return }
+            Logger.shared.info("[PostsListView] Received deletion notification for post \(deletedId)")
+            // Remove the deleted post from this view's posts array
+            if let index = posts.firstIndex(where: { $0.id == deletedId }) {
+                Logger.shared.info("[PostsListView] Removing post \(deletedId) from posts array")
+                posts.remove(at: index)
+            }
+        }
+    }
+
+    func pollQueryBadges() {
+        // Only poll if we're showing queries
+        let queryPosts = posts.filter { $0.template == "query" }
+        guard !queryPosts.isEmpty else { return }
+
+        let queryIds = queryPosts.map { $0.id }
+
+        // Get current user email
+        guard let userEmail = Storage.shared.getLoginState().email else { return }
+
+        guard let url = URL(string: "\(serverURL)/api/queries/badges") else { return }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let body: [String: Any] = [
+            "user_email": userEmail,
+            "query_ids": queryIds
+        ]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: body) else { return }
+        request.httpBody = jsonData
+
+        Logger.shared.info("[PostsListView] Polling badges for \(queryIds.count) queries")
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else { return }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Bool] {
+                    DispatchQueue.main.async {
+                        // Convert string keys back to Int
+                        for (key, value) in json {
+                            if let queryId = Int(key) {
+                                self.badgeStates[queryId] = value
+                            }
+                        }
+                        Logger.shared.info("[PostsListView] Updated badge states: \(self.badgeStates)")
+                    }
+                }
+            } catch {
+                Logger.shared.error("[PostsListView] Error parsing badge response: \(error.localizedDescription)")
+            }
+        }.resume()
     }
 
     func fetchPluralName(for templateName: String) {
@@ -516,7 +606,8 @@ struct PostsListView: View {
                 summaryPlaceholder: "Summary",
                 bodyPlaceholder: "Body",
                 template: templateName,  // Use template from current list
-                pluralName: nil  // Will be fetched from server when post is saved
+                pluralName: nil,  // Will be fetched from server when post is saved
+                hasNewMatches: nil
             )
 
             // Insert at beginning of posts array
@@ -525,6 +616,7 @@ struct PostsListView: View {
             // Expand it and enter edit mode
             self.viewModel.expandedPostId = -1
             self.editingPostId = -1
+            self.isAnyPostEditing = true
 
             Logger.shared.info("[PostsListView] New post created and expanded in edit mode")
         }

@@ -3,13 +3,17 @@
 ## Files Modified
 
 - `NoobTest/Post.swift` - Made title, summary, body, imageUrl mutable (var instead of let); added optional placeholder fields from templates
-- `NoobTest/PostView.swift` - Main post view with unified edit functionality for both new and existing posts; handles create vs update; custom placeholder support
-- `NoobTest/PostsListView.swift` - Added inline post creation with createNewPost() function; removed modal sheet; added editing state tracking; updated onPostUpdated to handle temp post replacement
+- `NoobTest/PostView.swift` - Main post view with unified edit functionality for both new and existing posts; handles create vs update; custom placeholder support; button repositioning (edit actions at bottom-right); delete confirmation dialog; delete post functionality
+- `NoobTest/PostsListView.swift` - Added inline post creation with createNewPost() function; removed modal sheet; added editing state tracking; updated onPostUpdated to handle temp post replacement; global deletion listener; isAnyPostEditing binding for toolbar fade
+- `NoobTest/PostDeletionNotifier.swift` - NEW: Global singleton for broadcasting post deletion events across all views
+- `NoobTest/PostsView.swift` - Updated to pass isAnyPostEditing binding through navigation hierarchy
+- `NoobTest/ContentView.swift` - Added isAnyPostEditing state; toolbar fade-out and interaction disabling during edit mode
+- `NoobTest/SearchResultsView.swift` - Added isAnyPostEditing state variable for PostsView compatibility
 - `NoobTest/ChildPostsView.swift` - Updated PostView calls to match new signature with edit callbacks
 - `NoobTest/UIAutomationRegistry.swift` - Added .uiAutomationId() modifier
 - `reproduce.sh` - Simplified automated testing script
-- `server/imp/py/db.py` - Fixed create_post() to use template_name instead of placeholder columns; added error logging with traceback
-- `server/imp/py/app.py` - Updated create_post call to pass template_name='post'; added detailed logging
+- `server/imp/py/db.py` - Fixed create_post() to use template_name instead of placeholder columns; added error logging with traceback; added delete_post() method
+- `server/imp/py/app.py` - Updated create_post call to pass template_name='post'; added detailed logging; added DELETE endpoint for posts
 - `server/imp/py/create_templates.py` - Database migration script for templates system
 - `server/imp/py/grant_template_permissions.py` - Grant SELECT on templates to firefly_user
 
@@ -53,6 +57,31 @@ struct Post: Codable, Identifiable, Hashable {
         case titlePlaceholder = "placeholder_title"     // Note: snake_case from API
         case summaryPlaceholder = "placeholder_summary"
         case bodyPlaceholder = "placeholder_body"
+    }
+}
+```
+
+## PostDeletionNotifier.swift - Global Deletion Broadcasting
+
+```swift
+import Foundation
+import Combine
+
+/// Global singleton that broadcasts post deletion events to all views
+class PostDeletionNotifier: ObservableObject {
+    static let shared = PostDeletionNotifier()
+
+    /// Published property that emits the ID of deleted posts
+    @Published var deletedPostId: Int? = nil
+
+    private init() {}
+
+    /// Call this when a post is deleted to notify all observers
+    func notifyPostDeleted(_ postId: Int) {
+        Logger.shared.info("[PostDeletionNotifier] Broadcasting deletion of post \(postId)")
+        DispatchQueue.main.async {
+            self.deletedPostId = postId
+        }
     }
 }
 ```
@@ -748,6 +777,146 @@ func savePost() {
 }
 ```
 
+### Delete Post Function - Permanently Removes Post
+
+```swift
+private func deletePost() {
+    Logger.shared.info("[PostView] Deleting post \(post.id)")
+
+    guard let url = URL(string: "\(serverURL)/api/posts/\(post.id)") else {
+        Logger.shared.error("[PostView] Invalid URL for delete")
+        return
+    }
+
+    var request = URLRequest(url: url)
+    request.httpMethod = "DELETE"
+
+    URLSession.shared.dataTask(with: request) { data, response, error in
+        if let error = error {
+            Logger.shared.error("[PostView] Delete error: \(error.localizedDescription)")
+            return
+        }
+
+        DispatchQueue.main.async {
+            Logger.shared.info("[PostView] Post \(self.post.id) deleted successfully")
+            // Broadcast deletion globally so all views can remove this post
+            PostDeletionNotifier.shared.notifyPostDeleted(self.post.id)
+            // Call onDelete to remove this view from the interface
+            self.onDelete?()
+        }
+    }.resume()
+}
+```
+
+### Button Overlays - Positioned with Tunable Constants
+
+Edit button appears in top-right when not editing. When editing, action buttons (delete/undo/save) appear in bottom-right:
+
+```swift
+// Edit button overlay - positioned in top-right corner (only for own posts when expanded, not editing)
+if isOwnPost && isExpanded && !isEditing {
+    Button(action: {
+        Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
+        onStartEditing?()
+    }) {
+        Image(systemName: "pencil.circle.fill")
+            .font(.system(size: 32))
+            .foregroundColor(.black.opacity(0.6))
+    }
+    .offset(x: CGFloat(tunables.getDouble("edit-button-x", default: 334)) - 32, y: 16)  // Top-right corner
+    .opacity(expansionFactor)
+    .uiAutomationId("edit-button") {
+        onStartEditing?()
+    }
+}
+
+// Edit action buttons overlay - positioned in bottom right corner (only when editing)
+if isOwnPost && isExpanded && isEditing {
+    HStack(spacing: CGFloat(tunables.getDouble("edit-button-spacing", default: 8))) {
+        // Delete button (only for saved posts)
+        if post.id > 0 {
+            Button(action: {
+                Logger.shared.info("[PostView] Delete post button tapped for post \(post.id)")
+                showDeleteConfirmation = true
+            }) {
+                Image(systemName: "trash.circle.fill")
+                    .font(.system(size: 32))
+                    .foregroundColor(.red.opacity(0.6))
+            }
+            .uiAutomationId("delete-post-button") {
+                showDeleteConfirmation = true
+            }
+        }
+
+        // Undo button
+        Button(action: {
+            if let onDelete = onDelete {
+                // New post: delete it
+                Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
+                onDelete()
+            } else {
+                // Existing post: revert changes
+                Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
+                editableTitle = post.title
+                editableSummary = post.summary
+                editableBody = post.body
+                editableImageUrl = post.imageUrl
+                newImageData = nil
+                newImage = nil
+                imageAspectRatio = originalImageAspectRatio
+                onEndEditing?()
+            }
+        }) {
+            Image(systemName: "arrow.uturn.backward.circle.fill")
+                .font(.system(size: 32))
+                .foregroundColor(.red.opacity(0.6))
+        }
+        .uiAutomationId("cancel-button") {
+            if let onDelete = onDelete {
+                onDelete()
+            } else {
+                editableTitle = post.title
+                editableSummary = post.summary
+                editableBody = post.body
+                onEndEditing?()
+            }
+        }
+
+        // Save button
+        Button(action: {
+            savePost()
+        }) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 32))
+                .foregroundColor(.green.opacity(0.6))
+        }
+        .uiAutomationId("save-button") {
+            savePost()
+        }
+    }
+    .offset(x: CGFloat(tunables.getDouble("edit-button-x", default: 334)) - 120, y: currentHeight - 48)  // Bottom-right corner
+    .opacity(expansionFactor)
+}
+
+// Delete confirmation alert
+.alert("Delete Post", isPresented: $showDeleteConfirmation) {
+    Button("Cancel", role: .cancel) {}
+    Button("Delete", role: .destructive) {
+        deletePost()
+    }
+} message: {
+    Text("Are you sure you want to permanently delete this post?")
+}
+```
+
+**Key Details:**
+- Edit button when NOT editing: at `(edit-button-x - 32, 16)` = `(302, 16)` with default tunable
+- Edit action buttons when editing: at `(edit-button-x - 120, currentHeight - 48)` = `(214, currentHeight - 48)` with default tunable
+- Button spacing: 8pt (tunable: edit-button-spacing)
+- Delete confirmation prevents accidental deletions
+- All buttons fade in/out with `expansionFactor` animation
+```
+
 ### Initialize State and Sheet Presentation
 
 ```swift
@@ -1136,7 +1305,12 @@ This prevents accidental collapse of the post while editing. The user must expli
 
 8. **Post Updates**: After successful save, the post object is updated and propagated to parent via `onPostUpdated` callback, ensuring cancel button reverts to saved state
 
-9. **Button Positioning**: Edit buttons are integrated into the author bar HStack rather than overlaid, creating a cohesive UI
+9. **Button Positioning**:
+   - Edit button group overlaid in top-right corner at `(edit-button-x - offset, 16pt)` where offset is 32pt when not editing, 80pt when editing
+   - Navigate-to-children button stays at right edge `(350 + 6 + 32pt, vertically centered)`, maintaining position during expansion
+   - Delete post button (saved posts only) overlaid in bottom-right corner at `(334pt, currentHeight - 48pt)`
+   - Button positions use tunable constants for fine-tuning (edit-button-x, edit-button-spacing)
+   - All buttons use .offset() for precise positioning with .opacity(expansionFactor) for smooth fade-in
 
 10. **Dynamic Height**: Body text height recalculates on every keystroke, image height recalculates when image changes, triggering layout updates for smooth editing experience
 
@@ -1154,6 +1328,28 @@ This prevents accidental collapse of the post while editing. The user must expli
    - Camera button (green) directly opens the camera with `.camera` source
    - No confirmation dialog needed - user choice is explicit via button selection
    - All three buttons set `imageSourceType` and `showImagePicker` to trigger the sheet
+
+16. **Delete Post Functionality**: For saved posts (post.id > 0) in edit mode:
+   - Red trash button appears in bottom-right corner as part of edit action buttons group
+   - Tapping trash button shows confirmation alert instead of immediate deletion
+   - Alert title: "Delete Post", message: "Are you sure you want to permanently delete this post?"
+   - Alert buttons: "Cancel" (role: .cancel), "Delete" (role: .destructive)
+   - On confirmation, sends HTTP DELETE request to `/api/posts/{post_id}` endpoint
+   - On success, broadcasts deletion via `PostDeletionNotifier.shared.notifyPostDeleted(post.id)`
+   - Global notification system removes post from all `PostsListView` instances throughout app
+   - Post disappears from main list, search results, child views simultaneously
+   - Uses `.onReceive(PostDeletionNotifier.shared.$deletedPostId)` in PostsListView to listen for deletions
+   - `PostDeletionNotifier` is a singleton ObservableObject with `@Published var deletedPostId: Int?`
+
+17. **Toolbar Fade During Editing**: The bottom toolbar becomes invisible and non-interactive during post editing:
+   - Editing state tracked via `@State private var isAnyPostEditing: Bool` in ContentView
+   - Passed as `@Binding` through PostsView → PostsListView hierarchy
+   - PostsListView updates binding when `onStartEditing`/`onEndEditing` callbacks fire
+   - Toolbar applies `.opacity(isAnyPostEditing ? 0 : 1)` for fade effect
+   - Toolbar applies `.allowsHitTesting(!isAnyPostEditing)` to disable interaction when transparent
+   - Fade animation: `.animation(.easeInOut(duration: 0.3), value: isAnyPostEditing)`
+   - Prevents toolbar from obscuring edit action buttons at bottom of screen
+   - Toolbar fades back in when user saves, cancels, or deletes post
 
 ## Database Schema and Server Implementation
 

@@ -1,27 +1,7 @@
 ---
 name: py-start-local
 description: Start Flask server locally for development. Runs server in foreground or background with nohup. Use when starting local Python server for testing or development.
-delegate: true
 ---
-
-## ⚠️ DELEGATION REQUIRED
-
-**This skill must be executed by the instruction-follower subagent.**
-
-When you see this skill invoked, you MUST use the Task tool to delegate it:
-
-```
-Task(
-    subagent_type="instruction-follower",
-    description="[Brief 3-5 word description]",
-    prompt="Follow the instructions in .claude/skills/py-start-local/skill.md to [complete task description]."
-)
-```
-
-**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
-
----
-
 
 # Python Start Local Server
 

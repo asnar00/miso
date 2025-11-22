@@ -22,6 +22,7 @@ struct Post: Codable, Identifiable, Hashable {
     let bodyPlaceholder: String?
     let template: String?
     let pluralName: String?
+    let hasNewMatches: Bool?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -43,6 +44,7 @@ struct Post: Codable, Identifiable, Hashable {
         case bodyPlaceholder = "placeholder_body"
         case template = "template_name"
         case pluralName = "plural_name"
+        case hasNewMatches = "has_new_matches"
     }
 }
 

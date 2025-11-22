@@ -14,6 +14,11 @@ import numpy as np
 import torch
 import embeddings
 import logging
+import json
+import hashlib
+from anthropic import Anthropic
+import config  # Load .env file
+import threading
 
 # Configure logging
 logging.basicConfig(
@@ -27,6 +32,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+
+# LLM model for search re-ranking
+LLM_MODEL = "claude-3-5-haiku-20241022"
 
 # Configure upload folder
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
@@ -390,6 +398,24 @@ def create_post():
 
         logger.info(f"[CREATE_POST] Created post {post_id} by user {email} (ID: {user_id}), parent_id: {parent_id}")
 
+        # Generate embeddings for the new post
+        try:
+            embeddings.generate_embeddings(post_id, title, summary, body)
+            logger.info(f"[CREATE_POST] Generated embeddings for post {post_id}")
+        except Exception as e:
+            logger.error(f"[CREATE_POST] Failed to generate embeddings: {e}")
+
+        # Background matching: check post against all queries (non-blocking)
+        background_match_post(post_id)
+
+        # If this is a query, populate initial results
+        if template_name == 'query':
+            try:
+                populate_initial_query_results(post_id)
+                logger.info(f"[CREATE_POST] Populated initial results for query {post_id}")
+            except Exception as e:
+                logger.error(f"[CREATE_POST] Failed to populate initial query results: {e}")
+
         # Fetch the created post to return it
         post = db.get_post_by_id(post_id)
         if not post:
@@ -492,6 +518,25 @@ def update_post():
             }), 500
 
         logger.info(f"Updated post {post_id} by user {email} (ID: {user_id})")
+
+        # Regenerate embeddings
+        try:
+            embeddings.generate_embeddings(post_id, title, summary, body)
+            logger.info(f"[UPDATE_POST] Regenerated embeddings for post {post_id}")
+        except Exception as e:
+            logger.error(f"[UPDATE_POST] Failed to regenerate embeddings: {e}")
+
+        # If this is a query, clear and regenerate results
+        if existing_post.get('template_name') == 'query':
+            try:
+                db.clear_query_results(post_id)
+                populate_initial_query_results(post_id)
+                logger.info(f"[UPDATE_POST] Regenerated results for query {post_id}")
+            except Exception as e:
+                logger.error(f"[UPDATE_POST] Failed to regenerate query results: {e}")
+        else:
+            # Regular post - re-check against all queries (non-blocking)
+            background_match_post(post_id)
 
         # Fetch the updated post to return it
         post = db.get_post_by_id(post_id)
@@ -656,6 +701,37 @@ def get_post_children(post_id):
         })
     except Exception as e:
         logger.error(f"Error getting child posts: {e}", exc_info=True)
+        return jsonify({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    """Delete a post"""
+    try:
+        logger.info(f"[DELETE] Deleting post {post_id}")
+
+        # Delete the post from database
+        success = db.delete_post(post_id)
+
+        if not success:
+            return jsonify({
+                'status': 'error',
+                'message': 'Post not found or could not be deleted'
+            }), 404
+
+        # Delete embeddings if they exist
+        import embeddings
+        embeddings.delete_embeddings(post_id)
+
+        logger.info(f"[DELETE] Successfully deleted post {post_id}")
+        return jsonify({
+            'status': 'success',
+            'message': 'Post deleted successfully'
+        })
+    except Exception as e:
+        logger.error(f"[DELETE] Error deleting post: {e}", exc_info=True)
         return jsonify({
             'status': 'error',
             'message': f'Server error: {str(e)}'
@@ -949,64 +1025,392 @@ def get_template(template_name):
     finally:
         db.return_connection(conn)
 
+@app.route('/api/queries/badges', methods=['POST'])
+def get_query_badges():
+    """Get has_new_matches flags for multiple queries for a user
+    Request body: {"user_email": "user@example.com", "query_ids": [1, 2, 3, ...]}
+    Response: {"1": true, "2": false, ...}"""
+    try:
+        data = request.get_json()
+        user_email = data.get('user_email', '')
+        query_ids = data.get('query_ids', [])
+
+        if not user_email:
+            return jsonify({'error': 'user_email is required'}), 400
+
+        if not query_ids:
+            return jsonify({}), 200
+
+        # Get flags from database for this user
+        flags = db.get_has_new_matches_bulk(user_email, query_ids)
+
+        # Convert to string keys for JSON
+        response = {str(k): v for k, v in flags.items()}
+
+        return jsonify(response), 200
+    except Exception as e:
+        logger.error(f"[BADGES] Error getting badges: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/search', methods=['GET'])
 def search_posts():
-    """Search for posts using semantic similarity"""
+    """Get cached search results for a query (instant, with auto-populate fallback)"""
     try:
-        # Get query parameter
-        query = request.args.get('q', '').strip()
-        if not query:
-            return jsonify({'error': 'Query parameter q is required'}), 400
+        query_id = request.args.get('query_id', '').strip()
+        user_email = request.args.get('user_email', '').strip()
 
-        limit = int(request.args.get('limit', 20))
+        if not query_id:
+            return jsonify({'error': 'Query parameter query_id is required'}), 400
 
-        logger.info(f"[SEARCH] Query: {query}, Limit: {limit}")
+        query_id = int(query_id)
+        logger.info(f"[SEARCH] Getting cached results for query {query_id}")
 
-        # Load all embeddings
-        all_embeddings, index = load_all_embeddings()
-        logger.info(f"[SEARCH] Loaded {len(index)} fragments from {len(set(pid for pid, _ in index))} posts")
+        # Read cached results
+        results = db.get_query_results(query_id)
 
-        # Generate query embedding
-        model = embeddings.get_model()
-        query_emb = model.encode([query], convert_to_numpy=True)[0]  # Shape: (768,)
+        # If cache is empty, populate it now
+        if len(results) == 0:
+            logger.info(f"[SEARCH] Cache empty for query {query_id}, populating now...")
+            populate_initial_query_results(query_id)
+            # Read again after population
+            results = db.get_query_results(query_id)
+            logger.info(f"[SEARCH] Populated cache with {len(results)} results")
 
-        # Compute similarity scores
-        scores = compute_similarity_gpu(query_emb, all_embeddings)
+        # Record that this user viewed this query
+        if user_email:
+            db.record_query_view(user_email, query_id)
 
-        # Group by post_id and take max score
-        post_scores = {}
-        for i, (post_id, frag_idx) in enumerate(index):
-            if post_id not in post_scores:
-                post_scores[post_id] = scores[i]
-            else:
-                post_scores[post_id] = max(post_scores[post_id], scores[i])
+        # Return IDs and scores (client fetches full posts)
+        response = [{
+            'id': post_id,
+            'relevance_score': score / 100  # Normalize to 0-1 range
+        } for post_id, score, _ in results]
 
-        # Sort by score
-        ranked_posts = sorted(post_scores.items(), key=lambda x: x[1], reverse=True)
-
-        # Filter out query posts and low-scoring results (check template_name in database)
-        filtered_posts = []
-        for post_id, score in ranked_posts:
-            # Skip results with relevance score below 0.25
-            if score < 0.25:
-                continue
-            post = db.get_post_by_id(post_id)
-            if post and post.get('template_name') != 'query':
-                filtered_posts.append((post_id, score))
-            if len(filtered_posts) >= limit:
-                break
-
-        logger.info(f"[SEARCH] Top {len(filtered_posts)} posts (after filtering queries):")
-        for post_id, score in filtered_posts[:5]:
-            print(f"  Post {post_id}: {score:.3f}", file=sys.stderr, flush=True)
-
-        # Return just post IDs and scores - client will fetch full details
-        results = [{'id': post_id, 'relevance_score': float(score)} for post_id, score in filtered_posts]
-        return jsonify(results)
+        logger.info(f"[SEARCH] Returning {len(response)} cached results")
+        return jsonify(response)
 
     except Exception as e:
         logger.error(f"[SEARCH] Error: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
+
+
+def populate_initial_query_results(query_id):
+    """
+    When a new query is created, search all existing posts and cache results.
+    This is the one-time "slow" operation (may take several seconds).
+    """
+    try:
+        logger.info(f"[SEARCH] Populating initial results for new query {query_id}")
+
+        # Fetch the query post
+        query_post = db.get_post_by_id(query_id)
+        if not query_post:
+            logger.error(f"Query post {query_id} not found")
+            return
+
+        # Load query embeddings from disk
+        query_embeddings = embeddings.load_embeddings(query_id)
+        if query_embeddings is None:
+            logger.error(f"No embeddings for query {query_id}")
+            return
+
+        # Convert to float32
+        query_embeddings = query_embeddings.astype(np.float32) / 127.0
+
+        logger.info(f"[SEARCH] Loaded query embeddings: {query_embeddings.shape[0]} fragments")
+
+        # Load all post embeddings
+        all_embeddings, index = load_all_embeddings()
+        all_embeddings = all_embeddings.astype(np.float32) / 127.0
+        logger.info(f"[SEARCH] Loaded {len(index)} fragments from {len(set(pid for pid, _ in index))} posts")
+
+        # Compute similarity matrix
+        similarity_matrix = compute_similarity_gpu_matrix(query_embeddings, all_embeddings)
+
+        # Aggregate scores per post using MAX
+        post_similarities = {}
+        for i, (post_id, frag_idx) in enumerate(index):
+            if post_id == query_id:
+                continue  # Skip query itself
+
+            # Get similarities between all query fragments and this post fragment
+            fragment_sims = similarity_matrix[:, i]
+
+            if post_id not in post_similarities:
+                post_similarities[post_id] = []
+            post_similarities[post_id].extend(fragment_sims.tolist())
+
+        # Compute MAX score for each post
+        post_scores = {
+            post_id: max(sims)
+            for post_id, sims in post_similarities.items()
+        }
+
+        # Sort and get top 20 candidates
+        ranked = sorted(post_scores.items(), key=lambda x: x[1], reverse=True)
+        rag_candidates = ranked[:20]
+
+        logger.info(f"[SEARCH] RAG top 20 candidates")
+
+        # Fetch full post content for candidates
+        candidate_posts = []
+        for post_id, rag_score in rag_candidates:
+            post = db.get_post_by_id(post_id)
+            if post and post.get('template_name') != 'query':
+                candidate_posts.append({
+                    'id': post_id,
+                    'title': post.get('title', ''),
+                    'summary': post.get('summary', ''),
+                    'body': post.get('body', ''),
+                    'rag_score': rag_score
+                })
+
+        # LLM re-ranking (batch mode)
+        try:
+            llm_results = llm_rerank_posts(query_post, candidate_posts)
+
+            # Store results (llm_results format: [{'id': post_id, 'score': int}, ...])
+            matches_added = False
+            for item in llm_results:
+                if item['score'] >= 40:
+                    db.insert_query_result(query_id, item['id'], item['score'])
+                    matches_added = True
+
+            if matches_added:
+                db.update_last_match_added(query_id)
+
+            logger.info(f"[SEARCH] Stored {len([item for item in llm_results if item['score'] >= 40])} LLM-scored results")
+
+        except Exception as e:
+            # LLM failed, use RAG scores
+            logger.warning(f"[SEARCH] LLM re-ranking failed: {e}, using RAG scores")
+
+            if candidate_posts:
+                for post in candidate_posts:
+                    db.insert_query_result(query_id, post['id'], post['rag_score'] * 100)
+                db.update_last_match_added(query_id)
+
+            logger.info(f"[SEARCH] Stored {len(candidate_posts)} RAG-scored results")
+
+    except Exception as e:
+        logger.error(f"[SEARCH] Error populating initial query results: {e}", exc_info=True)
+
+
+def background_match_post(post_id):
+    """
+    Run check_post_against_queries in a background thread.
+    This prevents blocking the HTTP response.
+    """
+    def run():
+        try:
+            check_post_against_queries(post_id)
+        except Exception as e:
+            logger.error(f"[BACKGROUND] Error in background matching for post {post_id}: {e}", exc_info=True)
+
+    thread = threading.Thread(target=run, daemon=True)
+    thread.start()
+    logger.info(f"[BACKGROUND] Started background matching thread for post {post_id}")
+
+
+def check_post_against_queries(new_post_id):
+    """
+    Check a newly created post against all queries and cache matches.
+    Runs in background after post creation.
+    """
+    try:
+        logger.info(f"[SEARCH] Checking post {new_post_id} against all queries")
+
+        # 0. Clear any existing results for this post (in case it's being re-evaluated)
+        db.clear_post_from_results(new_post_id)
+
+        # 1. Get all queries
+        queries = db.get_posts_by_template('query')
+        if len(queries) == 0:
+            logger.info("[SEARCH] No queries to check against")
+            return
+
+        # 2. Load new post embeddings
+        new_post_embeddings = embeddings.load_embeddings(new_post_id)
+        if new_post_embeddings is None:
+            logger.warning(f"No embeddings found for post {new_post_id}")
+            return
+
+        # Convert to float32
+        new_post_embeddings = new_post_embeddings.astype(np.float32) / 127.0
+
+        # 3. Compute similarity against each query
+        query_scores = []
+
+        for query in queries:
+            query_id = query[0]  # id is first column
+
+            # Load query embeddings
+            query_embeddings = embeddings.load_embeddings(query_id)
+            if query_embeddings is None:
+                continue
+
+            query_embeddings = query_embeddings.astype(np.float32) / 127.0
+
+            # Compute similarity matrix
+            similarity_matrix = compute_similarity_gpu_matrix(query_embeddings, new_post_embeddings)
+
+            # Use MAX aggregation
+            max_similarity = np.max(similarity_matrix)
+
+            query_scores.append((query_id, query, max_similarity))
+
+        # 4. Sort by RAG score
+        query_scores.sort(key=lambda x: x[2], reverse=True)
+
+        # 5. Get new post data
+        new_post = db.get_post_by_id(new_post_id)
+
+        # 6. Process in batches of 20
+        BATCH_SIZE = 20
+        logger.info(f"[SEARCH] Processing {len(query_scores)} queries in {(len(query_scores) + BATCH_SIZE - 1) // BATCH_SIZE} batches")
+
+        for batch_start in range(0, len(query_scores), BATCH_SIZE):
+            batch = query_scores[batch_start:batch_start + BATCH_SIZE]
+            batch_num = batch_start // BATCH_SIZE + 1
+
+            logger.info(f"[SEARCH] Batch {batch_num}: Evaluating post {new_post_id} against {len(batch)} queries")
+
+            try:
+                # Call LLM to evaluate post against batch of queries
+                batch_scores = llm_evaluate_post_against_queries(batch, new_post)
+
+                # Store matches if relevant (score >= 40)
+                matches_stored = 0
+                for query_id, llm_score in batch_scores:
+                    if llm_score >= 40:
+                        db.insert_query_result(query_id, new_post_id, llm_score)
+                        db.update_last_match_added(query_id)
+                        matches_stored += 1
+                        logger.info(f"[SEARCH]   Query {query_id}: score {llm_score} - MATCH stored")
+                    else:
+                        logger.debug(f"[SEARCH]   Query {query_id}: score {llm_score} - below threshold")
+
+                logger.info(f"[SEARCH] Batch {batch_num}: stored {matches_stored}/{len(batch)} matches")
+
+            except Exception as e:
+                # LLM failed, fall back to RAG scores
+                logger.warning(f"[SEARCH] LLM batch evaluation failed: {e}, using RAG scores")
+
+                for query_id, query, rag_score in batch:
+                    if rag_score >= 0.4:  # Equivalent to 40/100
+                        db.insert_query_result(query_id, new_post_id, rag_score * 100)
+                        db.update_last_match_added(query_id)
+
+    except Exception as e:
+        logger.error(f"[SEARCH] Error checking post against queries: {e}", exc_info=True)
+
+
+def llm_evaluate_post_against_queries(query_batch, new_post):
+    """
+    Evaluate how relevant a new post is to a batch of queries.
+
+    Args:
+        query_batch: List of (query_id, query_row, rag_score) tuples
+        new_post: Dict with 'title', 'summary', 'body'
+
+    Returns:
+        List of (query_id, score) tuples
+    """
+    try:
+        # Get API key from config
+        api_key = config.get_anthropic_api_key()
+        if not api_key:
+            raise Exception("ANTHROPIC_API_KEY not found in environment")
+
+        # Initialize Anthropic client
+        client = Anthropic(api_key=api_key)
+
+        # Build prompt
+        prompt = "You are a semantic search relevance evaluator. Below are search queries from users looking for specific content.\n\n"
+
+        for query_id, query_row, rag_score in query_batch:
+            # Extract query text from row (columns: id, user_id, parent_id, title, summary, body, ...)
+            title = query_row[3]
+            summary = query_row[4]
+            body = query_row[5]
+            query_text = f"{title} {summary} {body}"
+            prompt += f"Query {query_id}: {query_text}\n\n"
+
+        prompt += f"""A new post has just been created:
+Title: {new_post['title']}
+Summary: {new_post['summary']}
+Body: {new_post['body']}
+
+For EACH query above, score 0-100: Does this new post answer or match what that query is searching for? Would someone who created that query want to see this post in their results?
+
+Evaluate each query:
+- Does the post provide relevant information the query is looking for?
+- Does it match the semantic intent and topic of the query?
+- Would the query author find this post useful?
+
+Return ONLY a JSON array with this exact format:
+[{{"query_id": <id>, "score": <0-100>}}, ...]
+
+Score from 0-100 where:
+- 0-39: Not relevant (query author wouldn't want to see this)
+- 40-59: Somewhat relevant
+- 60-79: Relevant
+- 80-100: Highly relevant (exactly what the query is looking for)
+
+Include ALL queries in your response, even if score is 0.
+"""
+
+        logger.info(f"[LLM] Sending post-to-queries prompt (batch of {len(query_batch)} queries)")
+        logger.debug(f"[LLM] Prompt:\n{prompt}")
+
+        response = client.messages.create(
+            model=LLM_MODEL,
+            max_tokens=1000,
+            temperature=0.0,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        logger.info(f"[LLM] Response received")
+
+        # Parse JSON response
+        response_text = response.content[0].text
+        logger.info(f"[LLM] Raw response: {response_text[:500]}...")
+
+        # Extract JSON from response
+        json_text = response_text.strip()
+        if "```json" in json_text:
+            json_start = json_text.find("```json") + 7
+            json_end = json_text.find("```", json_start)
+            json_text = json_text[json_start:json_end].strip()
+        elif "```" in json_text:
+            json_start = json_text.find("```") + 3
+            json_end = json_text.find("```", json_start)
+            json_text = json_text[json_start:json_end].strip()
+        else:
+            # Find JSON array and extract just the array
+            array_start = json_text.find('[')
+            if array_start >= 0:
+                # Find the matching closing bracket
+                bracket_count = 0
+                for i in range(array_start, len(json_text)):
+                    if json_text[i] == '[':
+                        bracket_count += 1
+                    elif json_text[i] == ']':
+                        bracket_count -= 1
+                        if bracket_count == 0:
+                            json_text = json_text[array_start:i+1]
+                            break
+
+        logger.info(f"[LLM] Extracted JSON: {json_text[:200]}...")
+        scores = json.loads(json_text)
+        logger.info(f"[LLM] Parsed {len(scores)} scores successfully")
+        return [(item['query_id'], item['score']) for item in scores]
+
+    except Exception as e:
+        logger.error(f"[LLM] Post-to-queries evaluation failed: {e}", exc_info=True)
+        raise
+
 
 def load_all_embeddings():
     """Load all post embeddings from disk"""
@@ -1031,7 +1435,7 @@ def load_all_embeddings():
     return all_embeddings, index
 
 def compute_similarity_gpu(query_emb_float, all_embeddings_float):
-    """Compute cosine similarity on GPU"""
+    """Compute cosine similarity on GPU (single query vector vs all post vectors)"""
     # Convert to PyTorch tensors on GPU
     device = 'mps' if torch.backends.mps.is_available() else 'cpu'
     query_tensor = torch.tensor(query_emb_float, device=device).unsqueeze(0)
@@ -1041,6 +1445,213 @@ def compute_similarity_gpu(query_emb_float, all_embeddings_float):
     scores = torch.nn.functional.cosine_similarity(query_tensor, all_tensor)
 
     return scores.cpu().numpy()
+
+def compute_similarity_gpu_matrix(query_embeddings, all_embeddings):
+    """
+    Compute cosine similarity matrix on GPU.
+
+    Args:
+        query_embeddings: numpy array of shape (num_query_fragments, 768)
+        all_embeddings: numpy array of shape (num_all_fragments, 768)
+
+    Returns:
+        numpy array of shape (num_query_fragments, num_all_fragments)
+        where result[i,j] = similarity between query fragment i and post fragment j
+    """
+    device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+
+    # Convert to PyTorch tensors
+    query_tensor = torch.tensor(query_embeddings, device=device)  # (num_query_frags, 768)
+    all_tensor = torch.tensor(all_embeddings, device=device)      # (num_all_frags, 768)
+
+    # Normalize for cosine similarity
+    query_norm = torch.nn.functional.normalize(query_tensor, p=2, dim=1)
+    all_norm = torch.nn.functional.normalize(all_tensor, p=2, dim=1)
+
+    # Compute similarity matrix: (num_query_frags, 768) @ (768, num_all_frags)
+    similarity_matrix = torch.mm(query_norm, all_norm.t())
+
+    return similarity_matrix.cpu().numpy()
+
+def build_reranking_prompt(query_post, candidate_posts):
+    """Build prompt for Claude to re-rank search results"""
+    prompt = f"""You are a semantic search relevance evaluator. Given a search query and a list of posts, score each post's relevance to the query from 0-100.
+
+Query:
+Title: {query_post.get('title', '')}
+Summary: {query_post.get('summary', '')}
+Detail: {query_post.get('body', '')}
+
+IMPORTANT: Score based on DIRECT relevance to the query topic. Posts must contain actual content about the query subject, not just tangential associations or superficial word matches.
+
+Posts to evaluate:
+"""
+
+    for post in candidate_posts:
+        prompt += f"""
+Post ID {post['id']}:
+Title: {post.get('title', '')}
+Summary: {post.get('summary', '')}
+Body: {post.get('body', '')}
+---
+"""
+
+    prompt += """
+For each post, evaluate:
+- Does the post DIRECTLY address the query topic?
+- Is there concrete, specific content related to the query?
+- Would someone searching for this query find this post genuinely useful?
+
+Return ONLY a JSON array with this exact format:
+[{"id": <post_id>, "score": <0-100>}, ...]
+
+Score from 0-100 where:
+- 0-39: Not relevant - no meaningful connection to query topic
+- 40-59: Somewhat relevant - mentions related concepts but not the main topic
+- 60-79: Relevant - directly addresses the query topic
+- 80-100: Highly relevant - comprehensive, specific content about the query topic
+
+Sort by score descending (highest first).
+"""
+
+    return prompt
+
+def get_cached_llm_results(prompt, model_name):
+    """Check cache for LLM results"""
+    try:
+        # Compute prompt hash
+        prompt_hash = hashlib.sha256(prompt.encode()).hexdigest()
+
+        # Query database
+        conn = db.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT llm_results FROM search_cache
+            WHERE prompt_hash = %s AND model_name = %s
+        """, (prompt_hash, model_name))
+
+        result = cursor.fetchone()
+        db.return_connection(conn)
+
+        if result:
+            llm_results = json.loads(result[0])
+            logger.info(f"[CACHE] ✓ HIT for hash {prompt_hash[:8]}... ({len(llm_results)} results)")
+            return llm_results
+
+        logger.info(f"[CACHE] ✗ MISS for hash {prompt_hash[:8]}...")
+        return None
+
+    except Exception as e:
+        logger.error(f"[CACHE] Error reading cache: {e}")
+        return None
+
+def store_llm_results(prompt, model_name, llm_results):
+    """Store LLM results in cache"""
+    try:
+        # Compute prompt hash
+        prompt_hash = hashlib.sha256(prompt.encode()).hexdigest()
+
+        # Serialize results
+        results_json = json.dumps(llm_results)
+
+        # Insert into database
+        conn = db.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO search_cache (prompt_hash, model_name, llm_results)
+            VALUES (%s, %s, %s)
+            ON CONFLICT (prompt_hash) DO NOTHING
+        """, (prompt_hash, model_name, results_json))
+
+        conn.commit()
+        db.return_connection(conn)
+
+        logger.info(f"[CACHE] Stored results for hash {prompt_hash[:8]}...")
+
+    except Exception as e:
+        logger.error(f"[CACHE] Error storing cache: {e}")
+
+def llm_rerank_posts(query_post, candidate_posts):
+    """Use Claude Haiku to re-rank search results"""
+    try:
+        # Get API key from config
+        api_key = config.get_anthropic_api_key()
+        if not api_key:
+            raise Exception("ANTHROPIC_API_KEY not found in environment")
+
+        # Initialize Anthropic client
+        client = Anthropic(api_key=api_key)
+
+        # Build prompt
+        prompt = build_reranking_prompt(query_post, candidate_posts)
+
+        logger.info(f"[LLM] Prompt being sent to Claude:\n{prompt}")
+
+        # CHECK CACHE FIRST
+        cached_results = get_cached_llm_results(prompt, LLM_MODEL)
+        if cached_results is not None:
+            return cached_results
+
+        # Call Claude Haiku API
+        import time
+        logger.info("[LLM] Calling Claude Haiku for re-ranking...")
+        start_time = time.time()
+        response = client.messages.create(
+            model=LLM_MODEL,
+            max_tokens=2000,
+            temperature=0.0,
+            messages=[{
+                "role": "user",
+                "content": prompt
+            }]
+        )
+        end_time = time.time()
+        api_duration = end_time - start_time
+        logger.info(f"[LLM] API call completed in {api_duration:.2f} seconds")
+
+        # Parse JSON response
+        response_text = response.content[0].text
+        logger.info(f"[LLM] Raw response: {response_text}")
+
+        # Extract JSON from response (handle potential markdown code blocks and extra text)
+        json_text = response_text.strip()
+
+        if "```json" in json_text:
+            json_start = json_text.find("```json") + 7
+            json_end = json_text.find("```", json_start)
+            json_text = json_text[json_start:json_end].strip()
+        elif "```" in json_text:
+            json_start = json_text.find("```") + 3
+            json_end = json_text.find("```", json_start)
+            json_text = json_text[json_start:json_end].strip()
+        else:
+            # Find the JSON array start (may have explanatory text before it)
+            array_start = json_text.find('[')
+            if array_start >= 0:
+                json_text = json_text[array_start:]
+                # Find matching closing bracket
+                bracket_count = 0
+                for i, char in enumerate(json_text):
+                    if char == '[':
+                        bracket_count += 1
+                    elif char == ']':
+                        bracket_count -= 1
+                        if bracket_count == 0:
+                            json_text = json_text[:i+1]
+                            break
+
+        logger.info(f"[LLM] Extracted JSON text: {json_text[:200]}...")
+        scores = json.loads(json_text)
+        logger.info(f"[LLM] Successfully parsed {len(scores)} scores")
+
+        # STORE IN CACHE
+        store_llm_results(prompt, LLM_MODEL, scores)
+
+        return scores
+
+    except Exception as e:
+        logger.error(f"[LLM] Re-ranking failed: {e}", exc_info=True)
+        raise
 
 @app.route('/api/restart', methods=['POST'])
 def restart():
@@ -1138,6 +1749,24 @@ def startup_health_check():
     except Exception as e:
         logger.critical(f"[HEALTH] Database connection test failed: {e}")
         sys.exit(1)
+
+    # Check 4: Create search_cache table if needed
+    logger.info("[HEALTH] Creating search_cache table if needed...")
+    try:
+        db.create_search_cache_table()
+        logger.info("[HEALTH] Search cache table ready")
+    except Exception as e:
+        logger.warning(f"[HEALTH] Failed to create search_cache table: {e}")
+        logger.warning("[HEALTH] Search caching will be disabled")
+
+    # Check 5: Create query_results table if needed
+    logger.info("[HEALTH] Creating query_results table if needed...")
+    try:
+        db.create_query_results_table()
+        logger.info("[HEALTH] Query results table ready")
+    except Exception as e:
+        logger.warning(f"[HEALTH] Failed to create query_results table: {e}")
+        logger.warning("[HEALTH] Query result caching will be disabled")
 
     logger.info("=" * 60)
     logger.info("[HEALTH] All startup checks passed!")

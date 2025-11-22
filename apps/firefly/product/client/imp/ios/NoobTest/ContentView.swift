@@ -27,6 +27,9 @@ struct ContentView: View {
     @State private var searchViewId = UUID()
     @State private var usersViewId = UUID()
 
+    // Track if any post is being edited (to fade out toolbar)
+    @State private var isAnyPostEditing = false
+
     var body: some View {
         ZStack {
             // Background color
@@ -66,7 +69,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        PostsView(initialPosts: makePostPosts, onPostCreated: { fetchMakePostPosts() }, showAddButton: true, templateName: "post", customAddButtonText: nil)
+                        PostsView(initialPosts: makePostPosts, onPostCreated: { fetchMakePostPosts() }, showAddButton: true, templateName: "post", customAddButtonText: nil, isAnyPostEditing: $isAnyPostEditing)
                             .id(makePostViewId)
                     }
                 }
@@ -103,7 +106,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        PostsView(initialPosts: searchPosts, onPostCreated: { fetchSearchPosts() }, showAddButton: true, templateName: "query", customAddButtonText: nil)
+                        PostsView(initialPosts: searchPosts, onPostCreated: { fetchSearchPosts() }, showAddButton: true, templateName: "query", customAddButtonText: nil, isAnyPostEditing: $isAnyPostEditing)
                             .id(searchViewId)
                     }
                 }
@@ -140,7 +143,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        PostsView(initialPosts: usersPosts, onPostCreated: { fetchUsersPosts() }, showAddButton: true, templateName: "profile", customAddButtonText: "Invite Friend")
+                        PostsView(initialPosts: usersPosts, onPostCreated: { fetchUsersPosts() }, showAddButton: true, templateName: "profile", customAddButtonText: "Invite Friend", isAnyPostEditing: $isAnyPostEditing)
                             .id(usersViewId)
                     }
                 }
@@ -158,6 +161,9 @@ struct ContentView: View {
                     onResetSearch: { searchViewId = UUID() },
                     onResetUsers: { usersViewId = UUID() }
                 )
+                .opacity(isAnyPostEditing ? 0 : 1)  // Fade out when editing
+                .allowsHitTesting(!isAnyPostEditing)  // Disable interaction when editing
+                .animation(.easeInOut(duration: 0.3), value: isAnyPostEditing)  // Smooth fade
                 .ignoresSafeArea(.keyboard)  // Keep toolbar visible when keyboard appears
             }
         }

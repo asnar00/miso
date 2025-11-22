@@ -1,27 +1,7 @@
 ---
 name: eos-watch-logs
 description: Start real-time log streaming from connected Android device using adb logcat. Shows only app's log messages. Use when monitoring app behavior, debugging, or viewing Android logs.
-delegate: true
 ---
-
-## ⚠️ DELEGATION REQUIRED
-
-**This skill must be executed by the instruction-follower subagent.**
-
-When you see this skill invoked, you MUST use the Task tool to delegate it:
-
-```
-Task(
-    subagent_type="instruction-follower",
-    description="[Brief 3-5 word description]",
-    prompt="Follow the instructions in .claude/skills/eos-watch-logs/skill.md to [complete task description]."
-)
-```
-
-**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
-
----
-
 
 # Android/e/OS Watch Logs
 

@@ -372,6 +372,35 @@ class Database:
         finally:
             self.return_connection(conn)
 
+    def delete_post(self, post_id: int) -> bool:
+        """
+        Delete a post from the database.
+
+        Args:
+            post_id: ID of the post to delete
+
+        Returns:
+            True if successful, False otherwise
+        """
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                # Check if post exists
+                cur.execute("SELECT id FROM posts WHERE id = %s", (post_id,))
+                if cur.fetchone() is None:
+                    return False
+
+                # Delete the post (child posts will have parent_id set to NULL due to ON DELETE SET NULL)
+                cur.execute("DELETE FROM posts WHERE id = %s", (post_id,))
+                conn.commit()
+                return True
+        except Exception as e:
+            conn.rollback()
+            print(f"Error deleting post: {e}")
+            return False
+        finally:
+            self.return_connection(conn)
+
     def get_post_by_id(self, post_id: int) -> Optional[Dict[str, Any]]:
         """Get a post by ID"""
         conn = self.get_connection()
@@ -718,7 +747,7 @@ class Database:
                 query = """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
-                           p.template_name,
+                           p.template_name, p.has_new_matches,
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email,
@@ -748,7 +777,7 @@ class Database:
                     query += " WHERE " + " AND ".join(conditions)
 
                 # Group by
-                query += " GROUP BY p.id, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name"
+                query += " GROUP BY p.id, p.has_new_matches, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name"
 
                 # Sort order - if profile tag, sort by user activity, otherwise by post date
                 if tags and "profile" in tags:
@@ -811,6 +840,244 @@ class Database:
             conn.rollback()
             print(f"Error setting post parent: {e}")
             return False
+        finally:
+            self.return_connection(conn)
+
+    def create_search_cache_table(self):
+        """Create search_cache table for LLM result caching"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS search_cache (
+                        prompt_hash TEXT PRIMARY KEY,
+                        model_name TEXT NOT NULL,
+                        llm_results TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
+
+                cur.execute("""
+                    CREATE INDEX IF NOT EXISTS idx_search_cache_model
+                    ON search_cache(model_name)
+                """)
+
+                conn.commit()
+                print("Search cache table created successfully")
+        except Exception as e:
+            conn.rollback()
+            print(f"Error creating search_cache table: {e}")
+        finally:
+            self.return_connection(conn)
+
+    def create_query_results_table(self):
+        """Create query_results table for cached search results"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                # Create query_results table
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS query_results (
+                        id SERIAL PRIMARY KEY,
+                        query_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+                        post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+                        relevance_score FLOAT NOT NULL,
+                        matched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        UNIQUE(query_id, post_id)
+                    )
+                """)
+
+                # Create indexes for fast queries
+                cur.execute("""
+                    CREATE INDEX IF NOT EXISTS idx_query_results_query_id
+                    ON query_results(query_id)
+                """)
+
+                cur.execute("""
+                    CREATE INDEX IF NOT EXISTS idx_query_results_score
+                    ON query_results(query_id, relevance_score DESC)
+                """)
+
+                # Add has_new_matches column to posts table
+                cur.execute("""
+                    ALTER TABLE posts
+                    ADD COLUMN IF NOT EXISTS has_new_matches BOOLEAN DEFAULT FALSE
+                """)
+
+                conn.commit()
+                print("Query results table created successfully")
+        except Exception as e:
+            conn.rollback()
+            print(f"Error creating query_results table: {e}")
+        finally:
+            self.return_connection(conn)
+
+    def get_posts_by_template(self, template_name: str) -> List[tuple]:
+        """Get all posts with specific template"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT id, user_id, parent_id, title, summary, body, image_url,
+                           created_at, timezone, location_tag, ai_generated, template_name,
+                           has_new_matches
+                    FROM posts
+                    WHERE template_name = %s
+                """, (template_name,))
+                return cur.fetchall()
+        except Exception as e:
+            print(f"Error getting posts by template: {e}")
+            return []
+        finally:
+            self.return_connection(conn)
+
+    def insert_query_result(self, query_id: int, post_id: int, score: float):
+        """Insert or update a query result match"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO query_results (query_id, post_id, relevance_score, matched_at)
+                    VALUES (%s, %s, %s, NOW())
+                    ON CONFLICT (query_id, post_id)
+                    DO UPDATE SET relevance_score = %s, matched_at = NOW()
+                """, (query_id, post_id, score, score))
+                conn.commit()
+        except Exception as e:
+            conn.rollback()
+            print(f"Error inserting query result: {e}")
+        finally:
+            self.return_connection(conn)
+
+    def set_has_new_matches(self, query_id: int, value: bool):
+        """Set the has_new_matches flag for a query"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE posts SET has_new_matches = %s WHERE id = %s
+                """, (value, query_id))
+                conn.commit()
+        except Exception as e:
+            conn.rollback()
+            print(f"Error setting has_new_matches: {e}")
+        finally:
+            self.return_connection(conn)
+
+    def record_query_view(self, user_email: str, query_id: int):
+        """Record that a user viewed a query's results"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO query_views (query_id, user_email, last_viewed_at)
+                    VALUES (%s, %s, CURRENT_TIMESTAMP)
+                    ON CONFLICT (query_id, user_email)
+                    DO UPDATE SET last_viewed_at = CURRENT_TIMESTAMP
+                """, (query_id, user_email))
+                conn.commit()
+        except Exception as e:
+            conn.rollback()
+            print(f"Error recording query view: {e}")
+        finally:
+            self.return_connection(conn)
+
+    def update_last_match_added(self, query_id: int):
+        """Update the last_match_added_at timestamp for a query"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE posts
+                    SET last_match_added_at = CURRENT_TIMESTAMP
+                    WHERE id = %s
+                """, (query_id,))
+                conn.commit()
+        except Exception as e:
+            conn.rollback()
+            print(f"Error updating last_match_added_at: {e}")
+        finally:
+            self.return_connection(conn)
+
+    def get_has_new_matches_bulk(self, user_email: str, query_ids: List[int]) -> dict:
+        """Get has_new_matches flags for multiple queries for a specific user
+        Returns: dict mapping query_id -> bool
+        A query has new matches if:
+        - last_match_added_at > last_viewed_at (or never viewed)
+        """
+        if not query_ids:
+            return {}
+
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                # Check if last_match_added_at > last_viewed_at for each query
+                # If user has never viewed a query, treat as having new matches if any matches exist
+                cur.execute("""
+                    SELECT
+                        p.id,
+                        CASE
+                            WHEN qv.last_viewed_at IS NULL THEN
+                                p.last_match_added_at IS NOT NULL
+                            ELSE
+                                p.last_match_added_at > qv.last_viewed_at
+                        END as has_new
+                    FROM posts p
+                    LEFT JOIN query_views qv
+                        ON p.id = qv.query_id
+                        AND qv.user_email = %s
+                    WHERE p.id = ANY(%s)
+                """, (user_email, query_ids))
+                results = cur.fetchall()
+                return {row[0]: row[1] for row in results}
+        except Exception as e:
+            print(f"Error getting has_new_matches bulk: {e}")
+            return {}
+        finally:
+            self.return_connection(conn)
+
+    def get_query_results(self, query_id: int) -> List[tuple]:
+        """Get cached results for a query, sorted by post creation date (most recent first)"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT qr.post_id, qr.relevance_score, qr.matched_at
+                    FROM query_results qr
+                    JOIN posts p ON qr.post_id = p.id
+                    WHERE qr.query_id = %s
+                    ORDER BY p.created_at DESC, qr.relevance_score DESC
+                """, (query_id,))
+                return cur.fetchall()
+        except Exception as e:
+            print(f"Error getting query results: {e}")
+            return []
+        finally:
+            self.return_connection(conn)
+
+    def clear_query_results(self, query_id: int):
+        """Clear all cached results for a query (used when query is edited)"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM query_results WHERE query_id = %s", (query_id,))
+                conn.commit()
+        except Exception as e:
+            conn.rollback()
+            print(f"Error clearing query results: {e}")
+        finally:
+            self.return_connection(conn)
+
+    def clear_post_from_results(self, post_id: int):
+        """Clear all query results for a specific post (used when post is edited)"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM query_results WHERE post_id = %s", (post_id,))
+                conn.commit()
+        except Exception as e:
+            conn.rollback()
+            print(f"Error clearing post from query results: {e}")
         finally:
             self.return_connection(conn)
 

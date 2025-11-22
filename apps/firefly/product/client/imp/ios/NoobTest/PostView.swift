@@ -21,11 +21,12 @@ struct PostView: View {
     let post: Post
     let isExpanded: Bool
     var isEditing: Bool = false  // Passed from parent to control edit state
+    var showNotificationBadge: Bool = false  // Passed from parent (polled state)
     let onTap: () -> Void
     let onPostCreated: () -> Void
     let onNavigateToChildren: ((Int) -> Void)?
     let onNavigateToProfile: ((String, Post) -> Void)?  // backLabel, profilePost
-    let onNavigateToQueryResults: ((String, String) -> Void)?  // query, backLabel
+    let onNavigateToQueryResults: ((Int, String) -> Void)?  // queryPostId, backLabel
     let onPostUpdated: ((Post) -> Void)?
     let onStartEditing: (() -> Void)?  // Called when entering edit mode
 
@@ -59,6 +60,7 @@ struct PostView: View {
     @State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var selectedImage: UIImage? = nil
     @State private var newImageData: Data? = nil  // Processed image data ready for upload
+    @State private var showDeleteConfirmation: Bool = false
     @State private var newImage: UIImage? = nil  // Processed image for display
     @State private var authorHasProfile: Bool = true  // Assume true until checked
 
@@ -307,6 +309,33 @@ struct PostView: View {
         }.resume()
     }
 
+    private func deletePost() {
+        Logger.shared.info("[PostView] Deleting post \(post.id)")
+
+        guard let url = URL(string: "\(serverURL)/api/posts/\(post.id)") else {
+            Logger.shared.error("[PostView] Invalid URL for delete")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                Logger.shared.error("[PostView] Delete error: \(error.localizedDescription)")
+                return
+            }
+
+            DispatchQueue.main.async {
+                Logger.shared.info("[PostView] Post \(self.post.id) deleted successfully")
+                // Broadcast deletion globally so all views can remove this post
+                PostDeletionNotifier.shared.notifyPostDeleted(self.post.id)
+                // Call onDelete to remove this view from the interface
+                self.onDelete?()
+            }
+        }.resume()
+    }
+
     // Image display - shows new image or loads from URL
     @ViewBuilder
     private func imageView(width: CGFloat, height: CGFloat, imageUrl: String) -> some View {
@@ -383,7 +412,7 @@ struct PostView: View {
         if post.template == "query" {
             // Query posts: navigate to search results
             if let navigate = onNavigateToQueryResults {
-                navigate(post.title, post.title)
+                navigate(post.id, post.title)  // Pass post ID and use title as back label
             }
         } else if hasChildren {
             // Posts with children: navigate to children view
@@ -723,75 +752,6 @@ struct PostView: View {
                     }
                 }
                 .padding(.leading, 16)  // Align with body text, moved 2pts left
-
-                Spacer()
-
-                // Edit/save/cancel buttons on right (only for own posts in expanded view)
-                if isOwnPost && isExpanded {
-                    HStack(spacing: 8) {
-                        if !isEditing {
-                            // Edit mode: single pencil button
-                            Button(action: {
-                                Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
-                                onStartEditing?()
-                            }) {
-                                Image(systemName: "pencil.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.black.opacity(0.6))
-                            }
-                            .uiAutomationId("edit-button") {
-                                onStartEditing?()
-                            }
-                        } else {
-                            // Editing mode: undo and tick buttons
-                            Button(action: {
-                                if let onDelete = onDelete {
-                                    // New post: delete it
-                                    Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
-                                    onDelete()
-                                } else {
-                                    // Existing post: revert changes
-                                    Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
-                                    editableTitle = post.title
-                                    editableSummary = post.summary
-                                    editableBody = post.body
-                                    editableImageUrl = post.imageUrl
-                                    newImageData = nil
-                                    newImage = nil
-                                    imageAspectRatio = originalImageAspectRatio
-                                    onEndEditing?()
-                                }
-                            }) {
-                                Image(systemName: "arrow.uturn.backward.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.red.opacity(0.6))
-                            }
-                            .uiAutomationId("cancel-button") {
-                                if let onDelete = onDelete {
-                                    onDelete()
-                                } else {
-                                    editableTitle = post.title
-                                    editableSummary = post.summary
-                                    editableBody = post.body
-                                    onEndEditing?()
-                                }
-                            }
-
-                            Button(action: {
-                                savePost()
-                            }) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.green.opacity(0.6))
-                            }
-                            .uiAutomationId("save-button") {
-                                savePost()
-                            }
-                        }
-                    }
-                    .padding(.trailing, 18)
-                    .opacity(expansionFactor)  // Fade in with expansion
-                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .offset(x: 0, y: authorY)
@@ -899,25 +859,111 @@ struct PostView: View {
             }
 
             // Child indicator overlay - show if post has children OR if it's a query (search button) OR if it's an own post with no children
-            if (post.childCount ?? 0) > 0 || post.template == "query" || ((post.childCount ?? 0) == 0 && isOwnPost) {
+            // BUT don't show when editing
+            if !isEditing && ((post.childCount ?? 0) > 0 || post.template == "query" || ((post.childCount ?? 0) == 0 && isOwnPost)) {
                 // Interpolate size and position based on expansionFactor
                 let collapsedSize: CGFloat = 32
                 let expandedSize: CGFloat = 42
                 let currentSize = lerp(collapsedSize, expandedSize, expansionFactor)
 
                 // Collapsed: right edge with -6pt padding + 32pt, vertically centered
-                // Expanded: 16pt from top, 16pt from right + 32pt
+                // Expanded: same horizontal position, vertically centered
                 let collapsedX: CGFloat = 350 + 6 + 32 - (collapsedSize / 2)  // Right edge with -6pt padding + 32pt offset
-                let expandedX: CGFloat = 350 - 16 + 32 - (expandedSize / 2)   // 16pt from right edge + 32pt offset
+                let expandedX: CGFloat = 350 + 6 + 32 - (expandedSize / 2)    // Same horizontal position
                 let currentX = lerp(collapsedX, expandedX, expansionFactor)
 
                 let collapsedY: CGFloat = currentHeight / 2  // Vertically centered
-                let expandedY: CGFloat = 16 + (expandedSize / 2)  // 16pt from top
+                let expandedY: CGFloat = currentHeight / 2   // Also vertically centered
                 let currentY = lerp(collapsedY, expandedY, expansionFactor)
 
                 childIndicatorButton
                     .frame(width: currentSize, height: currentSize)
                     .offset(x: currentX - currentSize/2, y: currentY - currentSize/2)
+            }
+
+            // Edit button overlay - positioned in top-right corner (only for own posts when expanded, not editing)
+            if isOwnPost && isExpanded && !isEditing {
+                Button(action: {
+                    Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
+                    onStartEditing?()
+                }) {
+                    Image(systemName: "pencil.circle.fill")
+                        .font(.system(size: 32))
+                        .foregroundColor(.black.opacity(0.6))
+                }
+                .offset(x: CGFloat(tunables.getDouble("edit-button-x", default: 334)) - 32, y: 16)  // Top-right corner
+                .opacity(expansionFactor)  // Fade in with expansion
+                .uiAutomationId("edit-button") {
+                    onStartEditing?()
+                }
+            }
+
+            // Edit action buttons overlay - positioned in bottom right corner (only when editing)
+            if isOwnPost && isExpanded && isEditing {
+                HStack(spacing: CGFloat(tunables.getDouble("edit-button-spacing", default: 8))) {
+                    // Delete button (only for saved posts)
+                    if post.id > 0 {
+                        Button(action: {
+                            Logger.shared.info("[PostView] Delete post button tapped for post \(post.id)")
+                            showDeleteConfirmation = true
+                        }) {
+                            Image(systemName: "trash.circle.fill")
+                                .font(.system(size: 32))
+                                .foregroundColor(.red.opacity(0.6))
+                        }
+                        .uiAutomationId("delete-post-button") {
+                            showDeleteConfirmation = true
+                        }
+                    }
+
+                    // Undo button
+                    Button(action: {
+                        if let onDelete = onDelete {
+                            // New post: delete it
+                            Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
+                            onDelete()
+                        } else {
+                            // Existing post: revert changes
+                            Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
+                            editableTitle = post.title
+                            editableSummary = post.summary
+                            editableBody = post.body
+                            editableImageUrl = post.imageUrl
+                            newImageData = nil
+                            newImage = nil
+                            imageAspectRatio = originalImageAspectRatio
+                            onEndEditing?()
+                        }
+                    }) {
+                        Image(systemName: "arrow.uturn.backward.circle.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.red.opacity(0.6))
+                    }
+                    .uiAutomationId("cancel-button") {
+                        if let onDelete = onDelete {
+                            onDelete()
+                        } else {
+                            editableTitle = post.title
+                            editableSummary = post.summary
+                            editableBody = post.body
+                            onEndEditing?()
+                        }
+                    }
+
+                    // Save button
+                    Button(action: {
+                        savePost()
+                    }) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.green.opacity(0.6))
+                    }
+                    .uiAutomationId("save-button") {
+                        savePost()
+                    }
+                }
+                .offset(x: CGFloat(tunables.getDouble("edit-button-x", default: 334)) - 120, y: currentHeight - 48)  // Bottom-right corner
+                .opacity(expansionFactor)  // Fade in with expansion
             }
 
         }
@@ -943,6 +989,14 @@ struct PostView: View {
                 }
             }
         )
+        .overlay(alignment: .topTrailing) {
+            if showNotificationBadge {
+                Circle()
+                    .fill(Color.red)
+                    .frame(width: 8, height: 8)
+                    .offset(x: -8, y: 8)
+            }
+        }
         .onTapGesture {
             // Disable collapse when editing
             if !isEditing {
@@ -956,7 +1010,7 @@ struct PostView: View {
                     if value.translation.width < -30 && ((post.childCount ?? 0) > 0 || post.template == "query") {
                         // Check if this is a query post
                         if post.template == "query" {
-                            onNavigateToQueryResults?(post.title, post.title)
+                            onNavigateToQueryResults?(post.id, post.title)  // Pass post ID and title as back label
                         } else {
                             onNavigateToChildren?(post.id)
                         }
@@ -992,6 +1046,14 @@ struct PostView: View {
                     expansionFactor = 0.0
                 }
             }
+        }
+        .alert("Delete Post", isPresented: $showDeleteConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                deletePost()
+            }
+        } message: {
+            Text("Are you sure you want to permanently delete this post?")
         }
     }
 

@@ -1,27 +1,7 @@
 ---
 name: py-server-logs
 description: View Flask server logs from local or remote server. Shows real-time or recent log entries for debugging. Use when monitoring server activity, debugging issues, or checking server status.
-delegate: true
 ---
-
-## ⚠️ DELEGATION REQUIRED
-
-**This skill must be executed by the instruction-follower subagent.**
-
-When you see this skill invoked, you MUST use the Task tool to delegate it:
-
-```
-Task(
-    subagent_type="instruction-follower",
-    description="[Brief 3-5 word description]",
-    prompt="Follow the instructions in .claude/skills/py-server-logs/skill.md to [complete task description]."
-)
-```
-
-**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
-
----
-
 
 # Python Server Logs
 

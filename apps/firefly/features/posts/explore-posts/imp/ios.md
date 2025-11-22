@@ -228,7 +228,8 @@ struct PostView: View {
             // Existing post content...
 
             // Child indicator overlay - animated using expansionFactor
-            if (post.childCount ?? 0) > 0 {
+            // Hidden during edit mode to avoid interfering with edit controls
+            if !isEditing && (post.childCount ?? 0) > 0 {
                 // Interpolate size and position based on expansionFactor
                 let collapsedSize: CGFloat = 32
                 let expandedSize: CGFloat = 42

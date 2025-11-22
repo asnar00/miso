@@ -4,7 +4,7 @@ import SwiftUI
 enum PostsDestination: Hashable {
     case children(parentId: Int)  // Show children of a post
     case profile(backLabel: String, profilePost: Post)  // Show single profile post
-    case queryResults(query: String, backLabel: String)  // Show search results for a query
+    case queryResults(queryPostId: Int, backLabel: String)  // Show search results for a query
 }
 
 struct PostsView: View {
@@ -13,6 +13,7 @@ struct PostsView: View {
     let showAddButton: Bool
     let templateName: String?  // Template name for empty state message
     let customAddButtonText: String?  // Optional custom button text
+    @Binding var isAnyPostEditing: Bool  // Track if any post is being edited
 
     @State private var navigationPath: [PostsDestination] = []
 
@@ -27,7 +28,8 @@ struct PostsView: View {
                 showAddButton: showAddButton,
                 initialExpandedPostId: nil,
                 templateName: templateName,
-                customAddButtonText: customAddButtonText
+                customAddButtonText: customAddButtonText,
+                isAnyPostEditing: $isAnyPostEditing
             )
             .navigationDestination(for: PostsDestination.self) { destination in
                 switch destination {
@@ -35,7 +37,8 @@ struct PostsView: View {
                     ChildPostsListViewWrapper(
                         parentId: parentId,
                         onPostCreated: onPostCreated,
-                        navigationPath: $navigationPath
+                        navigationPath: $navigationPath,
+                        isAnyPostEditing: $isAnyPostEditing
                     )
                 case .profile(let backLabel, let profilePost):
                     PostsListView(
@@ -47,14 +50,16 @@ struct PostsView: View {
                         showAddButton: false,
                         initialExpandedPostId: profilePost.id,
                         templateName: nil,  // Profile view doesn't need template name
-                        customAddButtonText: nil
+                        customAddButtonText: nil,
+                        isAnyPostEditing: $isAnyPostEditing
                     )
-                case .queryResults(let query, let backLabel):
+                case .queryResults(let queryPostId, let backLabel):
                     QueryResultsViewWrapper(
-                        query: query,
+                        queryPostId: queryPostId,
                         backLabel: backLabel,
                         onPostCreated: onPostCreated,
-                        navigationPath: $navigationPath
+                        navigationPath: $navigationPath,
+                        isAnyPostEditing: $isAnyPostEditing
                     )
                 }
             }
@@ -70,6 +75,7 @@ struct ChildPostsListViewWrapper: View {
     let parentId: Int
     let onPostCreated: () -> Void
     @Binding var navigationPath: [PostsDestination]
+    @Binding var isAnyPostEditing: Bool
 
     @State private var parentPost: Post? = nil
     @State private var isLoading = true
@@ -121,7 +127,8 @@ struct ChildPostsListViewWrapper: View {
                     showAddButton: shouldShowAddPostButton,
                     initialExpandedPostId: nil,
                     templateName: nil,  // Child posts don't need template name
-                    customAddButtonText: nil
+                    customAddButtonText: nil,
+                    isAnyPostEditing: $isAnyPostEditing
                 )
             }
         }
@@ -165,10 +172,11 @@ struct ChildPostsListViewWrapper: View {
 
 // Wrapper view that fetches search results for a query
 struct QueryResultsViewWrapper: View {
-    let query: String
+    let queryPostId: Int
     let backLabel: String
     let onPostCreated: () -> Void
     @Binding var navigationPath: [PostsDestination]
+    @Binding var isAnyPostEditing: Bool
 
     @State private var posts: [Post] = []
     @State private var isLoading = true
@@ -181,8 +189,13 @@ struct QueryResultsViewWrapper: View {
                 ZStack {
                     Color(red: 128/255, green: 128/255, blue: 128/255)
                         .ignoresSafeArea()
-                    ProgressView("Searching...")
-                        .foregroundColor(.black)
+                    VStack(spacing: 20) {
+                        Text("ᕦ(ツ)ᕤ")
+                            .font(.system(size: UIScreen.main.bounds.width / 12))
+                            .foregroundColor(.black)
+                        ProgressView("Searching...")
+                            .foregroundColor(.black)
+                    }
                 }
             } else {
                 PostsListView(
@@ -194,7 +207,8 @@ struct QueryResultsViewWrapper: View {
                     showAddButton: false,
                     initialExpandedPostId: nil,
                     templateName: nil,
-                    customAddButtonText: nil
+                    customAddButtonText: nil,
+                    isAnyPostEditing: $isAnyPostEditing
                 )
             }
         }
@@ -204,16 +218,14 @@ struct QueryResultsViewWrapper: View {
     }
 
     func performSearch() {
-        guard !query.isEmpty else {
-            Logger.shared.info("[QueryResultsViewWrapper] Query is empty, skipping search")
-            isLoading = false
-            return
-        }
+        let startTime = Date()
+        Logger.shared.info("[QueryResultsViewWrapper] Searching with query post ID: \(queryPostId)")
 
-        Logger.shared.info("[QueryResultsViewWrapper] Searching for: \(query)")
+        // Get user email for recording view
+        let userEmail = Storage.shared.getLoginState().email ?? ""
+        let encodedEmail = userEmail.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
 
-        let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let urlString = "\(serverURL)/api/search?q=\(encodedQuery)&limit=20"
+        let urlString = "\(serverURL)/api/search?query_id=\(queryPostId)&limit=20&user_email=\(encodedEmail)"
 
         guard let url = URL(string: urlString) else {
             Logger.shared.error("[QueryResultsViewWrapper] Invalid URL: \(urlString)")
@@ -221,7 +233,11 @@ struct QueryResultsViewWrapper: View {
             return
         }
 
+        Logger.shared.info("[QueryResultsViewWrapper] ⏱️ Search request sent at \(startTime)")
         URLSession.shared.dataTask(with: url) { data, response, error in
+            let endTime = Date()
+            let duration = endTime.timeIntervalSince(startTime)
+            Logger.shared.info("[QueryResultsViewWrapper] ⏱️ Search response received in \(String(format: "%.2f", duration)) seconds")
             if let error = error {
                 Logger.shared.error("[QueryResultsViewWrapper] Error: \(error.localizedDescription)")
                 DispatchQueue.main.async {
@@ -314,5 +330,6 @@ struct QueryResultsViewWrapper: View {
 }
 
 #Preview {
-    PostsView(initialPosts: [], onPostCreated: {}, showAddButton: true, templateName: nil, customAddButtonText: nil)
+    @Previewable @State var isEditing = false
+    PostsView(initialPosts: [], onPostCreated: {}, showAddButton: true, templateName: nil, customAddButtonText: nil, isAnyPostEditing: $isEditing)
 }

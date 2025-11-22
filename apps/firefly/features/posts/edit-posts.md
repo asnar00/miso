@@ -14,13 +14,18 @@ When the user taps the "Add Post" button at the top of the list:
 - No page refresh occurs - the list doesn't collapse or jump
 
 **Editing Existing Posts:**
-When viewing an expanded post, users who own the post see a pencil icon button in the author information bar at the bottom of the post.
+When viewing an expanded post, users who own the post see a pencil icon button in the top-right corner.
 
 **Entering Edit Mode:**
 When the user taps the pencil button:
 - The title, summary, and body text all become editable with text fields
 - Light grey backgrounds appear around each editable section
-- The pencil button is replaced with two buttons: a red undo arrow (cancel) and a green checkmark (save)
+- The pencil button disappears and three action buttons appear in the bottom-right corner:
+  - Delete button (red trash, only for saved posts)
+  - Undo button (red arrow, cancels changes)
+  - Save button (green checkmark, saves changes)
+- The child indicator button (+ button in right edge) is hidden during editing
+- The bottom toolbar fades out and becomes non-interactive while editing
 - Text can be edited freely in all three fields
 - As the user types in the body, the post height adjusts automatically to fit the content
 - If the post has an image, it displays with a red trash button to delete the image
@@ -33,13 +38,18 @@ When the user taps the pencil button:
 - Body: multi-line text editor with dynamic height
 - Placeholder text (55% grey opacity) appears in empty fields with labels like "Title", "Summary", "Body"
 - Some posts have custom placeholder text (e.g., "name", "mission", "personal statement")
-- Edit buttons appear in the author bar next to the author's name
-- Image edit buttons (when image exists): three buttons overlaid on top-right corner
+- Edit button (not editing): Single pencil icon in top-right corner (32pt, black at 60% opacity)
+- Edit action buttons (while editing): Horizontal row in bottom-right corner
+  - Delete button (saved posts only): red trash icon (32pt, red at 60% opacity)
+  - Undo button: red arrow icon (32pt, red at 60% opacity)
+  - Save button: green checkmark icon (32pt, green at 60% opacity)
+- Image edit buttons (when image exists): three buttons overlaid on top-right corner of image
   - Red trash icon (trash.circle.fill) - delete image
   - Blue photo icon (photo.circle.fill) - replace from photo library
   - Green camera icon (camera.circle.fill) - take new photo with camera
 - Add Image button (when no image): black text with black outline, "photo.badge.plus" icon
-- Cancel button: red undo arrow icon (arrow.uturn.backward.circle.fill)
+- Navigate to children button: stays at right edge, vertically centered, visible when not editing
+- Bottom toolbar: fades out (0.3s animation) and becomes non-interactive during edit mode
 
 **Editing Experience:**
 - No spell-check red underlines appear while editing
@@ -84,5 +94,20 @@ When the user taps the red undo arrow:
 - Original image aspect ratio is restored (existing posts only)
 - Edit mode exits, showing the pencil button again (existing posts only)
 
-**Location:**
-Edit controls appear in the author information bar at the bottom of expanded posts, integrated with the author's name display.
+**Deleting Posts:**
+When the user taps the red trash button (bottom-right corner, visible only for saved posts in edit mode):
+- A confirmation dialog appears: "Delete Post" with message "Are you sure you want to permanently delete this post?"
+- Dialog has two buttons: "Cancel" (safe) and "Delete" (red, destructive)
+- If user confirms deletion:
+  - The post is permanently deleted from the server
+  - The post disappears from all views in the app simultaneously (main list, search results, child views, etc.)
+  - The deletion is irreversible
+- This button only appears for saved posts (not new unsaved posts)
+
+**Button Layout:**
+- Edit button (not editing): top-right corner at (edit-button-x - 32, 16pt) where edit-button-x defaults to 334pt
+- Edit action buttons (while editing): horizontal row in bottom-right at (edit-button-x - 120, currentHeight - 48)
+  - Buttons spaced 8pt apart (tunable: edit-button-spacing)
+  - Order: delete (if saved post), undo, save
+- Navigate to children button: right edge with -6pt padding + 32pt offset, vertically centered
+- All button positions use tunable constants for fine-tuning

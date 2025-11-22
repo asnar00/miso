@@ -3,25 +3,6 @@ name: update-skill
 description: Update an existing skill based on troubleshooting or improvements discovered during usage. Use when user asks to "update a skill", "improve the skill", "fix the skill instructions", or after resolving issues with a skill execution.
 ---
 
-## ⚠️ DELEGATION REQUIRED
-
-**This skill must be executed by the instruction-follower subagent.**
-
-When you see this skill invoked, you MUST use the Task tool to delegate it:
-
-```
-Task(
-    subagent_type="instruction-follower",
-    description="[Brief 3-5 word description]",
-    prompt="Follow the instructions in .claude/skills/update-skill/skill.md to [complete task description]."
-)
-```
-
-**DO NOT execute the instructions below directly.** The subagent will read this file and execute autonomously, then report back the results.
-
----
-
-
 # Update Skill
 
 ## Overview

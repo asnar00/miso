@@ -1,7 +1,36 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
-notes: there's a "navigational overhead" when working in the feature tree.
+thoughts on firefly structuring:
+
+"microclub" as a name
+target = a small group of people working together
+eg. marylebone ward - 4-8 people.
+goal = increase the membership of this group
+
+each group has user-list, posts, queries.
+all queries are public to the group, and live.
+each new post gets matched against a query.
+search results should be weighted by recent-first.
+
+so in other words, you weight posts by people in *your* user list most highly.
+
+the idea is, use randomness to sprinkle in "oddities" in the results. I quite like that.
+
+"random/recent/close"
+
+the measure of "proximity" of a post to you is through distance in the social graph.
+
+if "A invites B" relationships exist, then we can use that (and geographical location) as a measure of proximity.
+
+So "social proximity", "recency", and "randomness" are useful. In other words, we might randomly promote a post that has lower proximity or recency. But everything has to be relevant.
+
+Randomness in ordering is actually under-rated. A good thing about randomness is that it's easy to sell and defend.
+
+
+
+---------
+miso notes: there's a "navigational overhead" when working in the feature tree.
 
 this is why it's better for the agent to maintain the tree for you; you just search it
 

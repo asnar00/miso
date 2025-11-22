@@ -6,6 +6,7 @@ struct SearchResultsView: View {
 
     @State private var posts: [Post] = []
     @State private var isLoading = true
+    @State private var isAnyPostEditing = false
 
     let serverURL = "http://185.96.221.52:8080"
 
@@ -15,7 +16,8 @@ struct SearchResultsView: View {
             onPostCreated: onPostCreated,
             showAddButton: false,
             templateName: nil,  // Search results don't need template name
-            customAddButtonText: nil
+            customAddButtonText: nil,
+            isAnyPostEditing: $isAnyPostEditing
         )
         .onAppear {
             fetchPosts()
