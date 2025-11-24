@@ -1,6 +1,16 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+ideas for next feature:
+
+new post type: poll.
+public queries => shared;
+build in the profile page for interest-matching.
+"add post" should be static at top
+"add post" should also have delete, reorder, group editor buttons?
+
+----------------------
+
 thoughts on firefly structuring:
 
 "microclub" as a name

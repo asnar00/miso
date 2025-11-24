@@ -14,7 +14,7 @@ EMAIL_TO = "ash.nehru@gmail.com"
 SMTP_SERVER = "smtp.office365.com"
 SMTP_PORT = 587
 SMTP_USER = "admin@microclub.org"
-SMTP_PASS = "Conf1dant!"
+SMTP_PASS = "CreateTogetherN0w"
 ```
 
 ## Main Loop

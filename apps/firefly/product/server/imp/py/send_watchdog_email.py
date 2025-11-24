@@ -13,7 +13,7 @@ def send_email(destination, subject, body):
     """Send email using admin@microclub.org"""
     sender_email = "admin@microclub.org"
     sender_name = "microclub"
-    sender_password = "Conf1dant!"
+    sender_password = "CreateTogetherN0w"
     smtp_server = "smtp.office365.com"
     smtp_port = 587
 

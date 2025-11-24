@@ -10,7 +10,7 @@ SERVER_URL="http://localhost:8080/api/ping"
 SMTP_HOST="smtp.office365.com"
 SMTP_PORT="587"
 SMTP_USER="admin@microclub.org"
-SMTP_PASS="Conf1dant!"
+SMTP_PASS="CreateTogetherN0w"
 SMTP_FROM="microclub <admin@microclub.org>"
 NOTIFY_EMAIL="ash.nehru@gmail.com"
 

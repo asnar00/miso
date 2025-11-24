@@ -18,7 +18,7 @@ def send_email(destination, subject, body) -> str:
     # Email account and SMTP server details
     sender_email = "admin@microclub.org"
     sender_name = "microclub"  # The name you want to appear
-    sender_password = "Conf1dant!"  # Replace with the actual password
+    sender_password = "CreateTogetherN0w"  # Replace with the actual password
     smtp_server = "smtp.office365.com"
     smtp_port = 587  # Correct port for using STARTTLS
 
@@ -59,7 +59,7 @@ def receive_email(max_count=10):
     imap_server = "outlook.office365.com"
     imap_port = 993
     email_address = "admin@microclub.org"
-    password = "Conf1dant!"
+    password = "CreateTogetherN0w"
 
     try:
         # Connect to IMAP server with SSL
