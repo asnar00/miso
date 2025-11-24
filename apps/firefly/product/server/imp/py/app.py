@@ -95,7 +95,10 @@ def send_email(destination, subject, body):
     """Send an email from admin@microclub.org"""
     sender_email = "admin@microclub.org"
     sender_name = "microclub"
-    sender_password = "CreateTogetherN0w"
+    sender_password = config.get_config_value('EMAIL_PASSWORD')
+    if not sender_password:
+        logger.error("EMAIL_PASSWORD not set in .env file")
+        return 'failed: EMAIL_PASSWORD not configured'
     smtp_server = "smtp.office365.com"
     smtp_port = 587
 

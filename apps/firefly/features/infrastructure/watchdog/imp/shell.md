@@ -17,12 +17,18 @@ cd "$SCRIPT_DIR"
 
 LOG_FILE="$SCRIPT_DIR/watchdog.log"
 SERVER_URL="http://localhost:8080/api/ping"
+NOTIFY_EMAIL="ash.nehru@gmail.com"
+
+# Load EMAIL_PASSWORD from .env file
+if [ -f "$SCRIPT_DIR/.env" ]; then
+    export $(grep -v '^#' "$SCRIPT_DIR/.env" | grep EMAIL_PASSWORD | xargs)
+fi
+
 SMTP_HOST="smtp.office365.com"
 SMTP_PORT="587"
 SMTP_USER="admin@microclub.org"
-SMTP_PASS="CreateTogetherN0w"
+SMTP_PASS="$EMAIL_PASSWORD"
 SMTP_FROM="microclub <admin@microclub.org>"
-NOTIFY_EMAIL="ash.nehru@gmail.com"
 
 # Logging function
 log() {

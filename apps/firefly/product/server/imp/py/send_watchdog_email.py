@@ -5,15 +5,19 @@ This avoids DNS issues when running from cron
 """
 
 import sys
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import config  # Load .env file
 
 def send_email(destination, subject, body):
     """Send email using admin@microclub.org"""
     sender_email = "admin@microclub.org"
     sender_name = "microclub"
-    sender_password = "CreateTogetherN0w"
+    sender_password = config.get_config_value('EMAIL_PASSWORD')
+    if not sender_password:
+        return 'failed: EMAIL_PASSWORD not configured in .env'
     smtp_server = "smtp.office365.com"
     smtp_port = 587
 
