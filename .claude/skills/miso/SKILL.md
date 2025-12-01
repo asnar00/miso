@@ -20,23 +20,25 @@ Miso specifies programs as a tree of **features**: short (<300 word) natural-lan
 - Use simple language understandable by users
 - Avoid technical jargon and code
 
+**Feature Structure**:
+Each feature lives in its own folder containing:
+- `spec.md`: The feature specification
+- `pseudocode.md`: Natural-language function definitions and patching instructions
+- `ios.md`, `eos.md`, `py.md`: Platform-specific implementations with actual code
+- `imp/`: Folder for other artifacts (logs, debugging notes, test data)
+
 **Feature Hierarchy**:
-- To add detail to feature `A.md`, create subfeature `A/B.md`
-- To add detail to `A/B.md`, create subfeature `A/B/C.md`
+- To add detail to feature `A/spec.md`, create subfeature `A/B/spec.md`
+- To add detail to `A/B/spec.md`, create subfeature `A/B/C/spec.md`
 - Keep manageable: no more than 4-6 children per feature
 - Group and summarize if children get out of control
 
-**Implementation Details** for feature `A/B/C` are stored in `A/B/C/imp/`:
-- `imp/pseudocode.md`: Natural-language function definitions and patching instructions
-- `imp/ios.md`, `imp/eos.md`, `imp/py.md`: Platform-specific implementations with actual code
-- Other artifacts: logs, debugging notes, etc.
-
 ## The Implementation Process
 
-When a user changes feature `A/B.md` or adds a subfeature, the implementation process ensures code is created following this routine:
+When a user changes feature `A/B/spec.md` or adds a subfeature, the implementation process ensures code is created following this routine:
 
 **Step 1: Pseudocode**
-- Check if `A/B/imp/pseudocode.md` is up-to-date
+- Check if `A/B/pseudocode.md` is up-to-date
 - If not, ensure changes to the feature are reflected in pseudocode
 - Pseudocode uses natural language function definitions
 - Include patching instructions (where/how to integrate into product)
@@ -69,24 +71,24 @@ The miso implementation process follows this sequence:
 
 ### 1. Detect Changed Features
 
-Find all feature `.md` files that have changed since the last run:
+Find all feature `spec.md` files that have changed since the last run:
 - Use `git diff` to find modified feature files in `apps/` and `miso/` directories
-- Look for files matching pattern `**/*.md` but exclude `**/imp/**` files
+- Look for files matching pattern `**/spec.md`
 - Track the last run timestamp (stored in `.claude/skills/miso/.last-run`)
 
 ### 2. Update Pseudocode
 
-For each changed feature `A/B.md`:
-- Check if `A/B/imp/pseudocode.md` exists
-- If it exists, read both the feature and pseudocode
-- Determine if pseudocode needs updating based on feature changes
-- If needed, update `A/B/imp/pseudocode.md` to reflect the feature changes
+For each changed feature `A/B/spec.md`:
+- Check if `A/B/pseudocode.md` exists
+- If it exists, read both the spec and pseudocode
+- Determine if pseudocode needs updating based on spec changes
+- If needed, update `A/B/pseudocode.md` to reflect the spec changes
 - Use natural language function definitions and patching instructions
 
 ### 3. Update Platform Implementations
 
 For each feature with updated pseudocode:
-- Check for platform-specific implementations: `A/B/imp/ios.md`, `A/B/imp/eos.md`, `A/B/imp/py.md`
+- Check for platform-specific implementations: `A/B/ios.md`, `A/B/eos.md`, `A/B/py.md`
 - For each existing platform file:
   - Read the pseudocode and platform implementation
   - Determine if platform code needs updating
@@ -175,13 +177,13 @@ After visual verification succeeds and the feature works correctly, **update all
    git diff apps/firefly/product/client/imp/ios/
    ```
 
-2. **Update the feature specification** (`feature.md`):
+2. **Update the feature specification** (`spec.md`):
    - Ensure user-facing description matches final behavior
    - Update visual details (exact colors, sizes, positions)
    - Describe final gesture interactions (thresholds discovered during debugging)
    - Keep <300 words, user-focused language
 
-3. **Update the pseudocode** (`imp/pseudocode.md`):
+3. **Update the pseudocode** (`pseudocode.md`):
    - Capture exact specifications discovered during debugging:
      - Gesture thresholds (e.g., "30pt minimum for left swipe", "100pt for right swipe")
      - UI measurements (e.g., "32pt icon with -8pt trailing padding")
@@ -190,7 +192,7 @@ After visual verification succeeds and the feature works correctly, **update all
    - Update patching instructions to reflect ALL files that need changes
    - Include data structures that were added (e.g., new response types)
 
-4. **Update platform implementations** (`imp/ios.md`, `imp/eos.md`, etc.):
+4. **Update platform implementations** (`ios.md`, `eos.md`, etc.):
    - Replace stub code with complete, working code from actual product files
    - Include ALL target files that needed changes (discovered during debugging)
    - Add exact file paths and line numbers
@@ -199,14 +201,14 @@ After visual verification succeeds and the feature works correctly, **update all
 
 5. **Example Updates**:
 
-   **Feature spec (`explore-posts.md`)**:
+   **Feature spec (`explore-posts/spec.md`)**:
    ```markdown
    **Navigate to Children**: Swipe left on a post with children to navigate to a view showing all its child posts.
 
    **Navigate Back**: Either tap the back button or swipe right anywhere in the child view to return to the parent view.
    ```
 
-   **Pseudocode (`imp/pseudocode.md`)**:
+   **Pseudocode (`explore-posts/pseudocode.md`)**:
    ```markdown
    ## Gesture Handling
 
@@ -220,7 +222,7 @@ After visual verification succeeds and the feature works correctly, **update all
    - Priority: High priority gesture to override ScrollView
    ```
 
-   **Platform spec (`imp/ios.md`)**:
+   **Platform spec (`explore-posts/ios.md`)**:
    ```swift
    // Complete working code with exact measurements
    .gesture(
@@ -269,11 +271,11 @@ Store the last run timestamp in `.claude/skills/miso/.last-run`:
 
 ## Example Workflow
 
-User modifies `apps/firefly/features/background.md` (changes color from turquoise to mauve):
+User modifies `apps/firefly/features/background/spec.md` (changes color from turquoise to mauve):
 
-1. **Detect**: `background.md` changed since last run
-2. **Update Pseudocode**: `apps/firefly/features/background/imp/pseudocode.md` to reflect mauve color
-3. **Update Platform Spec**: `apps/firefly/features/background/imp/ios.md` with new RGB values
+1. **Detect**: `background/spec.md` changed since last run
+2. **Update Pseudocode**: `apps/firefly/features/background/pseudocode.md` to reflect mauve color
+3. **Update Platform Spec**: `apps/firefly/features/background/ios.md` with new RGB values
 4. **Update Product Code**: Initial change to `ContentView.swift` with RGB(224, 176, 255)
 5. **Build & Deploy**: `./install-device.sh`
 6. **Visual Verify (Attempt 1)**:
@@ -290,9 +292,9 @@ User modifies `apps/firefly/features/background.md` (changes color from turquois
    - `grep -r "Color(red: 64/255" NoobTest/`
    - Find 5 more files with old color
 10. **Post-Debug Cleanup**:
-    - Edit `background.md`: Describe grey/dark-red colors as user sees them
-    - Edit `background/imp/pseudocode.md`: Add exact RGB values (128,128,128) and (139,0,0)
-    - Edit `background/imp/ios.md`: List all 6 target files with line numbers and complete code examples
+    - Edit `background/spec.md`: Describe grey/dark-red colors as user sees them
+    - Edit `background/pseudocode.md`: Add exact RGB values (128,128,128) and (139,0,0)
+    - Edit `background/ios.md`: List all 6 target files with line numbers and complete code examples
     - Include search pattern: "Search for all instances of `Color(red:` and replace..."
 11. **Test**: Run `./test-feature.sh background` if test exists
 12. **Track**: Update `.last-run` timestamp

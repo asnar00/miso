@@ -37,7 +37,7 @@ Read the actual product code files that were modified during the implementation:
 - Read the final versions of those files
 - Note specific details: exact measurements, colors, thresholds, API endpoints, etc.
 
-### Step 3: Update Feature Spec (feature.md)
+### Step 3: Update Feature Spec (spec.md)
 
 The feature spec should be:
 - Written for users, not developers
@@ -52,7 +52,7 @@ Update the spec to accurately describe:
 - What happens when they do things
 - Visual details users will notice (colors, icons, positions)
 
-### Step 4: Update Pseudocode (imp/pseudocode.md)
+### Step 4: Update Pseudocode (pseudocode.md)
 
 Update the platform-agnostic pseudocode to reflect:
 - Core data structures actually used
@@ -64,7 +64,7 @@ Update the platform-agnostic pseudocode to reflect:
 
 Include specific numbers and measurements discovered during debugging.
 
-### Step 5: Update Platform Implementation (imp/{platform}.md)
+### Step 5: Update Platform Implementation ({platform}.md)
 
 For each platform implemented, update the implementation doc with:
 - Complete, accurate code examples from the actual product files
@@ -90,9 +90,9 @@ Double-check:
 1. Find feature at `apps/firefly/features/posts/explore-posts/`
 2. Review conversation to identify which files were changed (PostsView.swift, PostView.swift, ChildPostsView.swift, Post.swift)
 3. Read those files to capture the actual implementation
-4. Update `explore-posts.md` with user-facing description
-5. Update `imp/pseudocode.md` with accurate specs (e.g., "swipe threshold: 30pt", "arrow size: 32pt")
-6. Update `imp/ios.md` with complete code from actual files
+4. Update `spec.md` with user-facing description
+5. Update `pseudocode.md` with accurate specs (e.g., "swipe threshold: 30pt", "arrow size: 32pt")
+6. Update `ios.md` with complete code from actual files
 7. Verify all details are accurate
 
 ## Key Principles
@@ -105,23 +105,23 @@ Double-check:
 
 ## Files to Update
 
-**IMPORTANT:** Feature markdown files live ALONGSIDE their implementation directories, not inside them.
+Each feature lives in its own folder with all its files together:
 
 For feature at path `apps/firefly/features/posts/edit-posts`:
 
 ```
 apps/firefly/features/posts/
-├── edit-posts.md              <- Feature spec (ALONGSIDE the directory)
-└── edit-posts/                <- Implementation directory
-    └── imp/
-        ├── pseudocode.md      <- Platform-agnostic implementation
-        ├── ios.md             <- iOS implementation (if applicable)
-        ├── eos.md             <- Android implementation (if applicable)
-        └── py.md              <- Python implementation (if applicable)
+└── edit-posts/                <- Feature directory
+    ├── spec.md                <- Feature specification
+    ├── pseudocode.md          <- Platform-agnostic implementation
+    ├── ios.md                 <- iOS implementation (if applicable)
+    ├── eos.md                 <- Android implementation (if applicable)
+    ├── py.md                  <- Python implementation (if applicable)
+    └── imp/                   <- Other artifacts (logs, test data, etc.)
 ```
 
-**Correct structure:** `A.md` is alongside `A/imp/`
-**Incorrect structure:** `A/A.md` inside `A/imp/`
+**Correct structure:** All feature files (`spec.md`, `pseudocode.md`, `ios.md`, etc.) are in `A/`
+**Incorrect structure:** `A.md` outside the directory
 
 ## Success Criteria
 

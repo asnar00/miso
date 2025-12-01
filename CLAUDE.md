@@ -59,18 +59,28 @@ cd apps/firefly/product/client/imp/ios/
 
 ### Feature Specification System
 
-Programs are specified as hierarchical markdown trees in `miso/`:
+Programs are specified as hierarchical markdown trees. Each feature lives in its own folder:
+
+```
+feature-name/
+├── spec.md           # Feature specification (<300 words, plain language)
+├── pseudocode.md     # Natural-language function definitions and patching instructions
+├── ios.md            # iOS platform implementation
+├── eos.md            # Android/e/OS platform implementation
+├── py.md             # Python platform implementation
+└── imp/              # Other artifacts (logs, test files, debugging notes)
+```
 
 **Structure**:
-- `A.md` → `A/B.md` → `A/B/C.md` (nested features)
-- Each feature: `#` title, *emphasized* one-line summary, <300 words of plain language
-- Implementation details go in `A/B/C/imp/` subdirectories
+- `A/spec.md` → `A/B/spec.md` → `A/B/C/spec.md` (nested features)
+- Each spec: `#` title, *emphasized* one-line summary, <300 words of plain language
 - Keep features manageable: 4-6 children max
 
-**Implementation Hierarchy**:
-- `imp/pseudocode.md` - Natural-language function definitions and patching instructions
-- `imp/{platform}.md` - Platform-specific implementations (ios, eos, py)
-- `imp/` also contains actual code files and debugging artifacts
+**Files**:
+- `spec.md` - The feature specification in plain language for users
+- `pseudocode.md` - Natural-language function definitions and patching instructions
+- `ios.md`, `eos.md`, `py.md` - Platform-specific implementations with actual code
+- `imp/` - Folder for other artifacts (logs, debugging issues, test data)
 
 ### Products vs Features
 
@@ -100,9 +110,9 @@ export JAVA_HOME="/opt/homebrew/opt/openjdk"
 ### iOS Development
 
 **Key Documentation**: `miso/platforms/ios/`
-- `project-editing.md` - Adding files to Xcode without GUI (edit project.pbxproj directly)
-- `build-and-deploy.md` - Complete USB deployment workflow
-- `logging.md` - OSLog/Logger API best practices
+- `setup/project-editing/spec.md` - Adding files to Xcode without GUI (edit project.pbxproj directly)
+- `build-and-deploy/spec.md` - Complete USB deployment workflow
+- `development/logging/spec.md` - OSLog/Logger API best practices
 
 **Quick Deploy** (from `apps/firefly/product/client/imp/ios/`):
 ```bash
@@ -189,7 +199,7 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 
 ### Implemented Features
 
-**infrastructure** (`apps/firefly/features/infrastructure.md`):
+**infrastructure** (`apps/firefly/features/infrastructure/spec.md`):
 - Foundation systems for development and deployment
 - **ping**: HTTP health check endpoint
 - **logging**: Multi-level logging (local, USB, remote)
@@ -203,7 +213,7 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
   - Email notifications for unexpected failures (distinguishes from intentional shutdowns via marker file)
   - DNS requirement: Uses Google DNS (8.8.8.8, 8.8.4.4) for reliable email delivery
 
-**users** (`apps/firefly/features/users.md`):
+**users** (`apps/firefly/features/users/spec.md`):
 - User accounts with email-based authentication
 - Device association
 - **sign-in**: Email-based login with 4-digit one-time codes (10-minute validity)
@@ -211,7 +221,7 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - **profile**: User profile pages (name, profession, photo, bio text up to 300 words) with edit functionality
 - **invite**: Invite friends via email with TestFlight link sharing (checks for existing users, tracks pending invites)
 
-**posts** (`apps/firefly/features/posts.md`):
+**posts** (`apps/firefly/features/posts/spec.md`):
 - User-generated content with hierarchical structure (title, summary, optional image, body)
 - Vector embeddings for semantic search
 - Post metadata (timestamp, timezone, location, author, AI-generated flag)
@@ -245,7 +255,7 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 
 ## Testing Infrastructure
 
-**testing** (`apps/firefly/features/infrastructure/testing.md`):
+**testing** (`apps/firefly/features/infrastructure/testing/spec.md`):
 - Remote feature testing from Mac to device via USB
 - Tests run in real app environment, not simulator
 
@@ -351,8 +361,8 @@ This repository includes a comprehensive skills system in `.claude/skills/` that
 
 **miso** - Automated feature-to-code implementation pipeline:
 - Detects changed feature markdown files using git diff
-- Updates `imp/pseudocode.md` to reflect feature changes
-- Propagates changes to platform implementations (`imp/ios.md`, `imp/eos.md`, `imp/py.md`)
+- Updates `pseudocode.md` to reflect feature changes
+- Propagates changes to platform implementations (`ios.md`, `eos.md`, `py.md`)
 - Updates actual product code following patching instructions
 - Builds, deploys, and tests the changes
 - For UI changes: includes visual verification cycle with screenshots to ensure visible results match specs
@@ -374,7 +384,7 @@ This repository includes a comprehensive skills system in `.claude/skills/` that
 
 **post-debug-cleanup** - Document completed implementations:
 - Updates feature specs and implementation docs after debugging iterations
-- Ensures feature.md, pseudocode.md, and platform.md reflect final working code
+- Ensures spec.md, pseudocode.md, and platform.md reflect final working code
 - Captures exact details: measurements, API endpoints, gesture thresholds
 - Preserves institutional knowledge from debugging process
 - Use after feature implementation with multiple debugging rounds
@@ -422,12 +432,12 @@ Or explicitly by name via the Skill tool in Claude Code.
 ## Working with This Repository
 
 1. **Start**: Read `miso.md` and relevant platform docs in `miso/platforms/{platform}/`
-2. **Create features**: Follow format in `miso/features.md`
-3. **Implement**: Add code to `imp/` subdirectories with platform-specific files
+2. **Create features**: Follow format in `miso/features/spec.md`
+3. **Implement**: Add `pseudocode.md` and platform files (`ios.md`, `eos.md`, `py.md`) alongside `spec.md`
 4. **Deploy**: Use platform-specific scripts (`install-device.sh`, etc.)
 5. **Test**: Use `./test-feature.sh <feature>` to verify functionality
 
-**The Implementation Process** (detailed in `miso/features/implementation.md`):
+**The Implementation Process** (detailed in `miso/features/implementation/spec.md`):
 When features change, propagate through: feature → pseudocode → platform code → product code → build/test. The miso skill automates this workflow. For UI changes, includes iterative visual verification with screenshots.
 
 **Git Workflow for Experiments**:
@@ -450,12 +460,19 @@ git checkout experiment-N  # Switch to previous experiment
 miso/
 ├── miso/                    # Feature specifications and platform knowledge
 │   ├── platforms/           # iOS, Android/e/OS, Python development guides
-│   ├── features.md          # Feature system specification
-│   └── products.md          # Product system specification
+│   ├── features/spec.md     # Feature system specification
+│   └── products/spec.md     # Product system specification
 ├── apps/                    # Executable products
 │   └── firefly/             # Current app: semantic search social media
-│       ├── features/        # Feature specs (infrastructure, users, posts, etc.)
-│       │   └── infrastructure/  # Foundational systems (ping, logging, email, testing)
+│       ├── features/        # Feature specs (each feature is a folder with spec.md)
+│       │   ├── infrastructure/  # Foundational systems
+│       │   │   ├── spec.md      # Infrastructure spec
+│       │   │   └── ping/        # Subfeature folder
+│       │   │       ├── spec.md
+│       │   │       ├── pseudocode.md
+│       │   │       ├── ios.md
+│       │   │       └── py.md
+│       │   └── ...
 │       └── product/         # Actual implementation
 │           ├── client/imp/  # iOS and Android clients
 │           └── server/imp/  # Python Flask server
