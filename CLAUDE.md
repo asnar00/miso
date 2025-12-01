@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Experiment Branches**: When starting a new experiment, create a branch for the current work before clearing main. Previous experiments remain accessible via their branches.
 
-**Current experiment focus**: Multi-platform social media app with template-based content types and semantic search. Recent work includes toolbar navigation, post templates (profiles, queries), inline editing, and fragment-level semantic search with GPU acceleration.
+**Current experiment focus**: Multi-platform social media app with template-based content types and semantic search. Recent work includes toolbar navigation, post templates (profiles, queries), inline editing, fragment-level semantic search with GPU acceleration, and user invite system via TestFlight.
 
 **Project Naming**: The Xcode project and Android package are named "NoobTest" (bundle ID: `com.miso.noobtest`), while "Firefly" is the product/marketing name. Use "NoobTest" for bundle identifiers, app management commands, and debugging.
 
@@ -209,6 +209,7 @@ Social media platform using semantic search on markdown snippets (`apps/firefly.
 - **sign-in**: Email-based login with 4-digit one-time codes (10-minute validity)
 - **new-user**: New user onboarding with profile setup
 - **profile**: User profile pages (name, profession, photo, bio text up to 300 words) with edit functionality
+- **invite**: Invite friends via email with TestFlight link sharing (checks for existing users, tracks pending invites)
 
 **posts** (`apps/firefly/features/posts.md`):
 - User-generated content with hierarchical structure (title, summary, optional image, body)

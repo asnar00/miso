@@ -1,6 +1,44 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+idea for microclub:
+the person that invited you is responsible for supporting you and keeping you posting.
+
+also: post once per day, read once per day
+
+-------------------------------
+
+
+testflight notes:
+1- login screen logo too large, background => orange (let's get a lighter orange btw)
+1.5- UI glitches on different aspect ratios (absolute positioning)
+2- let's have a nicer 4-letter code entry
+3- send to actual dest email if not blah@example.com
+4- your user list should be - the person that invited you; and your page (with your name already filled out)
+5- just have the shared queries!!
+
+and we should do private ones.
+just have a save and a publish button.
+easy. That way you can use it to store personal posts/info. That could be quite cool.
+
+Need to figure out policy re. picture.
+I think it should be: you have to put your picture in, and the person that invited you has to validate it. That's the right way to do it. That way we know who invited who and that everyone's legit.
+
+Facial recognition could be quite a cool idea - recognise face => profile page and find out about them, at lib dem gatherings that could be super amazing. But maybe that's an opt-in feature, so just for public-facing people eg. MPs who want to be recognised by as many people as possible. TBD.
+
+When you invite someone, you can populate their user list with people you both know. OR they just see all users, no muss no fuss.
+
+I like the idea of "bookmarking" posts/queries/users and then turning on filtering (mine/all). That's an orthogonal control... yeah.
+
+OR we allow lurkers - you can't post until you add a profile pic, but you don't have to. So the first time you post, you have to put in your profile pic, and the person that invited you has to approve it. YAY.
+
+I like the idea of allowing lurkers: you can make your own private posts and queries, but you can't publish until you have a full approved profile. LOVE IT.
+
+
+
+
+-----------------
+
 ideas for next feature:
 
 new post type: poll.

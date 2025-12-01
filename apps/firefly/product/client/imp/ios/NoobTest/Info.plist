@@ -12,6 +12,8 @@
     <string>6.0</string>
     <key>CFBundleName</key>
     <string>$(PRODUCT_NAME)</string>
+    <key>CFBundleDisplayName</key>
+    <string>microclub</string>
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
@@ -40,5 +42,12 @@
     <string>This app needs access to your camera to add photos to posts</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>This app needs access to your photo library to add photos to posts</string>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
 </dict>
 </plist>
