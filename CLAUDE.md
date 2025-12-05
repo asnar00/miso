@@ -295,11 +295,13 @@ TestRegistry.register("myfeature") {
 
 **iOS App Management** (from `apps/firefly/product/client/imp/ios/`):
 ```bash
-./install-device.sh  # Build and deploy to device (~8-10 seconds)
-./restart-app.sh     # Restart app on device without rebuilding
-./stop-app.sh        # Stop app on device
-./get-logs.sh        # Download app.log from device to device-logs.txt
-./list-devices.sh    # List connected iOS devices
+./install-device.sh      # Build and deploy to device (~8-10 seconds)
+./restart-app.sh         # Restart app on device without rebuilding
+./stop-app.sh            # Stop app on device
+./get-logs.sh            # Download app.log from device to device-logs.txt
+./list-devices.sh        # List connected iOS devices
+./testflight-deploy.sh   # Build, archive, and upload to TestFlight
+./sync-tunables.sh       # Sync tunable parameters to device
 ```
 
 **iOS Screenshot Capture**:
@@ -418,6 +420,17 @@ This repository includes a comprehensive skills system in `.claude/skills/` that
 
 **UI Automation Skills** (`.claude/skills/`):
 - `ui-tap` - Trigger UI elements programmatically via HTTP for automated testing. Use when you need to press buttons, interact with UI, or verify UI changes without manual intervention. Invoke with "tap the X button", "press X", "trigger X".
+
+## Common Errors & Quick Fixes
+
+| Error | Fix |
+|-------|-----|
+| `clang: error: linker command failed` | Add `LD="clang"` to xcodebuild command |
+| `JAVA_HOME is not set` | `export JAVA_HOME="/opt/homebrew/opt/openjdk"` |
+| `No devices found` | Unlock iPhone, tap "Trust This Computer?" |
+| Port 8081 not responding | `pymobiledevice3 usbmux forward 8081 8081 &` |
+| Remote server not responding | `./remote-shutdown.sh` then redeploy |
+| Watchdog email failures | Check DNS settings (use Google DNS: 8.8.8.8) |
 
 ### Using Skills
 

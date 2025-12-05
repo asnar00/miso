@@ -19,7 +19,6 @@ Users can zoom into any post image using the standard pinch-to-zoom gesture. Thi
 - The image returns to its original size and position
 
 **Interaction Notes:**
-- Zoom only works on expanded posts (images must be visible at full size)
-- Zoom is disabled during edit mode to avoid conflicts with image editing buttons
+- All images use ZoomableImageView for consistent zoom behavior
 - Uses UIScrollView wrapped in UIViewRepresentable for proper iOS pinch behavior
 - The zoom gesture feels responsive and tracks fingers accurately around pinch center

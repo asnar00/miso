@@ -11,7 +11,6 @@ struct ZoomableImageView: UIViewRepresentable {
     let image: UIImage
     let size: CGSize
     let cornerRadius: CGFloat
-    @Binding var isZooming: Bool
 
     func makeUIView(context: Context) -> UIScrollView {
         let scrollView = UIScrollView()
@@ -21,7 +20,7 @@ struct ZoomableImageView: UIViewRepresentable {
         scrollView.bouncesZoom = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
-        scrollView.clipsToBounds = false  // Allow image to overflow
+        scrollView.clipsToBounds = false  // Allow image to overflow during zoom
         scrollView.backgroundColor = .clear
 
         let imageView = UIImageView(image: image)
@@ -47,30 +46,19 @@ struct ZoomableImageView: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        Coordinator()
     }
 
     class Coordinator: NSObject, UIScrollViewDelegate {
-        var parent: ZoomableImageView
-
-        init(_ parent: ZoomableImageView) {
-            self.parent = parent
-        }
-
         func viewForZooming(in scrollView: UIScrollView) -> UIView? {
             return scrollView.viewWithTag(100)
         }
 
-        func scrollViewDidZoom(_ scrollView: UIScrollView) {
-            parent.isZooming = scrollView.zoomScale > 1.0
-        }
-
         func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-            // Always snap back to 1.0 when fingers are lifted
+            // Snap back to 1.0 when fingers are lifted
             UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseOut) {
                 scrollView.zoomScale = 1.0
             }
-            parent.isZooming = false
         }
     }
 }
@@ -79,54 +67,66 @@ struct ZoomableImageView: UIViewRepresentable {
 ## State Variables in PostView
 
 ```swift
-// Image zoom state
-@State private var isImageZooming: Bool = false
-@State private var loadedUIImage: UIImage? = nil  // Cached UIImage for zoomable view
+@State private var cachedUIImage: UIImage? = nil  // Cached UIImage for ZoomableImageView
 ```
 
 ## imageView Function
 
-Updated to support zoomable mode:
+Always uses ZoomableImageView for all images:
 
 ```swift
-private func imageView(width: CGFloat, height: CGFloat, imageUrl: String, zoomable: Bool = false) -> some View {
-    Group {
-        if imageUrl == "new_image", let displayImage = newImage {
-            if zoomable {
-                ZoomableImageView(
-                    image: displayImage,
-                    size: CGSize(width: width, height: height),
-                    cornerRadius: 12 * cornerRoundness,
-                    isZooming: $isImageZooming
-                )
-                .frame(width: width, height: height)
-            } else {
-                // Standard Image view
-            }
-        } else {
-            if zoomable, let uiImage = loadedUIImage {
-                ZoomableImageView(...)
-            } else {
-                // Standard AsyncImage view
-            }
-        }
+// Image display - uses ZoomableImageView for pinch-to-zoom support
+@ViewBuilder
+private func imageView(width: CGFloat, height: CGFloat, imageUrl: String) -> some View {
+    if imageUrl == "new_image", let displayImage = newImage {
+        // New image being added - use ZoomableImageView
+        ZoomableImageView(
+            image: displayImage,
+            size: CGSize(width: width, height: height),
+            cornerRadius: 12 * cornerRoundness
+        )
+        .frame(width: width, height: height)
+        .clipped()
+    } else if let uiImage = cachedUIImage {
+        // Cached image available - use ZoomableImageView
+        ZoomableImageView(
+            image: uiImage,
+            size: CGSize(width: width, height: height),
+            cornerRadius: 12 * cornerRoundness
+        )
+        .frame(width: width, height: height)
+        .clipped()
+    } else {
+        // Loading state - show placeholder while we load
+        Rectangle()
+            .fill(Color.gray.opacity(0.3))
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
     }
 }
 ```
 
-## Usage in Expanded Post
+## Image Loading and Caching
 
 ```swift
-// Use zoomable image when expanded and not editing
-let useZoomable = isExpanded && !isEditing
-
 ZStack(alignment: .topTrailing) {
-    imageView(width: currentWidth, height: currentImageHeight, imageUrl: imageUrl, zoomable: useZoomable)
+    imageView(width: currentWidth, height: currentImageHeight, imageUrl: imageUrl)
     .task {
-        // Load and cache UIImage for zoomable view
-        if loadedUIImage == nil {
-            // Fetch and cache...
-            loadedUIImage = uiImage
+        // Load image and cache it for ZoomableImageView
+        if cachedUIImage == nil && imageUrl != "new_image" {
+            if let url = URL(string: fullUrl) {
+                do {
+                    let (data, _) = try await URLSession.shared.data(from: url)
+                    if let uiImage = UIImage(data: data) {
+                        cachedUIImage = uiImage
+                        let aspectRatio = uiImage.size.width / uiImage.size.height
+                        imageAspectRatio = aspectRatio
+                        originalImageAspectRatio = aspectRatio
+                    }
+                } catch {
+                    // Failed to load image, keep default aspect ratio
+                }
+            }
         }
     }
 }
@@ -137,5 +137,6 @@ ZStack(alignment: .topTrailing) {
 - Uses `UIViewRepresentable` to wrap `UIScrollView` in SwiftUI
 - `clipsToBounds = false` on scrollView allows zoomed image to overflow
 - `imageView.tag = 100` used to find the image view in delegate methods
-- UIImage cached in `loadedUIImage` since AsyncImage doesn't expose the underlying UIImage
-- Zoomable mode only enabled when `isExpanded && !isEditing`
+- UIImage cached in `cachedUIImage` since AsyncImage doesn't expose the underlying UIImage
+- All images use ZoomableImageView (no conditional based on edit mode or expansion state)
+- Coordinator class doesn't need parent reference since it doesn't track zoom state

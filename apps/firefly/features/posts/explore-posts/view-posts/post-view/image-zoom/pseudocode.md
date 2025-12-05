@@ -12,7 +12,6 @@ struct ZoomableImageView:
         image: UIImage
         size: CGSize
         cornerRadius: CGFloat
-        isZooming: Binding<Bool>
 
     create UIScrollView:
         minimumZoomScale = 1.0
@@ -20,44 +19,46 @@ struct ZoomableImageView:
         bouncesZoom = true
         clipsToBounds = false  // Allow overflow during zoom
         showsScrollIndicators = false
+        backgroundColor = clear
 
     create UIImageView:
         contentMode = scaleAspectFill
         clipsToBounds = true
         cornerRadius = cornerRadius
         frame = size
+        tag = 100  // For finding in delegate
 
     add imageView to scrollView
     set scrollView.contentSize = size
 
     delegate methods:
-        viewForZooming -> return imageView
-
-        scrollViewDidZoom:
-            isZooming = (zoomScale > 1.0)
+        viewForZooming -> return scrollView.viewWithTag(100)
 
         scrollViewDidEndZooming:
             // Always snap back when fingers lifted
             animate(duration: 0.15, easeOut):
                 scrollView.zoomScale = 1.0
-            isZooming = false
 ```
 
 ## Integration with PostView
 
 ```
-when rendering image in expanded post:
-    if isExpanded AND NOT isEditing:
-        use ZoomableImageView(image, size, cornerRadius, isZooming)
+imageView function:
+    always use ZoomableImageView for all images
+
+    if imageUrl == "new_image" and newImage exists:
+        use ZoomableImageView(newImage, size, cornerRadius)
+    else if cachedUIImage exists:
+        use ZoomableImageView(cachedUIImage, size, cornerRadius)
     else:
-        use standard AsyncImage or Image view
+        show placeholder Rectangle while loading
 
 state variables:
-    isImageZooming: Bool = false
-    loadedUIImage: UIImage? = nil  // Cached for zoomable view
+    cachedUIImage: UIImage? = nil  // Cached for zoomable view
 
-on image load:
-    cache UIImage for use in ZoomableImageView
+on image load (via .task modifier):
+    fetch image data from URL
+    convert to UIImage and cache in cachedUIImage
 ```
 
 ## Key Implementation Details
@@ -66,4 +67,5 @@ on image load:
 - clipsToBounds = false allows image to overflow container during zoom
 - Always snaps back to 1.0x on finger release (scrollViewDidEndZooming)
 - 0.15s animation duration for quick, snappy feel
-- UIImage must be cached separately since AsyncImage doesn't expose it
+- UIImage cached in cachedUIImage since AsyncImage doesn't expose it
+- All images use ZoomableImageView (no conditional based on edit mode)
