@@ -1,74 +1,4 @@
 import SwiftUI
-import UIKit
-
-// Zoomable image view using UIScrollView for proper pinch-to-zoom behavior
-struct ZoomableImageView: UIViewRepresentable {
-    let image: UIImage
-    let size: CGSize
-    let cornerRadius: CGFloat
-    @Binding var isZooming: Bool
-
-    func makeUIView(context: Context) -> UIScrollView {
-        let scrollView = UIScrollView()
-        scrollView.delegate = context.coordinator
-        scrollView.minimumZoomScale = 1.0
-        scrollView.maximumZoomScale = 4.0
-        scrollView.bouncesZoom = true
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.clipsToBounds = false  // Allow image to overflow
-        scrollView.backgroundColor = .clear
-
-        let imageView = UIImageView(image: image)
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = cornerRadius
-        imageView.frame = CGRect(origin: .zero, size: size)
-        imageView.tag = 100
-
-        scrollView.addSubview(imageView)
-        scrollView.contentSize = size
-
-        return scrollView
-    }
-
-    func updateUIView(_ scrollView: UIScrollView, context: Context) {
-        if let imageView = scrollView.viewWithTag(100) as? UIImageView {
-            imageView.image = image
-            imageView.frame = CGRect(origin: .zero, size: size)
-            imageView.layer.cornerRadius = cornerRadius
-        }
-        scrollView.contentSize = size
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    class Coordinator: NSObject, UIScrollViewDelegate {
-        var parent: ZoomableImageView
-
-        init(_ parent: ZoomableImageView) {
-            self.parent = parent
-        }
-
-        func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-            return scrollView.viewWithTag(100)
-        }
-
-        func scrollViewDidZoom(_ scrollView: UIScrollView) {
-            parent.isZooming = scrollView.zoomScale > 1.0
-        }
-
-        func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-            // Always snap back to 1.0 when fingers are lifted
-            UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseOut) {
-                scrollView.zoomScale = 1.0
-            }
-            parent.isZooming = false
-        }
-    }
-}
 
 // Preference key for body height measurement
 struct BodyHeightKey: PreferenceKey {
@@ -134,10 +64,6 @@ struct PostView: View {
     @State private var showDeleteConfirmation: Bool = false
     @State private var newImage: UIImage? = nil  // Processed image for display
     @State private var authorHasProfile: Bool = true  // Assume true until checked
-
-    // Image zoom state
-    @State private var isImageZooming: Bool = false
-    @State private var loadedUIImage: UIImage? = nil  // Cached UIImage for zoomable view
 
     // Edit button bounce animation
     @State private var editButtonScale: CGFloat = 1.0
@@ -419,54 +345,32 @@ struct PostView: View {
 
     // Image display - shows new image or loads from URL
     @ViewBuilder
-    private func imageView(width: CGFloat, height: CGFloat, imageUrl: String, zoomable: Bool = false) -> some View {
-        Group {
-            if imageUrl == "new_image", let displayImage = newImage {
-                if zoomable {
-                    ZoomableImageView(
-                        image: displayImage,
-                        size: CGSize(width: width, height: height),
-                        cornerRadius: 12 * cornerRoundness,
-                        isZooming: $isImageZooming
-                    )
-                    .frame(width: width, height: height)
-                } else {
-                    Image(uiImage: displayImage)
+    private func imageView(width: CGFloat, height: CGFloat, imageUrl: String) -> some View {
+        if imageUrl == "new_image", let displayImage = newImage {
+            Image(uiImage: displayImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: width, height: height)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+        } else {
+            let fullUrl = serverURL + imageUrl
+            AsyncImage(url: URL(string: fullUrl)) { phase in
+                switch phase {
+                case .success(let image):
+                    image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: width, height: height)
                         .clipped()
                         .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
-                }
-            } else {
-                let fullUrl = serverURL + imageUrl
-                if zoomable, let uiImage = loadedUIImage {
-                    ZoomableImageView(
-                        image: uiImage,
-                        size: CGSize(width: width, height: height),
-                        cornerRadius: 12 * cornerRoundness,
-                        isZooming: $isImageZooming
-                    )
-                    .frame(width: width, height: height)
-                } else {
-                    AsyncImage(url: URL(string: fullUrl)) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: width, height: height)
-                                .clipped()
-                                .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
-                        case .failure(_), .empty:
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(width: width, height: height)
-                                .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
+                case .failure(_), .empty:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: width, height: height)
+                        .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                @unknown default:
+                    EmptyView()
                 }
             }
         }
@@ -870,14 +774,11 @@ struct PostView: View {
                 let currentX = lerp(compactX, expandedX, expansionFactor)
                 let currentY = lerp(compactY, expandedY, expansionFactor)
 
-                // Use zoomable image when expanded and not editing
-                let useZoomable = isExpanded && !isEditing
-
                 ZStack(alignment: .topTrailing) {
-                    imageView(width: currentWidth, height: currentImageHeight, imageUrl: imageUrl, zoomable: useZoomable)
+                    imageView(width: currentWidth, height: currentImageHeight, imageUrl: imageUrl)
                     .task {
-                        // Load aspect ratio and UIImage when image first appears
-                        if imageAspectRatio == 1.0 || loadedUIImage == nil {
+                        // Load aspect ratio when image first appears
+                        if imageAspectRatio == 1.0 {
                             if let url = URL(string: fullUrl) {
                                 do {
                                     let (data, _) = try await URLSession.shared.data(from: url)
@@ -885,7 +786,6 @@ struct PostView: View {
                                         let aspectRatio = uiImage.size.width / uiImage.size.height
                                         imageAspectRatio = aspectRatio
                                         originalImageAspectRatio = aspectRatio  // Save original
-                                        loadedUIImage = uiImage  // Cache for zoomable view
                                     }
                                 } catch {
                                     // Failed to load image, keep default aspect ratio
