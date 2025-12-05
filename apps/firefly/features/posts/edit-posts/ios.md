@@ -96,14 +96,20 @@ class PostDeletionNotifier: ObservableObject {
 @State private var editableSummary: String = ""
 @State private var editableBody: String = ""
 @State private var editableImageUrl: String? = nil  // nil means image removed
-@State private var showImageSourcePicker: Bool = false
 @State private var showImagePicker: Bool = false
-@State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
 @State private var selectedImage: UIImage? = nil
 @State private var newImageData: Data? = nil  // Processed image data ready for upload
 @State private var newImage: UIImage? = nil  // Processed image for display
 @State private var originalImageAspectRatio: CGFloat = 1.0  // Save original for cancel
 @State private var imageAspectRatio: CGFloat = 1.0  // Current display aspect ratio
+@State private var editButtonScale: CGFloat = 1.0  // For bounce animation
+```
+
+### Parameters
+
+```swift
+var isNewPost: Bool = false  // True for unsaved posts (id < 0), affects undo button behavior
+@Binding var shouldBounceButtons: Bool  // Trigger bounce animation on edit buttons
 ```
 
 ### Callback
@@ -165,7 +171,7 @@ VStack(alignment: .leading, spacing: 4) {
             .font(.system(size: 22, weight: .bold))
             .foregroundColor(.black)
             .textFieldStyle(.plain)
-            .textInputAutocapitalization(.sentences)
+            .textInputAutocapitalization(.words)  // Word capitalization for titles
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
@@ -285,7 +291,6 @@ if let imageUrl = editableImageUrl {
                 // Replace from photo library button
                 Button(action: {
                     Logger.shared.info("[PostView] Replace from photo library button tapped")
-                    imageSourceType = .photoLibrary
                     showImagePicker = true
                 }) {
                     Image(systemName: "photo.circle.fill")
@@ -294,23 +299,6 @@ if let imageUrl = editableImageUrl {
                         .background(Circle().fill(Color.white))
                 }
                 .uiAutomationId("replace-photo-library-button") {
-                    imageSourceType = .photoLibrary
-                    showImagePicker = true
-                }
-
-                // Take new photo with camera button
-                Button(action: {
-                    Logger.shared.info("[PostView] Take new photo button tapped")
-                    imageSourceType = .camera
-                    showImagePicker = true
-                }) {
-                    Image(systemName: "camera.circle.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(.green.opacity(0.8))
-                        .background(Circle().fill(Color.white))
-                }
-                .uiAutomationId("replace-camera-button") {
-                    imageSourceType = .camera
                     showImagePicker = true
                 }
             }
@@ -386,12 +374,12 @@ private var addImageButton: some View {
 
     return Button(action: {
         Logger.shared.info("[PostView] Add image button tapped")
-        showImageSourcePicker = true
+        showImagePicker = true
     }) {
         HStack {
             Image(systemName: "photo.badge.plus")
                 .font(.system(size: 20))
-            Text("Add Image")
+            Text("add image")
                 .font(.system(size: 16))
         }
         .foregroundColor(.black)  // Black text instead of blue
@@ -406,19 +394,8 @@ private var addImageButton: some View {
         )
     }
     .offset(x: buttonX, y: buttonY)
-    .confirmationDialog("Add Image", isPresented: $showImageSourcePicker) {
-        Button("Take Photo") {
-            imageSourceType = .camera
-            showImagePicker = true
-        }
-        Button("Choose from Library") {
-            imageSourceType = .photoLibrary
-            showImagePicker = true
-        }
-        Button("Cancel", role: .cancel) {}
-    }
     .sheet(isPresented: $showImagePicker) {
-        ImagePicker(image: $selectedImage, sourceType: imageSourceType)
+        ImagePicker(image: $selectedImage, sourceType: .photoLibrary)
     }
     .onChange(of: selectedImage) { oldValue, newValue in
         if let image = newValue {
@@ -807,92 +784,131 @@ private func deletePost() {
 
 ### Button Overlays - Positioned with Tunable Constants
 
-Edit button appears in top-right when not editing. When editing, action buttons (delete/undo/save) appear in bottom-right:
+Edit button appears in bottom-right when not editing. When editing, action buttons (delete/undo/save) appear in the same bottom-right position:
 
 ```swift
-// Edit button overlay - positioned in top-right corner (only for own posts when expanded, not editing)
+// Edit button overlay - positioned in bottom-right corner (only for own posts when expanded, not editing)
 if isOwnPost && isExpanded && !isEditing {
-    Button(action: {
-        Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
-        onStartEditing?()
-    }) {
-        Image(systemName: "pencil.circle.fill")
-            .font(.system(size: 32))
-            .foregroundColor(.black.opacity(0.6))
+    VStack {
+        Spacer()
+        HStack {
+            Spacer()
+            Button(action: {
+                onStartEditing?()
+            }) {
+                Image(systemName: "pencil")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.black)
+                    .frame(width: 36, height: 36)
+                    .background(tunables.buttonColor())
+                    .clipShape(Circle())
+                    .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+            }
+            .uiAutomationId("edit-button") {
+                onStartEditing?()
+            }
+            .padding(.trailing, 12)
+            .padding(.bottom, 12)
+        }
     }
-    .offset(x: CGFloat(tunables.getDouble("edit-button-x", default: 334)) - 32, y: 16)  // Top-right corner
+    .frame(width: availableWidth, height: currentHeight)
     .opacity(expansionFactor)
-    .uiAutomationId("edit-button") {
-        onStartEditing?()
-    }
 }
 
 // Edit action buttons overlay - positioned in bottom right corner (only when editing)
 if isOwnPost && isExpanded && isEditing {
-    HStack(spacing: CGFloat(tunables.getDouble("edit-button-spacing", default: 8))) {
-        // Delete button (only for saved posts)
-        if post.id > 0 {
-            Button(action: {
-                Logger.shared.info("[PostView] Delete post button tapped for post \(post.id)")
-                showDeleteConfirmation = true
-            }) {
-                Image(systemName: "trash.circle.fill")
-                    .font(.system(size: 32))
-                    .foregroundColor(.red.opacity(0.6))
-            }
-            .uiAutomationId("delete-post-button") {
-                showDeleteConfirmation = true
-            }
-        }
+    VStack {
+        Spacer()
+        HStack {
+            Spacer()
+            HStack(spacing: 20) {  // Hardcoded 20pt spacing
+                // Delete button (only for saved posts, never for profiles)
+                if post.id > 0 && post.template != "profile" {
+                    Button(action: {
+                        showDeleteConfirmation = true
+                    }) {
+                        ZStack {
+                            Circle()
+                                .fill(Color(red: 1.0, green: 0.5, blue: 0.5))  // Light red
+                                .frame(width: 32, height: 32)
+                                .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                            Image(systemName: "trash")
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundColor(.black)
+                        }
+                    }
+                }
 
-        // Undo button
-        Button(action: {
-            if let onDelete = onDelete {
-                // New post: delete it
-                Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
-                onDelete()
-            } else {
-                // Existing post: revert changes
-                Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
-                editableTitle = post.title
-                editableSummary = post.summary
-                editableBody = post.body
-                editableImageUrl = post.imageUrl
-                newImageData = nil
-                newImage = nil
-                imageAspectRatio = originalImageAspectRatio
-                onEndEditing?()
-            }
-        }) {
-            Image(systemName: "arrow.uturn.backward.circle.fill")
-                .font(.system(size: 32))
-                .foregroundColor(.red.opacity(0.6))
-        }
-        .uiAutomationId("cancel-button") {
-            if let onDelete = onDelete {
-                onDelete()
-            } else {
-                editableTitle = post.title
-                editableSummary = post.summary
-                editableBody = post.body
-                onEndEditing?()
-            }
-        }
+                // Undo button
+                Button(action: {
+                    if isNewPost {
+                        // New post: delete it
+                        onDelete?()
+                    } else {
+                        // Existing post: revert changes, stay expanded
+                        editableTitle = post.title
+                        editableSummary = post.summary
+                        editableBody = post.body
+                        editableImageUrl = post.imageUrl
+                        newImageData = nil
+                        newImage = nil
+                        imageAspectRatio = originalImageAspectRatio
+                        onEndEditing?()  // Exit edit mode without refreshing list
+                    }
+                }) {
+                    ZStack {
+                        Circle()
+                            .fill(tunables.buttonColor())  // Peach
+                            .frame(width: 32, height: 32)
+                            .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                        Image(systemName: "arrow.uturn.backward")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.black)
+                    }
+                }
 
-        // Save button
-        Button(action: {
-            savePost()
-        }) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 32))
-                .foregroundColor(.green.opacity(0.6))
-        }
-        .uiAutomationId("save-button") {
-            savePost()
+                // Save button
+                Button(action: {
+                    savePost()
+                }) {
+                    ZStack {
+                        Circle()
+                            .fill(Color(red: 0.5, green: 1.0, blue: 0.5))  // Light green
+                            .frame(width: 32, height: 32)
+                            .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.black)
+                    }
+                }
+            }
+            .scaleEffect(editButtonScale)  // For bounce animation
+            .padding(.trailing, 12)
+            .padding(.bottom, 12)
         }
     }
-    .offset(x: CGFloat(tunables.getDouble("edit-button-x", default: 334)) - 120, y: currentHeight - 48)  // Bottom-right corner
+    .frame(width: availableWidth, height: currentHeight)
     .opacity(expansionFactor)
+}
+
+// Bounce animation handler
+.onChange(of: shouldBounceButtons) { _, shouldBounce in
+    if shouldBounce && isEditing {
+        // Quick scale up with spring
+        withAnimation(.spring(response: 0.15, dampingFraction: 0.3, blendDuration: 0)) {
+            editButtonScale = 1.3
+        }
+        // Bounce back to normal
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)) {
+                editButtonScale = 1.0
+            }
+        }
+        // Reset trigger
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            shouldBounceButtons = false
+        }
+    }
 }
 
 // Delete confirmation alert
@@ -907,12 +923,13 @@ if isOwnPost && isExpanded && isEditing {
 ```
 
 **Key Details:**
-- Edit button when NOT editing: at `(edit-button-x - 32, 16)` = `(302, 16)` with default tunable
-- Edit action buttons when editing: at `(edit-button-x - 120, currentHeight - 48)` = `(214, currentHeight - 48)` with default tunable
-- Button spacing: 8pt (tunable: edit-button-spacing)
-- Delete confirmation prevents accidental deletions
-- All buttons fade in/out with `expansionFactor` animation
-```
+- Edit action buttons: Circle backgrounds with black icons and drop shadows
+- Delete: light red (RGB 255/128/128), Undo: peach (buttonColor), Save: light green (RGB 128/255/128)
+- Button spacing: 20pt (hardcoded)
+- Bounce animation: scales to 1.3x then back to 1.0x with spring physics
+- Triggered when user tries to tap another post while editing
+- Delete button hidden for profile posts
+- Undo uses isNewPost flag to determine behavior (delete vs revert)
 
 ### Initialize State and Sheet Presentation
 
@@ -932,7 +949,7 @@ if isOwnPost && isExpanded && isEditing {
     processImage(image)
 }
 .sheet(isPresented: $showImagePicker) {
-    ImagePicker(image: $selectedImage, sourceType: imageSourceType)
+    ImagePicker(image: $selectedImage, sourceType: .photoLibrary)
 }
 ```
 
@@ -942,6 +959,25 @@ if isOwnPost && isExpanded && isEditing {
 
 ```swift
 @State private var editingPostId: Int? = nil  // Track which post is being edited
+@State private var shouldBounceEditButtons: Bool = false  // Trigger bounce animation
+```
+
+### Tap Blocking During Edit
+
+```swift
+// In onTap handler for each PostView:
+onTap: {
+    // Block taps on other posts while editing
+    guard editingPostId == nil else {
+        // Trigger bounce animation on edit buttons to signal user
+        shouldBounceEditButtons = true
+        return
+    }
+    expandPost(post.id)
+    withAnimation(.easeInOut(duration: 0.3)) {
+        proxy.scrollTo(post.id, anchor: .top)
+    }
+}
 ```
 
 ### Create New Post Function
@@ -1020,11 +1056,13 @@ private func insertNewPost(email: String, name: String) {
 PostView(
     post: post,
     isExpanded: viewModel.expandedPostId == post.id,
+    availableWidth: postWidth,
     isEditing: editingPostId == post.id,
     onTap: {
-        // If we're editing a different post, save it first
-        if let currentlyEditingId = editingPostId, currentlyEditingId != post.id {
-            // Auto-save will happen in PostView via onStartEditing callback
+        // Block taps on other posts while editing
+        guard editingPostId == nil else {
+            shouldBounceEditButtons = true
+            return
         }
         expandPost(post.id)
         withAnimation(.easeInOut(duration: 0.3)) {
@@ -1036,7 +1074,7 @@ PostView(
         onPostCreated()
     },
     onNavigateToChildren: { postId in
-        navigationPath.append(postId)
+        navigationPath.append(.children(parentId: postId))
     },
     onPostUpdated: { updatedPost in
         // Check if this is a new post being updated with real ID
@@ -1044,27 +1082,37 @@ PostView(
             // Replace temporary post with real one
             if let index = posts.firstIndex(where: { $0.id == post.id }) {
                 posts[index] = updatedPost
-                // Update editing state to track new ID
                 editingPostId = nil
-                // Update expansion state to new ID
+                isAnyPostEditing = false
                 viewModel.expandedPostId = updatedPost.id
             }
         } else if let index = posts.firstIndex(where: { $0.id == updatedPost.id }) {
-            // Regular update - same ID
             posts[index] = updatedPost
         }
     },
     onStartEditing: {
         editingPostId = post.id
+        isAnyPostEditing = true
     },
     onEndEditing: {
         editingPostId = nil
+        isAnyPostEditing = false
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     },
-    onDelete: post.id < 0 ? {
-        // Delete new unsaved post
+    onDelete: {
+        // Called for both new posts (undo) and saved posts (after server delete)
         posts.removeAll { $0.id == post.id }
         editingPostId = nil
-    } : nil
+        isAnyPostEditing = false
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        // For saved posts, refresh to update parent's child count
+        if post.id > 0 {
+            fetchPosts()
+            onPostCreated()
+        }
+    },
+    isNewPost: post.id < 0,  // Flag for undo button behavior
+    shouldBounceButtons: $shouldBounceEditButtons
 )
 ```
 
@@ -1176,7 +1224,7 @@ echo "   ./get-logs.sh"
 - **Corner radius:** 8pt for text fields, 12pt for images and Add Image button
 - **Add Image button:** 350pt wide, 50pt tall
 - **Image processing:** Max 1200px on longest edge, JPEG quality 0.9
-- **Image edit button colors:** Red (trash), Blue (photo library), Green (camera)
+- **Image edit button colors:** Red (trash), Blue (photo library)
 
 ## Layout Formula
 
@@ -1319,12 +1367,10 @@ This prevents accidental collapse of the post while editing. The user must expli
 
 14. **Sheet Presentation**: The `.sheet(isPresented: $showImagePicker)` modifier is attached to the main view body (after `.onChange`), allowing any button in the view to trigger image selection by setting `showImagePicker = true`
 
-15. **Three-Button Image Editing**: When editing a post with an image, three buttons appear in an HStack:
+15. **Two-Button Image Editing**: When editing a post with an image, two buttons appear in an HStack:
    - Trash button (red) directly removes the image
-   - Photo library button (blue) directly opens the photo picker with `.photoLibrary` source
-   - Camera button (green) directly opens the camera with `.camera` source
-   - No confirmation dialog needed - user choice is explicit via button selection
-   - All three buttons set `imageSourceType` and `showImagePicker` to trigger the sheet
+   - Photo library button (blue) directly opens the photo picker
+   - No confirmation dialog needed - tapping opens photo library directly
 
 16. **Delete Post Functionality**: For saved posts (post.id > 0) in edit mode:
    - Red trash button appears in bottom-right corner as part of edit action buttons group

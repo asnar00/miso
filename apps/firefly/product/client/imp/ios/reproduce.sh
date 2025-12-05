@@ -1,55 +1,50 @@
 #!/bin/bash
-# Reproduce the new-user sign-in flow for testing
-# Resets Henry's device IDs, logs out, restarts app, and runs through sign-in
 
 set -e
 
-echo "🔄 Clearing Henry's profile content (keeping just name)..."
-ssh microserver@185.96.221.52 "psql -d firefly -c \"UPDATE posts SET summary = '', body = '', image_url = NULL WHERE template_name = 'profile' AND user_id = (SELECT id FROM users WHERE email = 'henry@example.com');\""
+echo "🔄 Testing undo button behavior..."
 
-echo "🔄 Resetting Henry's device IDs on server..."
-ssh microserver@185.96.221.52 "psql -d firefly -c \"UPDATE users SET device_ids = '{}' WHERE email = 'henry@example.com';\""
+# Build and deploy
+echo "📱 Installing app..."
+./install-device.sh
 
-echo "🔄 Restarting port forwarding..."
-pkill -f "pymobiledevice3.*forward" 2>/dev/null || true
+# Wait for app to start and load posts
+echo "⏳ Waiting for app to start and load posts (5 seconds)..."
+sleep 5
+
+# Expand first post
+echo "👆 Tapping first-post to expand..."
+RESULT=$(curl -s -X POST 'http://localhost:8081/test/tap?id=first-post')
+echo "$RESULT"
+if echo "$RESULT" | grep -q "error"; then
+    echo "❌ first-post not found - posts may not have loaded yet"
+    exit 1
+fi
 sleep 1
-pymobiledevice3 usbmux forward -d 8081 8081
+
+# Tap edit button
+echo "✏️ Tapping edit button..."
+RESULT=$(curl -s -X POST 'http://localhost:8081/test/tap?id=edit-button')
+echo "$RESULT"
+if echo "$RESULT" | grep -q "error"; then
+    echo "❌ edit-button not found - post may not have expanded"
+    exit 1
+fi
+sleep 1
+
+# Tap undo/cancel button  
+echo "↩️ Tapping cancel/undo button..."
+RESULT=$(curl -s -X POST 'http://localhost:8081/test/tap?id=cancel-button')
+echo "$RESULT"
 sleep 2
 
-echo "🔄 Clearing login state..."
-curl -s http://localhost:8081/test/clear-login
+# Get the logs
+echo "📋 Getting logs..."
+./get-logs.sh
+
 echo ""
+echo "=== Relevant log entries ==="
+grep -E "Undo|onEndEditing|expandedPostId|first-post|edit-button|cancel-button|initialPosts" app.log | tail -50
 
-echo "🔄 Stopping and restarting app..."
-./stop-app.sh 2>&1 | tail -1
-sleep 1
-./restart-app.sh 2>&1
-
-echo "⏳ Waiting for app to start..."
-sleep 3
-
-echo "📧 Entering email..."
-curl -s -X POST 'http://localhost:8081/test/set-text?id=signin-email&text=henry@example.com'
 echo ""
-
-echo "🔘 Tapping login..."
-curl -s -X POST 'http://localhost:8081/test/tap?id=signin-login'
-echo ""
-
-sleep 1.5
-
-echo "🔢 Entering code 1324..."
-curl -s -X POST 'http://localhost:8081/test/set-text?id=signin-code&text=1324'
-echo ""
-
-echo "🔘 Tapping verify..."
-curl -s -X POST 'http://localhost:8081/test/tap?id=signin-verify'
-echo ""
-
-sleep 1.5
-
-echo "🚀 Tapping get started..."
-curl -s -X POST 'http://localhost:8081/test/tap?id=newuser-getstarted'
-echo ""
-
-echo "✅ Flow complete! Check logs for editCurrentUserProfile behavior."
+echo "✅ Test complete!"

@@ -132,6 +132,7 @@ struct PostsListView: View {
     @State private var pluralName: String? = nil  // Fetched plural name for template
     @State private var badgeStates: [Int: Bool] = [:]  // Track badge state per post ID
     @State private var pollingTimer: Timer? = nil  // Timer for badge polling
+    @State private var shouldBounceEditButtons: Bool = false  // Trigger bounce animation on edit buttons
 
     let serverURL = "http://185.96.221.52:8080"
 
@@ -213,9 +214,12 @@ struct PostsListView: View {
                                         isEditing: editingPostId == post.id,
                                         showNotificationBadge: badgeStates[post.id] ?? false,
                                         onTap: {
-                                            // If we're editing a different post, save it first
-                                            if let currentlyEditingId = editingPostId, currentlyEditingId != post.id {
-                                                // Auto-save will happen in PostView via onStartEditing callback
+                                            // Ignore taps on other posts while editing
+                                            guard editingPostId == nil else {
+                                                Logger.shared.info("[PostsListView] Ignoring tap on post \(post.id) - currently editing post \(editingPostId!)")
+                                                // Trigger bounce animation on edit buttons to signal user
+                                                shouldBounceEditButtons = true
+                                                return
                                             }
                                             expandPost(post.id)
                                             withAnimation(.easeInOut(duration: 0.3)) {
@@ -257,13 +261,17 @@ struct PostsListView: View {
                                             isAnyPostEditing = true
                                         },
                                         onEndEditing: {
+                                            Logger.shared.info("[PostsListView] ⚡️ onEndEditing called for post \(post.id)")
+                                            Logger.shared.info("[PostsListView] ⚡️ BEFORE: editingPostId=\(String(describing: editingPostId)), isAnyPostEditing=\(isAnyPostEditing)")
                                             editingPostId = nil
                                             isAnyPostEditing = false
+                                            Logger.shared.info("[PostsListView] ⚡️ AFTER: editingPostId=\(String(describing: editingPostId)), isAnyPostEditing=\(isAnyPostEditing)")
                                             // Dismiss keyboard
                                             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                                            Logger.shared.info("[PostsListView] ⚡️ Keyboard dismissed")
                                         },
                                         onDelete: {
-                                            // Delete post (either unsaved or after server deletion)
+                                            // Delete post - remove from local array
                                             posts.removeAll { $0.id == post.id }
                                             editingPostId = nil
                                             isAnyPostEditing = false
@@ -274,7 +282,9 @@ struct PostsListView: View {
                                                 fetchPosts()
                                                 onPostCreated()  // Notify parent to refresh
                                             }
-                                        }
+                                        },
+                                        isNewPost: post.id < 0,  // Pass flag to distinguish new vs existing posts
+                                        shouldBounceButtons: $shouldBounceEditButtons
                                     )
                                     .id(post.id)
                                     .zIndex(viewModel.expandedPostId == post.id ? 1 : 0)
@@ -317,9 +327,11 @@ struct PostsListView: View {
                 : nil
         )
         .onAppear {
-            // Set as current viewModel for automation access
-            if parentPostId == nil && backLabel == nil {  // Only for root view
+            Logger.shared.info("[PostsListView] onAppear called - parentPostId=\(String(describing: parentPostId)), backLabel=\(String(describing: backLabel)), templateName=\(String(describing: templateName))")
+            // Set as current viewModel for automation access (only for makePost tab - templateName="post")
+            if parentPostId == nil && backLabel == nil && templateName == "post" {
                 PostsListViewModel.current = viewModel
+                Logger.shared.info("[PostsListView] Set as current viewModel for makePost tab")
             }
 
             // Set initial expanded post if specified
@@ -340,6 +352,23 @@ struct PostsListView: View {
                 if !initialPosts.isEmpty {
                     posts = initialPosts
                     isLoading = false
+
+                    // Register UI automation for first post (only for makePost tab - templateName="post")
+                    if templateName == "post", let firstPost = initialPosts.first {
+                        let postId = firstPost.id
+                        UIAutomationRegistry.shared.register(id: "first-post") {
+                            Logger.shared.info("[PostsListView] first-post automation triggered")
+                            DispatchQueue.main.async {
+                                guard let vm = PostsListViewModel.current else {
+                                    Logger.shared.error("[PostsListView] No current viewModel!")
+                                    return
+                                }
+                                Logger.shared.info("[PostsListView] Setting expandedPostId to \(postId)")
+                                vm.expandedPostId = postId
+                            }
+                        }
+                        Logger.shared.info("[PostsListView] Registered first-post automation for post \(firstPost.id)")
+                    }
 
                     // Check if we need to edit profile on initial load (not just onChange)
                     if editCurrentUserProfile {
@@ -363,13 +392,20 @@ struct PostsListView: View {
             pollingTimer = nil
         }
         .onChange(of: initialPosts) { oldValue, newValue in
+            Logger.shared.info("[PostsListView] ⭐️ initialPosts onChange triggered, templateName=\(String(describing: templateName)), oldCount=\(oldValue.count), newCount=\(newValue.count), changed=\(newValue != oldValue)")
             if parentPostId == nil {
-                posts = newValue
-                isLoading = false
+                // Only update if posts actually changed (prevent unnecessary resets)
+                if newValue != oldValue {
+                    Logger.shared.info("[PostsListView] ⭐️ Updating posts from initialPosts - THIS CAUSES VIEW RECREATION")
+                    posts = newValue
+                    isLoading = false
 
-                // Check if we need to edit current user's profile after posts load
-                if editCurrentUserProfile {
-                    triggerEditCurrentUserProfile()
+                    // Check if we need to edit current user's profile after posts load
+                    if editCurrentUserProfile {
+                        triggerEditCurrentUserProfile()
+                    }
+                } else {
+                    Logger.shared.info("[PostsListView] ⭐️ Posts unchanged, NOT updating")
                 }
             }
         }

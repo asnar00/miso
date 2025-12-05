@@ -98,14 +98,13 @@ function enterEditMode():
 
 ### cancelEdit()
 ```
-function cancelEdit(post, onDelete):
-    if post.id < 0 and onDelete != null:
-        // New unsaved post - delete it
+function cancelEdit(post, isNewPost, onDelete, onEndEditing):
+    if isNewPost:
+        // New unsaved post - delete it from the list
         onDelete()
         // Post is removed from the list
-        editingPostId = null
     else:
-        // Existing post - revert changes
+        // Existing post - revert changes but stay expanded
         editableTitle = post.title  // Revert to saved state
         editableSummary = post.summary
         editableBody = post.body
@@ -113,7 +112,8 @@ function cancelEdit(post, onDelete):
         newImage = null
         newImageData = null
         imageAspectRatio = originalImageAspectRatio  // Restore original aspect ratio
-        isEditing = false
+        // Exit edit mode but don't refresh list - post stays expanded
+        onEndEditing()  // Sets editingPostId = null, isAnyPostEditing = false
         // UI shows pencil button, all fields become read-only
 ```
 
@@ -128,8 +128,8 @@ function deleteImage():
 ### addImage()
 ```
 function addImage():
-    // Show dialog: Take Photo or Choose from Library
-    showImageSourcePicker()
+    // Open photo library directly
+    showImagePicker()
 ```
 
 ### onImageSelected(rawImage)
@@ -310,7 +310,8 @@ function calculateTextHeight(text, availableWidth):
 - Bottom padding below author: 28pt
 - Author name left indent: 24pt
 - Button size: 32pt
-- Button spacing: 8pt
+- Edit action button spacing: 20pt (hardcoded, not tunable)
+- Image edit button spacing: 8pt
 
 **Height Calculation:**
 ```
@@ -354,23 +355,26 @@ As user edits text:
 - Custom placeholders: Posts can specify custom placeholder text (e.g., "name", "mission", "personal statement")
 
 **Text Fields (Edit Mode):**
-- Title: 22pt bold, single line, plain style
-- Summary: 15pt italic, up to 2 lines when collapsed, plain style
-- Body: system body font, multi-line TextEditor, scrolling disabled, dynamic height
-- All fields: autocorrection enabled, autocapitalization set to sentences
+- Title: 22pt bold, single line, plain style, word capitalization
+- Summary: 15pt italic, up to 2 lines when collapsed, plain style, sentence capitalization
+- Body: system body font, multi-line TextEditor, scrolling disabled, dynamic height, sentence capitalization
+- All fields: autocorrection enabled
 
-**Buttons in Author Bar:**
-- Not editing: pencil.circle.fill icon, 32pt, black at 60% opacity
-- Editing: arrow.uturn.backward.circle.fill (undo, red 60%) and checkmark.circle.fill (green 60%)
-- Positioned: right side of author bar with 8pt spacing, 18pt trailing padding
-- Author name: 24pt leading padding
+**Edit Buttons (Bottom-Right Corner):**
+- Edit button (not editing): 36x36pt circle, pencil icon (18pt bold black), peach background, drop shadow
+- Edit action buttons (editing): HStack with 20pt spacing
+  - Delete: 32pt circle, light red background (RGB 255/128/128), black trash icon
+  - Undo: 32pt circle, peach background, black arrow.uturn.backward icon
+  - Save: 32pt circle, light green background (RGB 128/255/128), black checkmark icon
+- All buttons have drop shadow (40% black, 8pt blur, 4pt Y offset)
+- Positioned with 12pt padding from bottom-right corner
+- Same position for edit button and action buttons (consistent UX)
 
 **Image Controls (Edit Mode Only):**
 
-When image exists - three buttons in HStack overlaid on top-right of image:
+When image exists - two buttons in HStack overlaid on top-right of image:
 - Delete image button: trash.circle.fill icon, 32pt, red 80% opacity, white circle background
 - Photo library button: photo.circle.fill icon, 32pt, blue 80% opacity, white circle background
-- Camera button: camera.circle.fill icon, 32pt, green 80% opacity, white circle background
 - HStack spacing: 8pt between buttons
 - Overall padding: 8pt around button group
 
@@ -495,9 +499,7 @@ state editableTitle: string = ""
 state editableSummary: string = ""
 state editableBody: string = ""
 state editableImageUrl: string? = null
-state showImageSourcePicker: boolean = false
 state showImagePicker: boolean = false
-state imageSourceType: SourceType = PhotoLibrary
 state selectedImage: Image? = null
 state newImageData: bytes? = null
 state newImage: Image? = null
@@ -612,7 +614,7 @@ function displayImage(imageUrl, width, height):
 ```
 if isEditing:
     if editableImageUrl != null:
-        // Show three buttons in HStack over image (top-right corner)
+        // Show two buttons in HStack over image (top-right corner)
         HStack(spacing: 8pt):
             // Delete button
             Button(icon: trash.circle.fill, color: red, background: white circle):
@@ -620,27 +622,16 @@ if isEditing:
 
             // Photo library button
             Button(icon: photo.circle.fill, color: blue, background: white circle):
-                onClick:
-                    imageSourceType = photoLibrary
-                    showImagePicker = true
-
-            // Camera button
-            Button(icon: camera.circle.fill, color: green, background: white circle):
-                onClick:
-                    imageSourceType = camera
-                    showImagePicker = true
+                onClick: showImagePicker = true
         // Position in top-right corner of image with 8pt padding
     else:
         // Show Add Image button
-        Button(text: "Add Image", icon: photo.badge.plus):
-            onClick: addImage()
-        // Confirmation dialog: Take Photo or Choose from Library
-        // Opens image picker with selected source
-        // When image selected: onImageSelected(selectedImage)
+        Button(text: "add image", icon: photo.badge.plus):
+            onClick: showImagePicker = true
 
 // Image picker sheet (present when showImagePicker = true)
 Sheet(isPresented: showImagePicker):
-    ImagePicker(selectedImage, imageSourceType)
+    ImagePicker(selectedImage, sourceType: photoLibrary)
     // When image selected: onImageSelected(selectedImage) via onChange
 ```
 
@@ -681,6 +672,42 @@ onTapGesture:
         onTap()  // Collapse/expand toggle
 ```
 
+**Block Taps on Other Posts While Editing:**
+```
+// In PostsListView onTap handler:
+onTap:
+    if editingPostId != null:
+        // Block the tap and bounce the edit buttons to signal the user
+        shouldBounceEditButtons = true
+        return
+    // Otherwise proceed with expand/collapse
+    expandPost(post.id)
+```
+
+**Edit Button Bounce Animation:**
+```
+// In PostView:
+state editButtonScale: float = 1.0
+
+onChange(shouldBounceButtons):
+    if shouldBounceButtons and isEditing:
+        // Quick scale up with spring animation
+        withAnimation(spring(response: 0.15, dampingFraction: 0.3)):
+            editButtonScale = 1.3
+        // Bounce back to normal
+        afterDelay(0.15):
+            withAnimation(spring(response: 0.3, dampingFraction: 0.5)):
+                editButtonScale = 1.0
+        // Reset trigger
+        afterDelay(0.5):
+            shouldBounceButtons = false
+
+// Apply to edit action buttons HStack:
+HStack(spacing: 20):
+    // delete, undo, save buttons
+.scaleEffect(editButtonScale)
+```
+
 ## UI Automation
 
 For testing, register UI automation hooks:
@@ -705,13 +732,8 @@ register("delete-image-button"):
     editableImageUrl = null
 
 register("replace-photo-library-button"):
-    imageSourceType = photoLibrary
-    showImagePicker = true
-
-register("replace-camera-button"):
-    imageSourceType = camera
     showImagePicker = true
 
 register("add-image-button"):
-    showImageSourcePicker = true
+    showImagePicker = true
 ```

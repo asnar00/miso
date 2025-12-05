@@ -28,8 +28,8 @@ When the user taps the pencil button:
 - The bottom toolbar fades out and becomes non-interactive while editing
 - Text can be edited freely in all three fields
 - As the user types in the body, the post height adjusts automatically to fit the content
-- If the post has an image, it displays with a red trash button to delete the image
-- Users can add a new image using an "Add Image" button (camera or photo library)
+- If the post has an image, it displays with buttons to delete or replace the image
+- Users can add a new image using an "Add Image" button (opens photo library)
 
 **Visual Indicators:**
 - Grey background (20% opacity) highlights editable sections
@@ -38,37 +38,38 @@ When the user taps the pencil button:
 - Body: multi-line text editor with dynamic height
 - Placeholder text (55% grey opacity) appears in empty fields with labels like "Title", "Summary", "Body"
 - Some posts have custom placeholder text (e.g., "name", "mission", "personal statement")
-- Edit button (not editing): Circular button (36x36pt) with pencil icon (18pt bold, black) in top-right corner, using standard button color with drop shadow
-- Edit action buttons (while editing): Horizontal row in bottom-right corner
-  - Delete button (saved posts only): red trash icon (32pt, red at 60% opacity)
-  - Undo button: red arrow icon (32pt, red at 60% opacity)
-  - Save button: green checkmark icon (32pt, green at 60% opacity)
-- Image edit buttons (when image exists): three buttons overlaid on top-right corner of image
+- Edit button (not editing): Circular button (36x36pt) with pencil icon (18pt bold, black) in bottom-right corner, using standard button color with drop shadow
+- Edit action buttons (while editing): Horizontal row in bottom-right corner with 20pt spacing
+  - Delete button (saved posts only, not for profiles): Circle background (light red RGB 255/128/128) with black trash icon and drop shadow
+  - Undo button: Circle background (peach/button color) with black arrow.uturn.backward icon and drop shadow
+  - Save button: Circle background (light green RGB 128/255/128) with black checkmark icon and drop shadow
+  - All buttons bounce (scale to 1.3x then back) when user tries to tap another post
+- Image edit buttons (when image exists): two buttons overlaid on top-right corner of image
   - Red trash icon (trash.circle.fill) - delete image
   - Blue photo icon (photo.circle.fill) - replace from photo library
-  - Green camera icon (camera.circle.fill) - take new photo with camera
 - Add Image button (when no image): lowercase "add image" text with black outline, "photo.badge.plus" icon, positioned at Y=72pt
 - Navigate to children button: stays at right edge, vertically centered, visible when not editing
 - Bottom toolbar: fades out (0.3s animation) and becomes non-interactive during edit mode
 
 **Editing Experience:**
 - Autocorrect is enabled - misspelled words are automatically corrected as you type
-- Autocapitalization is enabled for sentences - first letter of each sentence is capitalized
+- Title field uses word capitalization - first letter of each word is capitalized
+- Summary and body fields use sentence capitalization - first letter of each sentence is capitalized
 - The body text editor expands vertically as needed
 - Layout maintains proper spacing between all elements
 - Tapping on the post background or image does not collapse the post during editing
+- Tapping on another post while editing is blocked - edit buttons bounce to signal the user
 - The post remains expanded until save or cancel is pressed
 
 **Image Editing:**
 When in edit mode with an existing image:
-- Three buttons appear overlaid in the top-right corner of the image
+- Two buttons appear overlaid in the top-right corner of the image
 - Delete button (red trash icon): removes the image (pending save)
 - Photo library button (blue photo icon): opens photo library to replace image
-- Camera button (green camera icon): opens camera to take new photo
 
 When in edit mode with no image:
 - "add image" button appears positioned at Y=72pt (snug below title/summary area)
-- Button shows dialog with lowercase options: "take photo", "choose from library", "cancel"
+- Tapping it opens the photo library directly
 
 All image replacements and additions:
 - Selected images are processed automatically:
@@ -88,12 +89,13 @@ When the user taps the green checkmark:
 - The changes persist across sessions and refreshes
 
 **Canceling Edits:**
-When the user taps the red undo arrow:
+When the user taps the undo button (peach arrow):
 - For new unsaved posts: the post is deleted from the list
-- For existing posts: all edits in all fields are discarded
+- For existing posts: all edits in all fields are discarded, but the post stays expanded
 - Original text and image are restored (existing posts only)
 - Original image aspect ratio is restored (existing posts only)
 - Edit mode exits, showing the pencil button again (existing posts only)
+- The post list is NOT refreshed - view state is preserved
 
 **Deleting Posts:**
 When the user taps the red trash button (bottom-right corner, visible only for saved posts in edit mode):
@@ -106,9 +108,9 @@ When the user taps the red trash button (bottom-right corner, visible only for s
 - This button only appears for saved posts (not new unsaved posts)
 
 **Button Layout:**
-- Edit button (not editing): top-right corner at (edit-button-x - 32, 16pt) where edit-button-x defaults to 334pt
-- Edit action buttons (while editing): horizontal row in bottom-right at (edit-button-x - 120, currentHeight - 48)
-  - Buttons spaced 8pt apart (tunable: edit-button-spacing)
-  - Order: delete (if saved post), undo, save
+- Edit button (not editing): bottom-right corner with 12pt padding from edge
+- Edit action buttons (while editing): horizontal row in bottom-right corner with 12pt padding
+  - Buttons spaced 20pt apart (hardcoded)
+  - Order: delete (if saved post, not profile), undo, save
 - Navigate to children button: right edge with -6pt padding + 32pt offset, vertically centered
-- All button positions use tunable constants for fine-tuning
+- All edit controls in same position for consistent UX

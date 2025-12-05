@@ -103,7 +103,9 @@ struct PostView: View {
 
     @ObservedObject var tunables = TunableConstants.shared
     let onEndEditing: (() -> Void)?  // Called when exiting edit mode
-    let onDelete: (() -> Void)?  // Called when deleting unsaved post (nil for saved posts)
+    let onDelete: (() -> Void)?  // Called when deleting post (new or after server deletion)
+    var isNewPost: Bool = false  // True for unsaved posts (id < 0), affects undo button behavior
+    @Binding var shouldBounceButtons: Bool  // Trigger bounce animation on edit buttons
     let serverURL = "http://185.96.221.52:8080"
 
     // Font scaling helper
@@ -126,9 +128,7 @@ struct PostView: View {
     @State private var editableSummary: String = ""
     @State private var editableBody: String = ""
     @State private var editableImageUrl: String? = nil  // nil means image removed
-    @State private var showImageSourcePicker: Bool = false
     @State private var showImagePicker: Bool = false
-    @State private var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var selectedImage: UIImage? = nil
     @State private var newImageData: Data? = nil  // Processed image data ready for upload
     @State private var showDeleteConfirmation: Bool = false
@@ -138,6 +138,9 @@ struct PostView: View {
     // Image zoom state
     @State private var isImageZooming: Bool = false
     @State private var loadedUIImage: UIImage? = nil  // Cached UIImage for zoomable view
+
+    // Edit button bounce animation
+    @State private var editButtonScale: CGFloat = 1.0
 
     // Check if current user owns this post
     private var isOwnPost: Bool {
@@ -531,7 +534,7 @@ struct PostView: View {
 
         return Button(action: {
             Logger.shared.info("[PostView] Add image button tapped")
-            showImageSourcePicker = true
+            showImagePicker = true
         }) {
             HStack {
                 Image(systemName: "photo.badge.plus")
@@ -551,19 +554,8 @@ struct PostView: View {
             )
         }
         .offset(x: buttonX, y: buttonY)
-        .confirmationDialog("add image", isPresented: $showImageSourcePicker) {
-            Button("take photo") {
-                imageSourceType = .camera
-                showImagePicker = true
-            }
-            Button("choose from library") {
-                imageSourceType = .photoLibrary
-                showImagePicker = true
-            }
-            Button("cancel", role: .cancel) {}
-        }
         .sheet(isPresented: $showImagePicker) {
-            ImagePicker(image: $selectedImage, sourceType: imageSourceType)
+            ImagePicker(image: $selectedImage, sourceType: .photoLibrary)
         }
         .uiAutomationId("add-image-button") {
             Logger.shared.info("[PostView] Add image button tapped (UI automation)")
@@ -625,12 +617,10 @@ struct PostView: View {
             .onChange(of: selectedImage) { oldValue, newValue in
                 guard let image = newValue else { return }
                 Logger.shared.info("[PostView] Image selected, processing...")
-
-                // Process image - it will be uploaded when user saves
                 processImage(image)
             }
             .sheet(isPresented: $showImagePicker) {
-                ImagePicker(image: $selectedImage, sourceType: imageSourceType)
+                ImagePicker(image: $selectedImage, sourceType: .photoLibrary)
             }
     }
 
@@ -681,7 +671,7 @@ struct PostView: View {
                         .font(.system(size: 22 * fontScale, weight: .bold))
                         .foregroundColor(.black)
                         .textFieldStyle(.plain)
-                        .textInputAutocapitalization(.sentences)
+                        .textInputAutocapitalization(.words)
                         .background(
                             RoundedRectangle(cornerRadius: 8 * cornerRoundness)
                                 .fill(Color.gray.opacity(0.2))
@@ -906,16 +896,21 @@ struct PostView: View {
 
                     // Image edit buttons (only in edit mode when expanded)
                     if isEditing && isExpanded {
-                        HStack(spacing: 8) {
+                        HStack(spacing: 20) {
                             // Delete image button
                             Button(action: {
                                 Logger.shared.info("[PostView] Remove image button tapped")
                                 editableImageUrl = nil
                             }) {
-                                Image(systemName: "trash.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.red.opacity(0.8))
-                                    .background(Circle().fill(Color.white))
+                                ZStack {
+                                    Circle()
+                                        .fill(Color(red: 1.0, green: 0.5, blue: 0.5))
+                                        .frame(width: 32, height: 32)
+                                        .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                                    Image(systemName: "trash")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.black)
+                                }
                             }
                             .uiAutomationId("delete-image-button") {
                                 editableImageUrl = nil
@@ -924,32 +919,19 @@ struct PostView: View {
                             // Replace from photo library button
                             Button(action: {
                                 Logger.shared.info("[PostView] Replace from photo library button tapped")
-                                imageSourceType = .photoLibrary
                                 showImagePicker = true
                             }) {
-                                Image(systemName: "photo.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.blue.opacity(0.8))
-                                    .background(Circle().fill(Color.white))
+                                ZStack {
+                                    Circle()
+                                        .fill(tunables.buttonColor())
+                                        .frame(width: 32, height: 32)
+                                        .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                                    Image(systemName: "photo")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.black)
+                                }
                             }
                             .uiAutomationId("replace-photo-library-button") {
-                                imageSourceType = .photoLibrary
-                                showImagePicker = true
-                            }
-
-                            // Take new photo with camera button
-                            Button(action: {
-                                Logger.shared.info("[PostView] Take new photo button tapped")
-                                imageSourceType = .camera
-                                showImagePicker = true
-                            }) {
-                                Image(systemName: "camera.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.green.opacity(0.8))
-                                    .background(Circle().fill(Color.white))
-                            }
-                            .uiAutomationId("replace-camera-button") {
-                                imageSourceType = .camera
                                 showImagePicker = true
                             }
                         }
@@ -981,26 +963,33 @@ struct PostView: View {
                     .offset(x: buttonCenterX - currentButtonSize/2, y: buttonCenterY - currentButtonSize/2)
             }
 
-            // Edit button overlay - positioned in top-right corner (only for own posts when expanded, not editing)
+            // Edit button overlay - positioned in bottom-right corner (only for own posts when expanded, not editing)
             if isOwnPost && isExpanded && !isEditing {
-                let editButtonPadding: CGFloat = 16
-                Button(action: {
-                    Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
-                    onStartEditing?()
-                }) {
-                    Image(systemName: "pencil")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.black)
-                        .frame(width: 36, height: 36)
-                        .background(tunables.buttonColor())
-                        .clipShape(Circle())
-                        .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
+                            onStartEditing?()
+                        }) {
+                            Image(systemName: "pencil")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(.black)
+                                .frame(width: 36, height: 36)
+                                .background(tunables.buttonColor())
+                                .clipShape(Circle())
+                                .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                        }
+                        .uiAutomationId("edit-button") {
+                            onStartEditing?()
+                        }
+                        .padding(.trailing, 12)
+                        .padding(.bottom, 12)
+                    }
                 }
-                .offset(x: availableWidth - 36 - editButtonPadding, y: 16)  // Top-right corner, aligned with post edge
+                .frame(width: availableWidth, height: currentHeight)
                 .opacity(expansionFactor)  // Fade in with expansion
-                .uiAutomationId("edit-button") {
-                    onStartEditing?()
-                }
             }
 
             // Edit action buttons overlay - positioned in bottom right corner (only when editing)
@@ -1009,16 +998,22 @@ struct PostView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        HStack(spacing: CGFloat(tunables.getDouble("edit-button-spacing", default: 8))) {
+                        HStack(spacing: 20) {
                             // Delete button (only for saved posts, never for profiles)
                             if post.id > 0 && post.template != "profile" {
                                 Button(action: {
                                     Logger.shared.info("[PostView] Delete post button tapped for post \(post.id)")
                                     showDeleteConfirmation = true
                                 }) {
-                                    Image(systemName: "trash.circle.fill")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.red.opacity(0.6))
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color(red: 1.0, green: 0.5, blue: 0.5))
+                                            .frame(width: 32, height: 32)
+                                            .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                                        Image(systemName: "trash")
+                                            .font(.system(size: 16, weight: .bold))
+                                            .foregroundColor(.black)
+                                    }
                                 }
                                 .uiAutomationId("delete-post-button") {
                                     showDeleteConfirmation = true
@@ -1027,13 +1022,13 @@ struct PostView: View {
 
                             // Undo button
                             Button(action: {
-                                if let onDelete = onDelete {
-                                    // New post: delete it
-                                    Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
-                                    onDelete()
+                                if isNewPost {
+                                    // New post: delete it (remove from list without server call)
+                                    Logger.shared.info("[PostView] Undo button tapped for new post \(post.id) - deleting")
+                                    onDelete?()
                                 } else {
-                                    // Existing post: revert changes
-                                    Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
+                                    // Existing post: revert changes only, stay expanded
+                                    Logger.shared.info("[PostView] Undo button tapped - reverting changes for post \(post.id)")
                                     // Dismiss keyboard first
                                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                     editableTitle = post.title
@@ -1043,21 +1038,34 @@ struct PostView: View {
                                     newImageData = nil
                                     newImage = nil
                                     imageAspectRatio = originalImageAspectRatio
+                                    Logger.shared.info("[PostView] About to call onEndEditing")
+                                    // Just exit edit mode without triggering list refresh
                                     onEndEditing?()
+                                    Logger.shared.info("[PostView] onEndEditing called")
                                 }
                             }) {
-                                Image(systemName: "arrow.uturn.backward.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.red.opacity(0.6))
+                                ZStack {
+                                    Circle()
+                                        .fill(tunables.buttonColor())
+                                        .frame(width: 32, height: 32)
+                                        .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                                    Image(systemName: "arrow.uturn.backward")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.black)
+                                }
                             }
                             .uiAutomationId("cancel-button") {
-                                if let onDelete = onDelete {
-                                    onDelete()
+                                Logger.shared.info("[PostView] ⚡️ cancel-button automation triggered for post \(post.id), isNewPost=\(isNewPost)")
+                                if isNewPost {
+                                    Logger.shared.info("[PostView] ⚡️ Calling onDelete (new post)")
+                                    onDelete?()
                                 } else {
+                                    Logger.shared.info("[PostView] ⚡️ Reverting changes and calling onEndEditing")
                                     editableTitle = post.title
                                     editableSummary = post.summary
                                     editableBody = post.body
                                     onEndEditing?()
+                                    Logger.shared.info("[PostView] ⚡️ onEndEditing completed")
                                 }
                             }
 
@@ -1065,14 +1073,21 @@ struct PostView: View {
                             Button(action: {
                                 savePost()
                             }) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.green.opacity(0.6))
+                                ZStack {
+                                    Circle()
+                                        .fill(Color(red: 0.5, green: 1.0, blue: 0.5))
+                                        .frame(width: 32, height: 32)
+                                        .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.black)
+                                }
                             }
                             .uiAutomationId("save-button") {
                                 savePost()
                             }
                         }
+                        .scaleEffect(editButtonScale)
                         .padding(.trailing, 12)
                         .padding(.bottom, 12)
                     }
@@ -1170,6 +1185,24 @@ struct PostView: View {
             }
         } message: {
             Text("Are you sure you want to permanently delete this post?")
+        }
+        .onChange(of: shouldBounceButtons) { _, shouldBounce in
+            if shouldBounce && isEditing {
+                // Trigger bounce animation
+                withAnimation(.spring(response: 0.15, dampingFraction: 0.3, blendDuration: 0)) {
+                    editButtonScale = 1.3
+                }
+                // Return to normal after a moment
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)) {
+                        editButtonScale = 1.0
+                    }
+                }
+                // Reset the trigger
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    shouldBounceButtons = false
+                }
+            }
         }
     }
 
