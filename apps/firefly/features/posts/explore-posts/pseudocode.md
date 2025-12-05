@@ -118,9 +118,9 @@ PostsListView(parentPostId: Int?):
         // Child level - custom back button
         CustomBackButton("< {parentPostTitle}")
 
-    // Add Post button conditional visibility
+    // Add Post button conditional visibility and text
     if shouldShowAddPostButton(parentPostId, currentUserId):
-        AddPostButton
+        AddPostButton(text: getAddButtonText(parentPostId, parentPost))
 
     ScrollView:
         if posts.isEmpty:
@@ -144,6 +144,15 @@ function shouldShowAddPostButton(parentPostId: Int?, currentUserEmail: String) -
     belongsToCurrentUser = (parentPost.authorEmail == currentUserEmail)
 
     return isProfilePost and belongsToCurrentUser
+
+function getAddButtonText(parentPostId: Int?, parentPost: Post?) -> String:
+    // Child posts use "add sub-post", except profile children use "add post"
+    if parentPostId != null:
+        if parentPost?.template == "profile":
+            return "add post"
+        return "add sub-post"
+    // Root level uses template-based text
+    // ... (handled elsewhere based on context)
 ```
 
 ## Gesture Handling

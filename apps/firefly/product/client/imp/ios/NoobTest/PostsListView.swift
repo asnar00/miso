@@ -96,8 +96,11 @@ struct PostsListView: View {
         if let customText = customAddButtonText {
             return customText
         }
-        // Child posts use "add sub-post"
+        // Child posts use "add sub-post", except for profile children which use "add post"
         if parentPostId != nil {
+            if parentPost?.template == "profile" {
+                return "add post"
+            }
             return "add sub-post"
         }
         // Lowercase template name (map "query" to "search" for display)

@@ -455,6 +455,23 @@ struct PostsListView: View {
         return firstPost.template != "profile"
     }
 
+    // Determine the Add Post button text
+    private var addButtonText: String {
+        // Use custom text if provided
+        if let customText = customAddButtonText {
+            return customText
+        }
+        // Child posts use "add sub-post", except profile children use "add post"
+        if parentPostId != nil {
+            if parentPost?.template == "profile" {
+                return "add post"
+            }
+            return "add sub-post"
+        }
+        // Root level uses template-based text
+        // ... (handled by addButtonTemplate logic)
+    }
+
     var body: some View {
         ZStack {
             Color(red: 128/255, green: 128/255, blue: 128/255)
