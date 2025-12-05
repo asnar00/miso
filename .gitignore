@@ -36,3 +36,6 @@ build/
 *.log
 device-logs.txt
 .env
+
+# Claude trace files (large)
+.claude-trace/
