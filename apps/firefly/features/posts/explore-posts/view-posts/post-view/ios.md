@@ -541,18 +541,21 @@ This implementation creates a smooth, continuous animation that can be interrupt
 Posts with children (or query posts) show a circular button on the right side. The button is positioned so 3/4 of its radius overlaps the post:
 
 ```swift
-// Button sizes interpolate between collapsed and expanded states
-let collapsedButtonSize: CGFloat = 32
-let expandedButtonSize: CGFloat = 42
-let currentButtonSize = lerp(collapsedButtonSize, expandedButtonSize, expansionFactor)
+// Query posts: always visible and tappable
+// Non-query posts: hidden when compact, fades in when expanded
+let isQuery = post.template == "query"
+let buttonSize: CGFloat = 42  // fixed size
+let buttonOpacity: Double = isQuery ? 1.0 : expansionFactor
 
 // Button center positioned so 3/4 overlaps post, 1/4 extends beyond right edge
-let buttonCenterX = availableWidth - (currentButtonSize / 4)
+let buttonCenterX = availableWidth - (buttonSize / 2) + 4
 let buttonCenterY = currentHeight / 2  // vertically centered
 
 childIndicatorButton
-    .frame(width: currentButtonSize, height: currentButtonSize)
-    .offset(x: buttonCenterX - currentButtonSize/2, y: buttonCenterY - currentButtonSize/2)
+    .frame(width: buttonSize, height: buttonSize)
+    .offset(x: buttonCenterX - buttonSize/2, y: buttonCenterY - buttonSize/2)
+    .opacity(buttonOpacity)
+    .allowsHitTesting(isQuery || isExpanded)  // Disable taps when hidden
 ```
 
 ## Edit Controls Positioning

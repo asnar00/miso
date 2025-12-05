@@ -1,6 +1,10 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+tomorrow:
+- only show ->children button when open
+- 
+
 ------------------------------
 todo list:
 - global query list (done)

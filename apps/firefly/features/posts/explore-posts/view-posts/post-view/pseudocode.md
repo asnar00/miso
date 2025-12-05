@@ -162,13 +162,17 @@ button color (when clickable) = RGB where R=G=B=button-colour tunable (default 0
 Posts with children (or query posts) show a circular button on the right side:
 
 ```
-collapsedButtonSize = 32pt
-expandedButtonSize = 42pt
-currentButtonSize = lerp(collapsedButtonSize, expandedButtonSize, expansionFactor)
+isQuery = post.template == "query"
+buttonSize = 42pt  // fixed size
 
 // Button center is positioned so 3/4 of radius overlaps post, 1/4 extends beyond
-buttonCenterX = availableWidth - (currentButtonSize / 4)
+buttonCenterX = availableWidth - (buttonSize / 2) + 4pt
 buttonCenterY = currentHeight / 2  // vertically centered
+
+// Query posts: always visible and tappable
+// Non-query posts: hidden when compact, fades in when expanded
+buttonOpacity = isQuery ? 1.0 : expansionFactor
+buttonTappable = isQuery || isExpanded
 ```
 
 ## Edit Controls Positioning

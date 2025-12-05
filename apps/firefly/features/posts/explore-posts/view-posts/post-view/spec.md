@@ -9,7 +9,7 @@ In compact form, we see a lozenge almost as wide as the phone screen, about 1/6t
 
 In expanded form, the title and summary display exactly as in the compact version; below them is the image, then below that the body text; and then below that the author name and date. For posts you own, an edit button (pencil icon, 32pt) appears aligned with the post's right edge. The edit controls (save/cancel/delete buttons) also right-align with the post's right edge.
 
-**Navigate-to-children button**: Posts with children (or query posts) show a circular button on the right side. This button is positioned so that 3/4 of its radius overlaps the post view (i.e., 1/4 of the button extends beyond the right edge). The button is vertically centered within the post view.
+**Navigate-to-children button**: Posts with children (or query posts) show a circular button on the right side. This button is positioned so that 3/4 of its radius overlaps the post view (i.e., 1/4 of the button extends beyond the right edge). The button is vertically centered within the post view. For query posts, the button is always visible. For all other posts, the button is hidden when compact and fades into view as the post expands, becoming tappable only when fully expanded.
 
 To animate from compact to expanded, we animate the thumbnail so that it moves and rescales to the eventual full-size / aligned position of the full-size image; the author/datestamp information moves downwards to stick to the bottom of the view boundary; and the body text clips into its eventual place. The reverse animation happens in the same way, but ... in reverse.
 

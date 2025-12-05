@@ -400,6 +400,7 @@ This repository includes a comprehensive skills system in `.claude/skills/` that
 - `ios-stop-app` - Stop app running on device
 - `ios-watch-logs` - Stream real-time logs from iPhone
 - `ios-add-file` - Add Swift files to Xcode project without opening Xcode
+- `ios-testflight-upload` - Build, archive, upload to TestFlight, and submit for Beta App Review
 - `iphone-screen-capture` - Mirror iPhone screen on Mac using scrcpy
 
 **Android/e/OS Skills** (`.claude/skills/eos-*`):

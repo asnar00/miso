@@ -947,20 +947,24 @@ struct PostView: View {
             // Child indicator overlay - show if post has children OR if it's a query (search button) OR if it has no children (anyone can add)
             // Exception: profiles can only have children added by their owner
             // BUT don't show when editing
+            // For non-query posts: hidden when compact, fades in when expanded
             let canAddChild = post.template == "profile" ? isOwnPost : true
             if !isEditing && ((post.childCount ?? 0) > 0 || post.template == "query" || ((post.childCount ?? 0) == 0 && canAddChild)) {
-                // Interpolate size and position based on expansionFactor
-                let collapsedButtonSize: CGFloat = 32
-                let expandedButtonSize: CGFloat = 42
-                let currentButtonSize = lerp(collapsedButtonSize, expandedButtonSize, expansionFactor)
+                // Query posts: always visible at full size
+                // Non-query posts: fade in with expansion
+                let isQuery = post.template == "query"
+                let buttonSize: CGFloat = isQuery ? 42 : 42
+                let buttonOpacity: Double = isQuery ? 1.0 : expansionFactor
 
                 // Button center at availableWidth - radius + 4pt offset
-                let buttonCenterX = availableWidth - (currentButtonSize / 2) + 4
+                let buttonCenterX = availableWidth - (buttonSize / 2) + 4
                 let buttonCenterY = currentHeight / 2  // Vertically centered
 
                 childIndicatorButton
-                    .frame(width: currentButtonSize, height: currentButtonSize)
-                    .offset(x: buttonCenterX - currentButtonSize/2, y: buttonCenterY - currentButtonSize/2)
+                    .frame(width: buttonSize, height: buttonSize)
+                    .offset(x: buttonCenterX - buttonSize/2, y: buttonCenterY - buttonSize/2)
+                    .opacity(buttonOpacity)
+                    .allowsHitTesting(isQuery || isExpanded)  // Disable taps when hidden
             }
 
             // Edit button overlay - positioned in bottom-right corner (only for own posts when expanded, not editing)
