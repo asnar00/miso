@@ -183,6 +183,12 @@ struct PostsListView: View {
                             // Add post button at the top (smart detection based on template)
                             if shouldShowAddButton {
                                 Button(action: {
+                                    // Block add post while editing
+                                    guard editingPostId == nil else {
+                                        Logger.shared.info("[PostsListView] Ignoring add post tap - currently editing post \(editingPostId!)")
+                                        shouldBounceEditButtons = true
+                                        return
+                                    }
                                     createNewPost()
                                 }) {
                                     HStack {
@@ -194,7 +200,7 @@ struct PostsListView: View {
                                     .foregroundColor(.black)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(tunables.buttonColor())
+                                    .background(tunables.buttonColor().opacity(editingPostId == nil ? 1.0 : 0.4))
                                     .cornerRadius(12 * cornerRoundness)
                                 }
                                 .padding(.horizontal, 8)
