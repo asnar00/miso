@@ -1,4 +1,74 @@
 import SwiftUI
+import UIKit
+
+// Zoomable image view using UIScrollView for proper pinch-to-zoom behavior
+struct ZoomableImageView: UIViewRepresentable {
+    let image: UIImage
+    let size: CGSize
+    let cornerRadius: CGFloat
+    @Binding var isZooming: Bool
+
+    func makeUIView(context: Context) -> UIScrollView {
+        let scrollView = UIScrollView()
+        scrollView.delegate = context.coordinator
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 4.0
+        scrollView.bouncesZoom = true
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.clipsToBounds = false  // Allow image to overflow
+        scrollView.backgroundColor = .clear
+
+        let imageView = UIImageView(image: image)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = cornerRadius
+        imageView.frame = CGRect(origin: .zero, size: size)
+        imageView.tag = 100
+
+        scrollView.addSubview(imageView)
+        scrollView.contentSize = size
+
+        return scrollView
+    }
+
+    func updateUIView(_ scrollView: UIScrollView, context: Context) {
+        if let imageView = scrollView.viewWithTag(100) as? UIImageView {
+            imageView.image = image
+            imageView.frame = CGRect(origin: .zero, size: size)
+            imageView.layer.cornerRadius = cornerRadius
+        }
+        scrollView.contentSize = size
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIScrollViewDelegate {
+        var parent: ZoomableImageView
+
+        init(_ parent: ZoomableImageView) {
+            self.parent = parent
+        }
+
+        func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+            return scrollView.viewWithTag(100)
+        }
+
+        func scrollViewDidZoom(_ scrollView: UIScrollView) {
+            parent.isZooming = scrollView.zoomScale > 1.0
+        }
+
+        func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+            // Always snap back to 1.0 when fingers are lifted
+            UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseOut) {
+                scrollView.zoomScale = 1.0
+            }
+            parent.isZooming = false
+        }
+    }
+}
 
 // Preference key for body height measurement
 struct BodyHeightKey: PreferenceKey {
@@ -20,6 +90,7 @@ struct TitleSummaryHeightKey: PreferenceKey {
 struct PostView: View {
     let post: Post
     let isExpanded: Bool
+    let availableWidth: CGFloat  // Width of the post view, passed from parent
     var isEditing: Bool = false  // Passed from parent to control edit state
     var showNotificationBadge: Bool = false  // Passed from parent (polled state)
     let onTap: () -> Void
@@ -64,6 +135,10 @@ struct PostView: View {
     @State private var newImage: UIImage? = nil  // Processed image for display
     @State private var authorHasProfile: Bool = true  // Assume true until checked
 
+    // Image zoom state
+    @State private var isImageZooming: Bool = false
+    @State private var loadedUIImage: UIImage? = nil  // Cached UIImage for zoomable view
+
     // Check if current user owns this post
     private var isOwnPost: Bool {
         let loginState = Storage.shared.getLoginState()
@@ -85,10 +160,10 @@ struct PostView: View {
         return start + (end - start) * t
     }
 
-    // Calculate image height for layout
-    func calculatedImageHeight(availableWidth: CGFloat, imageAspectRatio: CGFloat, addImageButtonHeight: CGFloat) -> CGFloat {
+    // Calculate image height for layout (uses content width, not full available width)
+    func calculatedImageHeight(contentWidth: CGFloat, imageAspectRatio: CGFloat, addImageButtonHeight: CGFloat) -> CGFloat {
         if editableImageUrl != nil {
-            return availableWidth / imageAspectRatio
+            return contentWidth / imageAspectRatio
         } else if isEditing {
             return addImageButtonHeight
         } else {
@@ -287,6 +362,9 @@ struct PostView: View {
             DispatchQueue.main.async {
                 Logger.shared.info("[PostView] Post saved successfully, exiting edit mode")
 
+                // Dismiss keyboard first
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+
                 if isNewPost {
                     // For new posts, trigger full refresh to update all views
                     // This ensures parent posts get updated child counts and root lists get new posts
@@ -338,32 +416,54 @@ struct PostView: View {
 
     // Image display - shows new image or loads from URL
     @ViewBuilder
-    private func imageView(width: CGFloat, height: CGFloat, imageUrl: String) -> some View {
-        if imageUrl == "new_image", let displayImage = newImage {
-            Image(uiImage: displayImage)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: width, height: height)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
-        } else {
-            let fullUrl = serverURL + imageUrl
-            AsyncImage(url: URL(string: fullUrl)) { phase in
-                switch phase {
-                case .success(let image):
-                    image
+    private func imageView(width: CGFloat, height: CGFloat, imageUrl: String, zoomable: Bool = false) -> some View {
+        Group {
+            if imageUrl == "new_image", let displayImage = newImage {
+                if zoomable {
+                    ZoomableImageView(
+                        image: displayImage,
+                        size: CGSize(width: width, height: height),
+                        cornerRadius: 12 * cornerRoundness,
+                        isZooming: $isImageZooming
+                    )
+                    .frame(width: width, height: height)
+                } else {
+                    Image(uiImage: displayImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: width, height: height)
                         .clipped()
                         .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
-                case .failure(_), .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .frame(width: width, height: height)
-                        .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
-                @unknown default:
-                    EmptyView()
+                }
+            } else {
+                let fullUrl = serverURL + imageUrl
+                if zoomable, let uiImage = loadedUIImage {
+                    ZoomableImageView(
+                        image: uiImage,
+                        size: CGSize(width: width, height: height),
+                        cornerRadius: 12 * cornerRoundness,
+                        isZooming: $isImageZooming
+                    )
+                    .frame(width: width, height: height)
+                } else {
+                    AsyncImage(url: URL(string: fullUrl)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: width, height: height)
+                                .clipped()
+                                .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                        case .failure(_), .empty:
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(width: width, height: height)
+                                .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
                 }
             }
         }
@@ -381,16 +481,14 @@ struct PostView: View {
             }
         }()
 
-        let buttonColour = tunables.getDouble("button-colour", default: 0.5)
-
         return ZStack {
             Circle()
-                .fill(Color(red: buttonColour, green: buttonColour, blue: buttonColour))
+                .fill(tunables.buttonColor())
                 .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
 
             Image(systemName: iconName)
                 .font(.system(size: 20, weight: .bold))
-                .foregroundColor(Color.black)
+                .foregroundColor(.black)
         }
         .onTapGesture {
             handleChildButtonTap()
@@ -407,32 +505,29 @@ struct PostView: View {
 
     // Handle child button tap with different behavior based on post state
     private func handleChildButtonTap() {
-        let hasChildren = (post.childCount ?? 0) > 0
-
         if post.template == "query" {
             // Query posts: navigate to search results
             if let navigate = onNavigateToQueryResults {
                 navigate(post.id, post.title)  // Pass post ID and use title as back label
             }
-        } else if hasChildren {
-            // Posts with children: navigate to children view
+        } else {
+            // All other posts: navigate to children view
             if let navigate = onNavigateToChildren {
                 navigate(post.id)
-            }
-        } else if isOwnPost {
-            // Own posts with zero children: navigate and signal auto-create
-            if let navigate = onNavigateToChildren {
-                navigate(post.id)
-                // PostsListView will detect this and auto-create a child post
             }
         }
     }
 
+    // Layout constants
+    private let thumbnailPadding: CGFloat = 8  // inset from right edge for thumbnail
+    private let contentPadding: CGFloat = 18  // left padding for content
+    private let compactHeight: CGFloat = 110  // height of compact post view
+
     private var addImageButton: some View {
-        let availableWidth: CGFloat = 350
+        let contentWidth = availableWidth - (2 * contentPadding)
         let addImageButtonHeight: CGFloat = 50
-        let buttonX: CGFloat = 18
-        let buttonY: CGFloat = 80 + 12
+        let buttonX: CGFloat = contentPadding
+        let buttonY: CGFloat = 72  // Positioned to sit snugly below title/summary (was 80+3=83)
 
         return Button(action: {
             Logger.shared.info("[PostView] Add image button tapped")
@@ -441,11 +536,11 @@ struct PostView: View {
             HStack {
                 Image(systemName: "photo.badge.plus")
                     .font(.system(size: 20))
-                Text("Add Image")
+                Text("add image")
                     .font(.system(size: 16))
             }
             .foregroundColor(.black)
-            .frame(width: availableWidth, height: addImageButtonHeight)
+            .frame(width: contentWidth, height: addImageButtonHeight)
             .background(
                 RoundedRectangle(cornerRadius: 12 * cornerRoundness)
                     .fill(Color.gray.opacity(0.1))
@@ -456,16 +551,16 @@ struct PostView: View {
             )
         }
         .offset(x: buttonX, y: buttonY)
-        .confirmationDialog("Add Image", isPresented: $showImageSourcePicker) {
-            Button("Take Photo") {
+        .confirmationDialog("add image", isPresented: $showImageSourcePicker) {
+            Button("take photo") {
                 imageSourceType = .camera
                 showImagePicker = true
             }
-            Button("Choose from Library") {
+            Button("choose from library") {
                 imageSourceType = .photoLibrary
                 showImagePicker = true
             }
-            Button("Cancel", role: .cancel) {}
+            Button("cancel", role: .cancel) {}
         }
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(image: $selectedImage, sourceType: imageSourceType)
@@ -548,29 +643,36 @@ struct PostView: View {
             }
         }()
 
-        let compactHeight: CGFloat = 110  // Increased to fit title, summary, and author/date
-
         // Calculate expanded height based on actual content
-        let availableWidth: CGFloat = 350  // Approximate - account for padding
+        // Use contentWidth for image calculations (image has padding on both sides)
+        let contentWidth = availableWidth - (2 * contentPadding)
         let addImageButtonHeight: CGFloat = 50
-        let imageHeight = calculatedImageHeight(availableWidth: availableWidth, imageAspectRatio: imageAspectRatio, addImageButtonHeight: addImageButtonHeight)
+        let imageHeight = calculatedImageHeight(contentWidth: contentWidth, imageAspectRatio: imageAspectRatio, addImageButtonHeight: addImageButtonHeight)
         let authorHeight: CGFloat = 15  // Approximate height for author line
 
         // Calculate body text height using UIKit measurement
         // Use editableBody if we're editing, otherwise use post.body
         let bodyText = editableBody.isEmpty ? post.body : editableBody
-        let measuredBodyHeight = calculateTextHeight(bodyText, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
+        let measuredBodyHeight = calculateTextHeight(bodyText, width: contentWidth, font: UIFont.preferredFont(forTextStyle: .body))
 
-        // expandedHeight = titleSummary (80) + spacing (12) + image + spacing (4) + body + spacing (12) + author + bottom padding (28)
-        let expandedHeight: CGFloat = 80 + 12 + imageHeight + 4 + measuredBodyHeight + 12 + authorHeight + 28
+        // expandedHeight = titleSummary (80) + spacing (3) + image + spacing (4) + body + spacing (12) + author + bottom padding (28)
+        let expandedHeight: CGFloat = 80 + 3 + imageHeight + 4 + measuredBodyHeight + 12 + authorHeight + 28
 
         let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 
+        let baseBrightness = tunables.getDouble("post-background-brightness", default: 0.9)
+        let expandedBrightness = min(baseBrightness * 1.2, 1.0)
+        let currentBrightness = lerp(baseBrightness, expandedBrightness, expansionFactor)
+
+        let shadowRadius = lerp(2, 16, expansionFactor)
+        let shadowY = lerp(0, 16, expansionFactor)
+        let shadowOpacity = lerp(0.2, 0.5, expansionFactor)
+
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 12 * cornerRoundness)
-                .fill(Color.white.opacity(tunables.getDouble("post-background-brightness", default: 0.9)))
+                .fill(Color.white.opacity(currentBrightness))
                 .frame(height: currentHeight)
-                .shadow(radius: 2)
+                .shadow(color: Color.black.opacity(shadowOpacity), radius: shadowRadius, x: 0, y: shadowY)
 
             // Title and summary at the top
             VStack(alignment: .leading, spacing: 4) {
@@ -579,8 +681,7 @@ struct PostView: View {
                         .font(.system(size: 22 * fontScale, weight: .bold))
                         .foregroundColor(.black)
                         .textFieldStyle(.plain)
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
+                        .textInputAutocapitalization(.sentences)
                         .background(
                             RoundedRectangle(cornerRadius: 8 * cornerRoundness)
                                 .fill(Color.gray.opacity(0.2))
@@ -598,8 +699,7 @@ struct PostView: View {
                         .italic()
                         .foregroundColor(.black.opacity(0.8))
                         .textFieldStyle(.plain)
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
+                        .textInputAutocapitalization(.sentences)
                         .background(
                             RoundedRectangle(cornerRadius: 8 * cornerRoundness)
                                 .fill(Color.gray.opacity(0.2))
@@ -634,7 +734,7 @@ struct PostView: View {
                 // Calculate current image dimensions and position
                 let compactImageHeight: CGFloat = 80
                 let compactImageY: CGFloat = (110 - 80) / 2 + 8  // Updated for new compact height
-                let expandedImageY: CGFloat = 80 + 12  // Hardcoded: 80pt title/summary + 12pt spacing (was 16)
+                let expandedImageY: CGFloat = 80 + 3  // Hardcoded: 80pt title/summary + 3pt spacing
                 // Use imageHeight which already accounts for removed images (0 when editableImageUrl is nil)
                 let expandedImageHeight = imageHeight
 
@@ -654,14 +754,13 @@ struct PostView: View {
                     TextEditor(text: $editableBody)
                         .scrollContentBackground(.hidden)  // Hide default background
                         .foregroundColor(.black)
-                        .frame(width: availableWidth, height: measuredBodyHeight, alignment: .top)
+                        .frame(width: contentWidth, height: measuredBodyHeight, alignment: .top)
                         .scrollDisabled(true)
                         .disabled(!isEditing)  // Only editable when isEditing is true
-                        .autocorrectionDisabled(true)  // Disable autocorrection
-                        .textInputAutocapitalization(.never)  // Disable auto-capitalization
+                        .textInputAutocapitalization(.sentences)
                         .onChange(of: editableBody) { _, newValue in
                             // Log when text changes - height is automatically recalculated by body view
-                            let newHeight = calculateTextHeight(newValue, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
+                            let newHeight = calculateTextHeight(newValue, width: contentWidth, font: UIFont.preferredFont(forTextStyle: .body))
                             Logger.shared.info("[PostView] Body text changed, new height: \(newHeight)")
                         }
                         .uiAutomationId("edit-body-text") {
@@ -677,14 +776,14 @@ struct PostView: View {
                             .padding(.top, 8)
                     }
                 }
-                .frame(width: availableWidth, height: measuredBodyHeight)
+                .frame(width: contentWidth, height: measuredBodyHeight)
                 .clipped()
                 .mask(
                     Rectangle()
                         .frame(height: currentBodyHeight)
                         .frame(maxHeight: .infinity, alignment: .top)
                 )
-                .offset(x: 18, y: bodyY)
+                .offset(x: contentPadding, y: bodyY)
             }
 
             // Author and date - visible in both compact and expanded views
@@ -695,7 +794,7 @@ struct PostView: View {
             // Calculate expanded position below body text
             let compactImageHeight: CGFloat = 80
             let compactImageY: CGFloat = (110 - 80) / 2 + 8  // Updated for new compact height
-            let expandedImageY: CGFloat = 80 + 12
+            let expandedImageY: CGFloat = 80 + 3
             let expandedImageHeight = imageHeight
             let currentImageY = lerp(compactImageY, expandedImageY, expansionFactor)
             let currentImageHeight = lerp(compactImageHeight, expandedImageHeight, expansionFactor)
@@ -720,8 +819,8 @@ struct PostView: View {
                             Text(authorName)
                                 .font(.system(size: 15 * fontScale * tunables.getDouble("author-font-size", default: 1.0)))
                                 .foregroundColor(.black.opacity(0.5))
-                        } else {
-                            // Regular posts with profiles: make it a tappable button
+                        } else if isExpanded {
+                            // Expanded posts with profiles: make it a tappable button with background
                             Button(action: {
                                 if let authorEmail = post.authorEmail {
                                     Logger.shared.info("[PostView] Author button tapped: \(authorName) (\(authorEmail))")
@@ -733,13 +832,14 @@ struct PostView: View {
                                     .foregroundColor(.black)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
-                                    .background(Color(
-                                        red: tunables.getDouble("button-colour", default: 0.5),
-                                        green: tunables.getDouble("button-colour", default: 0.5),
-                                        blue: tunables.getDouble("button-colour", default: 0.5)
-                                    ))
+                                    .background(tunables.buttonColor())
                                     .clipShape(RoundedRectangle(cornerRadius: 6 * cornerRoundness))
                             }
+                        } else {
+                            // Compact posts: display as plain text (no background, no tap)
+                            Text(authorName)
+                                .font(.system(size: 15 * fontScale * tunables.getDouble("author-font-size", default: 1.0)))
+                                .foregroundColor(.black.opacity(0.5))
                         }
                     }
 
@@ -764,27 +864,30 @@ struct PostView: View {
 
                 // Compact state: 80x80 thumbnail on top-right with padding
                 let thumbnailSize: CGFloat = 80
-                let compactX = availableWidth - 80 + 20  // Right-aligned, moved right by 12pt for reduced list padding
-                let compactY: CGFloat = (110 - thumbnailSize) / 2  // Vertically centered in compact post view
+                let compactX = availableWidth - thumbnailSize - (2 * thumbnailPadding)  // Right-aligned, inset from right edge
+                let compactY: CGFloat = (compactHeight - thumbnailSize) / 2  // Vertically centered in compact post view
 
                 // Expanded state: full-width centered below summary (matching content rectangle)
-                let expandedWidth = availableWidth
-                let expandedHeight = availableWidth / imageAspectRatio
-                let expandedX: CGFloat = 18  // Increased from 10pt to align with text indent
+                let expandedImageWidth = contentWidth
+                let expandedImageHeight = contentWidth / imageAspectRatio
+                let expandedX: CGFloat = contentPadding  // Aligned with text content indent
                 // Match the spacing used in height calculation (not the 8pt in outdated docs)
                 let expandedY: CGFloat = 80  // Hardcoded: 80pt title/summary height
 
                 // Interpolated values
-                let currentWidth = lerp(thumbnailSize, expandedWidth, expansionFactor)
-                let currentHeight = lerp(thumbnailSize, expandedHeight, expansionFactor)
+                let currentWidth = lerp(thumbnailSize, expandedImageWidth, expansionFactor)
+                let currentImageHeight = lerp(thumbnailSize, expandedImageHeight, expansionFactor)
                 let currentX = lerp(compactX, expandedX, expansionFactor)
                 let currentY = lerp(compactY, expandedY, expansionFactor)
 
+                // Use zoomable image when expanded and not editing
+                let useZoomable = isExpanded && !isEditing
+
                 ZStack(alignment: .topTrailing) {
-                    imageView(width: currentWidth, height: currentHeight, imageUrl: imageUrl)
+                    imageView(width: currentWidth, height: currentImageHeight, imageUrl: imageUrl, zoomable: useZoomable)
                     .task {
-                        // Load aspect ratio when image first appears
-                        if imageAspectRatio == 1.0 {
+                        // Load aspect ratio and UIImage when image first appears
+                        if imageAspectRatio == 1.0 || loadedUIImage == nil {
                             if let url = URL(string: fullUrl) {
                                 do {
                                     let (data, _) = try await URLSession.shared.data(from: url)
@@ -792,6 +895,7 @@ struct PostView: View {
                                         let aspectRatio = uiImage.size.width / uiImage.size.height
                                         imageAspectRatio = aspectRatio
                                         originalImageAspectRatio = aspectRatio  // Save original
+                                        loadedUIImage = uiImage  // Cache for zoomable view
                                     }
                                 } catch {
                                     // Failed to load image, keep default aspect ratio
@@ -858,40 +962,41 @@ struct PostView: View {
                 addImageButton
             }
 
-            // Child indicator overlay - show if post has children OR if it's a query (search button) OR if it's an own post with no children
+            // Child indicator overlay - show if post has children OR if it's a query (search button) OR if it has no children (anyone can add)
+            // Exception: profiles can only have children added by their owner
             // BUT don't show when editing
-            if !isEditing && ((post.childCount ?? 0) > 0 || post.template == "query" || ((post.childCount ?? 0) == 0 && isOwnPost)) {
+            let canAddChild = post.template == "profile" ? isOwnPost : true
+            if !isEditing && ((post.childCount ?? 0) > 0 || post.template == "query" || ((post.childCount ?? 0) == 0 && canAddChild)) {
                 // Interpolate size and position based on expansionFactor
-                let collapsedSize: CGFloat = 32
-                let expandedSize: CGFloat = 42
-                let currentSize = lerp(collapsedSize, expandedSize, expansionFactor)
+                let collapsedButtonSize: CGFloat = 32
+                let expandedButtonSize: CGFloat = 42
+                let currentButtonSize = lerp(collapsedButtonSize, expandedButtonSize, expansionFactor)
 
-                // Collapsed: right edge with -6pt padding + 32pt, vertically centered
-                // Expanded: same horizontal position, vertically centered
-                let collapsedX: CGFloat = 350 + 6 + 32 - (collapsedSize / 2)  // Right edge with -6pt padding + 32pt offset
-                let expandedX: CGFloat = 350 + 6 + 32 - (expandedSize / 2)    // Same horizontal position
-                let currentX = lerp(collapsedX, expandedX, expansionFactor)
-
-                let collapsedY: CGFloat = currentHeight / 2  // Vertically centered
-                let expandedY: CGFloat = currentHeight / 2   // Also vertically centered
-                let currentY = lerp(collapsedY, expandedY, expansionFactor)
+                // Button center at availableWidth - radius + 4pt offset
+                let buttonCenterX = availableWidth - (currentButtonSize / 2) + 4
+                let buttonCenterY = currentHeight / 2  // Vertically centered
 
                 childIndicatorButton
-                    .frame(width: currentSize, height: currentSize)
-                    .offset(x: currentX - currentSize/2, y: currentY - currentSize/2)
+                    .frame(width: currentButtonSize, height: currentButtonSize)
+                    .offset(x: buttonCenterX - currentButtonSize/2, y: buttonCenterY - currentButtonSize/2)
             }
 
             // Edit button overlay - positioned in top-right corner (only for own posts when expanded, not editing)
             if isOwnPost && isExpanded && !isEditing {
+                let editButtonPadding: CGFloat = 16
                 Button(action: {
                     Logger.shared.info("[PostView] Edit button tapped for post \(post.id)")
                     onStartEditing?()
                 }) {
-                    Image(systemName: "pencil.circle.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(.black.opacity(0.6))
+                    Image(systemName: "pencil")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.black)
+                        .frame(width: 36, height: 36)
+                        .background(tunables.buttonColor())
+                        .clipShape(Circle())
+                        .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
                 }
-                .offset(x: CGFloat(tunables.getDouble("edit-button-x", default: 334)) - 32, y: 16)  // Top-right corner
+                .offset(x: availableWidth - 36 - editButtonPadding, y: 16)  // Top-right corner, aligned with post edge
                 .opacity(expansionFactor)  // Fade in with expansion
                 .uiAutomationId("edit-button") {
                     onStartEditing?()
@@ -900,69 +1005,79 @@ struct PostView: View {
 
             // Edit action buttons overlay - positioned in bottom right corner (only when editing)
             if isOwnPost && isExpanded && isEditing {
-                HStack(spacing: CGFloat(tunables.getDouble("edit-button-spacing", default: 8))) {
-                    // Delete button (only for saved posts)
-                    if post.id > 0 {
-                        Button(action: {
-                            Logger.shared.info("[PostView] Delete post button tapped for post \(post.id)")
-                            showDeleteConfirmation = true
-                        }) {
-                            Image(systemName: "trash.circle.fill")
-                                .font(.system(size: 32))
-                                .foregroundColor(.red.opacity(0.6))
-                        }
-                        .uiAutomationId("delete-post-button") {
-                            showDeleteConfirmation = true
-                        }
-                    }
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        HStack(spacing: CGFloat(tunables.getDouble("edit-button-spacing", default: 8))) {
+                            // Delete button (only for saved posts, never for profiles)
+                            if post.id > 0 && post.template != "profile" {
+                                Button(action: {
+                                    Logger.shared.info("[PostView] Delete post button tapped for post \(post.id)")
+                                    showDeleteConfirmation = true
+                                }) {
+                                    Image(systemName: "trash.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundColor(.red.opacity(0.6))
+                                }
+                                .uiAutomationId("delete-post-button") {
+                                    showDeleteConfirmation = true
+                                }
+                            }
 
-                    // Undo button
-                    Button(action: {
-                        if let onDelete = onDelete {
-                            // New post: delete it
-                            Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
-                            onDelete()
-                        } else {
-                            // Existing post: revert changes
-                            Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
-                            editableTitle = post.title
-                            editableSummary = post.summary
-                            editableBody = post.body
-                            editableImageUrl = post.imageUrl
-                            newImageData = nil
-                            newImage = nil
-                            imageAspectRatio = originalImageAspectRatio
-                            onEndEditing?()
-                        }
-                    }) {
-                        Image(systemName: "arrow.uturn.backward.circle.fill")
-                            .font(.system(size: 32))
-                            .foregroundColor(.red.opacity(0.6))
-                    }
-                    .uiAutomationId("cancel-button") {
-                        if let onDelete = onDelete {
-                            onDelete()
-                        } else {
-                            editableTitle = post.title
-                            editableSummary = post.summary
-                            editableBody = post.body
-                            onEndEditing?()
-                        }
-                    }
+                            // Undo button
+                            Button(action: {
+                                if let onDelete = onDelete {
+                                    // New post: delete it
+                                    Logger.shared.info("[PostView] Delete button tapped for new post \(post.id)")
+                                    onDelete()
+                                } else {
+                                    // Existing post: revert changes
+                                    Logger.shared.info("[PostView] Cancel button tapped - reverting changes")
+                                    // Dismiss keyboard first
+                                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                                    editableTitle = post.title
+                                    editableSummary = post.summary
+                                    editableBody = post.body
+                                    editableImageUrl = post.imageUrl
+                                    newImageData = nil
+                                    newImage = nil
+                                    imageAspectRatio = originalImageAspectRatio
+                                    onEndEditing?()
+                                }
+                            }) {
+                                Image(systemName: "arrow.uturn.backward.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.red.opacity(0.6))
+                            }
+                            .uiAutomationId("cancel-button") {
+                                if let onDelete = onDelete {
+                                    onDelete()
+                                } else {
+                                    editableTitle = post.title
+                                    editableSummary = post.summary
+                                    editableBody = post.body
+                                    onEndEditing?()
+                                }
+                            }
 
-                    // Save button
-                    Button(action: {
-                        savePost()
-                    }) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 32))
-                            .foregroundColor(.green.opacity(0.6))
-                    }
-                    .uiAutomationId("save-button") {
-                        savePost()
+                            // Save button
+                            Button(action: {
+                                savePost()
+                            }) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.green.opacity(0.6))
+                            }
+                            .uiAutomationId("save-button") {
+                                savePost()
+                            }
+                        }
+                        .padding(.trailing, 12)
+                        .padding(.bottom, 12)
                     }
                 }
-                .offset(x: CGFloat(tunables.getDouble("edit-button-x", default: 334)) - 120, y: currentHeight - 48)  // Bottom-right corner
+                .frame(width: availableWidth, height: currentHeight)
                 .opacity(expansionFactor)  // Fade in with expansion
             }
 
@@ -974,7 +1089,7 @@ struct PostView: View {
                 if isExpanded && !isMeasured {
                     TextEditor(text: .constant(post.body))
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(width: 350)
+                        .frame(width: contentWidth)
                         .background(
                             GeometryReader { geo in
                                 Color.clear.preference(key: BodyHeightKey.self, value: geo.size.height)
@@ -993,8 +1108,9 @@ struct PostView: View {
             if showNotificationBadge {
                 Circle()
                     .fill(Color.red)
-                    .frame(width: 8, height: 8)
-                    .offset(x: -8, y: 8)
+                    .stroke(Color.white, lineWidth: 2)
+                    .frame(width: 12, height: 12)
+                    .offset(x: -6, y: 6)
             }
         }
         .onTapGesture {
@@ -1021,19 +1137,19 @@ struct PostView: View {
             Logger.shared.info("[PostView] ⭐️ EXPANSION ANIMATION STARTING - Post \(post.id) isExpanded changed to \(newValue)")
             if newValue {
                 // Expanding - calculate and log positions
-                let availableWidth: CGFloat = 350
-                let imageHeight = editableImageUrl != nil ? (availableWidth / imageAspectRatio) : 0
-                let measuredBodyHeight = calculateTextHeight(editableBody, width: availableWidth, font: UIFont.preferredFont(forTextStyle: .body))
+                let logContentWidth = availableWidth - (2 * contentPadding)
+                let logImageHeight = editableImageUrl != nil ? (logContentWidth / imageAspectRatio) : 0
+                let logBodyHeight = calculateTextHeight(editableBody, width: logContentWidth, font: UIFont.preferredFont(forTextStyle: .body))
 
                 // Calculate positions when fully expanded using hardcoded title/summary height
-                let expandedImageY: CGFloat = 80 + 12  // 80pt title/summary + 12pt spacing
-                let expandedBodyY = expandedImageY + imageHeight + 4  // 4pt spacing
-                let expandedAuthorY = expandedBodyY + measuredBodyHeight + 12  // 12pt spacing (was 16pt, 24pt originally)
+                let expandedImageY: CGFloat = 80 + 3  // 80pt title/summary + 12pt spacing
+                let expandedBodyY = expandedImageY + logImageHeight + 4  // 4pt spacing
+                let expandedAuthorY = expandedBodyY + logBodyHeight + 12  // 12pt spacing
 
-                Logger.shared.info("[PostView] Post \(post.id) EXPANDED POSITIONS:")
+                Logger.shared.info("[PostView] Post \(post.id) EXPANDED POSITIONS (availableWidth=\(availableWidth)):")
                 Logger.shared.info("  Title/Summary Height: 80 (hardcoded)")
-                Logger.shared.info("  Image Y: \(expandedImageY) (height: \(imageHeight))")
-                Logger.shared.info("  Body Y: \(expandedBodyY) (height: \(measuredBodyHeight))")
+                Logger.shared.info("  Image Y: \(expandedImageY) (height: \(logImageHeight))")
+                Logger.shared.info("  Body Y: \(expandedBodyY) (height: \(logBodyHeight))")
                 Logger.shared.info("  Author Y: \(expandedAuthorY)")
 
                 withAnimation(.easeInOut(duration: 0.3)) {

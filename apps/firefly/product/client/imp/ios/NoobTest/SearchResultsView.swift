@@ -17,7 +17,9 @@ struct SearchResultsView: View {
             showAddButton: false,
             templateName: nil,  // Search results don't need template name
             customAddButtonText: nil,
-            isAnyPostEditing: $isAnyPostEditing
+            onAddButtonTapped: nil,
+            isAnyPostEditing: $isAnyPostEditing,
+            editCurrentUserProfile: .constant(false)
         )
         .onAppear {
             fetchPosts()

@@ -3,20 +3,12 @@
 
 ## Database Migration
 
-Add to database setup:
+Add `num_invites` column to users table:
 
-```python
-def create_pending_invites_table():
-    """Create pending_invites table"""
-    db.execute('''
-        CREATE TABLE IF NOT EXISTS pending_invites (
-            id SERIAL PRIMARY KEY,
-            inviter_user_id INTEGER REFERENCES users(id),
-            invitee_email VARCHAR(255) NOT NULL,
-            invite_date TIMESTAMP DEFAULT NOW()
-        )
-    ''')
-    db.commit()
+```sql
+ALTER TABLE users ADD COLUMN num_invites INTEGER NOT NULL DEFAULT 0;
+-- Grant specific users invites as needed:
+UPDATE users SET num_invites = 128 WHERE name = 'asnaroo';
 ```
 
 ## Configuration
@@ -34,87 +26,95 @@ def get_testflight_link():
 
 ## API Endpoints
 
+### GET /api/user/invites
+
+```python
+@app.route('/api/user/invites', methods=['GET'])
+def get_user_invites():
+    """Get the number of invites remaining for the current user"""
+    device_id = request.args.get('device_id', '').strip()
+
+    if not device_id:
+        return jsonify({'status': 'error', 'message': 'Device ID required'}), 400
+
+    user = db.get_user_by_device_id(device_id)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+
+    # Get num_invites from database
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT num_invites FROM users WHERE id = %s", (user['id'],))
+            row = cur.fetchone()
+            num_invites = row[0] if row else 0
+    finally:
+        db.return_connection(conn)
+
+    return jsonify({
+        'status': 'success',
+        'num_invites': num_invites
+    })
+```
+
 ### POST /api/invite
 
 ```python
 @app.route('/api/invite', methods=['POST'])
 def create_invite():
-    """Create a new invite or check if user already exists"""
+    """Create a new invite for a user"""
     data = request.get_json()
-    invitee_email = data.get('email', '').lower().strip()
+    device_id = data.get('device_id', '').strip()
+    invitee_name = data.get('name', '').strip()
+    invitee_email = data.get('email', '').strip().lower()
 
-    # Get current user ID from session/auth
-    inviter_user_id = get_current_user_id()
+    # Get inviter
+    inviter = db.get_user_by_device_id(device_id)
+    if not inviter:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
 
-    if not invitee_email:
-        return jsonify({'status': 'error', 'message': 'Email required'}), 400
+    # Check if inviter has invites remaining
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT num_invites FROM users WHERE id = %s", (inviter['id'],))
+            row = cur.fetchone()
+            num_invites = row[0] if row else 0
+    finally:
+        db.return_connection(conn)
+
+    if num_invites <= 0:
+        return jsonify({'status': 'error', 'message': 'No invites remaining'}), 403
 
     # Check if user already exists
-    existing_user = db.query_one('SELECT id FROM users WHERE email = %s', (invitee_email,))
+    existing_user = db.get_user_by_email(invitee_email)
+    testflight_url = config.get_config_value('TESTFLIGHT_URL')
 
     if existing_user:
         return jsonify({
             'status': 'already_exists',
-            'user_id': existing_user['id'],
-            'testflight_link': get_testflight_link()
+            'user_name': existing_user.get('name', ''),
+            'testflight_link': testflight_url
         })
 
-    # Create pending invite
-    db.execute(
-        'INSERT INTO pending_invites (inviter_user_id, invitee_email) VALUES (%s, %s)',
-        (inviter_user_id, invitee_email)
-    )
-    db.commit()
+    # Create new user from invite
+    new_user_id = db.create_user_from_invite(invitee_email, invitee_name, inviter['id'])
 
-    logger.info(f"[Invite] User {inviter_user_id} invited {invitee_email}")
+    # Decrement inviter's invite count
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE users SET num_invites = num_invites - 1 WHERE id = %s AND num_invites > 0", (inviter['id'],))
+            conn.commit()
+    finally:
+        db.return_connection(conn)
+
+    invite_message = f"Hi {invitee_name}! I'd like you to try microclub.\nDownload it here: {testflight_url}"
 
     return jsonify({
         'status': 'invite_created',
-        'testflight_link': get_testflight_link()
+        'testflight_link': testflight_url,
+        'invite_message': invite_message
     })
 ```
 
-### GET /api/testflight-link
-
-```python
-@app.route('/api/testflight-link', methods=['GET'])
-def get_testflight_link_endpoint():
-    """Get the TestFlight public link"""
-    return jsonify({
-        'link': get_testflight_link()
-    })
-```
-
-## Helper Function
-
-```python
-def get_current_user_id():
-    """Get current user ID from storage/session"""
-    # This should use the existing auth mechanism
-    # For now, get from device_id in request
-    data = request.get_json() or {}
-    device_id = data.get('device_id') or request.headers.get('X-Device-ID')
-
-    if not device_id:
-        return None
-
-    user = db.query_one(
-        'SELECT id FROM users WHERE device_ids ? %s',
-        (device_id,)
-    )
-
-    return user['id'] if user else None
-```
-
-## Database Migration Script
-
-Add to your migration or setup script:
-
-```python
-# In app.py or migration script
-if __name__ == '__main__':
-    # Existing migrations...
-
-    # Add pending_invites table
-    create_pending_invites_table()
-```

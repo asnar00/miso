@@ -2,6 +2,8 @@ import SwiftUI
 import OSLog
 
 struct ContentView: View {
+    @Binding var shouldEditProfile: Bool
+    @ObservedObject var tunables = TunableConstants.shared
     @State private var currentExplorer: ToolbarExplorer = .makePost
 
     // Three separate post arrays for each explorer
@@ -30,10 +32,23 @@ struct ContentView: View {
     // Track if any post is being edited (to fade out toolbar)
     @State private var isAnyPostEditing = false
 
+    // Invite sheet state
+    @State private var showInviteSheet = false
+
+    // New user profile editing state
+    @State private var editingNewUserProfile = false
+
+    // Search badge state (any query has new matches)
+    @State private var hasSearchBadge = false
+    @State private var badgePollingTimer: Timer? = nil
+
+    // Invite count state
+    @State private var numInvites: Int = 0
+
     var body: some View {
         ZStack {
             // Background color
-            Color(red: 128/255, green: 128/255, blue: 128/255)
+            tunables.backgroundColor()
                 .ignoresSafeArea()
 
             // Main content - three separate PostsView instances kept in memory
@@ -69,7 +84,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        PostsView(initialPosts: makePostPosts, onPostCreated: { fetchMakePostPosts() }, showAddButton: true, templateName: "post", customAddButtonText: nil, isAnyPostEditing: $isAnyPostEditing)
+                        PostsView(initialPosts: makePostPosts, onPostCreated: { fetchMakePostPosts() }, showAddButton: true, templateName: "post", customAddButtonText: nil, onAddButtonTapped: nil, isAnyPostEditing: $isAnyPostEditing, editCurrentUserProfile: .constant(false))
                             .id(makePostViewId)
                     }
                 }
@@ -84,7 +99,7 @@ struct ContentView: View {
                             Text("ᕦ(ツ)ᕤ")
                                 .font(.system(size: UIScreen.main.bounds.width / 12))
                                 .foregroundColor(.black)
-                            ProgressView("Loading queries...")
+                            ProgressView("Loading searches...")
                                 .foregroundColor(.black)
                         }
                     } else if let error = searchError {
@@ -106,7 +121,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        PostsView(initialPosts: searchPosts, onPostCreated: { fetchSearchPosts() }, showAddButton: true, templateName: "query", customAddButtonText: nil, isAnyPostEditing: $isAnyPostEditing)
+                        PostsView(initialPosts: searchPosts, onPostCreated: { fetchSearchPosts() }, showAddButton: true, templateName: "query", customAddButtonText: nil, onAddButtonTapped: nil, isAnyPostEditing: $isAnyPostEditing, editCurrentUserProfile: .constant(false))
                             .id(searchViewId)
                     }
                 }
@@ -143,8 +158,11 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        PostsView(initialPosts: usersPosts, onPostCreated: { fetchUsersPosts() }, showAddButton: true, templateName: "profile", customAddButtonText: "Invite Friend", isAnyPostEditing: $isAnyPostEditing)
+                        PostsView(initialPosts: usersPosts, onPostCreated: { fetchUsersPosts() }, showAddButton: numInvites > 0, templateName: "profile", customAddButtonText: "invite friend", onAddButtonTapped: { showInviteSheet = true }, isAnyPostEditing: $isAnyPostEditing, editCurrentUserProfile: $editingNewUserProfile)
                             .id(usersViewId)
+                            .sheet(isPresented: $showInviteSheet, onDismiss: { fetchInviteCount() }) {
+                                InviteSheet()
+                            }
                     }
                 }
                 .opacity(currentExplorer == .users ? 1 : 0)
@@ -159,7 +177,8 @@ struct ContentView: View {
                     currentExplorer: $currentExplorer,
                     onResetMakePost: { makePostViewId = UUID() },
                     onResetSearch: { searchViewId = UUID() },
-                    onResetUsers: { usersViewId = UUID() }
+                    onResetUsers: { usersViewId = UUID() },
+                    showSearchBadge: hasSearchBadge
                 )
                 .opacity(isAnyPostEditing ? 0 : 1)  // Fade out when editing
                 .allowsHitTesting(!isAnyPostEditing)  // Disable interaction when editing
@@ -168,10 +187,28 @@ struct ContentView: View {
             }
         }
         .onAppear {
+            // Check if new user needs to edit profile
+            if shouldEditProfile {
+                currentExplorer = .users
+                editingNewUserProfile = true
+                shouldEditProfile = false
+            }
+
             // Fetch all three explorers' data on startup
             fetchMakePostPosts()
             fetchSearchPosts()
             fetchUsersPosts()
+            fetchInviteCount()
+
+            // Start badge polling for toolbar
+            pollSearchBadges()
+            badgePollingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+                pollSearchBadges()
+            }
+        }
+        .onDisappear {
+            badgePollingTimer?.invalidate()
+            badgePollingTimer = nil
         }
     }
 
@@ -203,13 +240,15 @@ struct ContentView: View {
         isLoadingSearch = true
         searchError = nil
 
-        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["query"], byUser: "current") { result in
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["query"], byUser: "any") { result in
             switch result {
             case .success(let fetchedPosts):
                 preloadImagesOptimized(for: fetchedPosts) {
                     DispatchQueue.main.async {
                         self.searchPosts = fetchedPosts
                         self.isLoadingSearch = false
+                        // Poll badges now that search posts are loaded
+                        self.pollSearchBadges()
                     }
                 }
             case .failure(let error):
@@ -302,8 +341,73 @@ struct ContentView: View {
             }
         }
     }
+
+    func pollSearchBadges() {
+        // Only poll if we have search posts loaded
+        let queryPosts = searchPosts.filter { $0.template == "query" }
+        guard !queryPosts.isEmpty else { return }
+
+        let queryIds = queryPosts.map { $0.id }
+
+        // Get current user email
+        guard let userEmail = Storage.shared.getLoginState().email else { return }
+
+        let serverURL = "http://185.96.221.52:8080"
+        guard let url = URL(string: "\(serverURL)/api/queries/badges") else { return }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let body: [String: Any] = [
+            "user_email": userEmail,
+            "query_ids": queryIds
+        ]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: body) else { return }
+        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else { return }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Bool] {
+                    DispatchQueue.main.async {
+                        // Check if any query has a badge
+                        let anyBadge = json.values.contains(true)
+                        self.hasSearchBadge = anyBadge
+                    }
+                }
+            } catch {
+                Logger.shared.error("[ContentView] Error parsing badge response: \(error.localizedDescription)")
+            }
+        }.resume()
+    }
+
+    func fetchInviteCount() {
+        let deviceId = Storage.shared.getDeviceID()
+        let serverURL = "http://185.96.221.52:8080"
+        guard let url = URL(string: "\(serverURL)/api/user/invites?device_id=\(deviceId)") else { return }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else { return }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let count = json["num_invites"] as? Int {
+                    DispatchQueue.main.async {
+                        self.numInvites = count
+                        Logger.shared.info("[ContentView] User has \(count) invites remaining")
+                    }
+                }
+            } catch {
+                Logger.shared.error("[ContentView] Error parsing invite count: \(error.localizedDescription)")
+            }
+        }.resume()
+    }
 }
 
 #Preview {
-    ContentView()
+    @Previewable @State var editProfile = false
+    ContentView(shouldEditProfile: $editProfile)
 }

@@ -1,5 +1,11 @@
 # post-view pseudocode
 
+## Parameters
+
+```
+availableWidth: Float  // passed from parent view, calculated as screenWidth - (2 * horizontalPadding)
+```
+
 ## State
 
 ```
@@ -14,8 +20,9 @@ isMeasured: Boolean = false  // tracks whether we've measured body text yet
 
 ```
 compactHeight = 100pt
-availableWidth = 350pt  // approximate content width accounting for padding
 authorHeight = 15pt  // approximate height for author line
+thumbnailPadding = 8pt  // inset from right edge for thumbnail
+contentPadding = 18pt  // left padding for content
 ```
 
 ## Height Calculation
@@ -35,18 +42,19 @@ currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 
 ### Compact State (Thumbnail)
 ```
-compactWidth = 80pt
-compactHeight = 80pt
-compactX = availableWidth - 80 - 16  // inset 16pt from right edge
-compactY = (100 - 80) / 2  // vertically centered in 100pt compact view
+thumbnailSize = 80pt
+compactWidth = thumbnailSize
+compactHeight = thumbnailSize
+compactX = availableWidth - thumbnailSize - thumbnailPadding  // inset from right edge
+compactY = (compactHeight - thumbnailSize) / 2  // vertically centered in compact view
                            // NOTE: On Android, subtract Box padding (8pt) if coordinates are relative to padded area
 ```
 
 ### Expanded State (Full Image)
 ```
-expandedWidth = availableWidth
-expandedHeight = availableWidth / imageAspectRatio
-expandedX = 10pt  // aligned with content left edge
+expandedWidth = availableWidth - (2 * contentPadding)  // image width with padding on both sides
+expandedHeight = expandedWidth / imageAspectRatio
+expandedX = contentPadding  // aligned with content left edge
 expandedY = titleSummaryHeight + 8  // below title/summary with spacing
 ```
 
@@ -149,6 +157,29 @@ prefix = "👓 librarian" if AI-generated, otherwise author name
 button color (when clickable) = RGB where R=G=B=button-colour tunable (default 0.5)
 ```
 
+## Navigate-to-Children Button
+
+Posts with children (or query posts) show a circular button on the right side:
+
+```
+collapsedButtonSize = 32pt
+expandedButtonSize = 42pt
+currentButtonSize = lerp(collapsedButtonSize, expandedButtonSize, expansionFactor)
+
+// Button center is positioned so 3/4 of radius overlaps post, 1/4 extends beyond
+buttonCenterX = availableWidth - (currentButtonSize / 4)
+buttonCenterY = currentHeight / 2  // vertically centered
+```
+
+## Edit Controls Positioning
+
+Edit button and save/cancel/delete buttons right-align with the post's right edge:
+
+```
+editButtonX = availableWidth - editButtonSize - editButtonPadding
+editControlsRightEdge = availableWidth - editButtonPadding
+```
+
 ## Layout Strategy
 
 All elements positioned in a ZStack with absolute positioning:
@@ -160,6 +191,8 @@ ZStack(alignment: topLeading):
   Image (interpolated position and size)
   Body Text (tracks image position, clipped to currentBodyHeight)
   Author (tracks image + body position, opacity = expansionFactor)
+  Navigate-to-children button (right side, 3/4 overlapping post)
+  Edit button / Edit controls (right-aligned with post edge)
 ```
 
 ## Interpolation Helper
@@ -180,6 +213,36 @@ when user taps to toggle:
 ```
 
 **Key decision**: Single continuous parameter means animation can be interrupted mid-flight and reversed smoothly without jarring view swaps. All elements update automatically as expansionFactor changes.
+
+## Expansion Visual Effects
+
+When a post expands, it receives visual emphasis through animated effects:
+
+### Background Brightness
+```
+baseBrightness = tunables.getDouble("post-background-brightness", default: 0.9)
+expandedBrightness = min(baseBrightness * 1.2, 1.0)  // 120% brightness, clamped
+currentBrightness = lerp(baseBrightness, expandedBrightness, expansionFactor)
+
+background = Color.white.opacity(currentBrightness)
+```
+
+### Drop Shadow
+```
+shadowRadius = lerp(2, 16, expansionFactor)
+shadowY = lerp(0, 16, expansionFactor)
+shadowOpacity = lerp(0.2, 0.5, expansionFactor)
+
+shadow = (color: Color.black.opacity(shadowOpacity), radius: shadowRadius, x: 0, y: shadowY)
+```
+
+### Z-Ordering
+Expanded posts must render above collapsed posts to ensure shadows display correctly:
+```
+zIndex = (isExpanded) ? 1 : 0
+```
+
+**Key detail**: Without zIndex, posts later in the ForEach render on top of earlier posts, covering their shadows.
 
 ## Measurement Pattern
 

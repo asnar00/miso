@@ -1,53 +1,55 @@
 #!/bin/bash
-
-# Reproduce script - builds, deploys, and runs automated test sequence
-# This script can be updated for different test scenarios without changing install-device.sh
+# Reproduce the new-user sign-in flow for testing
+# Resets Henry's device IDs, logs out, restarts app, and runs through sign-in
 
 set -e
 
-echo "🔄 Running reproduce script..."
+echo "🔄 Clearing Henry's profile content (keeping just name)..."
+ssh microserver@185.96.221.52 "psql -d firefly -c \"UPDATE posts SET summary = '', body = '', image_url = NULL WHERE template_name = 'profile' AND user_id = (SELECT id FROM users WHERE email = 'henry@example.com');\""
 
-# Install and launch the app
-./install-device.sh
+echo "🔄 Resetting Henry's device IDs on server..."
+ssh microserver@185.96.221.52 "psql -d firefly -c \"UPDATE users SET device_ids = '{}' WHERE email = 'henry@example.com';\""
 
-# Wait for app to start and load posts
-echo "⏳ Waiting for app to start and load posts..."
-sleep 5
-
-# Tap the first post using UI automation
-echo "👆 Tapping first post..."
-RESPONSE=$(curl -s -X POST "http://localhost:8081/test/tap?id=first-post")
-echo "   Response: $RESPONSE"
-
-# Wait for expansion animation
-echo "⏳ Waiting for expansion animation..."
+echo "🔄 Restarting port forwarding..."
+pkill -f "pymobiledevice3.*forward" 2>/dev/null || true
+sleep 1
+pymobiledevice3 usbmux forward -d 8081 8081
 sleep 2
 
-# Tap the edit button
-echo "✏️  Tapping edit button..."
-RESPONSE=$(curl -s -X POST "http://localhost:8081/test/tap?id=edit-button")
-echo "   Response: $RESPONSE"
-
-# Wait for edit mode to activate
-echo "⏳ Waiting for edit mode..."
-sleep 1
-
-# Tap the delete image button
-echo "🗑️  Tapping delete image button..."
-RESPONSE=$(curl -s -X POST "http://localhost:8081/test/tap?id=delete-image-button")
-echo "   Response: $RESPONSE"
-
-# Wait for layout to update
-echo "⏳ Waiting for layout to update..."
-sleep 1
-
-# Take a screenshot
-echo "📸 Taking screenshot..."
-/Users/asnaroo/Desktop/experiments/miso/miso/platforms/ios/development/screen-capture/imp/screenshot.sh /tmp/delete-image-test.png
-
-echo "✅ Test sequence complete!"
+echo "🔄 Clearing login state..."
+curl -s http://localhost:8081/test/clear-login
 echo ""
-echo "📸 Screenshot saved to: /tmp/delete-image-test.png"
+
+echo "🔄 Stopping and restarting app..."
+./stop-app.sh 2>&1 | tail -1
+sleep 1
+./restart-app.sh 2>&1
+
+echo "⏳ Waiting for app to start..."
+sleep 3
+
+echo "📧 Entering email..."
+curl -s -X POST 'http://localhost:8081/test/set-text?id=signin-email&text=henry@example.com'
 echo ""
-echo "📋 To view logs:"
-echo "   ./get-logs.sh"
+
+echo "🔘 Tapping login..."
+curl -s -X POST 'http://localhost:8081/test/tap?id=signin-login'
+echo ""
+
+sleep 1.5
+
+echo "🔢 Entering code 1324..."
+curl -s -X POST 'http://localhost:8081/test/set-text?id=signin-code&text=1324'
+echo ""
+
+echo "🔘 Tapping verify..."
+curl -s -X POST 'http://localhost:8081/test/tap?id=signin-verify'
+echo ""
+
+sleep 1.5
+
+echo "🚀 Tapping get started..."
+curl -s -X POST 'http://localhost:8081/test/tap?id=newuser-getstarted'
+echo ""
+
+echo "✅ Flow complete! Check logs for editCurrentUserProfile behavior."

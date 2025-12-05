@@ -13,7 +13,10 @@ struct PostsView: View {
     let showAddButton: Bool
     let templateName: String?  // Template name for empty state message
     let customAddButtonText: String?  // Optional custom button text
+    let onAddButtonTapped: (() -> Void)?  // Optional custom action for add button
     @Binding var isAnyPostEditing: Bool  // Track if any post is being edited
+    @Binding var editCurrentUserProfile: Bool  // Trigger edit mode on current user's profile
+    @ObservedObject var tunables = TunableConstants.shared
 
     @State private var navigationPath: [PostsDestination] = []
 
@@ -29,7 +32,9 @@ struct PostsView: View {
                 initialExpandedPostId: nil,
                 templateName: templateName,
                 customAddButtonText: customAddButtonText,
-                isAnyPostEditing: $isAnyPostEditing
+                onAddButtonTapped: onAddButtonTapped,
+                isAnyPostEditing: $isAnyPostEditing,
+                editCurrentUserProfile: $editCurrentUserProfile
             )
             .navigationDestination(for: PostsDestination.self) { destination in
                 switch destination {
@@ -51,7 +56,9 @@ struct PostsView: View {
                         initialExpandedPostId: profilePost.id,
                         templateName: nil,  // Profile view doesn't need template name
                         customAddButtonText: nil,
-                        isAnyPostEditing: $isAnyPostEditing
+                        onAddButtonTapped: nil,
+                        isAnyPostEditing: $isAnyPostEditing,
+                        editCurrentUserProfile: .constant(false)
                     )
                 case .queryResults(let queryPostId, let backLabel):
                     QueryResultsViewWrapper(
@@ -65,8 +72,14 @@ struct PostsView: View {
             }
         }
         .toolbarBackground(.visible, for: .navigationBar)
-        .toolbarBackground(Color(red: 128/255, green: 128/255, blue: 128/255), for: .navigationBar)
+        .toolbarBackground(tunables.backgroundColor(), for: .navigationBar)
         .toolbarColorScheme(.light, for: .navigationBar)
+        .onChange(of: navigationPath) { oldPath, newPath in
+            // When navigating back (path gets shorter), reset editing state
+            if newPath.count < oldPath.count && isAnyPostEditing {
+                isAnyPostEditing = false
+            }
+        }
     }
 }
 
@@ -76,6 +89,7 @@ struct ChildPostsListViewWrapper: View {
     let onPostCreated: () -> Void
     @Binding var navigationPath: [PostsDestination]
     @Binding var isAnyPostEditing: Bool
+    @ObservedObject var tunables = TunableConstants.shared
 
     @State private var parentPost: Post? = nil
     @State private var isLoading = true
@@ -88,31 +102,25 @@ struct ChildPostsListViewWrapper: View {
             return false
         }
 
-        // Profile posts have template = "profile"
-        let isProfilePost = (parent.template == "profile")
-
-        // Check if profile belongs to current user by comparing emails
-        let loginState = Storage.shared.getLoginState()
-        Logger.shared.info("[ChildPostsListViewWrapper] Login state: email=\(String(describing: loginState.email))")
-
-        guard let currentEmail = loginState.email,
-              let authorEmail = parent.authorEmail else {
-            Logger.shared.info("[ChildPostsListViewWrapper] Missing email - currentEmail=\(String(describing: loginState.email)), authorEmail=\(String(describing: parent.authorEmail))")
-            return false
+        // Profile posts: only owner can add children
+        if parent.template == "profile" {
+            let loginState = Storage.shared.getLoginState()
+            guard let currentEmail = loginState.email,
+                  let authorEmail = parent.authorEmail else {
+                return false
+            }
+            return authorEmail.lowercased() == currentEmail.lowercased()
         }
 
-        let belongsToCurrentUser = (authorEmail == currentEmail)
-
-        Logger.shared.info("[ChildPostsListViewWrapper] isProfilePost=\(isProfilePost), currentEmail=\(currentEmail), authorEmail=\(authorEmail), belongsToCurrentUser=\(belongsToCurrentUser)")
-
-        return isProfilePost && belongsToCurrentUser
+        // All other posts: anyone can add children
+        return true
     }
 
     var body: some View {
         Group {
             if isLoading {
                 ZStack {
-                    Color(red: 128/255, green: 128/255, blue: 128/255)
+                    tunables.backgroundColor()
                         .ignoresSafeArea()
                     ProgressView("Loading...")
                         .foregroundColor(.black)
@@ -128,7 +136,9 @@ struct ChildPostsListViewWrapper: View {
                     initialExpandedPostId: nil,
                     templateName: nil,  // Child posts don't need template name
                     customAddButtonText: nil,
-                    isAnyPostEditing: $isAnyPostEditing
+                    onAddButtonTapped: nil,
+                    isAnyPostEditing: $isAnyPostEditing,
+                    editCurrentUserProfile: .constant(false)
                 )
             }
         }
@@ -177,6 +187,7 @@ struct QueryResultsViewWrapper: View {
     let onPostCreated: () -> Void
     @Binding var navigationPath: [PostsDestination]
     @Binding var isAnyPostEditing: Bool
+    @ObservedObject var tunables = TunableConstants.shared
 
     @State private var posts: [Post] = []
     @State private var isLoading = true
@@ -187,7 +198,7 @@ struct QueryResultsViewWrapper: View {
         Group {
             if isLoading {
                 ZStack {
-                    Color(red: 128/255, green: 128/255, blue: 128/255)
+                    tunables.backgroundColor()
                         .ignoresSafeArea()
                     VStack(spacing: 20) {
                         Text("ᕦ(ツ)ᕤ")
@@ -208,7 +219,9 @@ struct QueryResultsViewWrapper: View {
                     initialExpandedPostId: nil,
                     templateName: nil,
                     customAddButtonText: nil,
-                    isAnyPostEditing: $isAnyPostEditing
+                    onAddButtonTapped: nil,
+                    isAnyPostEditing: $isAnyPostEditing,
+                    editCurrentUserProfile: .constant(false)
                 )
             }
         }
@@ -331,5 +344,6 @@ struct QueryResultsViewWrapper: View {
 
 #Preview {
     @Previewable @State var isEditing = false
-    PostsView(initialPosts: [], onPostCreated: {}, showAddButton: true, templateName: nil, customAddButtonText: nil, isAnyPostEditing: $isEditing)
+    @Previewable @State var editProfile = false
+    PostsView(initialPosts: [], onPostCreated: {}, showAddButton: true, templateName: nil, customAddButtonText: nil, onAddButtonTapped: nil, isAnyPostEditing: $isEditing, editCurrentUserProfile: $editProfile)
 }

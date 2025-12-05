@@ -14,9 +14,11 @@ adb forward tcp:8081 tcp:8081
 
 **iOS (pymobiledevice3)**:
 ```bash
-# Forward port (run in background)
-pymobiledevice3 usbmux forward 8081 8081 &
+# Forward port (daemonized - stays alive across multiple requests)
+pymobiledevice3 usbmux forward -d 8081 8081
 ```
+
+**Note**: The `-d` (daemonize) flag is required. Without it, the forwarder crashes after the first request.
 
 ## Using the connection
 

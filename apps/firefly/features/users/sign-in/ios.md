@@ -46,7 +46,7 @@ struct SignInView: View {
                     .padding(.bottom, 40)
 
                 // Title
-                Text("Welcome to Firefly")
+                Text("Welcome to microclub")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(.black)

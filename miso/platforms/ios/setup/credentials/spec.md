@@ -38,7 +38,7 @@ Create `~/.appstoreconnect/config`:
 
 export APP_STORE_CONNECT_API_KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_PYM5W2L9GV.p8"
 export APP_STORE_CONNECT_API_KEY_ID="PYM5W2L9GV"
-export APP_STORE_CONNECT_API_ISSUER_ID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+export APP_STORE_CONNECT_API_ISSUER_ID="2e5cbf08-b1a5-4857-b013-30fb6eec002e"
 ```
 
 Replace values with your actual Key ID and Issuer ID.

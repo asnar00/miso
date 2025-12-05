@@ -185,3 +185,32 @@ open -a Simulator
 **Cause**: Usually a code issue, not simulator issue.
 
 **Check**: Look for errors in Xcode console or run with verbose logging.
+
+## USB Port Forwarding Issues
+
+### pymobiledevice3 forward crashes after first request
+
+**Symptom**: `pymobiledevice3 usbmux forward 8081 8081 &` works for one curl request, then crashes with "Connection closed by the peer" error.
+
+**Cause**: Bug in pymobiledevice3's tcp_forwarder when running in foreground/background mode.
+
+**Solution**: Use the `-d` (daemonize) flag:
+```bash
+pymobiledevice3 usbmux forward -d 8081 8081
+```
+
+This runs the forwarder as a proper daemon that stays alive across multiple requests.
+
+### Port forwarding "Address already in use"
+
+**Cause**: Previous forwarder process still running.
+
+**Solution**: Kill existing processes:
+```bash
+pkill -f "pymobiledevice3.*forward"
+```
+
+Then restart:
+```bash
+pymobiledevice3 usbmux forward -d 8081 8081
+```

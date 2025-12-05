@@ -1,6 +1,13 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+------------------------------
+todo list:
+- global query list (done)
+- new user: create blank profile page
+- signup email verification: send to ash if @example.com
+- 
+
 idea for microclub:
 the person that invited you is responsible for supporting you and keeping you posting.
 

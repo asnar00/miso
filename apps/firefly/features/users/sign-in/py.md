@@ -60,8 +60,8 @@ Copy the `send_email` function from `features/infrastructure/email/imp/py.md` an
 ```python
 def send_verification_email(email, code):
     """Send verification code to user's email"""
-    subject = "Firefly Verification Code"
-    body = f"""Your Firefly verification code is: {code}
+    subject = "microclub Verification Code"
+    body = f"""Your microclub verification code is: {code}
 
 This code will expire in 10 minutes.
 

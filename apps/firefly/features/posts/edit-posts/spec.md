@@ -14,7 +14,7 @@ When the user taps the "Add Post" button at the top of the list:
 - No page refresh occurs - the list doesn't collapse or jump
 
 **Editing Existing Posts:**
-When viewing an expanded post, users who own the post see a pencil icon button in the top-right corner.
+When viewing an expanded post, users who own the post see a circular pencil button in the top-right corner. The button uses the standard button color (RGB 255/178/127 modified by brightness) with a drop shadow (40% black opacity, 8pt blur, 4pt downward offset) for visual consistency with other UI buttons.
 
 **Entering Edit Mode:**
 When the user taps the pencil button:
@@ -38,7 +38,7 @@ When the user taps the pencil button:
 - Body: multi-line text editor with dynamic height
 - Placeholder text (55% grey opacity) appears in empty fields with labels like "Title", "Summary", "Body"
 - Some posts have custom placeholder text (e.g., "name", "mission", "personal statement")
-- Edit button (not editing): Single pencil icon in top-right corner (32pt, black at 60% opacity)
+- Edit button (not editing): Circular button (36x36pt) with pencil icon (18pt bold, black) in top-right corner, using standard button color with drop shadow
 - Edit action buttons (while editing): Horizontal row in bottom-right corner
   - Delete button (saved posts only): red trash icon (32pt, red at 60% opacity)
   - Undo button: red arrow icon (32pt, red at 60% opacity)
@@ -47,13 +47,13 @@ When the user taps the pencil button:
   - Red trash icon (trash.circle.fill) - delete image
   - Blue photo icon (photo.circle.fill) - replace from photo library
   - Green camera icon (camera.circle.fill) - take new photo with camera
-- Add Image button (when no image): black text with black outline, "photo.badge.plus" icon
+- Add Image button (when no image): lowercase "add image" text with black outline, "photo.badge.plus" icon, positioned at Y=72pt
 - Navigate to children button: stays at right edge, vertically centered, visible when not editing
 - Bottom toolbar: fades out (0.3s animation) and becomes non-interactive during edit mode
 
 **Editing Experience:**
-- No spell-check red underlines appear while editing
-- No automatic capitalization at the start of sentences
+- Autocorrect is enabled - misspelled words are automatically corrected as you type
+- Autocapitalization is enabled for sentences - first letter of each sentence is capitalized
 - The body text editor expands vertically as needed
 - Layout maintains proper spacing between all elements
 - Tapping on the post background or image does not collapse the post during editing
@@ -67,7 +67,8 @@ When in edit mode with an existing image:
 - Camera button (green camera icon): opens camera to take new photo
 
 When in edit mode with no image:
-- "Add Image" button appears with dialog options for camera or photo library
+- "add image" button appears positioned at Y=72pt (snug below title/summary area)
+- Button shows dialog with lowercase options: "take photo", "choose from library", "cancel"
 
 All image replacements and additions:
 - Selected images are processed automatically:

@@ -10,11 +10,12 @@ struct Toolbar: View {
     let onResetMakePost: () -> Void
     let onResetSearch: () -> Void
     let onResetUsers: () -> Void
+    var showSearchBadge: Bool = false
 
     var body: some View {
         HStack(spacing: 0) {
             // Make Post button
-            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost) {
+            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost, showBadge: false) {
                 if currentExplorer == .makePost {
                     onResetMakePost()
                 } else {
@@ -25,7 +26,7 @@ struct Toolbar: View {
             Spacer()
 
             // Search button
-            ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search) {
+            ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search, showBadge: showSearchBadge) {
                 if currentExplorer == .search {
                     onResetSearch()
                 } else {
@@ -36,7 +37,7 @@ struct Toolbar: View {
             Spacer()
 
             // Users button
-            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users) {
+            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users, showBadge: false) {
                 if currentExplorer == .users {
                     onResetUsers()
                 } else {
@@ -44,20 +45,16 @@ struct Toolbar: View {
                 }
             }
         }
-        .padding(.horizontal, 33)  // 10% more (was 30)
-        .padding(.vertical, 14)     // 10% more (was 13)
+        .padding(.horizontal, 33)
+        .padding(.vertical, 10)     // Reduced from 14 (75% height)
         .background(
-            Color(
-                red: tunables.getDouble("button-colour", default: 0.5),
-                green: tunables.getDouble("button-colour", default: 0.5),
-                blue: tunables.getDouble("button-colour", default: 0.5)
-            )
-                .cornerRadius(25)
+            tunables.buttonColor()
+                .cornerRadius(20)
                 .shadow(color: Color.black.opacity(0.4), radius: 12, x: 0, y: 4)
         )
         .frame(maxWidth: 300)       // Limit overall toolbar width
         .padding(.horizontal, 16)
-        .offset(y: 12)              // Move up 4pt (was 16)
+        .offset(y: 16)              // Move up another 4pt
         .onAppear {
             // Register toolbar buttons with UI automation
             UIAutomationRegistry.shared.register(id: "toolbar-makepost") {
@@ -78,18 +75,29 @@ struct Toolbar: View {
 struct ToolbarButton: View {
     let icon: String
     let isActive: Bool
+    var showBadge: Bool = false
     let action: () -> Void
+    @ObservedObject var tunables = TunableConstants.shared
 
     var body: some View {
         Button(action: action) {
             Image(systemName: icon)
-                .font(.system(size: 24))
+                .font(.system(size: 20))
                 .foregroundColor(.black)
-                .frame(width: 44, height: 44)
+                .frame(width: 35, height: 35)
                 .background(
-                    isActive ? Color.gray.opacity(0.5) : Color.clear  // 20% darker (was 0.3)
+                    isActive ? tunables.buttonHighlightColor() : Color.clear
                 )
-                .cornerRadius(8)
+                .cornerRadius(6)
+                .overlay(alignment: .topTrailing) {
+                    if showBadge {
+                        Circle()
+                            .fill(Color.red)
+                            .stroke(Color.white, lineWidth: 2)
+                            .frame(width: 10, height: 10)
+                            .offset(x: 2, y: -2)
+                    }
+                }
         }
     }
 }

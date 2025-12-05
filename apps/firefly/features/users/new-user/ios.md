@@ -1,54 +1,51 @@
 # new-user iOS implementation
 *welcome screen for first-time users*
 
-## File Structure
+## File: NewUserView.swift
 
-Create new file: `apps/firefly/product/client/imp/ios/NoobTest/NewUserView.swift`
-
-## NewUserView.swift
-
-Complete implementation:
+Path: `apps/firefly/product/client/imp/ios/NoobTest/NewUserView.swift`
 
 ```swift
 import SwiftUI
 
 struct NewUserView: View {
+    let name: String
     let email: String
     @Binding var hasSeenWelcome: Bool
+    @Binding var shouldEditProfile: Bool
 
     var body: some View {
         ZStack {
-            // Background color
-            Color(red: 64/255, green: 224/255, blue: 208/255)
+            // Background color - orange/peach
+            Color(red: 255/255, green: 178/255, blue: 127/255)
                 .ignoresSafeArea()
 
             VStack(spacing: 40) {
                 Spacer()
 
-                // Logo
+                // Logo - smaller than sign-in screen
                 Text("ᕦ(ツ)ᕤ")
-                    .font(.system(size: 100))
+                    .font(.system(size: 50))
                     .foregroundColor(.black)
+                    .padding(.top, 38)
 
-                // Welcome text
-                Text("welcome")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
-
-                // User email
-                Text(email)
-                    .font(.title3)
-                    .foregroundColor(.black.opacity(0.8))
+                // Welcome text with name
+                VStack(spacing: 8) {
+                    Text("welcome")
+                        .font(.largeTitle)
+                        .foregroundColor(.black)
+                    Text("\(name)!")
+                        .font(.largeTitle)
+                        .foregroundColor(.black)
+                }
 
                 Spacer()
 
                 // Get Started button
                 Button(action: {
-                    hasSeenWelcome = true
-                    Logger.shared.info("[NewUser] User tapped Get Started")
+                    getStarted()
                 }) {
-                    Text("Get Started")
+                    Text("get started")
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -58,47 +55,131 @@ struct NewUserView: View {
                 }
                 .padding(.horizontal, 40)
                 .padding(.bottom, 60)
+                .onAppear {
+                    UIAutomationRegistry.shared.register(id: "newuser-getstarted") {
+                        self.getStarted()
+                    }
+                }
             }
         }
+    }
+
+    func getStarted() {
+        shouldEditProfile = true
+        hasSeenWelcome = true
     }
 }
 ```
 
-## Integration
+## Integration in NoobTestApp.swift
 
-This view is shown after sign-in when `isNewUser` is true and `hasSeenWelcome` is false.
+The app-level navigation shows NewUserView between sign-in and main content:
 
-See `sign-in/imp/ios.md` for the complete NoobTestApp.swift implementation showing the three-state navigation:
-1. Not authenticated → SignInView
-2. Authenticated + new user + hasn't seen welcome → NewUserView
-3. Authenticated (or has seen welcome) → ContentView
+```swift
+// In NoobTestApp.swift body
+if !isAuthenticated {
+    SignInView(...)
+} else if isNewUser && !hasSeenWelcome {
+    NewUserView(
+        name: userName,
+        email: userEmail,
+        hasSeenWelcome: $hasSeenWelcome,
+        shouldEditProfile: $shouldEditProfile
+    )
+} else {
+    ContentView(shouldEditProfile: $shouldEditProfile)
+}
+```
 
-## Adding to Xcode Project
+## ContentView Profile Editing Trigger
 
-Add NewUserView.swift to the Xcode project by editing `NoobTest.xcodeproj/project.pbxproj`:
+ContentView receives `shouldEditProfile` and triggers the profile editor:
 
-1. Find an existing Swift file entry (like ContentView.swift)
-2. Copy the pattern and add new entries for NewUserView.swift
-3. Update file references and build phases
+```swift
+// In ContentView
+@Binding var shouldEditProfile: Bool
+@State private var editingNewUserProfile = false
 
-Or use the existing pattern from `miso/platforms/ios/project-editing.md`.
+.onAppear {
+    if shouldEditProfile {
+        currentExplorer = .users
+        editingNewUserProfile = true
+        shouldEditProfile = false
+    }
+    // ... fetch data
+}
+
+// Users PostsView receives the binding
+PostsView(..., editCurrentUserProfile: $editingNewUserProfile)
+```
+
+## PostsListView Profile Edit Handling
+
+PostsListView must check `editCurrentUserProfile` in **both** onAppear and onChange:
+
+```swift
+// In PostsListView
+@Binding var editCurrentUserProfile: Bool
+
+.onAppear {
+    // ... setup code ...
+
+    if !initialPosts.isEmpty {
+        posts = initialPosts
+        isLoading = false
+
+        // Check on initial load (value may already be true)
+        if editCurrentUserProfile {
+            triggerEditCurrentUserProfile()
+        }
+    }
+}
+
+.onChange(of: editCurrentUserProfile) { oldValue, newValue in
+    // Check on value change (for later triggers)
+    if newValue && !posts.isEmpty {
+        triggerEditCurrentUserProfile()
+    }
+}
+
+func triggerEditCurrentUserProfile() {
+    let loginState = Storage.shared.getLoginState()
+    guard let userEmail = loginState.email else {
+        editCurrentUserProfile = false
+        return
+    }
+
+    // Find current user's profile post
+    if let profilePost = posts.first(where: {
+        $0.authorEmail?.lowercased() == userEmail.lowercased() &&
+        $0.template == "profile"
+    }) {
+        viewModel.expandedPostId = profilePost.id
+        editingPostId = profilePost.id
+        isAnyPostEditing = true
+    }
+
+    editCurrentUserProfile = false
+}
+```
+
+## Why Both Checks Are Needed
+
+The timing issue:
+1. NewUserView sets `shouldEditProfile = true`
+2. ContentView.onAppear runs, sets `editingNewUserProfile = true`
+3. ContentView starts fetching users data (async)
+4. While loading, PostsListView doesn't exist yet
+5. When data loads, PostsListView is created with `editCurrentUserProfile` already `true`
+6. `onChange` never fires because the value didn't change after the view appeared
+7. Therefore `onAppear` must also check and call `triggerEditCurrentUserProfile()`
 
 ## Testing
 
-### Manual test:
-1. Clear login state: `curl http://localhost:8081/test/clear-login` (requires USB forwarding)
-2. Restart app
-3. Sign in with a new email address (one not in the database)
-4. After entering the verification code, should see welcome screen
-5. Tap "Get Started"
-6. Should transition to main ContentView
-7. If you sign out and sign in again with the same account, you won't see the welcome screen (device already registered)
-
-## UI Design Notes
-
-- Background: Turquoise (#40E0D0) matching existing app
-- Logo: ᕦ(ツ)ᕤ larger than sign-in (size 100)
-- Welcome text: Large title, bold, black
-- Email: Smaller, slightly transparent black
-- Button: Black background with white text, full width with padding
-- Centered layout with generous spacing
+Use the `reproduce.sh` script to test the full flow:
+1. Clears Henry's profile content
+2. Resets Henry's device IDs
+3. Logs out and restarts app
+4. Runs through sign-in with automation
+5. Taps "get started"
+6. Verifies profile editor opens automatically

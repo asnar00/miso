@@ -1,5 +1,11 @@
 # post-view iOS implementation
 
+## Parameters
+
+```swift
+let availableWidth: CGFloat  // passed from parent view via GeometryReader
+```
+
 ## State Variables
 
 ```swift
@@ -13,15 +19,17 @@
 ## Constants
 
 ```swift
-let compactHeight: CGFloat = 100
-let availableWidth: CGFloat = 350  // content width
+let compactHeight: CGFloat = 110
 let authorHeight: CGFloat = 15  // approximate author line height
+let thumbnailPadding: CGFloat = 8  // inset from right edge for thumbnail
+let contentPadding: CGFloat = 18  // left padding for content
 ```
 
 ## Height Calculation
 
 ```swift
-let imageHeight = post.imageUrl != nil ? (availableWidth / imageAspectRatio) : 0
+let imageWidth = availableWidth - (2 * contentPadding)  // image has padding on both sides
+let imageHeight = post.imageUrl != nil ? (imageWidth / imageAspectRatio) : 0
 let expandedHeight: CGFloat = titleSummaryHeight + 16 + imageHeight + 16 + bodyTextHeight + 24 + authorHeight + 16
 
 let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
@@ -31,20 +39,22 @@ let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 
 ```swift
 // Compact state (thumbnail)
-let compactWidth: CGFloat = 80
-let compactHeight: CGFloat = 80
-let compactX = availableWidth - 80 + 20  // right-aligned, moved right by 12pt for reduced list padding
-let compactY: CGFloat = (100 - 80) / 2 + 8  // vertically centered with top padding
+let thumbnailSize: CGFloat = 80
+let compactImageWidth: CGFloat = thumbnailSize
+let compactImageHeight: CGFloat = thumbnailSize
+let compactX = availableWidth - thumbnailSize - thumbnailPadding  // inset from right edge
+let compactY: CGFloat = (compactHeight - thumbnailSize) / 2  // vertically centered
 
 // Expanded state (full image)
-let expandedWidth = availableWidth
-let expandedHeight = availableWidth / imageAspectRatio
-let expandedX: CGFloat = 18  // aligned with text content indent
+let imageWidth = availableWidth - (2 * contentPadding)  // image has padding on both sides
+let expandedImageWidth = imageWidth
+let expandedImageHeight = imageWidth / imageAspectRatio
+let expandedX: CGFloat = contentPadding  // aligned with text content indent
 let expandedY = titleSummaryHeight + 8  // below title/summary
 
 // Interpolated values
-let currentWidth = lerp(compactWidth, expandedWidth, expansionFactor)
-let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
+let currentWidth = lerp(compactImageWidth, expandedImageWidth, expansionFactor)
+let currentHeight = lerp(compactImageHeight, expandedImageHeight, expansionFactor)
 let currentX = lerp(compactX, expandedX, expansionFactor)
 let currentY = lerp(compactY, expandedY, expansionFactor)
 ```
@@ -292,12 +302,21 @@ var body: some View {
     let expandedHeight: CGFloat = titleSummaryHeight + 16 + imageHeight + 16 + bodyTextHeight + 24 + authorHeight + 16
     let currentHeight = lerp(compactHeight, expandedHeight, expansionFactor)
 
+    // Calculate expansion visual effects
+    let baseBrightness = tunables.getDouble("post-background-brightness", default: 0.9)
+    let expandedBrightness = min(baseBrightness * 1.2, 1.0)  // 120% brightness, clamped
+    let currentBrightness = lerp(baseBrightness, expandedBrightness, expansionFactor)
+
+    let shadowRadius = lerp(2, 16, expansionFactor)
+    let shadowY = lerp(0, 16, expansionFactor)
+    let shadowOpacity = lerp(0.2, 0.5, expansionFactor)
+
     ZStack(alignment: .topLeading) {
-        // Background
+        // Background with animated brightness and shadow
         RoundedRectangle(cornerRadius: 12)
-            .fill(Color.white.opacity(0.9))
+            .fill(Color.white.opacity(currentBrightness))
             .frame(height: currentHeight)
-            .shadow(radius: 2)
+            .shadow(color: Color.black.opacity(shadowOpacity), radius: shadowRadius, x: 0, y: shadowY)
 
         // Title and summary (always visible)
         VStack(alignment: .leading, spacing: 4) {
@@ -484,6 +503,17 @@ func lerp(_ start: CGFloat, _ end: CGFloat, _ t: CGFloat) -> CGFloat {
 }
 ```
 
+## Z-Ordering for Shadows
+
+When rendering posts in a list (ForEach/LazyVStack), expanded posts must use `.zIndex(1)` to render above collapsed posts. Without this, later posts in the list render on top of earlier posts, covering their shadows.
+
+**In PostsListView.swift:**
+```swift
+PostView(...)
+    .id(post.id)
+    .zIndex(viewModel.expandedPostId == post.id ? 1 : 0)
+```
+
 ## Key iOS-Specific Decisions
 
 1. **ZStack with absolute positioning**: Use `.offset()` for full control over interpolated positions
@@ -505,6 +535,46 @@ func lerp(_ start: CGFloat, _ end: CGFloat, _ t: CGFloat) -> CGFloat {
 4. **Efficient interpolation**: Simple linear interpolation is fast and smooth
 
 This implementation creates a smooth, continuous animation that can be interrupted and reversed at any point without visual glitches.
+
+## Navigate-to-Children Button Positioning
+
+Posts with children (or query posts) show a circular button on the right side. The button is positioned so 3/4 of its radius overlaps the post:
+
+```swift
+// Button sizes interpolate between collapsed and expanded states
+let collapsedButtonSize: CGFloat = 32
+let expandedButtonSize: CGFloat = 42
+let currentButtonSize = lerp(collapsedButtonSize, expandedButtonSize, expansionFactor)
+
+// Button center positioned so 3/4 overlaps post, 1/4 extends beyond right edge
+let buttonCenterX = availableWidth - (currentButtonSize / 4)
+let buttonCenterY = currentHeight / 2  // vertically centered
+
+childIndicatorButton
+    .frame(width: currentButtonSize, height: currentButtonSize)
+    .offset(x: buttonCenterX - currentButtonSize/2, y: buttonCenterY - currentButtonSize/2)
+```
+
+## Edit Controls Positioning
+
+Edit button and save/cancel/delete buttons right-align with the post's right edge:
+
+```swift
+let editButtonPadding: CGFloat = 16
+
+// Edit button (pencil icon) - top right, aligned with post edge
+Button(action: { onStartEditing?() }) {
+    Image(systemName: "pencil.circle.fill")
+        .font(.system(size: 32))
+}
+.offset(x: availableWidth - 32 - editButtonPadding, y: 16)
+
+// Edit action buttons (save/cancel/delete) - bottom right, aligned with post edge
+HStack(spacing: 8) {
+    // Delete, Cancel, Save buttons...
+}
+.offset(x: availableWidth - buttonsWidth - editButtonPadding, y: currentHeight - 48)
+```
 
 ## Author Navigation
 

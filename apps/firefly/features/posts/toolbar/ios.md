@@ -31,11 +31,12 @@ struct Toolbar: View {
     let onResetMakePost: () -> Void
     let onResetSearch: () -> Void
     let onResetUsers: () -> Void
+    var showSearchBadge: Bool = false
 
     var body: some View {
         HStack(spacing: 0) {
             // Make Post button
-            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost) {
+            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost, showBadge: false) {
                 if currentExplorer == .makePost {
                     onResetMakePost()
                 } else {
@@ -46,7 +47,7 @@ struct Toolbar: View {
             Spacer()
 
             // Search button
-            ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search) {
+            ToolbarButton(icon: "magnifyingglass", isActive: currentExplorer == .search, showBadge: showSearchBadge) {
                 if currentExplorer == .search {
                     onResetSearch()
                 } else {
@@ -57,7 +58,7 @@ struct Toolbar: View {
             Spacer()
 
             // Users button
-            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users) {
+            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users, showBadge: false) {
                 if currentExplorer == .users {
                     onResetUsers()
                 } else {
@@ -65,20 +66,16 @@ struct Toolbar: View {
                 }
             }
         }
-        .padding(.horizontal, 33)  // Internal horizontal padding
-        .padding(.vertical, 14)     // Internal vertical padding
+        .padding(.horizontal, 33)
+        .padding(.vertical, 10)     // Reduced from 14 for thinner toolbar
         .background(
-            Color(
-                red: tunables.getDouble("button-colour", default: 0.5),
-                green: tunables.getDouble("button-colour", default: 0.5),
-                blue: tunables.getDouble("button-colour", default: 0.5)
-            )
-                .cornerRadius(25)
+            tunables.buttonColor()  // Uses tunable RGB 255/178/127 * brightness
+                .cornerRadius(20)   // Reduced from 25
                 .shadow(color: Color.black.opacity(0.4), radius: 12, x: 0, y: 4)
         )
         .frame(maxWidth: 300)       // Maximum toolbar width
         .padding(.horizontal, 16)   // Screen edge insets
-        .offset(y: 12)              // Position from bottom edge
+        .offset(y: 20)              // Position from bottom edge
         .onAppear {
             // Register toolbar buttons with UI automation
             UIAutomationRegistry.shared.register(id: "toolbar-makepost") {
@@ -99,18 +96,29 @@ struct Toolbar: View {
 struct ToolbarButton: View {
     let icon: String
     let isActive: Bool
+    var showBadge: Bool = false
     let action: () -> Void
+    @ObservedObject var tunables = TunableConstants.shared
 
     var body: some View {
         Button(action: action) {
             Image(systemName: icon)
-                .font(.system(size: 24))
+                .font(.system(size: 20))   // Reduced from 24
                 .foregroundColor(.black)
-                .frame(width: 44, height: 44)
+                .frame(width: 35, height: 35)  // Reduced from 44x44
                 .background(
-                    isActive ? Color.gray.opacity(0.5) : Color.clear  // Active state highlight
+                    isActive ? tunables.buttonHighlightColor() : Color.clear  // 120% brightness, clamped to 1.0
                 )
-                .cornerRadius(8)
+                .cornerRadius(6)  // Reduced from 8
+                .overlay(alignment: .topTrailing) {
+                    if showBadge {
+                        Circle()
+                            .fill(Color.red)
+                            .stroke(Color.white, lineWidth: 2)
+                            .frame(width: 10, height: 10)
+                            .offset(x: 2, y: -2)
+                    }
+                }
         }
     }
 }
@@ -147,6 +155,10 @@ struct ContentView: View {
     @State private var makePostViewId = UUID()
     @State private var searchViewId = UUID()
     @State private var usersViewId = UUID()
+
+    // Search badge state (any query has new matches)
+    @State private var hasSearchBadge = false
+    @State private var badgePollingTimer: Timer? = nil
 
     var body: some View {
         ZStack {
@@ -259,7 +271,8 @@ struct ContentView: View {
                     currentExplorer: $currentExplorer,
                     onResetMakePost: { makePostViewId = UUID() },
                     onResetSearch: { searchViewId = UUID() },
-                    onResetUsers: { usersViewId = UUID() }
+                    onResetUsers: { usersViewId = UUID() },
+                    showSearchBadge: hasSearchBadge
                 )
                 .ignoresSafeArea(.keyboard)  // Keep toolbar visible when keyboard appears
             }
@@ -269,6 +282,16 @@ struct ContentView: View {
             fetchMakePostPosts()
             fetchSearchPosts()
             fetchUsersPosts()
+
+            // Start badge polling for toolbar
+            pollSearchBadges()
+            badgePollingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+                pollSearchBadges()
+            }
+        }
+        .onDisappear {
+            badgePollingTimer?.invalidate()
+            badgePollingTimer = nil
         }
     }
 
@@ -300,13 +323,14 @@ struct ContentView: View {
         isLoadingSearch = true
         searchError = nil
 
-        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["query"], byUser: "current") { result in
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["query"], byUser: "any") { result in
             switch result {
             case .success(let fetchedPosts):
                 preloadImagesOptimized(for: fetchedPosts) {
                     DispatchQueue.main.async {
                         self.searchPosts = fetchedPosts
                         self.isLoadingSearch = false
+                        self.pollSearchBadges()  // Check badges after loading
                     }
                 }
             case .failure(let error):
@@ -366,6 +390,48 @@ struct ContentView: View {
             }
         }
     }
+
+    func pollSearchBadges() {
+        // Only poll if we have search posts loaded
+        let queryPosts = searchPosts.filter { $0.template == "query" }
+        guard !queryPosts.isEmpty else { return }
+
+        let queryIds = queryPosts.map { $0.id }
+
+        // Get current user email
+        guard let userEmail = Storage.shared.getLoginState().email else { return }
+
+        let serverURL = "http://185.96.221.52:8080"
+        guard let url = URL(string: "\(serverURL)/api/queries/badges") else { return }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let body: [String: Any] = [
+            "user_email": userEmail,
+            "query_ids": queryIds
+        ]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: body) else { return }
+        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else { return }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Bool] {
+                    DispatchQueue.main.async {
+                        // Check if any query has a badge
+                        let anyBadge = json.values.contains(true)
+                        self.hasSearchBadge = anyBadge
+                    }
+                }
+            } catch {
+                Logger.shared.error("[ContentView] Error parsing badge response: \(error.localizedDescription)")
+            }
+        }.resume()
+    }
 }
 ```
 
@@ -374,16 +440,18 @@ struct ContentView: View {
 1. **State Management**: Three separate post arrays (makePostPosts, searchPosts, usersPosts) with corresponding loading and error states
 2. **Data Fetching**: Three fetch functions that call `PostsAPI.shared.fetchRecentTaggedPosts()` with different tags:
    - Make Post: `tags: ["post"], byUser: "any"` (shows all users' posts)
-   - Search: `tags: ["query"], byUser: "current"` (shows only current user's queries)
+   - Search: `tags: ["query"], byUser: "any"` (shows all users' queries)
    - Users: `tags: ["profile"], byUser: "any"` (shows all users)
 3. **Parallel Loading**: All three explorers fetch data in parallel on app startup (.onAppear)
 4. **Loading States**: Each explorer shows "ᕦ(ツ)ᕤ" logo with ProgressView while loading
 5. **Error Handling**: Each explorer has error state with retry button
 6. **Explorer Switching**: Switch statement shows appropriate PostsView based on currentExplorer
 7. **Image Preloading**: First image preloaded before display, remaining images load in background
-8. **Toolbar Design**: Sleek rounded lozenge (300pt max width, 25pt corner radius, light grey background)
+8. **Toolbar Design**: Sleek rounded lozenge (300pt max width, 20pt corner radius, tunable button color)
 9. **Toolbar Shadow**: Strong depth shadow (40% opacity, 12pt blur, 4pt offset) for elevated appearance
-10. **Toolbar Position**: 12pt from bottom edge, centered with 16pt screen insets
+10. **Toolbar Position**: 16pt offset from bottom edge, centered with 16pt screen insets
+11. **Search Badge**: Red notification dot (10pt) with white stroke on search button when any query has new matches
+12. **Badge Polling**: Polls `/api/queries/badges` every 5 seconds and on startup after search posts load
 
 ## Xcode Project Integration
 
@@ -397,16 +465,16 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
 
 ## Visual Appearance
 
-- **Toolbar shape**: Rounded lozenge with 25pt corner radius (.cornerRadius(25))
+- **Toolbar shape**: Rounded lozenge with 20pt corner radius (.cornerRadius(20))
 - **Maximum width**: 300pt (.frame(maxWidth: 300))
-- **Background**: Light grey (Color(red: 0.7, green: 0.7, blue: 0.7))
+- **Background**: Tunable button color (tunables.buttonColor() - RGB 255/178/127 * brightness)
 - **Shadow**: Strong depth shadow (40% black opacity, 12pt blur radius, 4pt y-offset)
-- **Position**: 12pt from bottom edge (.offset(y: 12))
+- **Position**: 20pt offset from safe area (.offset(y: 20))
 - **Screen insets**: 16pt horizontal padding (.padding(.horizontal, 16))
-- **Internal padding**: 33pt horizontal, 14pt vertical
-- **Icon size**: 24pt (.system(size: 24))
-- **Tappable area**: 44x44pt per button (.frame(width: 44, height: 44))
-- **Active button highlight**: 50% grey opacity (Color.gray.opacity(0.5))
+- **Internal padding**: 33pt horizontal, 10pt vertical
+- **Icon size**: 20pt (.system(size: 20))
+- **Tappable area**: 35x35pt per button (.frame(width: 35, height: 35))
+- **Active button highlight**: 120% of button color brightness, clamped to 1.0 (tunables.buttonHighlightColor())
 - **Layout**: HStack containing 3 buttons with Spacers between them for equal distribution
 - **Icons**: SF Symbols - "bubble.left", "magnifyingglass" (one word!), "person.2"
 

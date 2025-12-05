@@ -20,7 +20,9 @@ struct PostsListView: View {
     let initialExpandedPostId: Int?  // Post ID to expand initially
     let templateName: String?  // Template name for this list (e.g., "query", "post", "profile")
     let customAddButtonText: String?  // Optional custom text for the add button
+    let onAddButtonTapped: (() -> Void)?  // Optional custom action for add button
     @Binding var isAnyPostEditing: Bool  // Track if any post is being edited (for toolbar fade)
+    @Binding var editCurrentUserProfile: Bool  // Trigger edit mode on current user's profile
 
     @ObservedObject var tunables = TunableConstants.shared
 
@@ -29,20 +31,49 @@ struct PostsListView: View {
         tunables.getDouble("corner-roundness", default: 1.0)
     }
 
+    // Back button view (extracted to simplify toolbar)
+    private var backButton: some View {
+        Button(action: {
+            navigationPath.removeLast()
+        }) {
+            HStack(spacing: 8) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 20, weight: .semibold))
+                Text(backLabel ?? parentPost?.title ?? "...")
+                    .font(.system(size: 17, weight: .semibold))
+                    .lineLimit(1)
+            }
+            .foregroundColor(.black)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(tunables.buttonColor())
+            .cornerRadius(24 * cornerRoundness)
+        }
+    }
+
     // Computed property: determine if we should show add button and what template to use
     private var shouldShowAddButton: Bool {
+        // If showAddButton is explicitly false, respect that
+        if !showAddButton { return false }
+
         // If custom text provided, always show button
         if customAddButtonText != nil { return true }
 
-        // For child posts, only show if parent is owned by current user
-        if let parentId = parentPostId {
+        // For child posts: anyone can add, except for profiles (only owner can add)
+        if parentPostId != nil {
             if let parent = parentPost {
-                let loginState = Storage.shared.getLoginState()
-                if let userEmail = loginState.email, let parentEmail = parent.authorEmail {
-                    return userEmail.lowercased() == parentEmail.lowercased()
+                // If parent is a profile, only owner can add children
+                if parent.template == "profile" {
+                    let loginState = Storage.shared.getLoginState()
+                    if let userEmail = loginState.email, let parentEmail = parent.authorEmail {
+                        return userEmail.lowercased() == parentEmail.lowercased()
+                    }
+                    return false
                 }
+                // For all other posts, anyone can add children
+                return true
             }
-            return false  // Parent not loaded yet or not owned
+            return false  // Parent not loaded yet
         }
 
         // Root level: show unless it's a profile list
@@ -65,18 +96,28 @@ struct PostsListView: View {
         if let customText = customAddButtonText {
             return customText
         }
-        // Capitalize first letter of template name
+        // Child posts use "add sub-post"
+        if parentPostId != nil {
+            return "add sub-post"
+        }
+        // Lowercase template name (map "query" to "search" for display)
         let template = addButtonTemplate
-        return "Add " + template.prefix(1).uppercased() + template.dropFirst()
+        if template == "query" {
+            return "new search"
+        }
+        return "add " + template.lowercased()
     }
 
     private var emptyStateMessage: String {
         // Use fetched plural name first, then fall back to first post's template
+        // Map "queries" to "searches" for display
         if let pluralName = pluralName {
-            return "No \(pluralName) yet"
+            let displayName = pluralName == "queries" ? "searches" : pluralName
+            return "No \(displayName) yet"
         }
         if let firstPost = initialPosts.first, let pluralName = firstPost.pluralName {
-            return "No \(pluralName) yet"
+            let displayName = pluralName == "queries" ? "searches" : pluralName
+            return "No \(displayName) yet"
         }
         return "No posts yet"
     }
@@ -107,7 +148,7 @@ struct PostsListView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 128/255, green: 128/255, blue: 128/255)
+            tunables.backgroundColor()
                 .ignoresSafeArea()
 
             if isLoading {
@@ -131,9 +172,13 @@ struct PostsListView: View {
                     .cornerRadius(8 * cornerRoundness)
                 }
             } else {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        VStack(spacing: 8 * tunables.getDouble("spacing", default: 1.0)) {
+                GeometryReader { geometry in
+                    let horizontalPadding: CGFloat = 8 * tunables.getDouble("spacing", default: 1.0)
+                    let postWidth = geometry.size.width - (2 * horizontalPadding)
+
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            VStack(spacing: 8 * tunables.getDouble("spacing", default: 1.0)) {
                             // Add post button at the top (smart detection based on template)
                             if shouldShowAddButton {
                                 Button(action: {
@@ -148,11 +193,7 @@ struct PostsListView: View {
                                     .foregroundColor(.black)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color(
-                                        red: tunables.getDouble("button-colour", default: 0.5),
-                                        green: tunables.getDouble("button-colour", default: 0.5),
-                                        blue: tunables.getDouble("button-colour", default: 0.5)
-                                    ))
+                                    .background(tunables.buttonColor())
                                     .cornerRadius(12 * cornerRoundness)
                                 }
                                 .padding(.horizontal, 8)
@@ -168,6 +209,7 @@ struct PostsListView: View {
                                     PostView(
                                         post: post,
                                         isExpanded: viewModel.expandedPostId == post.id,
+                                        availableWidth: postWidth,
                                         isEditing: editingPostId == post.id,
                                         showNotificationBadge: badgeStates[post.id] ?? false,
                                         onTap: {
@@ -217,12 +259,16 @@ struct PostsListView: View {
                                         onEndEditing: {
                                             editingPostId = nil
                                             isAnyPostEditing = false
+                                            // Dismiss keyboard
+                                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                         },
                                         onDelete: {
                                             // Delete post (either unsaved or after server deletion)
                                             posts.removeAll { $0.id == post.id }
                                             editingPostId = nil
                                             isAnyPostEditing = false
+                                            // Dismiss keyboard
+                                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                             // If it was a saved post, refresh to update parent's child count
                                             if post.id > 0 {
                                                 fetchPosts()
@@ -231,12 +277,14 @@ struct PostsListView: View {
                                         }
                                     )
                                     .id(post.id)
+                                    .zIndex(viewModel.expandedPostId == post.id ? 1 : 0)
                                 }
                             }
                         }
                         .padding(.horizontal, 8 * tunables.getDouble("spacing", default: 1.0))  // Side margins
                         .padding(.bottom)
                     }
+                }
                 }
             }
         }
@@ -246,29 +294,7 @@ struct PostsListView: View {
         .toolbar {
             if parentPostId != nil || backLabel != nil {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        navigationPath.removeLast()
-                    }) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 20, weight: .semibold))
-
-                            Text(backLabel ?? parentPost?.title ?? "...")
-                                .font(.system(size: 17, weight: .semibold))
-                                .lineLimit(1)
-                        }
-                        .foregroundColor(.black)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(
-                            Color(
-                                red: tunables.getDouble("button-colour", default: 0.5),
-                                green: tunables.getDouble("button-colour", default: 0.5),
-                                blue: tunables.getDouble("button-colour", default: 0.5)
-                            )
-                        )
-                        .cornerRadius(20 * cornerRoundness)
-                    }
+                    backButton
                 }
             }
         }
@@ -291,18 +317,14 @@ struct PostsListView: View {
                 : nil
         )
         .onAppear {
-            Logger.shared.info("[PostsListView] onAppear called, initialPosts.count=\(initialPosts.count), posts.count=\(posts.count)")
-
             // Set as current viewModel for automation access
             if parentPostId == nil && backLabel == nil {  // Only for root view
                 PostsListViewModel.current = viewModel
-                Logger.shared.info("[PostsListView] Set current viewModel to \(ObjectIdentifier(viewModel))")
             }
 
             // Set initial expanded post if specified
             if let expandPostId = initialExpandedPostId {
                 viewModel.expandedPostId = expandPostId
-                Logger.shared.info("[PostsListView] Set initial expandedPostId to \(expandPostId)")
             }
 
             // Fetch plural name for template if provided
@@ -316,11 +338,14 @@ struct PostsListView: View {
             } else if posts.isEmpty {
                 // Root level: use initial posts (provided by parent view)
                 if !initialPosts.isEmpty {
-                    Logger.shared.info("[PostsListView] Using initialPosts, count=\(initialPosts.count)")
                     posts = initialPosts
                     isLoading = false
+
+                    // Check if we need to edit profile on initial load (not just onChange)
+                    if editCurrentUserProfile {
+                        triggerEditCurrentUserProfile()
+                    }
                 } else {
-                    Logger.shared.info("[PostsListView] No initialPosts yet, waiting for parent to provide them")
                     // Don't fetch - wait for initialPosts to be provided via onChange
                     isLoading = false
                 }
@@ -338,11 +363,19 @@ struct PostsListView: View {
             pollingTimer = nil
         }
         .onChange(of: initialPosts) { oldValue, newValue in
-            Logger.shared.info("[PostsListView] initialPosts changed! old.count=\(oldValue.count), new.count=\(newValue.count)")
             if parentPostId == nil {
-                Logger.shared.info("[PostsListView] Root view: updating posts to new initialPosts")
                 posts = newValue
                 isLoading = false
+
+                // Check if we need to edit current user's profile after posts load
+                if editCurrentUserProfile {
+                    triggerEditCurrentUserProfile()
+                }
+            }
+        }
+        .onChange(of: editCurrentUserProfile) { oldValue, newValue in
+            if newValue && !posts.isEmpty {
+                triggerEditCurrentUserProfile()
             }
         }
         .onReceive(PostDeletionNotifier.shared.$deletedPostId) { deletedPostId in
@@ -380,7 +413,7 @@ struct PostsListView: View {
         guard let jsonData = try? JSONSerialization.data(withJSONObject: body) else { return }
         request.httpBody = jsonData
 
-        Logger.shared.info("[PostsListView] Polling badges for \(queryIds.count) queries")
+        // Logger.shared.info("[PostsListView] Polling badges for \(queryIds.count) queries")
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else { return }
@@ -394,7 +427,7 @@ struct PostsListView: View {
                                 self.badgeStates[queryId] = value
                             }
                         }
-                        Logger.shared.info("[PostsListView] Updated badge states: \(self.badgeStates)")
+                        // Logger.shared.info("[PostsListView] Updated badge states: \(self.badgeStates)")
                     }
                 }
             } catch {
@@ -501,15 +534,7 @@ struct PostsListView: View {
                         let childrenResponse = try JSONDecoder().decode(ChildrenResponse.self, from: data)
                         Logger.shared.info("[PostsListView] Loaded \(childrenResponse.children.count) posts")
                         self.posts = childrenResponse.children
-
-                        // Auto-create a child post if we navigated to an empty child list
-                        // (user tapped "+" button on their own post with no children)
-                        if childrenResponse.children.isEmpty {
-                            if let parent = self.parentPost, parent.authorEmail == Storage.shared.getLoginState().email {
-                                Logger.shared.info("[PostsListView] Empty child list for owned post - auto-creating first child")
-                                self.createNewPost()
-                            }
-                        }
+                        // Empty lists show "Add Child Post" button - no auto-creation
                     } else {
                         // Root posts
                         let postsResponse = try JSONDecoder().decode(PostsResponse.self, from: data)
@@ -545,8 +570,9 @@ struct PostsListView: View {
 
     func createNewPost() {
         // Do nothing if custom button text is provided (demo button)
-        if customAddButtonText != nil {
-            Logger.shared.info("[PostsListView] Custom button tapped (no action)")
+        if let customAction = onAddButtonTapped {
+            Logger.shared.info("[PostsListView] Custom button tapped")
+            customAction()
             return
         }
 
@@ -620,5 +646,25 @@ struct PostsListView: View {
 
             Logger.shared.info("[PostsListView] New post created and expanded in edit mode")
         }
+    }
+
+    func triggerEditCurrentUserProfile() {
+        // Find the current user's profile
+        let loginState = Storage.shared.getLoginState()
+        guard let userEmail = loginState.email else {
+            editCurrentUserProfile = false
+            return
+        }
+
+        // Find profile post belonging to current user
+        if let profilePost = posts.first(where: { $0.authorEmail?.lowercased() == userEmail.lowercased() && $0.template == "profile" }) {
+            // Expand and edit the profile
+            viewModel.expandedPostId = profilePost.id
+            editingPostId = profilePost.id
+            isAnyPostEditing = true
+        }
+
+        // Clear the flag
+        editCurrentUserProfile = false
     }
 }

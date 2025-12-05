@@ -1,14 +1,16 @@
 #!/bin/bash
-# Sync tunable constants from device back to codebase
+# Sync live-constants.json from source of truth to iOS bundle
+# Source: apps/firefly/product/client/live-constants.json
+# Destination: apps/firefly/product/client/imp/ios/NoobTest/live-constants.json
 
-set -e
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SOURCE="$SCRIPT_DIR/../../live-constants.json"
+DEST="$SCRIPT_DIR/NoobTest/live-constants.json"
 
-PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
-JSON_FILE="$PROJECT_DIR/../../live-constants.json"
-
-echo "📥 Fetching current tunable values from device..."
-curl -s http://localhost:8081/tune | python3 -m json.tool > "$JSON_FILE"
-
-echo "✅ Synced tunables to: $JSON_FILE"
-echo ""
-cat "$JSON_FILE"
+if [ -f "$SOURCE" ]; then
+    cp "$SOURCE" "$DEST"
+    echo "✅ Synced live-constants.json to iOS bundle"
+else
+    echo "❌ Source file not found: $SOURCE"
+    exit 1
+fi

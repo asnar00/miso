@@ -357,7 +357,7 @@ As user edits text:
 - Title: 22pt bold, single line, plain style
 - Summary: 15pt italic, up to 2 lines when collapsed, plain style
 - Body: system body font, multi-line TextEditor, scrolling disabled, dynamic height
-- All fields: autocorrection disabled, autocapitalization disabled
+- All fields: autocorrection enabled, autocapitalization set to sentences
 
 **Buttons in Author Bar:**
 - Not editing: pencil.circle.fill icon, 32pt, black at 60% opacity
@@ -517,8 +517,7 @@ if isEditing:
               prompt: Text(post.titlePlaceholder ?? "Title")
                       .foregroundColor(Color.gray.opacity(0.55)))
         .font(size: 22, weight: bold)
-        .autocorrectionDisabled()
-        .autocapitalizationDisabled()
+        .textInputAutocapitalization(.sentences)
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.gray.opacity(0.2))
@@ -528,8 +527,7 @@ if isEditing:
               prompt: Text(post.summaryPlaceholder ?? "Summary").italic()
                       .foregroundColor(Color.gray.opacity(0.55)))
         .font(size: 15, italic)
-        .autocorrectionDisabled()
-        .autocapitalizationDisabled()
+        .textInputAutocapitalization(.sentences)
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.gray.opacity(0.2))
@@ -553,8 +551,7 @@ ZStack:
 
     TextEditor(text: editableBody)
         .disabled(not isEditing)
-        .autocorrectionDisabled()
-        .autocapitalizationDisabled()
+        .textInputAutocapitalization(.sentences)
         .scrollDisabled(true)
         .onChange(editableBody):
             // Trigger height recalculation

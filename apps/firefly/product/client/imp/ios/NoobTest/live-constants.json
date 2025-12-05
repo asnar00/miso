@@ -1,5 +1,16 @@
 {
+    "spacing": 0.8,
+    "corner-roundness": 0.75,
     "font-scale": 0.9,
     "post-background-brightness": 0.7,
-    "edit-button-x": 334
+    "button-colour-r": 255,
+    "button-colour-g": 178,
+    "button-colour-b": 127,
+    "button-brightness": 1.0,
+    "author-font-size": 0.95,
+    "edit-button-x": 370,
+    "edit-button-spacing": 4,
+    "background-colour-r": 0,
+    "background-colour-g": 0,
+    "background-colour-b": 0
 }

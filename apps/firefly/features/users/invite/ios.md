@@ -118,7 +118,7 @@ struct InviteSheet: View {
                     }
                 } else if status == "invite_created" {
                     if let testflightLink = json["testflight_link"] as? String {
-                        shareMessage = "Join me on Firefly! Download via TestFlight: \\(testflightLink)"
+                        shareMessage = "Join me on microclub! Download via TestFlight: \\(testflightLink)"
                         showShareSheet = true
                         Logger.shared.info("[Invite] Showing share sheet for \\(email)")
                     }
@@ -156,28 +156,51 @@ struct ShareSheet: UIViewControllerRepresentable {
 
 ## Update ContentView
 
-Modify `ContentView.swift` to show InviteSheet when "Invite Friend" button is tapped:
+Modify `ContentView.swift` to show InviteSheet when "invite friend" button is tapped, but only when the user has invites remaining:
 
 ```swift
-// Add state variable
+// Add state variables
 @State private var showInviteSheet = false
+@State private var numInvites: Int = 0
 
-// Modify PostsView for users tab
+// Fetch invite count on appear and after invite sheet dismisses
+.onAppear {
+    fetchInviteCount()
+}
+
+// Modify PostsView for users tab - showAddButton depends on numInvites
 PostsView(
     initialPosts: usersPosts,
     onPostCreated: { fetchUsersPosts() },
-    showAddButton: true,
+    showAddButton: numInvites > 0,  // Only show if user has invites
     templateName: "profile",
-    customAddButtonText: "Invite Friend",
+    customAddButtonText: "invite friend",
     onAddButtonTapped: {
-        // Show invite sheet instead of creating a post
         showInviteSheet = true
     },
     isAnyPostEditing: $isAnyPostEditing
 )
 .id(usersViewId)
-.sheet(isPresented: $showInviteSheet) {
+.sheet(isPresented: $showInviteSheet, onDismiss: { fetchInviteCount() }) {
     InviteSheet()
+}
+
+// Add fetch function
+func fetchInviteCount() {
+    let deviceId = Storage.shared.getDeviceID()
+    let serverURL = "http://185.96.221.52:8080"
+    guard let url = URL(string: "\(serverURL)/api/user/invites?device_id=\(deviceId)") else { return }
+
+    URLSession.shared.dataTask(with: url) { data, response, error in
+        guard let data = data else { return }
+
+        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let count = json["num_invites"] as? Int {
+            DispatchQueue.main.async {
+                self.numInvites = count
+            }
+        }
+    }.resume()
 }
 ```
 

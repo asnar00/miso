@@ -40,7 +40,7 @@ Sign-in uses passwordless email authentication with 4-digit verification codes. 
    - Initialize empty device_ids array
 4. Generate random 4-digit code (0000-9999)
 5. Store code in `pending_codes[email] = {code, timestamp}`
-6. Send email to user: "Your Firefly verification code is: XXXX"
+6. Send email to user: "Your microclub verification code is: XXXX"
 7. Return success response to client
 
 **Client**:
@@ -99,7 +99,7 @@ Sign-in uses passwordless email authentication with 4-digit verification codes. 
 
 `send_verification_email(email, code)` → bool
 - Use existing email feature
-- Subject: "Firefly Verification Code"
+- Subject: "microclub Verification Code"
 - Body: "Your verification code is: {code}. This code expires in 10 minutes."
 - Return True on success, False on failure
 

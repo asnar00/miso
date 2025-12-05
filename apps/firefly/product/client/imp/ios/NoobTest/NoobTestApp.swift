@@ -8,6 +8,10 @@ struct NoobTestApp: App {
     @State private var posts: [Post] = []
     @State private var isLoadingPosts = false
     @State private var postsError: String?
+    @State private var requiresUpdate = false
+    @State private var testflightURL = ""
+    @State private var versionCheckComplete = false
+    @State private var shouldEditProfile = false
 
     init() {
         Logger.shared.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
@@ -24,7 +28,7 @@ struct NoobTestApp: App {
         URLCache.shared = cache
 
         // Check login state on startup
-        let (email, _, isLoggedIn) = Storage.shared.getLoginState()
+        let (email, _, _, isLoggedIn) = Storage.shared.getLoginState()
         _isAuthenticated = State(initialValue: isLoggedIn && email != nil)
 
         if isLoggedIn && email != nil {
@@ -39,20 +43,61 @@ struct NoobTestApp: App {
         Logger.shared.info("[APP] About to start TestServer")
         TestServer.shared.start()
         Logger.shared.info("[APP] TestServer.start() returned")
+
+        // Start remote log uploads
+        RemoteLogUploader.shared.startPeriodicUpload()
     }
 
     var body: some Scene {
         WindowGroup {
-            if !isAuthenticated {
+            if requiresUpdate {
+                UpdateRequiredView(testflightURL: testflightURL)
+            } else if !versionCheckComplete {
+                // Show loading while checking version
+                ProgressView("Checking for updates...")
+                    .onAppear {
+                        checkVersion()
+                    }
+            } else if !isAuthenticated {
                 SignInView(isAuthenticated: $isAuthenticated, isNewUser: $isNewUser)
             } else if isNewUser && !hasSeenWelcome {
-                // Get email from storage for welcome screen
-                let (email, _, _) = Storage.shared.getLoginState()
-                NewUserView(email: email ?? "unknown", hasSeenWelcome: $hasSeenWelcome)
+                // Get name and email from storage for welcome screen
+                let (email, _, name, _) = Storage.shared.getLoginState()
+                NewUserView(name: name ?? "Friend", email: email ?? "unknown", hasSeenWelcome: $hasSeenWelcome, shouldEditProfile: $shouldEditProfile)
             } else {
-                ContentView()
+                ContentView(shouldEditProfile: $shouldEditProfile)
             }
         }
+    }
+
+    func checkVersion() {
+        let serverURL = "http://185.96.221.52:8080"
+        guard let url = URL(string: "\(serverURL)/api/version") else {
+            versionCheckComplete = true
+            return
+        }
+
+        // Get app's build number
+        let appBuild = Int(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0") ?? 0
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            DispatchQueue.main.async {
+                if let data = data,
+                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let serverBuild = json["latest_build"] as? Int,
+                   let tfURL = json["testflight_url"] as? String {
+
+                    Logger.shared.info("[VERSION] App build: \(appBuild), Server build: \(serverBuild)")
+
+                    if appBuild < serverBuild {
+                        Logger.shared.info("[VERSION] Update required!")
+                        testflightURL = tfURL
+                        requiresUpdate = true
+                    }
+                }
+                versionCheckComplete = true
+            }
+        }.resume()
     }
 
     func fetchRecentUsers() {

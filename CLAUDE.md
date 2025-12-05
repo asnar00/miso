@@ -84,8 +84,10 @@ feature-name/
 
 ### Products vs Features
 
-**Features** (`miso/`): Reusable capability specifications with implementation details
-**Products** (`apps/`): Executable applications assembled from features
+**Features**: Capability specifications with implementation details (e.g., `apps/firefly/features/`)
+**Products**: Executable applications assembled from features (e.g., `apps/firefly/product/`)
+
+The `miso/` folder contains the "IDE" - tools and platform knowledge for code generation. Apps like `firefly/` contain both their features and product code together.
 
 Products follow the same markdown tree convention but their `imp/` folders contain actual runnable executables.
 

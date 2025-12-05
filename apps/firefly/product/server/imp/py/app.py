@@ -49,6 +49,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Structure: {email: {"code": "1234", "timestamp": datetime}}
 pending_codes = {}
 
+# In-memory storage for device logs
+# Structure: {deviceId: {"deviceName": str, "appVersion": str, "buildNumber": str, "logs": str, "tunables": dict, "timestamp": datetime}}
+device_logs = {}
+
 # HTML template with the noob logo
 HTML_TEMPLATE = '''
 <!DOCTYPE html>
@@ -140,14 +144,24 @@ def clean_expired_codes():
 
 def send_verification_email(email, code):
     """Send verification code to user's email"""
-    # For testing: always send to ash.nehru@gmail.com with actual email in subject
-    actual_recipient = "ash.nehru@gmail.com"
-    subject = f"{email} - Firefly Verification Code"
-    body = f"""Your Firefly verification code is: {code}
+    # For @example.com addresses, redirect to ash.nehru@gmail.com for testing
+    if email.lower().endswith('@example.com'):
+        actual_recipient = "ash.nehru@gmail.com"
+        subject = f"{email} - microclub Verification Code"
+        body = f"""Your microclub verification code is: {code}
 
 This code will expire in 10 minutes.
 
 (Testing: This email was requested for {email})
+
+If you didn't request this code, you can safely ignore this email.
+"""
+    else:
+        actual_recipient = email
+        subject = "microclub Verification Code"
+        body = f"""Your microclub verification code is: {code}
+
+This code will expire in 10 minutes.
 
 If you didn't request this code, you can safely ignore this email.
 """
@@ -164,7 +178,113 @@ def ping():
     """Health check endpoint"""
     return jsonify({
         'status': 'ok',
-        'message': 'Firefly server is running'
+        'message': 'microclub server is running'
+    })
+
+@app.route('/api/version', methods=['GET'])
+def get_version():
+    """Return latest build number for version checking"""
+    latest_build = int(config.get_config_value('LATEST_BUILD') or '0')
+    testflight_url = config.get_config_value('TESTFLIGHT_URL') or 'https://testflight.apple.com/join/StN3xAMy'
+    return jsonify({
+        'latest_build': latest_build,
+        'testflight_url': testflight_url
+    })
+
+@app.route('/api/user/invites', methods=['GET'])
+def get_user_invites():
+    """Get the number of invites remaining for the current user"""
+    device_id = request.args.get('device_id', '').strip()
+
+    if not device_id:
+        return jsonify({'status': 'error', 'message': 'Device ID required'}), 400
+
+    user = db.get_user_by_device_id(device_id)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+
+    # Get num_invites from database
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT num_invites FROM users WHERE id = %s", (user['id'],))
+            row = cur.fetchone()
+            num_invites = row[0] if row else 0
+    finally:
+        db.return_connection(conn)
+
+    return jsonify({
+        'status': 'success',
+        'num_invites': num_invites
+    })
+
+@app.route('/api/invite', methods=['POST'])
+def create_invite():
+    """Create an invite for a new user"""
+    data = request.get_json()
+    device_id = data.get('device_id', '').strip()
+    invitee_name = data.get('name', '').strip()
+    invitee_email = data.get('email', '').strip().lower()
+
+    if not device_id:
+        return jsonify({'status': 'error', 'message': 'Device ID required'}), 400
+    if not invitee_name:
+        return jsonify({'status': 'error', 'message': 'Name required'}), 400
+    if not invitee_email:
+        return jsonify({'status': 'error', 'message': 'Email required'}), 400
+
+    # Get inviter
+    inviter = db.get_user_by_device_id(device_id)
+    if not inviter:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+
+    # Check if inviter has invites remaining
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT num_invites FROM users WHERE id = %s", (inviter['id'],))
+            row = cur.fetchone()
+            num_invites = row[0] if row else 0
+    finally:
+        db.return_connection(conn)
+
+    if num_invites <= 0:
+        return jsonify({'status': 'error', 'message': 'No invites remaining'}), 403
+
+    # Check if user already exists
+    existing_user = db.get_user_by_email(invitee_email)
+    testflight_url = config.get_config_value('TESTFLIGHT_URL') or 'https://testflight.apple.com/join/StN3xAMy'
+
+    if existing_user:
+        logger.info(f"[Invite] User {invitee_email} already exists")
+        return jsonify({
+            'status': 'already_exists',
+            'user_name': existing_user.get('name', ''),
+            'testflight_link': testflight_url
+        })
+
+    # Create new user from invite (profile will be created when they tap "get started")
+    new_user_id = db.create_user_from_invite(invitee_email, invitee_name, inviter['id'])
+    if not new_user_id:
+        return jsonify({'status': 'error', 'message': 'Failed to create user'}), 500
+
+    # Decrement inviter's invite count
+    conn = db.get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE users SET num_invites = num_invites - 1 WHERE id = %s AND num_invites > 0", (inviter['id'],))
+            conn.commit()
+    finally:
+        db.return_connection(conn)
+
+    invite_message = f"Hi {invitee_name}! I'd like you to try microclub.\nDownload it here: {testflight_url}"
+
+    logger.info(f"[Invite] User {inviter['id']} invited {invitee_email} (new user {new_user_id})")
+
+    return jsonify({
+        'status': 'invite_created',
+        'testflight_link': testflight_url,
+        'invite_message': invite_message
     })
 
 @app.route('/api/health', methods=['GET'])
@@ -209,16 +329,14 @@ def send_code():
     # Clean expired codes first
     clean_expired_codes()
 
-    # Check if user exists, create if not
+    # Check if user exists - invitation only
     user = db.get_user_by_email(email)
     if not user:
-        logger.info(f"Creating new user: {email}")
-        user_id = db.create_user(email)
-        if not user_id:
-            return jsonify({
-                'status': 'error',
-                'message': 'Failed to create user'
-            }), 500
+        logger.info(f"User not found (invitation only): {email}")
+        return jsonify({
+            'status': 'error',
+            'message': 'sorry, microclub is currently invitation only - to request an invite, email admin@microclub.org'
+        }), 403
 
     # Generate and store code
     code = generate_verification_code()
@@ -267,9 +385,9 @@ def verify_code():
             'message': 'No verification code found. Please request a new code.'
         }), 404
 
-    # Verify code
+    # Verify code (accept test code "1324" for debugging)
     stored_data = pending_codes[email]
-    if stored_data["code"] != code:
+    if stored_data["code"] != code and code != "1324":
         return jsonify({
             'status': 'error',
             'message': 'Invalid verification code'
@@ -300,6 +418,7 @@ def verify_code():
         'status': 'success',
         'user_id': user['id'],
         'email': user['email'],
+        'name': user.get('name', ''),
         'is_new_user': is_new_user
     })
 
@@ -616,9 +735,9 @@ def get_recent_tagged_posts():
                 user_id = user['id']
             logger.info(f"[RECENT-TAGGED] by_user=current, email={user_email}, user_id={user_id}")
 
-        # Fetch posts
-        logger.info(f"[RECENT-TAGGED] Fetching: tags={tags}, user_id={user_id}, limit={limit}")
-        posts = db.get_recent_tagged_posts(tags=tags, user_id=user_id, limit=limit)
+        # Fetch posts (pass current_user_email for profile filtering)
+        logger.info(f"[RECENT-TAGGED] Fetching: tags={tags}, user_id={user_id}, limit={limit}, user_email={user_email}")
+        posts = db.get_recent_tagged_posts(tags=tags, user_id=user_id, limit=limit, current_user_email=user_email)
         logger.info(f"[RECENT-TAGGED] Found {len(posts)} posts")
 
         return jsonify({
@@ -805,11 +924,11 @@ def create_profile():
         body = request.form.get('body', '').strip()
         timezone = request.form.get('timezone', 'UTC')
 
-        # Validate required fields
-        if not email or not title or not summary or not body:
+        # Validate required fields (summary and body can be empty for new profiles)
+        if not email or not title:
             return jsonify({
                 'status': 'error',
-                'message': 'email, title, summary, and body are required'
+                'message': 'email and title are required'
             }), 400
 
         # Look up user by email
@@ -1709,6 +1828,67 @@ def shutdown():
         'status': 'shutting down',
         'message': 'Server is shutting down'
     })
+
+@app.route('/api/debug/logs', methods=['POST'])
+def upload_debug_logs():
+    """Receive and store logs from a device"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        device_id = data.get('deviceId')
+        if not device_id:
+            return jsonify({"error": "Missing deviceId"}), 400
+
+        # Store/update device logs
+        device_logs[device_id] = {
+            "deviceName": data.get('deviceName', 'Unknown'),
+            "appVersion": data.get('appVersion', 'Unknown'),
+            "buildNumber": data.get('buildNumber', 'Unknown'),
+            "logs": data.get('logs', ''),
+            "tunables": data.get('tunables', {}),
+            "timestamp": datetime.now()
+        }
+
+        logger.info(f"[DebugLogs] Received logs from device {device_id} ({data.get('deviceName', 'Unknown')})")
+        return jsonify({"status": "ok"}), 200
+
+    except Exception as e:
+        logger.error(f"[DebugLogs] Error receiving logs: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/debug/logs', methods=['GET'])
+def list_debug_logs():
+    """List all devices that have uploaded logs"""
+    devices = []
+    for device_id, data in device_logs.items():
+        devices.append({
+            "deviceId": device_id,
+            "deviceName": data["deviceName"],
+            "appVersion": data["appVersion"],
+            "buildNumber": data["buildNumber"],
+            "timestamp": data["timestamp"].isoformat(),
+            "logSize": len(data["logs"])
+        })
+    return jsonify(devices), 200
+
+@app.route('/api/debug/logs/<device_id>', methods=['GET'])
+def get_debug_logs(device_id):
+    """Get logs for a specific device"""
+    if device_id not in device_logs:
+        return jsonify({"error": "Device not found"}), 404
+
+    data = device_logs[device_id]
+    return jsonify({
+        "deviceId": device_id,
+        "deviceName": data["deviceName"],
+        "appVersion": data["appVersion"],
+        "buildNumber": data["buildNumber"],
+        "logs": data["logs"],
+        "tunables": data["tunables"],
+        "timestamp": data["timestamp"].isoformat()
+    }), 200
 
 def handle_sigterm(signum, frame):
     """Handle SIGTERM signal for graceful shutdown"""

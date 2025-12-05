@@ -127,16 +127,16 @@ struct ChildPostsListViewWrapper: View {
     var shouldShowAddPostButton: Bool {
         guard let parent = parentPost else { return false }
 
-        // Profile posts have template = "profile"
-        let isProfilePost = (parent.template == "profile")
+        // Profile posts: only owner can add children
+        if parent.template == "profile" {
+            let loginState = Storage.shared.getLoginState()
+            guard let currentEmail = loginState.email,
+                  let authorEmail = parent.authorEmail else { return false }
+            return authorEmail.lowercased() == currentEmail.lowercased()
+        }
 
-        // Check if profile belongs to current user by comparing emails
-        let loginState = Storage.shared.getLoginState()
-        guard let currentEmail = loginState.email,
-              let authorEmail = parent.authorEmail else { return false }
-        let belongsToCurrentUser = (authorEmail == currentEmail)
-
-        return isProfilePost && belongsToCurrentUser
+        // All other posts: anyone can add children
+        return true
     }
 
     var body: some View {
@@ -427,25 +427,32 @@ struct PostsListView: View {
     let serverURL = "http://185.96.221.52:8080"
 
     // Determine if the Add Post button should be shown
-    private var shouldShowAddPostButton: Bool {
-        if parentPostId == nil {
-            // Root level - always show
-            return true
+    private var shouldShowAddButton: Bool {
+        // If showAddButton is explicitly false, respect that (e.g., search results)
+        if !showAddButton { return false }
+
+        // If custom text provided, always show button
+        if customAddButtonText != nil { return true }
+
+        // For child posts: anyone can add, except for profiles (only owner can add)
+        if parentPostId != nil {
+            if let parent = parentPost {
+                if parent.template == "profile" {
+                    let loginState = Storage.shared.getLoginState()
+                    if let userEmail = loginState.email, let parentEmail = parent.authorEmail {
+                        return userEmail.lowercased() == parentEmail.lowercased()
+                    }
+                    return false
+                }
+                // For all other posts, anyone can add children
+                return true
+            }
+            return false  // Parent not loaded yet
         }
 
-        // Child level - only show if parent is a profile post and belongs to current user
-        guard let parent = parentPost else { return false }
-
-        // Profile posts have template = "profile"
-        let isProfilePost = (parent.template == "profile")
-
-        // Check if profile belongs to current user by comparing emails
-        let loginState = Storage.shared.getLoginState()
-        guard let currentEmail = loginState.email,
-              let authorEmail = parent.authorEmail else { return false }
-        let belongsToCurrentUser = (authorEmail == currentEmail)
-
-        return isProfilePost && belongsToCurrentUser
+        // Root level: show unless it's a profile list
+        guard let firstPost = posts.first else { return showAddButton }
+        return firstPost.template != "profile"
     }
 
     var body: some View {

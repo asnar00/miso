@@ -165,8 +165,7 @@ VStack(alignment: .leading, spacing: 4) {
             .font(.system(size: 22, weight: .bold))
             .foregroundColor(.black)
             .textFieldStyle(.plain)
-            .autocorrectionDisabled(true)
-            .textInputAutocapitalization(.never)
+            .textInputAutocapitalization(.sentences)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
@@ -184,8 +183,7 @@ VStack(alignment: .leading, spacing: 4) {
             .italic()
             .foregroundColor(.black.opacity(0.8))
             .textFieldStyle(.plain)
-            .autocorrectionDisabled(true)
-            .textInputAutocapitalization(.never)
+            .textInputAutocapitalization(.sentences)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
@@ -224,8 +222,7 @@ ZStack(alignment: .topLeading) {
         .frame(width: availableWidth, height: measuredBodyHeight, alignment: .top)
         .scrollDisabled(true)
         .disabled(!isEditing)  // Only editable when in edit mode
-        .autocorrectionDisabled(true)  // No spell-check red lines
-        .textInputAutocapitalization(.never)  // No auto-caps
+        .textInputAutocapitalization(.sentences)  // Capitalize first letter of sentences
         .onChange(of: editableBody) { _, newValue in
             let newHeight = calculateTextHeight(newValue, width: availableWidth,
                                                 font: UIFont.preferredFont(forTextStyle: .body))

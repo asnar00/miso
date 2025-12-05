@@ -213,7 +213,7 @@ class Database:
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
-                    "SELECT id, email, created_at, device_ids FROM users WHERE email = %s",
+                    "SELECT id, email, name, created_at, device_ids FROM users WHERE email = %s",
                     (email,)
                 )
                 return cur.fetchone()
@@ -254,6 +254,45 @@ class Database:
             conn.rollback()
             print(f"Error adding device to user: {e}")
             return False
+        finally:
+            self.return_connection(conn)
+
+    def get_user_by_device_id(self, device_id: str) -> Optional[Dict[str, Any]]:
+        """Get user by device ID"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute(
+                    "SELECT id, email, name, created_at, device_ids, invited_by, invited_at, profile_complete FROM users WHERE %s = ANY(device_ids)",
+                    (device_id,)
+                )
+                return cur.fetchone()
+        except Exception as e:
+            print(f"Error getting user by device: {e}")
+            return None
+        finally:
+            self.return_connection(conn)
+
+    def create_user_from_invite(self, email: str, name: str, invited_by: int) -> Optional[int]:
+        """Create a new user from an invitation"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO users (email, name, invited_by, invited_at, profile_complete) VALUES (%s, %s, %s, NOW(), FALSE) RETURNING id",
+                    (email, name, invited_by)
+                )
+                user_id = cur.fetchone()[0]
+                conn.commit()
+                return user_id
+        except psycopg2.IntegrityError:
+            conn.rollback()
+            print(f"User with email {email} already exists")
+            return None
+        except Exception as e:
+            conn.rollback()
+            print(f"Error creating user from invite: {e}")
+            return None
         finally:
             self.return_connection(conn)
 
@@ -555,8 +594,8 @@ class Database:
             with conn.cursor() as cur:
                 print(f"[DB] Executing INSERT for profile post: user_id={user_id}, title='{title}', summary='{summary}'", file=sys.stderr, flush=True)
                 cur.execute("""
-                    INSERT INTO posts (user_id, parent_id, title, summary, body, timezone, image_url, ai_generated)
-                    VALUES (%s, -1, %s, %s, %s, %s, %s, false)
+                    INSERT INTO posts (user_id, parent_id, title, summary, body, timezone, image_url, ai_generated, template_name)
+                    VALUES (%s, -1, %s, %s, %s, %s, %s, false, 'profile')
                     RETURNING id
                 """, (user_id, title, summary, body, timezone, image_url))
                 post_id = cur.fetchone()[0]
@@ -738,8 +777,12 @@ class Database:
         finally:
             self.return_connection(conn)
 
-    def get_recent_tagged_posts(self, tags: List[str] = None, user_id: Optional[int] = None, limit: int = 50) -> List[Dict[str, Any]]:
-        """Get recent posts filtered by template tags and optionally by user"""
+    def get_recent_tagged_posts(self, tags: List[str] = None, user_id: Optional[int] = None, limit: int = 50, current_user_email: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Get recent posts filtered by template tags and optionally by user.
+
+        For profile posts, incomplete profiles (empty summary AND body) are hidden
+        unless they belong to the current user.
+        """
         conn = self.get_connection()
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -771,6 +814,13 @@ class Database:
                 if user_id is not None:
                     conditions.append("p.user_id = %s")
                     params.append(user_id)
+
+                # For profile posts, hide incomplete profiles unless they belong to current user
+                if tags and "profile" in tags and current_user_email:
+                    # Profile is complete if it has summary OR body content
+                    # Always show current user's profile regardless of completeness
+                    conditions.append("(COALESCE(p.summary, '') != '' OR COALESCE(p.body, '') != '' OR LOWER(u.email) = %s)")
+                    params.append(current_user_email.lower())
 
                 # Add WHERE clause if conditions exist
                 if conditions:

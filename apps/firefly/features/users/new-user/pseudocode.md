@@ -3,56 +3,76 @@
 
 ## Purpose
 
-Display a welcome screen for first-time users after authentication, introducing them to the app and providing a clear entry point.
+Display a welcome screen for first-time users after authentication, then automatically open their profile for editing.
 
 ## UI Components
 
 **Layout:**
-- Full-screen view with turquoise background
+- Full-screen view with orange/peach background (#FFB27F / rgb(255, 178, 127))
 - Vertically centered content
-- Logo at top
-- Welcome message and user email in middle
+- Logo at top (smaller than sign-in screen)
+- Welcome message with user's name in middle
 - Action button at bottom
 
 **Elements:**
-- Logo: Large nøøb logo (ᕦ(ツ)ᕤ)
-- Welcome text: "welcome" in large bold font
-- User email: Display authenticated user's email address
-- Get Started button: Primary action button to dismiss welcome screen
+- Logo: ᕦ(ツ)ᕤ at size 50pt
+- Welcome text: "welcome" in large title font
+- User name: "[name]!" in large title font below welcome
+- Get Started button: Black background, white text, "get started" (lowercase)
 
 ## State Management
 
 **Input:**
-- `email`: String - User's authenticated email address
-- `hasSeenWelcome`: Boolean (writable) - Flag controlling whether this screen is shown
+- `name`: String - User's name from invitation
+- `email`: String - User's email address
+- `hasSeenWelcome`: Boolean (writable) - Controls whether welcome screen shows
+- `shouldEditProfile`: Boolean (writable) - Signals that profile editor should open
 
 **Behavior:**
-- When "Get Started" button is tapped:
-  - Set `hasSeenWelcome` to true
-  - Navigate to main app content
-  - Log the action
+When "get started" button is tapped:
+1. Set `shouldEditProfile` to true
+2. Set `hasSeenWelcome` to true
+3. App transitions to main content view
 
 ## Navigation Flow
 
-The app should show this screen when:
+The app shows this screen when:
 - User IS authenticated AND
 - User IS a new user (first device registration) AND
-- User HAS NOT seen welcome screen yet (`hasSeenWelcome` is false)
+- User HAS NOT seen welcome screen yet
 
-After the button is tapped, the app transitions to the main content view and this screen won't be shown again for this session or future sessions.
+After button tap:
+1. `hasSeenWelcome = true` causes transition to ContentView
+2. ContentView.onAppear sees `shouldEditProfile = true`
+3. ContentView switches to Users tab and sets `editingNewUserProfile = true`
+4. PostsListView receives `editCurrentUserProfile = true` and opens profile editor
 
-## Integration Points
+## Critical Timing Issue
 
-**Called by:** App-level navigation logic after successful authentication
+The `editCurrentUserProfile` binding must be checked in **both** places:
+1. `onChange(of: editCurrentUserProfile)` - for when value changes after view exists
+2. `onAppear` - for when view is created with value already true
 
-**Modifies:** `hasSeenWelcome` state variable to indicate tutorial completion
+This is because ContentView sets the flag before the Users PostsListView is created (data is still loading). When the view appears, the value is already true, so onChange never fires.
 
-**Navigates to:** Main app content (home screen/posts view)
+## Profile Creation
 
-## Design Notes
+Profiles are created during the invite process, not here. See `users/invite` feature.
 
-- Keep the design simple and welcoming
-- Use app's primary turquoise color (#40E0D0)
-- Logo should be prominent but not overwhelming
-- Button should be clearly actionable
-- Entire flow should take less than 5 seconds for user to complete
+## Incomplete Profile Filtering
+
+Server filters profile queries to hide incomplete profiles from other users:
+- Profile is "complete" if summary OR body has content
+- Current user's profile always shows regardless of completeness
+- Filter applied in `get_recent_tagged_posts` when `tags` includes "profile"
+
+SQL condition:
+```sql
+(COALESCE(p.summary, '') != '' OR COALESCE(p.body, '') != '' OR LOWER(u.email) = current_user_email)
+```
+
+## UI Automation
+
+Register the get started button for automated testing:
+- ID: `newuser-getstarted`
+- Action: Calls getStarted() function

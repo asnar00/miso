@@ -8,13 +8,13 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 ## Visual Specification
 
 **Toolbar Container:**
-- Position: Floating lozenge at bottom of screen, 12pt from bottom edge
-- Shape: Rounded rectangle with 25pt corner radius
-- Background: RGB color where R=G=B=button-colour tunable (default 0.5)
+- Position: Floating lozenge at bottom of screen, 20pt offset from safe area
+- Shape: Rounded rectangle with 20pt corner radius
+- Background: Tunable button color (RGB 255/178/127 modified by brightness, default 1.0)
 - Maximum width: 300pt (centered on screen with 16pt horizontal insets)
 - Shadow: Strong depth shadow (40% black opacity, 12pt blur radius, 4pt y-offset)
-- Internal padding: 33pt horizontal, 14pt vertical
-- Color matches all other UI buttons (add-post, author button, child navigation button)
+- Internal padding: 33pt horizontal, 10pt vertical
+- Color matches all other UI buttons (add-post, author button, child navigation button, edit button)
 
 **Button Layout:**
 - Three buttons arranged horizontally with equal spacing
@@ -22,11 +22,17 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 - Buttons evenly distributed across width with Spacers between them
 
 **Button Design:**
-- Icon size: 24 points
+- Icon size: 20 points
 - Icon color: Black
-- Tappable area: 44x44 points minimum (accessibility)
-- Active state: Dark grey rounded background (50% grey opacity, 8pt corner radius)
+- Tappable area: 35x35 points
+- Active state: Brighter button color (120% of standard brightness, clamped to 1.0), 6pt corner radius
 - No text labels, icons only
+
+**Search Badge:**
+- Red notification dot (10pt diameter) with 2pt white stroke
+- Positioned at top-right corner of search button (offset x: 2, y: -2)
+- Appears when any query has new matches (last_match_added_at > last_viewed_at)
+- Polled every 5 seconds and checked immediately when search posts load at startup
 
 **Button Icons:**
 - Make Post: "bubble.left" icon (speech bubble)
@@ -34,8 +40,15 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 - Users: "person.2" icon (two people)
 
 **Active State Highlighting:**
-- Active button shows darker grey background (50% opacity)
+- Active button shows brighter button color (120% of standard brightness, clamped to 1.0)
 - Clicking already-active button triggers reset behavior
+
+**Visibility During Editing:**
+- Toolbar fades out (0.3s animation) when any post enters edit mode
+- Toolbar becomes non-interactive (allowsHitTesting=false) during editing
+- Toolbar reappears when:
+  - User saves, cancels, or deletes a post
+  - User navigates back from a child view (navigation path gets shorter)
 
 ## State Management
 
@@ -61,6 +74,10 @@ state isLoadingUsers: Boolean = true
 state makePostError: String? = null
 state searchError: String? = null
 state usersError: String? = null
+
+// Search badge state
+state hasSearchBadge: Boolean = false
+state badgePollingTimer: Timer? = null
 ```
 
 ## Data Fetching (On Startup)
@@ -89,11 +106,12 @@ function fetchSearchPosts():
     isLoadingSearch = true
     searchError = null
 
-    API.fetchRecentTaggedPosts(tags: ["query"], byUser: "current"):
+    API.fetchRecentTaggedPosts(tags: ["query"], byUser: "any"):
         onSuccess(posts):
             preloadFirstImage(posts)
             searchPosts = posts
             isLoadingSearch = false
+            pollSearchBadges()  // Check badges immediately after loading
         onFailure(error):
             searchError = error.message
             isLoadingSearch = false
@@ -284,5 +302,36 @@ ContentView:
 
 - Implement actual explorer views (currently only structure is defined)
 - Add active state highlighting to show which explorer is current
-- Badge notifications: show count of new posts/messages/queries
 - Smooth transitions between explorers
+
+## Search Badge Polling
+
+```
+function pollSearchBadges():
+    // Only poll if we have search posts loaded
+    queryPosts = searchPosts.filter(post => post.template == "query")
+    if queryPosts.isEmpty:
+        return
+
+    queryIds = queryPosts.map(post => post.id)
+    userEmail = Storage.getLoginState().email
+    if userEmail == null:
+        return
+
+    // POST to /api/queries/badges
+    body = {
+        "user_email": userEmail,
+        "query_ids": queryIds
+    }
+
+    response = API.post("/api/queries/badges", body)
+    if response.success:
+        // Response is { "query_id": true/false, ... }
+        badges = response.json
+        hasSearchBadge = badges.values.any(v => v == true)
+```
+
+**Lifecycle:**
+- On app startup: call pollSearchBadges() after search posts load
+- Start polling timer: every 5 seconds, call pollSearchBadges()
+- On app disappear: invalidate and clear polling timer

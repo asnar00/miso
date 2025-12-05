@@ -107,8 +107,64 @@ Methods to access log file:
 - Stream in real-time to development machine via USB
 - Filter by log level
 
-**Remote logging:**
-- HTTP endpoint to receive log messages
-- Batch uploads to reduce network traffic
-- Queue logs when offline, send when connected
-- Configurable log level for remote transmission
+## Remote Logging
+
+Remote logging uploads the device's log file to the server periodically so developers can debug issues on devices they don't have physical access to.
+
+### Client-Side (iOS/Android)
+
+**RemoteLogUploader class:**
+
+Properties:
+- `uploadInterval`: Time between uploads (60 seconds)
+- `serverURL`: Base URL for the server
+- `timer`: Repeating timer for periodic uploads
+- `deviceId`: Unique identifier for this device (persisted)
+
+Methods:
+- `startPeriodicUpload()`: Start the 60-second upload timer
+- `stopPeriodicUpload()`: Stop the timer
+- `uploadLogs()`: Perform a single log upload
+
+**Upload Payload (JSON):**
+```
+{
+  "deviceId": "unique-device-identifier",
+  "deviceName": "iPhone 12 mini",
+  "appVersion": "1.0",
+  "buildNumber": "9",
+  "logs": "full contents of app.log file",
+  "tunables": { "button-colour": 0.5, "font-scale": 0.9, ... }
+}
+```
+
+**Device ID Generation:**
+- On first launch, generate a UUID and persist it
+- Use the same ID for all subsequent uploads
+- Store in UserDefaults/SharedPreferences
+
+**Upload Flow:**
+1. Timer fires every 60 seconds
+2. Read local log file contents
+3. Get device info (name, app version, build)
+4. Get current tunable values
+5. POST JSON payload to `/api/debug/logs`
+6. Log success/failure (but don't fail loudly - this is background diagnostic)
+
+### Server-Side (Python/Flask)
+
+**Endpoint:** `POST /api/debug/logs`
+
+Receives log uploads from devices. Stores the most recent upload per device, replacing any previous upload.
+
+**Storage:**
+- In-memory dictionary keyed by deviceId
+- Each entry stores: deviceName, appVersion, buildNumber, logs, tunables, timestamp
+
+**Endpoint:** `GET /api/debug/logs`
+
+Returns list of all devices that have uploaded logs, with metadata (no log contents).
+
+**Endpoint:** `GET /api/debug/logs/<deviceId>`
+
+Returns full log data for a specific device including log contents and tunables.
