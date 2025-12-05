@@ -163,7 +163,10 @@ Posts with children (or query posts) show a circular button on the right side:
 
 ```
 isQuery = post.template == "query"
-buttonSize = 42pt  // fixed size
+
+// Query posts: button animates from 36pt (compact) to 42pt (expanded)
+// Non-query posts: fixed 42pt
+buttonSize = isQuery ? lerp(36, 42, expansionFactor) : 42pt
 
 // Button center is positioned so 3/4 of radius overlaps post, 1/4 extends beyond
 buttonCenterX = availableWidth - (buttonSize / 2) + 4pt

@@ -1,24 +1,22 @@
 # image-zoom
-*pinch-to-zoom on post images with smooth snap-back*
+*Pinch-to-zoom on expanded post images with snap-back on release*
 
-Users can zoom into any post image using the standard pinch-to-zoom gesture. This allows closer inspection of image details without leaving the post view.
+When viewing an expanded post with an image, users can pinch to zoom in on the image for a closer look. The zoomed image can be panned around. When the user releases their fingers, the image smoothly snaps back to its original size.
 
-**Gesture Behavior:**
-- Pinch outward on an image to zoom in
-- The image grows beyond its container, overlapping surrounding UI temporarily
-- The zoom centers on the pinch gesture location (standard iOS UIScrollView behavior)
-- Only the image zooms - surrounding UI stays at normal size
+**How it works:**
+- Tap a post to expand it
+- Pinch outward on the image to zoom in (up to 4x magnification)
+- While zoomed, drag to pan around the image
+- Release fingers to snap back to normal size
 
-**Zoom Limits:**
-- Minimum scale: 1.0x (original size)
-- Maximum scale: 4.0x (prevents excessive zoom)
+**Visual behavior:**
+- The zoom overlay appears seamlessly over the base image
+- Zooming is smooth and responsive
+- On release, the image animates back to 1x scale over 0.15 seconds
+- The zoom feature is disabled while editing a post
 
-**Release Behavior:**
-- When the user lifts their fingers, the image immediately snaps back to 1.0x scale
-- Animation uses ease-out timing (0.15s duration) for a quick, snappy feel
-- The image returns to its original size and position
-
-**Interaction Notes:**
-- All images use ZoomableImageView for consistent zoom behavior
-- Uses UIScrollView wrapped in UIViewRepresentable for proper iOS pinch behavior
-- The zoom gesture feels responsive and tracks fingers accurately around pinch center
+**Technical approach:**
+- Uses a UIScrollView overlay that's always present when expanded
+- The overlay image is invisible at 1x scale
+- When zoom exceeds 1.01x, the overlay becomes visible
+- UIScrollView handles pinch gestures natively (no SwiftUI gesture interference)

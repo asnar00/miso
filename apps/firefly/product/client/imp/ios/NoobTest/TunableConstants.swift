@@ -13,29 +13,17 @@ class TunableConstants: ObservableObject {
         let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         fileURL = documentsPath.appendingPathComponent("live-constants.json")
 
-        // Check if build number changed - if so, replace constants from bundle
-        let currentBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
-        let savedBuild = UserDefaults.standard.string(forKey: "lastTunablesBuildNumber") ?? "0"
-
-        if currentBuild != savedBuild {
-            // Delete existing constants file to force refresh from bundle
+        // Always refresh from bundle on app start
+        if let bundlePath = Bundle.main.path(forResource: "live-constants", ofType: "json") {
+            let bundleURL = URL(fileURLWithPath: bundlePath)
+            // Remove existing file and copy fresh from bundle
             if FileManager.default.fileExists(atPath: fileURL.path) {
                 try? FileManager.default.removeItem(at: fileURL)
             }
-            // Save new build number
-            UserDefaults.standard.set(currentBuild, forKey: "lastTunablesBuildNumber")
-        }
-
-        // If file doesn't exist in Documents, copy from bundle
-        if !FileManager.default.fileExists(atPath: fileURL.path) {
-            if let bundlePath = Bundle.main.path(forResource: "live-constants", ofType: "json") {
-                let bundleURL = URL(fileURLWithPath: bundlePath)
-                try? FileManager.default.copyItem(at: bundleURL, to: fileURL)
-            }
+            try? FileManager.default.copyItem(at: bundleURL, to: fileURL)
         }
 
         loadConstants()
-        mergeBundleDefaults()
     }
 
     private func mergeBundleDefaults() {
@@ -103,7 +91,7 @@ class TunableConstants: ObservableObject {
     func buttonColor() -> Color {
         let r = getDouble("button-colour-r", default: 255) / 255.0
         let g = getDouble("button-colour-g", default: 178) / 255.0
-        let b = getDouble("button-colour-b", default: 127) / 255.0
+        let b = getDouble("button-colour-b", default: 128) / 255.0
         let brightness = getDouble("button-brightness", default: 1.0)
 
         return Color(
@@ -117,7 +105,7 @@ class TunableConstants: ObservableObject {
     func buttonHighlightColor() -> Color {
         let r = getDouble("button-colour-r", default: 255) / 255.0
         let g = getDouble("button-colour-g", default: 178) / 255.0
-        let b = getDouble("button-colour-b", default: 127) / 255.0
+        let b = getDouble("button-colour-b", default: 128) / 255.0
         let brightness = getDouble("button-brightness", default: 1.0) * 1.2
 
         return Color(

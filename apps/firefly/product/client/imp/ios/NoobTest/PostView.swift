@@ -1,12 +1,13 @@
 import SwiftUI
 import UIKit
 
-// MARK: - ZoomableImageView (UIScrollView wrapper for pinch-to-zoom)
+// MARK: - ZoomableImageOverlay (always present when expanded, invisible at scale 1.0)
 
-struct ZoomableImageView: UIViewRepresentable {
+struct ZoomableImageOverlay: UIViewRepresentable {
     let image: UIImage
     let size: CGSize
     let cornerRadius: CGFloat
+    @Binding var isZooming: Bool  // True when user is actively zooming (scale > 1)
 
     func makeUIView(context: Context) -> UIScrollView {
         let scrollView = UIScrollView()
@@ -25,6 +26,7 @@ struct ZoomableImageView: UIViewRepresentable {
         imageView.layer.cornerRadius = cornerRadius
         imageView.frame = CGRect(origin: .zero, size: size)
         imageView.tag = 100
+        imageView.alpha = 0  // Start invisible - only show when zooming
 
         scrollView.addSubview(imageView)
         scrollView.contentSize = size
@@ -42,18 +44,44 @@ struct ZoomableImageView: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator()
+        Coordinator(self)
     }
 
     class Coordinator: NSObject, UIScrollViewDelegate {
+        var parent: ZoomableImageOverlay
+
+        init(_ parent: ZoomableImageOverlay) {
+            self.parent = parent
+        }
+
         func viewForZooming(in scrollView: UIScrollView) -> UIView? {
             return scrollView.viewWithTag(100)
         }
 
+        func scrollViewDidZoom(_ scrollView: UIScrollView) {
+            // Show the overlay image when zooming starts (scale > 1)
+            if let imageView = scrollView.viewWithTag(100) {
+                let isZooming = scrollView.zoomScale > 1.01
+                imageView.alpha = isZooming ? 1.0 : 0.0
+
+                // Update binding on main thread
+                DispatchQueue.main.async {
+                    self.parent.isZooming = isZooming
+                }
+            }
+        }
+
         func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-            // Snap back to 1.0 when fingers are lifted
+            // Snap back to 1.0 and hide overlay
             UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseOut) {
                 scrollView.zoomScale = 1.0
+                if let imageView = scrollView.viewWithTag(100) {
+                    imageView.alpha = 0.0
+                }
+            } completion: { _ in
+                DispatchQueue.main.async {
+                    self.parent.isZooming = false
+                }
             }
         }
     }
@@ -123,7 +151,10 @@ struct PostView: View {
     @State private var showDeleteConfirmation: Bool = false
     @State private var newImage: UIImage? = nil  // Processed image for display
     @State private var authorHasProfile: Bool = true  // Assume true until checked
-    @State private var cachedUIImage: UIImage? = nil  // Cached UIImage for ZoomableImageView
+
+    // Zoom overlay state
+    @State private var isZooming: Bool = false  // True when user is actively zooming
+    @State private var cachedUIImage: UIImage? = nil  // Cached for zoom overlay
 
     // Edit button bounce animation
     @State private var editButtonScale: CGFloat = 1.0
@@ -403,33 +434,45 @@ struct PostView: View {
         }.resume()
     }
 
-    // Image display - uses ZoomableImageView for pinch-to-zoom support
+    // Image display using AsyncImage
     @ViewBuilder
     private func imageView(width: CGFloat, height: CGFloat, imageUrl: String) -> some View {
+        let fullUrl = imageUrl.hasPrefix("http") ? imageUrl : "\(serverURL)\(imageUrl)"
+
         if imageUrl == "new_image", let displayImage = newImage {
-            // New image being added - use ZoomableImageView
-            ZoomableImageView(
-                image: displayImage,
-                size: CGSize(width: width, height: height),
-                cornerRadius: 12 * cornerRoundness
-            )
-            .frame(width: width, height: height)
-            .clipped()
-        } else if let uiImage = cachedUIImage {
-            // Cached image available - use ZoomableImageView
-            ZoomableImageView(
-                image: uiImage,
-                size: CGSize(width: width, height: height),
-                cornerRadius: 12 * cornerRoundness
-            )
-            .frame(width: width, height: height)
-            .clipped()
-        } else {
-            // Loading state - show placeholder while we load
-            Rectangle()
-                .fill(Color.gray.opacity(0.3))
+            // New image being added
+            Image(uiImage: displayImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
                 .frame(width: width, height: height)
                 .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+        } else {
+            // Load from URL using AsyncImage
+            AsyncImage(url: URL(string: fullUrl)) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: width, height: height)
+                        .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                case .failure(_):
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: width, height: height)
+                        .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                case .empty:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: width, height: height)
+                        .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                @unknown default:
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: width, height: height)
+                        .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                }
+            }
         }
     }
 
@@ -832,9 +875,10 @@ struct PostView: View {
                 let currentY = lerp(compactY, expandedY, expansionFactor)
 
                 ZStack(alignment: .topTrailing) {
+                    // Base image layer
                     imageView(width: currentWidth, height: currentImageHeight, imageUrl: imageUrl)
                     .task {
-                        // Load image and cache it for ZoomableImageView
+                        // Load image to get aspect ratio and cache for zoom overlay
                         if cachedUIImage == nil && imageUrl != "new_image" {
                             if let url = URL(string: fullUrl) {
                                 do {
@@ -850,6 +894,18 @@ struct PostView: View {
                                 }
                             }
                         }
+                    }
+
+                    // Zoom overlay - always present when expanded (but invisible at scale 1.0)
+                    // The UIScrollView handles pinch gestures directly
+                    if expansionFactor >= 0.99 && !isEditing, let zoomImage = (imageUrl == "new_image" ? newImage : cachedUIImage) {
+                        ZoomableImageOverlay(
+                            image: zoomImage,
+                            size: CGSize(width: currentWidth, height: currentImageHeight),
+                            cornerRadius: 12 * cornerRoundness,
+                            isZooming: $isZooming
+                        )
+                        .frame(width: currentWidth, height: currentImageHeight)
                     }
 
                     // Image edit buttons (only in edit mode when expanded)
@@ -911,7 +967,7 @@ struct PostView: View {
                 // Query posts: always visible at full size
                 // Non-query posts: fade in with expansion
                 let isQuery = post.template == "query"
-                let buttonSize: CGFloat = isQuery ? 42 : 42
+                let buttonSize: CGFloat = isQuery ? lerp(36, 42, expansionFactor) : 42
                 let buttonOpacity: Double = isQuery ? 1.0 : expansionFactor
 
                 // Button center at availableWidth - radius + 4pt offset

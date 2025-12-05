@@ -2,70 +2,86 @@
 
 ## Overview
 
-Wraps post images in a zoomable container using UIScrollView for proper iOS pinch-to-zoom behavior with gesture-centered zooming.
+Pinch-to-zoom on expanded post images using an invisible overlay approach. A UIScrollView-based overlay sits on top of the base image, handling pinch gestures natively. The overlay image is invisible at scale 1.0 and becomes visible when zooming.
 
-## ZoomableImageView
+## Key Insight
 
-```
-struct ZoomableImageView:
-    inputs:
-        image: UIImage
-        size: CGSize
-        cornerRadius: CGFloat
+SwiftUI's MagnificationGesture captures pinch events before UIKit views can receive them. Solution: have the UIScrollView always present (but invisible) so it receives gestures directly.
 
-    create UIScrollView:
-        minimumZoomScale = 1.0
-        maximumZoomScale = 4.0
-        bouncesZoom = true
-        clipsToBounds = false  // Allow overflow during zoom
-        showsScrollIndicators = false
-        backgroundColor = clear
-
-    create UIImageView:
-        contentMode = scaleAspectFill
-        clipsToBounds = true
-        cornerRadius = cornerRadius
-        frame = size
-        tag = 100  // For finding in delegate
-
-    add imageView to scrollView
-    set scrollView.contentSize = size
-
-    delegate methods:
-        viewForZooming -> return scrollView.viewWithTag(100)
-
-        scrollViewDidEndZooming:
-            // Always snap back when fingers lifted
-            animate(duration: 0.15, easeOut):
-                scrollView.zoomScale = 1.0
-```
-
-## Integration with PostView
+## State Variables
 
 ```
-imageView function:
-    always use ZoomableImageView for all images
-
-    if imageUrl == "new_image" and newImage exists:
-        use ZoomableImageView(newImage, size, cornerRadius)
-    else if cachedUIImage exists:
-        use ZoomableImageView(cachedUIImage, size, cornerRadius)
-    else:
-        show placeholder Rectangle while loading
-
-state variables:
-    cachedUIImage: UIImage? = nil  // Cached for zoomable view
-
-on image load (via .task modifier):
-    fetch image data from URL
-    convert to UIImage and cache in cachedUIImage
+isZooming: Bool = false        // True when actively zooming (scale > 1.01)
+cachedUIImage: UIImage? = nil  // Cached image for zoom overlay
 ```
 
-## Key Implementation Details
+## ZoomableImageOverlay Component
 
-- UIScrollView provides native iOS pinch-to-zoom with proper anchor point handling
-- clipsToBounds = false allows image to overflow container during zoom
-- Always snaps back to 1.0x on finger release (scrollViewDidEndZooming)
-- 0.15s animation duration for quick, snappy feel
-- UIImage cached in cachedUIImage since AsyncImage doesn't expose it
-- All images use ZoomableImageView (no conditional based on edit mode)
+```
+ZoomableImageOverlay(image, size, cornerRadius, isZooming binding):
+    // UIScrollView setup
+    scrollView.minimumZoomScale = 1.0
+    scrollView.maximumZoomScale = 4.0
+    scrollView.bouncesZoom = true
+    scrollView.clipsToBounds = false  // Allow overflow during zoom
+
+    // ImageView inside scrollView
+    imageView.contentMode = .fill
+    imageView.alpha = 0  // Start invisible
+
+    // Delegate callbacks:
+    viewForZooming():
+        return imageView
+
+    scrollViewDidZoom(scale):
+        if scale > 1.01:
+            imageView.alpha = 1.0
+            isZooming = true
+        else:
+            imageView.alpha = 0.0
+            isZooming = false
+
+    scrollViewDidEndZooming(scale):
+        animate(duration: 0.15):
+            scrollView.zoomScale = 1.0
+            imageView.alpha = 0.0
+        then:
+            isZooming = false
+```
+
+## Image Display with Zoom Overlay
+
+```
+// In post view, when displaying image:
+ZStack:
+    // Base image layer (always visible)
+    imageView(width, height, imageUrl)
+
+    // Zoom overlay - present when fully expanded, not editing
+    if expansionFactor >= 0.99 && !isEditing && cachedUIImage != nil:
+        ZoomableImageOverlay(
+            image: cachedUIImage,
+            size: (width, height),
+            cornerRadius: 12 * cornerRoundness,
+            isZooming: $isZooming
+        )
+```
+
+## Image Caching
+
+```
+// Load image on appear to cache for zoom
+.task:
+    if cachedUIImage == nil && imageUrl != "new_image":
+        data = fetch(fullUrl)
+        cachedUIImage = UIImage(data)
+        imageAspectRatio = width / height
+```
+
+## Key Parameters
+
+- Minimum zoom: 1.0x
+- Maximum zoom: 4.0x
+- Visibility threshold: 1.01x (overlay becomes visible above this)
+- Snap-back animation: 0.15 seconds, ease-out curve
+- Expansion threshold: 0.99 (overlay only present when nearly fully expanded)

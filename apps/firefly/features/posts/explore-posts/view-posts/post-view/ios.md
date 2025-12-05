@@ -541,10 +541,10 @@ This implementation creates a smooth, continuous animation that can be interrupt
 Posts with children (or query posts) show a circular button on the right side. The button is positioned so 3/4 of its radius overlaps the post:
 
 ```swift
-// Query posts: always visible and tappable
-// Non-query posts: hidden when compact, fades in when expanded
+// Query posts: always visible and tappable, size animates 36pt -> 42pt
+// Non-query posts: hidden when compact, fades in when expanded, fixed 42pt
 let isQuery = post.template == "query"
-let buttonSize: CGFloat = 42  // fixed size
+let buttonSize: CGFloat = isQuery ? lerp(36, 42, expansionFactor) : 42
 let buttonOpacity: Double = isQuery ? 1.0 : expansionFactor
 
 // Button center positioned so 3/4 overlaps post, 1/4 extends beyond right edge
