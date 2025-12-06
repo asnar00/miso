@@ -961,14 +961,12 @@ struct PostView: View {
             // Child indicator overlay - show if post has children OR if it's a query (search button) OR if it has no children (anyone can add)
             // Exception: profiles can only have children added by their owner
             // BUT don't show when editing
-            // For non-query posts: hidden when compact, fades in when expanded
+            // All posts: hidden when compact, fades in when expanded
             let canAddChild = post.template == "profile" ? isOwnPost : true
             if !isEditing && ((post.childCount ?? 0) > 0 || post.template == "query" || ((post.childCount ?? 0) == 0 && canAddChild)) {
-                // Query posts: always visible at full size
-                // Non-query posts: fade in with expansion
-                let isQuery = post.template == "query"
-                let buttonSize: CGFloat = isQuery ? lerp(36, 42, expansionFactor) : 42
-                let buttonOpacity: Double = isQuery ? 1.0 : expansionFactor
+                // All posts: fade in with expansion, fixed 42pt size
+                let buttonSize: CGFloat = 42
+                let buttonOpacity: Double = expansionFactor
 
                 // Button center at availableWidth - radius + 4pt offset
                 let buttonCenterX = availableWidth - (buttonSize / 2) + 4
@@ -978,7 +976,7 @@ struct PostView: View {
                     .frame(width: buttonSize, height: buttonSize)
                     .offset(x: buttonCenterX - buttonSize/2, y: buttonCenterY - buttonSize/2)
                     .opacity(buttonOpacity)
-                    .allowsHitTesting(isQuery || isExpanded)  // Disable taps when hidden
+                    .allowsHitTesting(isExpanded)  // Disable taps when hidden
             }
 
             // Edit button overlay - positioned in bottom-right corner (only for own posts when expanded, not editing)

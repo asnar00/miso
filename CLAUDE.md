@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Experiment Branches**: When starting a new experiment, create a branch for the current work before clearing main. Previous experiments remain accessible via their branches.
 
-**Current experiment focus**: Multi-platform social media app with template-based content types and semantic search. Recent work includes toolbar navigation, post templates (profiles, queries), inline editing, fragment-level semantic search with GPU acceleration, and user invite system via TestFlight.
+**Current experiment focus**: Multi-platform social media app (Firefly) with template-based content types and semantic search. See `apps/firefly/features/` for current feature tree.
 
 **Project Naming**: The Xcode project and Android package are named "NoobTest" (bundle ID: `com.miso.noobtest`), while "Firefly" is the product/marketing name. Use "NoobTest" for bundle identifiers, app management commands, and debugging.
 
@@ -197,63 +197,23 @@ python3 download_model.py  # Downloads all-mpnet-base-v2 model (~420MB)
 
 ## Current Application: Firefly
 
-Social media platform using semantic search on markdown snippets (`apps/firefly.md`).
+Social media platform using semantic search on markdown snippets.
 
-### Implemented Features
+**Feature Tree**: `apps/firefly/features/` - Browse this directory to see all implemented features organized hierarchically.
 
-**infrastructure** (`apps/firefly/features/infrastructure/spec.md`):
-- Foundation systems for development and deployment
-- **ping**: HTTP health check endpoint
-- **logging**: Multi-level logging (local, USB, remote)
-- **email**: Send verification codes for passwordless login
-- **testing**: Remote feature testing from Mac to device
-- **storage**: Local data persistence (login state, cache, media)
-- **watchdog**: Automatic server health monitoring and recovery system
-  - Runs every minute via cron on remote server
-  - Monitors `/api/ping` endpoint and PostgreSQL status
-  - Automatic recovery: preserves crash logs in timestamped `bad/` folders, restarts services
-  - Email notifications for unexpected failures (distinguishes from intentional shutdowns via marker file)
-  - DNS requirement: Uses Google DNS (8.8.8.8, 8.8.4.4) for reliable email delivery
+**Key Feature Areas**:
+- `infrastructure/` - Foundation systems (ping, logging, email, testing, storage, watchdog)
+- `users/` - User accounts, authentication, profiles, invites
+- `posts/` - Content creation, templates, navigation, semantic search
+- `visual/` - UI theming (background, icon, logo)
 
-**users** (`apps/firefly/features/users/spec.md`):
-- User accounts with email-based authentication
-- Device association
-- **sign-in**: Email-based login with 4-digit one-time codes (10-minute validity)
-- **new-user**: New user onboarding with profile setup
-- **profile**: User profile pages (name, profession, photo, bio text up to 300 words) with edit functionality
-- **invite**: Invite friends via email with TestFlight link sharing (checks for existing users, tracks pending invites)
+**Technical Highlights**:
+- Fragment-based semantic search using all-mpnet-base-v2 embeddings (768-dim)
+- GPU-accelerated vector similarity (MPS on M-series Macs)
+- Hierarchical post navigation with swipe gestures
+- Template-based content types (post, profile, query)
 
-**posts** (`apps/firefly/features/posts/spec.md`):
-- User-generated content with hierarchical structure (title, summary, optional image, body)
-- Vector embeddings for semantic search
-- Post metadata (timestamp, timezone, location, author, AI-generated flag)
-- **templates**: Reusable field label sets for different post types (post, profile, query)
-- **explore-posts**: Navigate through tree of posts and children with swipe gestures, preserved scroll position, multi-level hierarchy
-- **recent-tagged-posts**: Fetch and display posts filtered by template tags and user, with adaptive loading/empty states
-- **edit-posts**: Inline post creation and editing with image management (add/replace/delete), EXIF stripping, auto-resize
-- **search**: Semantic search across all posts using fragment-level embeddings with GPU-accelerated vector similarity
-- **toolbar**: Bottom navigation bar with three buttons (make post, search, users) in rounded lozenge design
-
-**Search Implementation**:
-- Fragment-based embeddings: Each post split into title, summary, and body sentences
-- Vector model: all-mpnet-base-v2 (768-dimensional embeddings)
-- GPU-accelerated cosine similarity for fast vector comparison
-- Posts ranked by highest-scoring fragment
-- Debounced search (0.5s after typing stops)
-- Floating search UI: Circular button (bottom left) expands to search bar (max 600pt width)
-- Navigation preserved when switching between search results and normal view
-
-**iOS View Architecture**: Uses `PostsListView` as a unified component for both root-level and child post lists, with `navigationPath: [Int]` for hierarchical navigation. PostView handles individual post display, expand/collapse, and navigation triggers. Posts use template-based placeholder text for editing.
-
-**Toolbar Navigation**: Three-button navigation bar at bottom of screen:
-- Make Post: Shows recent posts with "Add Post" button
-- Search: Shows user's saved queries with search interface
-- Users: Shows all users (profiles) in the system
-
-**visual** (`apps/firefly/features/`):
-- **background**: UI background color
-- **icon**: App icon
-- **logo**: App logo
+**iOS Architecture**: `PostsListView` unified component with `navigationPath: [Int]` for hierarchical navigation. `PostView` handles individual posts. Three-button toolbar for navigation.
 
 ## Testing Infrastructure
 
@@ -326,6 +286,7 @@ adb logcat | grep "NoobTest"  # View live logs
 ./start.sh            # Start local Flask server on port 8080
 ./stop.sh             # Stop local Flask server
 ./remote-shutdown.sh  # Stop remote server (185.96.221.52)
+./watchdog.sh         # Run health check (used by cron on remote server)
 
 # View watchdog logs on remote server
 ssh microserver@185.96.221.52 "tail -f ~/firefly-server/watchdog.log"

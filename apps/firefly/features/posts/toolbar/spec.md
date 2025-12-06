@@ -27,7 +27,7 @@ The toolbar has three buttons:
 
 **Button Text Convention**: All action buttons use lowercase text (e.g., "add post", "new search", "add sub-post", "invite friend", "add image").
 
-Each button highlights when active with a brighter background (120% of standard button color brightness, clamped to 1.0) for clear visual feedback.
+Each button highlights when active with a darker background (80% of standard button color brightness) for clear visual feedback.
 
 **State Persistence**: When you switch between explorers, each view remembers its navigation state - scroll position, which posts are expanded, and where you were in the hierarchy. Switching back returns you exactly where you left off.
 

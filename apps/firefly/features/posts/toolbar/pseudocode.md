@@ -25,7 +25,7 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 - Icon size: 20 points
 - Icon color: Black
 - Tappable area: 35x35 points
-- Active state: Brighter button color (120% of standard brightness, clamped to 1.0), 6pt corner radius
+- Active state: Darker button color (80% of standard brightness), 6pt corner radius
 - No text labels, icons only
 
 **Search Badge:**
@@ -40,7 +40,7 @@ A floating toolbar at the bottom of the screen with four action buttons: home, p
 - Users: "person.2" icon (two people)
 
 **Active State Highlighting:**
-- Active button shows brighter button color (120% of standard brightness, clamped to 1.0)
+- Active button shows darker button color (80% of standard brightness)
 - Clicking already-active button triggers reset behavior
 
 **Visibility During Editing:**

@@ -107,7 +107,7 @@ struct ToolbarButton: View {
                 .foregroundColor(.black)
                 .frame(width: 35, height: 35)  // Reduced from 44x44
                 .background(
-                    isActive ? tunables.buttonHighlightColor() : Color.clear  // 120% brightness, clamped to 1.0
+                    isActive ? tunables.buttonHighlightColor() : Color.clear  // 80% brightness
                 )
                 .cornerRadius(6)  // Reduced from 8
                 .overlay(alignment: .topTrailing) {
@@ -474,7 +474,7 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
 - **Internal padding**: 33pt horizontal, 10pt vertical
 - **Icon size**: 20pt (.system(size: 20))
 - **Tappable area**: 35x35pt per button (.frame(width: 35, height: 35))
-- **Active button highlight**: 120% of button color brightness, clamped to 1.0 (tunables.buttonHighlightColor())
+- **Active button highlight**: 80% of button color brightness (tunables.buttonHighlightColor())
 - **Layout**: HStack containing 3 buttons with Spacers between them for equal distribution
 - **Icons**: SF Symbols - "bubble.left", "magnifyingglass" (one word!), "person.2"
 

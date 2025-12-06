@@ -101,17 +101,17 @@ class TunableConstants: ObservableObject {
         )
     }
 
-    /// Returns the button highlight colour (1.2x the standard button colour, clamped to 1.0)
+    /// Returns the button highlight colour (0.8x the standard button colour for darker highlight)
     func buttonHighlightColor() -> Color {
         let r = getDouble("button-colour-r", default: 255) / 255.0
         let g = getDouble("button-colour-g", default: 178) / 255.0
         let b = getDouble("button-colour-b", default: 128) / 255.0
-        let brightness = getDouble("button-brightness", default: 1.0) * 1.2
+        let brightness = getDouble("button-brightness", default: 1.0) * 0.8
 
         return Color(
-            red: min(r * brightness, 1.0),
-            green: min(g * brightness, 1.0),
-            blue: min(b * brightness, 1.0)
+            red: r * brightness,
+            green: g * brightness,
+            blue: b * brightness
         )
     }
 
