@@ -95,21 +95,9 @@ Products follow the same markdown tree convention but their `imp/` folders conta
 
 Three platforms supported: **iOS**, **Android/e/OS**, and **Python**
 
-### Critical Platform Issues
-
-**iOS Homebrew Linker Conflict**:
-```bash
-# Always use LD="clang" to avoid Homebrew linker errors
-xcodebuild ... LD="clang" build
-```
-
-**Android JAVA_HOME Requirement**:
-```bash
-# Set before any Gradle command
-export JAVA_HOME="/opt/homebrew/opt/openjdk"
-```
-
 ### iOS Development
+
+**Critical**: Always use `LD="clang"` in xcodebuild commands to avoid Homebrew linker conflicts.
 
 **Key Documentation**: `miso/platforms/ios/`
 - `setup/project-editing/spec.md` - Adding files to Xcode without GUI (edit project.pbxproj directly)
@@ -142,6 +130,8 @@ xcrun devicectl device install app --device "$DEVICE_ID" "$APP_PATH"
 ```
 
 ### Android/e/OS Development
+
+**Critical**: Set `export JAVA_HOME="/opt/homebrew/opt/openjdk"` before any Gradle command.
 
 **Key Documentation**: `miso/platforms/eos/`
 **Technologies**: Kotlin, Jetpack Compose, Material 3, Gradle Kotlin DSL
@@ -253,160 +243,82 @@ TestRegistry.register("myfeature") {
 
 ## Development Utilities
 
-**iOS App Management** (from `apps/firefly/product/client/imp/ios/`):
+**iOS Scripts** (from `apps/firefly/product/client/imp/ios/`):
+| Script | Purpose |
+|--------|---------|
+| `./install-device.sh` | Build and deploy (~8-10 seconds) |
+| `./restart-app.sh` | Restart without rebuilding |
+| `./stop-app.sh` | Stop app on device |
+| `./get-logs.sh` | Download app.log to device-logs.txt |
+| `./testflight-deploy.sh` | Build, archive, upload to TestFlight |
+| `./sync-tunables.sh` | Sync tunable parameters |
+
+**iOS Screenshot** (for visual verification in miso workflow):
 ```bash
-./install-device.sh      # Build and deploy to device (~8-10 seconds)
-./restart-app.sh         # Restart app on device without rebuilding
-./stop-app.sh            # Stop app on device
-./get-logs.sh            # Download app.log from device to device-logs.txt
-./list-devices.sh        # List connected iOS devices
-./testflight-deploy.sh   # Build, archive, and upload to TestFlight
-./sync-tunables.sh       # Sync tunable parameters to device
-./reproduce.sh           # Reproduce issues for debugging
+miso/platforms/ios/development/screen-capture/imp/screenshot.sh /tmp/screenshot.png
 ```
 
-**iOS Screenshot Capture**:
+**Android Commands** (from `apps/firefly/product/client/imp/eos/`):
 ```bash
-# From miso/platforms/ios/development/screen-capture/imp/
-./screenshot.sh /tmp/screenshot.png  # Capture device screenshot
-# Critical for visual verification loop in miso workflow for UI changes
+adb shell am force-stop com.miso.noobtest  # Stop app
+adb logcat | grep "NoobTest"               # View live logs
 ```
 
-**Android App Management** (from `apps/firefly/product/client/imp/eos/`):
-```bash
-export JAVA_HOME="/opt/homebrew/opt/openjdk"  # Required for Gradle
-./gradlew assembleDebug  # Build APK
-adb install -r app/build/outputs/apk/debug/app-debug.apk  # Install
-adb shell am start -n com.miso.noobtest/.MainActivity      # Start app
-adb shell am force-stop com.miso.noobtest                  # Stop app
-adb logcat | grep "NoobTest"  # View live logs
-```
+**Server Scripts** (from `apps/firefly/product/server/imp/py/`):
+| Script | Purpose |
+|--------|---------|
+| `./start.sh` | Start local server (port 8080) |
+| `./stop.sh` | Stop local server |
+| `./remote-shutdown.sh` | Stop remote server |
+| `./watchdog.sh` | Health check (cron uses this) |
+| `./regenerate_embeddings.py` | Rebuild all embeddings |
+| `./debug_search.py` | Test search queries |
 
-**Server Management** (from `apps/firefly/product/server/imp/py/`):
+**Remote Server Logs**:
 ```bash
-./start.sh            # Start local Flask server on port 8080
-./stop.sh             # Stop local Flask server
-./remote-shutdown.sh  # Stop remote server (185.96.221.52)
-./watchdog.sh         # Run health check (used by cron on remote server)
-./demo-check.sh       # Verify demo/test scenarios
-
-# View watchdog logs on remote server
 ssh microserver@185.96.221.52 "tail -f ~/firefly-server/watchdog.log"
-
-# Check saved crash logs
-ssh microserver@185.96.221.52 "ls -lt ~/firefly-server/bad/"
-```
-
-**Server Development/Debugging Scripts** (from `apps/firefly/product/server/imp/py/`):
-```bash
-./regenerate_embeddings.py  # Rebuild all post embeddings from scratch
-./debug_search.py           # Test search functionality with sample queries
-./test_similarity.py        # Test embedding similarity computation
-./emergency-restart.sh      # Force restart server with cleanup
-./auto-restart.sh           # Restart server with automatic recovery
-./send_watchdog_email.py    # Test watchdog email notifications
-```
-
-**Debugging with Device Logs**:
-```bash
-# iOS: Download logs from device
-cd apps/firefly/product/client/imp/ios/
-./get-logs.sh  # Downloads app.log to device-logs.txt
-
-# View logs
-cat device-logs.txt
-
-# iOS: Stream live logs (requires device ID)
-log stream --device <DEVICE_ID> --predicate 'subsystem == "com.miso.noobtest"'
+ssh microserver@185.96.221.52 "ls -lt ~/firefly-server/bad/"  # Crash logs
 ```
 
 ## Claude Code Skills
 
-This repository includes a comprehensive skills system in `.claude/skills/` that provides automated workflows for common development tasks. Skills can be invoked by name or triggered by natural language phrases.
+Skills in `.claude/skills/` provide automated workflows. Invoke by name or trigger phrases.
 
 ### Core Workflow Skills
 
-**miso** - Automated feature-to-code implementation pipeline:
-- Detects changed feature markdown files using git diff
-- Updates `pseudocode.md` to reflect feature changes
-- Propagates changes to platform implementations (`ios.md`, `eos.md`, `py.md`)
-- Updates actual product code following patching instructions
-- Builds, deploys, and tests the changes
-- For UI changes: includes visual verification cycle with screenshots to ensure visible results match specs
-- Iteratively debugs until visual verification passes
-- Invoke with: "implement features", "run miso", "update implementations"
-
-**make-skill** - Create new Claude Code skills:
-- Generates skill directory and SKILL.md with proper structure
-- Includes YAML frontmatter and documentation sections
-- Use when creating automated workflows
-- Invoke with: "create a skill", "make a skill", "add a skill"
-
-**update-skill** - Improve existing skills based on usage:
-- Analyzes what went wrong during skill execution
-- Updates skill documentation with learnings
-- Adds prerequisites, troubleshooting steps, or clarifications
-- Use after resolving skill issues to prevent recurrence
-- Invoke with: "update the skill", "improve the skill", "fix the skill instructions"
-
-**post-debug-cleanup** - Document completed implementations:
-- Updates feature specs and implementation docs after debugging iterations
-- Ensures spec.md, pseudocode.md, and platform.md reflect final working code
-- Captures exact details: measurements, API endpoints, gesture thresholds
-- Preserves institutional knowledge from debugging process
-- Use after feature implementation with multiple debugging rounds
-- Invoke with: "post-debug cleanup", "document what we did", "clean up the implementation docs"
+| Skill | Purpose | Trigger Phrases |
+|-------|---------|-----------------|
+| `miso` | Feature-to-code pipeline: spec.md → pseudocode → platform code → product code → build/deploy. Visual verification for UI changes. | "implement features", "run miso" |
+| `make-skill` | Create new skill with YAML frontmatter | "create a skill", "make a skill" |
+| `update-skill` | Improve skill docs after troubleshooting | "update the skill", "fix the skill" |
+| `post-debug-cleanup` | Update specs after debugging iterations | "post-debug cleanup", "document what we did" |
 
 ### Platform Skills
 
-**iOS Skills** (`.claude/skills/ios-*`):
-- `ios-deploy-usb` - Build and deploy to iPhone via USB (~8-10 seconds)
-- `ios-restart-app` - Restart app on device without rebuilding
-- `ios-stop-app` - Stop app running on device
-- `ios-watch-logs` - Stream real-time logs from iPhone
-- `ios-add-file` - Add Swift files to Xcode project without opening Xcode
-- `ios-testflight-upload` - Build, archive, upload to TestFlight, and submit for Beta App Review
-- `iphone-screen-capture` - Mirror iPhone screen on Mac using scrcpy
-
-**Android/e/OS Skills** (`.claude/skills/eos-*`):
-- `eos-deploy-usb` - Build and deploy to Android device via USB (~2-5 seconds)
-- `eos-restart-app` - Restart app on device without rebuilding
-- `eos-stop-app` - Stop app running on device
-- `eos-watch-logs` - Stream real-time logcat from Android device
-- `eos-screen-capture` - Mirror Android screen using scrcpy
-
-**Python/Server Skills** (`.claude/skills/py-*`):
-- `py-deploy-remote` - Deploy Flask server to remote machine (185.96.221.52)
-- `py-start-local` - Start local Flask development server
-- `py-stop-local` - Stop local Flask server
-- `py-server-logs` - View server logs (local or remote)
-
-**UI Automation Skills** (`.claude/skills/`):
-- `ui-tap` - Trigger UI elements programmatically via HTTP for automated testing. Use when you need to press buttons, interact with UI, or verify UI changes without manual intervention. Invoke with "tap the X button", "press X", "trigger X".
+| Skill | Purpose |
+|-------|---------|
+| `ios-deploy-usb` | Build and deploy to iPhone (~8-10s) |
+| `ios-restart-app` | Restart without rebuilding |
+| `ios-watch-logs` | Stream real-time logs |
+| `ios-add-file` | Add Swift files to Xcode project |
+| `ios-testflight-upload` | Full TestFlight upload pipeline |
+| `iphone-screen-capture` | Mirror iPhone screen |
+| `eos-deploy-usb` | Build and deploy to Android (~2-5s) |
+| `eos-restart-app` | Restart without rebuilding |
+| `eos-watch-logs` | Stream logcat |
+| `py-deploy-remote` | Deploy to remote server |
+| `py-start-local` | Start local Flask server |
+| `ui-tap` | Trigger UI elements via HTTP |
 
 ## Common Errors & Quick Fixes
 
 | Error | Fix |
 |-------|-----|
-| `clang: error: linker command failed` | Add `LD="clang"` to xcodebuild command |
+| `clang: error: linker command failed` | Add `LD="clang"` to xcodebuild |
 | `JAVA_HOME is not set` | `export JAVA_HOME="/opt/homebrew/opt/openjdk"` |
 | `No devices found` | Unlock iPhone, tap "Trust This Computer?" |
 | Port 8081 not responding | `pymobiledevice3 usbmux forward 8081 8081 &` |
 | Remote server not responding | `./remote-shutdown.sh` then redeploy |
-| Watchdog email failures | Check DNS settings (use Google DNS: 8.8.8.8) |
-
-### Using Skills
-
-Skills are invoked automatically when you use trigger phrases:
-```bash
-# Examples:
-"Deploy to iPhone" → invokes ios-deploy-usb
-"Run miso" → invokes miso implementation workflow
-"Watch iOS logs" → invokes ios-watch-logs
-"Create a new skill for X" → invokes make-skill
-```
-
-Or explicitly by name via the Skill tool in Claude Code.
 
 ## Working with This Repository
 

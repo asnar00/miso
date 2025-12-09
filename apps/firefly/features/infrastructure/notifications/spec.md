@@ -1,52 +1,44 @@
 # notifications
-*alerting users to new content via toolbar badges*
+*alerting users to new content via push notifications and toolbar badges*
 
-The notification system alerts users when new content is available by showing red badge dots on toolbar icons. This is a cross-cutting infrastructure feature that other features use to signal updates.
+The notification system alerts users when new content is available through two mechanisms: push notifications (alerts when the app isn't open) and toolbar badges (indicators when the app is open).
 
-## Badge Display
+## Push Notifications
 
-Each toolbar button can show a notification badge - a small red dot (10pt diameter with 2pt white outline) at its top-right corner. The badge appears when there's new content the user hasn't seen yet.
+Real-time alerts that appear on your phone's lock screen and notification center, even when the app is closed. The app icon also shows a badge when there are unread notifications.
 
-## Unified Polling Endpoint
+**Three notification types:**
 
-The client polls a single server endpoint every 5 seconds to check all notification types at once:
+- **New post**: When someone creates a post, you see "New post from [name]"
+- **Query match**: When a new post matches one of your saved searches, you see "New match for '[search name]'"
+- **New user**: When someone completes their profile and joins, you see "[name] just joined"
 
-**Endpoint**: `POST /api/notifications/poll`
+**Who receives notifications:**
 
-**Request**:
-```json
-{
-    "user_email": "user@example.com",
-    "query_ids": [1, 2, 3],
-    "last_viewed_users": "2025-12-08T19:00:00Z",
-    "last_viewed_posts": "2025-12-08T19:00:00Z"
-}
-```
+Everyone receives notifications except the person who triggered them. If a single post triggers both "new post" and "query match" for you, you receive one combined notification rather than two separate ones.
 
-**Response**:
-```json
-{
-    "query_badges": {"1": true, "2": false, "3": true},
-    "has_new_users": true,
-    "has_new_posts": true
-}
-```
+**App icon badge:**
 
-This single request returns all badge states, minimizing network overhead and battery usage.
+The app icon shows a badge (number 1) whenever any toolbar button has a notification dot. The badge is cleared when all toolbar dots are gone.
 
-## Timestamp Storage
+## Live Updates
 
-- **Per-query timestamps**: Stored server-side in `query_views` table (user may have many queries)
-- **Per-tab timestamps**: Stored client-side in local storage (one timestamp per content type)
+When a push notification arrives while you're using the app:
+- The notification banner appears at the top
+- New content is automatically fetched and added to the top of the relevant list
+- If you're not viewing an expanded post, the list scrolls to show the new content
+- If you're viewing or editing a post, the list updates silently without disturbing you
 
-When the user views content (e.g., taps the toolbar button), the local timestamp updates and the badge clears on the next poll.
+## Permission Request
 
-## Current Notification Types
+When you first open the app, it asks permission to send notifications. You can choose to allow or deny. If denied, you won't receive push notifications but the app works normally otherwise.
 
-- **Posts badge** (speech bubble icon): New posts by other users - see `posts/notifications/spec.md`
-- **Search badge** (magnifying glass icon): New matches on any saved search - see `posts/search/spec.md`
-- **Users badge** (people icon): New user completed their profile - see `users/notifications/spec.md`
+## In-App Toolbar Badges
 
-## Future: Push Notifications
+When the app is open, small red dots appear on toolbar icons to indicate new content:
 
-The current polling approach works but isn't battery-efficient. A future enhancement would use APNs (Apple Push Notification service) to push updates instantly without polling. The badge logic remains the same - only the delivery mechanism changes.
+- **Posts icon**: New posts from other users
+- **Search icon**: New matches on your saved searches
+- **Users icon**: New members who joined
+
+These badges disappear when you tap the corresponding toolbar button to view that content.

@@ -302,6 +302,10 @@ struct PostsListView: View {
                         }
                         .padding(.horizontal, 8 * tunables.getDouble("spacing", default: 1.0))  // Side margins
                         .padding(.bottom)
+                        .onAppear {
+                            // Capture scroll proxy for external scroll control
+                            scrollProxy = proxy
+                        }
                     }
                 }
                 }
@@ -430,6 +434,15 @@ struct PostsListView: View {
             if let index = posts.firstIndex(where: { $0.id == deletedId }) {
                 Logger.shared.info("[PostsListView] Removing post \(deletedId) from posts array")
                 posts.remove(at: index)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .scrollToTopIfNotExpanded)) { _ in
+            // Only scroll to top if no post is currently expanded
+            if viewModel.expandedPostId == nil, let firstPost = posts.first {
+                Logger.shared.info("[PostsListView] Scrolling to top (no post expanded)")
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    scrollProxy?.scrollTo(firstPost.id, anchor: .top)
+                }
             }
         }
     }

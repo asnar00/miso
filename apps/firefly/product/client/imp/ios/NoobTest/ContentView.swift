@@ -51,6 +51,11 @@ struct ContentView: View {
     // Invite count state
     @State private var numInvites: Int = 0
 
+    // Latest post timestamps for incremental fetching
+    @State private var latestPostTimestamp: String?
+    @State private var latestSearchTimestamp: String?
+    @State private var latestUsersTimestamp: String?
+
     var body: some View {
         ZStack {
             // Background color
@@ -186,13 +191,29 @@ struct ContentView: View {
                         // Clear posts badge and update last viewed timestamp
                         hasPostsBadge = false
                         Storage.shared.set("last_viewed_posts", ISO8601DateFormatter().string(from: Date()))
+                        // Clear app icon badge if no toolbar badges showing
+                        if !hasPostsBadge && !hasSearchBadge && !hasUsersBadge {
+                            UIApplication.shared.applicationIconBadgeNumber = 0
+                        }
                     },
-                    onResetSearch: { searchViewId = UUID() },
+                    onResetSearch: {
+                        searchViewId = UUID()
+                        // Clear search badge when viewing search
+                        hasSearchBadge = false
+                        // Clear app icon badge if no toolbar badges showing
+                        if !hasPostsBadge && !hasSearchBadge && !hasUsersBadge {
+                            UIApplication.shared.applicationIconBadgeNumber = 0
+                        }
+                    },
                     onResetUsers: {
                         usersViewId = UUID()
                         // Clear users badge and update last viewed timestamp
                         hasUsersBadge = false
                         Storage.shared.set("last_viewed_users", ISO8601DateFormatter().string(from: Date()))
+                        // Clear app icon badge if no toolbar badges showing
+                        if !hasPostsBadge && !hasSearchBadge && !hasUsersBadge {
+                            UIApplication.shared.applicationIconBadgeNumber = 0
+                        }
                     },
                     showPostsBadge: hasPostsBadge,
                     showSearchBadge: hasSearchBadge,
@@ -236,6 +257,38 @@ struct ContentView: View {
             badgePollingTimer?.invalidate()
             badgePollingTimer = nil
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            // Set app icon badge based on toolbar badge state
+            if hasPostsBadge || hasSearchBadge || hasUsersBadge {
+                UIApplication.shared.applicationIconBadgeNumber = 1
+            } else {
+                UIApplication.shared.applicationIconBadgeNumber = 0
+            }
+            // Only fetch incrementally if timestamps are set (initial load complete)
+            // This prevents duplicate fetches during app startup or keyboard dismiss
+            if latestPostTimestamp != nil {
+                fetchNewPosts()
+            }
+            if latestSearchTimestamp != nil {
+                fetchNewSearches()
+            }
+            if latestUsersTimestamp != nil {
+                fetchNewUsers()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .pushNotificationReceived)) { _ in
+            // When push notification received in foreground, fetch new content incrementally
+            Logger.shared.info("[ContentView] Push notification received, fetching new content")
+            fetchNewPosts()
+            fetchNewSearches()
+            fetchNewUsers()
+            // Also refresh badges
+            pollAllBadges()
+            // Scroll to top if no post is expanded
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                NotificationCenter.default.post(name: .scrollToTopIfNotExpanded, object: nil)
+            }
+        }
     }
 
     // MARK: - Fetch Functions
@@ -251,6 +304,10 @@ struct ContentView: View {
                     DispatchQueue.main.async {
                         self.makePostPosts = fetchedPosts
                         self.isLoadingMakePost = false
+                        // Track latest timestamp for incremental fetch
+                        if let newest = fetchedPosts.first {
+                            self.latestPostTimestamp = newest.createdAt
+                        }
                     }
                 }
             case .failure(let error):
@@ -275,6 +332,10 @@ struct ContentView: View {
                         self.isLoadingSearch = false
                         // Poll badges now that search posts are loaded
                         self.pollAllBadges()
+                        // Track latest timestamp for incremental fetch
+                        if let newest = fetchedPosts.first {
+                            self.latestSearchTimestamp = newest.createdAt
+                        }
                     }
                 }
             case .failure(let error):
@@ -297,6 +358,10 @@ struct ContentView: View {
                     DispatchQueue.main.async {
                         self.usersPosts = fetchedPosts
                         self.isLoadingUsers = false
+                        // Track latest timestamp for incremental fetch
+                        if let newest = fetchedPosts.first {
+                            self.latestUsersTimestamp = newest.createdAt
+                        }
                     }
                 }
             case .failure(let error):
@@ -304,6 +369,142 @@ struct ContentView: View {
                     self.usersError = error.localizedDescription
                     self.isLoadingUsers = false
                 }
+            }
+        }
+    }
+
+    // MARK: - Incremental Fetch Functions (for push notification updates)
+
+    func fetchNewPosts() {
+        Logger.shared.info("[FETCH] fetchNewPosts() called, latestPostTimestamp=\(latestPostTimestamp ?? "nil")")
+        guard let after = latestPostTimestamp else {
+            Logger.shared.info("[FETCH] No timestamp, falling back to fetchMakePostPosts()")
+            fetchMakePostPosts()
+            return
+        }
+
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["post"], byUser: "any", after: after) { result in
+            switch result {
+            case .success(let newPosts):
+                Logger.shared.info("[FETCH] fetchNewPosts got \(newPosts.count) new posts")
+                guard !newPosts.isEmpty else {
+                    Logger.shared.info("[FETCH] No new posts, skipping update")
+                    return
+                }
+                // Filter out posts that are already in the list
+                let existingIds = Set(self.makePostPosts.map { $0.id })
+                let trulyNewPosts = newPosts.filter { !existingIds.contains($0.id) }
+
+                for post in trulyNewPosts {
+                    Logger.shared.info("[FETCH] PREPENDING to POSTS list: '\(post.title ?? "untitled")' (id=\(post.id))")
+                }
+
+                guard !trulyNewPosts.isEmpty else {
+                    Logger.shared.info("[FETCH] All posts already in list, skipping update")
+                    return
+                }
+
+                preloadImagesOptimized(for: trulyNewPosts) {
+                    DispatchQueue.main.async {
+                        // Prepend new posts to existing list
+                        self.makePostPosts = trulyNewPosts + self.makePostPosts
+                        // Update latest timestamp
+                        if let newest = trulyNewPosts.first {
+                            self.latestPostTimestamp = newest.createdAt
+                        }
+                        Logger.shared.info("[FETCH] makePostPosts now has \(self.makePostPosts.count) posts")
+                    }
+                }
+            case .failure(let error):
+                Logger.shared.error("[FETCH] Failed to fetch new posts: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func fetchNewSearches() {
+        Logger.shared.info("[FETCH] fetchNewSearches() called, latestSearchTimestamp=\(latestSearchTimestamp ?? "nil")")
+        guard let after = latestSearchTimestamp else {
+            Logger.shared.info("[FETCH] No timestamp, falling back to fetchSearchPosts()")
+            fetchSearchPosts()
+            return
+        }
+
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["query"], byUser: "any", after: after) { result in
+            switch result {
+            case .success(let newPosts):
+                Logger.shared.info("[FETCH] fetchNewSearches got \(newPosts.count) new queries")
+                guard !newPosts.isEmpty else {
+                    Logger.shared.info("[FETCH] No new queries, skipping update")
+                    return
+                }
+                // Filter out queries that are already in the list
+                let existingIds = Set(self.searchPosts.map { $0.id })
+                let trulyNewPosts = newPosts.filter { !existingIds.contains($0.id) }
+
+                for post in trulyNewPosts {
+                    Logger.shared.info("[FETCH] PREPENDING to QUERIES list: '\(post.title ?? "untitled")' (id=\(post.id))")
+                }
+
+                guard !trulyNewPosts.isEmpty else {
+                    Logger.shared.info("[FETCH] All queries already in list, skipping update")
+                    return
+                }
+
+                preloadImagesOptimized(for: trulyNewPosts) {
+                    DispatchQueue.main.async {
+                        self.searchPosts = trulyNewPosts + self.searchPosts
+                        if let newest = trulyNewPosts.first {
+                            self.latestSearchTimestamp = newest.createdAt
+                        }
+                        Logger.shared.info("[FETCH] searchPosts now has \(self.searchPosts.count) queries")
+                    }
+                }
+            case .failure(let error):
+                Logger.shared.error("[FETCH] Failed to fetch new searches: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func fetchNewUsers() {
+        Logger.shared.info("[FETCH] fetchNewUsers() called, latestUsersTimestamp=\(latestUsersTimestamp ?? "nil")")
+        guard let after = latestUsersTimestamp else {
+            Logger.shared.info("[FETCH] No timestamp, falling back to fetchUsersPosts()")
+            fetchUsersPosts()
+            return
+        }
+
+        PostsAPI.shared.fetchRecentTaggedPosts(tags: ["profile"], byUser: "any", after: after) { result in
+            switch result {
+            case .success(let newPosts):
+                Logger.shared.info("[FETCH] fetchNewUsers got \(newPosts.count) new users")
+                guard !newPosts.isEmpty else {
+                    Logger.shared.info("[FETCH] No new users, skipping update")
+                    return
+                }
+                // Filter out users that are already in the list
+                let existingIds = Set(self.usersPosts.map { $0.id })
+                let trulyNewPosts = newPosts.filter { !existingIds.contains($0.id) }
+
+                for post in trulyNewPosts {
+                    Logger.shared.info("[FETCH] PREPENDING to USERS list: '\(post.title ?? "untitled")' (id=\(post.id))")
+                }
+
+                guard !trulyNewPosts.isEmpty else {
+                    Logger.shared.info("[FETCH] All users already in list, skipping update")
+                    return
+                }
+
+                preloadImagesOptimized(for: trulyNewPosts) {
+                    DispatchQueue.main.async {
+                        self.usersPosts = trulyNewPosts + self.usersPosts
+                        if let newest = trulyNewPosts.first {
+                            self.latestUsersTimestamp = newest.createdAt
+                        }
+                        Logger.shared.info("[FETCH] usersPosts now has \(self.usersPosts.count) users")
+                    }
+                }
+            case .failure(let error):
+                Logger.shared.error("[FETCH] Failed to fetch new users: \(error.localizedDescription)")
             }
         }
     }

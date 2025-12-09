@@ -229,7 +229,7 @@ class Database:
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
-                    "SELECT id, email, created_at, device_ids FROM users WHERE id = %s",
+                    "SELECT id, email, name, created_at, device_ids, apns_device_token FROM users WHERE id = %s",
                     (user_id,)
                 )
                 return cur.fetchone()
@@ -293,6 +293,60 @@ class Database:
             conn.rollback()
             print(f"Error creating user from invite: {e}")
             return None
+        finally:
+            self.return_connection(conn)
+
+    def update_user_apns_token(self, user_id: int, apns_token: str) -> bool:
+        """Update a user's APNs device token for push notifications"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "UPDATE users SET apns_device_token = %s WHERE id = %s",
+                    (apns_token, user_id)
+                )
+                conn.commit()
+                return cur.rowcount > 0
+        except Exception as e:
+            conn.rollback()
+            print(f"Error updating APNs token: {e}")
+            return False
+        finally:
+            self.return_connection(conn)
+
+    def get_all_users_with_push_tokens(self) -> List[Dict[str, Any]]:
+        """Get all users who have APNs tokens registered"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute(
+                    "SELECT id, name, email, apns_device_token FROM users WHERE apns_device_token IS NOT NULL"
+                )
+                return cur.fetchall()
+        except Exception as e:
+            print(f"Error getting users with tokens: {e}")
+            return []
+        finally:
+            self.return_connection(conn)
+
+    def get_queries_matching_embedding(self, embedding: List[float], threshold: float = 0.3) -> List[Dict[str, Any]]:
+        """Find all query posts that match a given embedding above threshold"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT p.id, p.title, p.user_id, u.name as user_name,
+                           1 - (p.embedding <=> %s::vector) as similarity
+                    FROM posts p
+                    JOIN users u ON p.user_id = u.id
+                    WHERE p.template_name = 'query'
+                    AND p.embedding IS NOT NULL
+                    AND 1 - (p.embedding <=> %s::vector) > %s
+                """, (embedding, embedding, threshold))
+                return cur.fetchall()
+        except Exception as e:
+            print(f"Error finding matching queries: {e}")
+            return []
         finally:
             self.return_connection(conn)
 
@@ -777,11 +831,14 @@ class Database:
         finally:
             self.return_connection(conn)
 
-    def get_recent_tagged_posts(self, tags: List[str] = None, user_id: Optional[int] = None, limit: int = 50, current_user_email: Optional[str] = None) -> List[Dict[str, Any]]:
+    def get_recent_tagged_posts(self, tags: List[str] = None, user_id: Optional[int] = None, limit: int = 50, current_user_email: Optional[str] = None, after: Optional[str] = None) -> List[Dict[str, Any]]:
         """Get recent posts filtered by template tags and optionally by user.
 
         For profile posts, incomplete profiles (empty summary AND body) are hidden
         unless they belong to the current user.
+
+        Args:
+            after: ISO8601 timestamp - only return posts created after this time
         """
         conn = self.get_connection()
         try:
@@ -821,6 +878,11 @@ class Database:
                     # Always show current user's profile regardless of completeness
                     conditions.append("(COALESCE(p.summary, '') != '' OR COALESCE(p.body, '') != '' OR LOWER(u.email) = %s)")
                     params.append(current_user_email.lower())
+
+                # Filter by timestamp if provided
+                if after:
+                    conditions.append("p.created_at > %s")
+                    params.append(after)
 
                 # Add WHERE clause if conditions exist
                 if conditions:

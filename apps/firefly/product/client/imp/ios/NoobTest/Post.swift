@@ -152,7 +152,7 @@ class PostsAPI {
         }.resume()
     }
 
-    func fetchRecentTaggedPosts(tags: [String], byUser: String, completion: @escaping (Result<[Post], Error>) -> Void) {
+    func fetchRecentTaggedPosts(tags: [String], byUser: String, after: String? = nil, completion: @escaping (Result<[Post], Error>) -> Void) {
         var components = URLComponents(string: "\(serverURL)/api/posts/recent-tagged")!
         var queryItems: [URLQueryItem] = []
 
@@ -170,6 +170,11 @@ class PostsAPI {
             if let userEmail = loginState.email {
                 queryItems.append(URLQueryItem(name: "user_email", value: userEmail))
             }
+        }
+
+        // Add after parameter for incremental fetch
+        if let after = after {
+            queryItems.append(URLQueryItem(name: "after", value: after))
         }
 
         components.queryItems = queryItems

@@ -2,6 +2,7 @@ import SwiftUI
 
 @main
 struct NoobTestApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var isAuthenticated = false
     @State private var isNewUser = false
     @State private var hasSeenWelcome = false

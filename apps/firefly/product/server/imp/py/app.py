@@ -19,6 +19,7 @@ import hashlib
 from anthropic import Anthropic
 import config  # Load .env file
 import threading
+from apns_client import push_service
 
 # Configure logging
 logging.basicConfig(
@@ -167,6 +168,93 @@ If you didn't request this code, you can safely ignore this email.
 """
     result = send_email(actual_recipient, subject, body)
     return result == 'success'
+
+# Push notification helper functions
+
+def notify_new_post(post, author):
+    """Send push notifications when a new post is created"""
+    if post.get('template_name') != 'post':
+        return  # Only notify for regular posts
+
+    author_id = author['id']
+    author_name = author.get('name', 'Someone')
+
+    # Get all users with push tokens except the author
+    all_users = db.get_all_users_with_push_tokens()
+    recipients = [u for u in all_users if u['id'] != author_id]
+
+    if not recipients:
+        logger.info(f"[PUSH] No recipients for new post notification")
+        return
+
+    # Check for query matches on this post
+    post_embedding = post.get('embedding')
+    user_query_matches = {}
+
+    if post_embedding:
+        # Find queries that match this post
+        try:
+            matching_queries = db.get_queries_matching_embedding(post_embedding, threshold=0.3)
+            for q in matching_queries:
+                query_user_id = q['user_id']
+                if query_user_id not in user_query_matches and query_user_id != author_id:
+                    user_query_matches[query_user_id] = q['title']
+        except Exception as e:
+            logger.error(f"[PUSH] Error finding matching queries: {e}")
+
+    # Send notifications
+    sent_count = 0
+    for user in recipients:
+        user_id = user['id']
+        token = user['apns_device_token']
+
+        if user_id in user_query_matches:
+            # Consolidated notification mentioning query match
+            query_title = user_query_matches[user_id]
+            success = push_service.send_notification(
+                token,
+                title="New match",
+                body=f"'{query_title}' matched a post from {author_name}"
+            )
+        else:
+            # Standard new post notification
+            success = push_service.send_notification(
+                token,
+                title="New post",
+                body=f"New post from {author_name}"
+            )
+
+        if success:
+            sent_count += 1
+
+    logger.info(f"[PUSH] Sent new post notifications to {sent_count}/{len(recipients)} users")
+
+
+def notify_new_user(new_user):
+    """Send push notifications when a new user completes their profile"""
+    new_user_id = new_user['id']
+    new_user_name = new_user.get('name', 'Someone')
+
+    # Get all users with push tokens except the new user
+    all_users = db.get_all_users_with_push_tokens()
+    recipients = [u for u in all_users if u['id'] != new_user_id]
+
+    if not recipients:
+        logger.info(f"[PUSH] No recipients for new user notification")
+        return
+
+    sent_count = 0
+    for user in recipients:
+        success = push_service.send_notification(
+            user['apns_device_token'],
+            title="New member",
+            body=f"{new_user_name} just joined"
+        )
+        if success:
+            sent_count += 1
+
+    logger.info(f"[PUSH] Sent new user notifications to {sent_count}/{len(recipients)} users")
+
 
 @app.route('/')
 def index():
@@ -546,6 +634,13 @@ def create_post():
                 'message': 'Post created but failed to retrieve'
             }), 500
 
+        # Send push notifications for new posts (non-blocking)
+        if template_name == 'post':
+            try:
+                notify_new_post(post, user)
+            except Exception as e:
+                logger.error(f"[CREATE_POST] Failed to send push notifications: {e}")
+
         return jsonify({
             'status': 'success',
             'post': post
@@ -753,6 +848,7 @@ def get_recent_tagged_posts():
         by_user = request.args.get('by_user', 'any')
         user_email = request.args.get('user_email', '').strip().lower()
         limit = request.args.get('limit', 50, type=int)
+        after = request.args.get('after', '').strip()  # ISO8601 timestamp
 
         # Parse tags
         tags = [tag.strip() for tag in tags_param.split(',') if tag.strip()] if tags_param else []
@@ -766,8 +862,8 @@ def get_recent_tagged_posts():
             logger.info(f"[RECENT-TAGGED] by_user=current, email={user_email}, user_id={user_id}")
 
         # Fetch posts (pass current_user_email for profile filtering)
-        logger.info(f"[RECENT-TAGGED] Fetching: tags={tags}, user_id={user_id}, limit={limit}, user_email={user_email}")
-        posts = db.get_recent_tagged_posts(tags=tags, user_id=user_id, limit=limit, current_user_email=user_email)
+        logger.info(f"[RECENT-TAGGED] Fetching: tags={tags}, user_id={user_id}, limit={limit}, user_email={user_email}, after={after}")
+        posts = db.get_recent_tagged_posts(tags=tags, user_id=user_id, limit=limit, current_user_email=user_email, after=after if after else None)
         logger.info(f"[RECENT-TAGGED] Found {len(posts)} posts")
 
         return jsonify({
@@ -1022,6 +1118,12 @@ def create_profile():
 
         logger.info(f"Created profile {post_id} for user {email} (ID: {user_id})")
 
+        # Send push notifications for new user (non-blocking)
+        try:
+            notify_new_user(user)
+        except Exception as e:
+            logger.error(f"[PROFILE] Failed to send push notifications: {e}")
+
         # Fetch the created profile to return it
         profile = db.get_post_by_id(post_id)
         if not profile:
@@ -1188,6 +1290,31 @@ def get_template(template_name):
         }), 500
     finally:
         db.return_connection(conn)
+
+@app.route('/api/notifications/register-device', methods=['POST'])
+def register_device_token():
+    """Register an APNs device token for push notifications"""
+    data = request.get_json()
+    device_id = data.get('device_id')
+    apns_token = data.get('apns_token')
+
+    if not device_id or not apns_token:
+        return jsonify({'status': 'error', 'message': 'device_id and apns_token required'}), 400
+
+    # Find user by device_id
+    user = db.get_user_by_device_id(device_id)
+    if not user:
+        logger.warning(f"[PUSH] Device registration failed: user not found for device {device_id[:8]}...")
+        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+
+    # Update their APNs token
+    success = db.update_user_apns_token(user['id'], apns_token)
+    if success:
+        logger.info(f"[PUSH] Registered token for user {user['id']} ({user.get('name', 'unknown')}): {apns_token[:8]}...")
+        return jsonify({'status': 'ok'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to update token'}), 500
+
 
 @app.route('/api/notifications/poll', methods=['POST'])
 def poll_notifications():
