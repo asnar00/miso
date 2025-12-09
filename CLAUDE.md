@@ -262,6 +262,7 @@ TestRegistry.register("myfeature") {
 ./list-devices.sh        # List connected iOS devices
 ./testflight-deploy.sh   # Build, archive, and upload to TestFlight
 ./sync-tunables.sh       # Sync tunable parameters to device
+./reproduce.sh           # Reproduce issues for debugging
 ```
 
 **iOS Screenshot Capture**:
@@ -287,6 +288,7 @@ adb logcat | grep "NoobTest"  # View live logs
 ./stop.sh             # Stop local Flask server
 ./remote-shutdown.sh  # Stop remote server (185.96.221.52)
 ./watchdog.sh         # Run health check (used by cron on remote server)
+./demo-check.sh       # Verify demo/test scenarios
 
 # View watchdog logs on remote server
 ssh microserver@185.96.221.52 "tail -f ~/firefly-server/watchdog.log"
@@ -464,3 +466,7 @@ miso/
 3. **Command-Line First**: All builds/deploys via shell scripts, minimal IDE usage
 4. **Rapid USB Deployment**: iOS deployment in ~8-10 seconds, not TestFlight
 5. **Implementation Separation**: Specs in `miso/`, executables in `apps/`
+
+## Working Files
+
+- `scribbles.md` - Personal scratch pad for ideas, todo lists, and experiment notes (not committed with sensitive content)

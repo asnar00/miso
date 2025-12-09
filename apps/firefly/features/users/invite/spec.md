@@ -23,15 +23,13 @@ Each user has a limited number of invites (`num_invites` in database, default 0)
 ## Invite Success Screen
 
 After a successful invite, show:
-- "Invite sent!" confirmation
-- The TestFlight link (tappable)
-- Pre-written message text the inviter can copy:
-  ```
-  Hi [name]! I'd like you to try microclub.
-  Download it here: [testflight link]
-  ```
-- "Copy Message" button that copies the text to clipboard
-- "Done" button to dismiss
+- "Invite sent!" confirmation with checkmark
+- "Send this link to [name]:" prompt
+- The TestFlight link (tappable and copyable)
+- "Copy Link" button that copies just the link to clipboard
+- "Done" button in the header to dismiss
+
+The simpler approach lets the inviter write their own personal message, which typically has better conversion than canned text.
 
 ## Data Model
 

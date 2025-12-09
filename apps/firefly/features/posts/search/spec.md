@@ -7,14 +7,16 @@ Users can search for posts using saved searches. Create a search (with title, su
 - App shows list of all users' saved searches (template_name='query' internally)
 - Each search is a post with title, summary, and body describing what to search for
 - Searches show a circular button (32pt collapsed, 42pt expanded) on the right
-- **Notification badge** (red dot, 12pt diameter with 2pt white outline) appears in top-right corner of search post card when new matches have been added
-- Badge positioned 6pt from top and right edges of the post view (offset x: -6, y: 6)
-- Badge updates automatically every 5 seconds via polling (no user action needed)
-- Badge appears when: new matches added to search after user last viewed it
-- Badge disappears when: user views the search results (taps ">" button or swipes left)
 - **Tap or swipe left** on a search to view cached results (instant, no wait)
 - Results appear in a new view with back navigation to return to searches list
-- Viewing results records the view timestamp, clearing the badge until new matches arrive
+
+**Notification Badges** (uses `infrastructure/notifications/spec.md`):
+- Red dot badge (12pt diameter, 2pt white outline) on search post card when new matches exist
+- Badge positioned 6pt from top and right edges of the post view
+- Polling every 5 seconds checks for new matches
+- Badge appears when: `last_match_added_at` > user's `last_viewed_at` for that query
+- Badge clears when: user views search results (records view timestamp server-side)
+- Toolbar search icon also shows badge if ANY query has new matches
 
 **How it works - Background Matching**:
 When any new post is created (regular post or query):

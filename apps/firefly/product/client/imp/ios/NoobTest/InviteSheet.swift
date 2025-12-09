@@ -91,26 +91,24 @@ struct InviteSheet: View {
                 .font(.title)
                 .fontWeight(.bold)
 
-            Text("Copy this message and send it to your friend:")
+            Text("Send this link to \(name):")
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
-            // Message box
-            VStack(alignment: .leading, spacing: 8) {
-                Text(inviteMessage)
-                    .font(.body)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
-            }
-            .padding(.horizontal, 32)
+            // Link box
+            Text(testflightLink)
+                .font(.body)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+                .padding(.horizontal, 32)
 
-            Button(action: copyMessage) {
+            Button(action: copyLink) {
                 HStack {
                     Image(systemName: copiedMessage ? "checkmark" : "doc.on.doc")
-                    Text(copiedMessage ? "Copied!" : "Copy Message")
+                    Text(copiedMessage ? "Copied!" : "Copy Link")
                 }
                 .fontWeight(.semibold)
                 .foregroundColor(.white)
@@ -122,18 +120,6 @@ struct InviteSheet: View {
             .padding(.horizontal, 32)
 
             Spacer()
-
-            Button(action: { dismiss() }) {
-                Text("Done")
-                    .fontWeight(.semibold)
-                    .foregroundColor(.black)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color(.systemGray5))
-                    .cornerRadius(10)
-            }
-            .padding(.horizontal, 32)
-            .padding(.bottom, 32)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -145,10 +131,10 @@ struct InviteSheet: View {
         }
     }
 
-    func copyMessage() {
-        UIPasteboard.general.string = inviteMessage
+    func copyLink() {
+        UIPasteboard.general.string = testflightLink
         copiedMessage = true
-        Logger.shared.info("[Invite] Message copied to clipboard")
+        Logger.shared.info("[Invite] Link copied to clipboard")
 
         // Reset after 2 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

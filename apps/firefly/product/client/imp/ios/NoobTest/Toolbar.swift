@@ -10,16 +10,19 @@ struct Toolbar: View {
     let onResetMakePost: () -> Void
     let onResetSearch: () -> Void
     let onResetUsers: () -> Void
+    var showPostsBadge: Bool = false
     var showSearchBadge: Bool = false
+    var showUsersBadge: Bool = false
 
     var body: some View {
         HStack(spacing: 0) {
             // Make Post button
-            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost, showBadge: false) {
+            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost, showBadge: showPostsBadge) {
                 if currentExplorer == .makePost {
                     onResetMakePost()
                 } else {
                     currentExplorer = .makePost
+                    onResetMakePost()  // Also clear badge when switching to posts tab
                 }
             }
 
@@ -37,11 +40,12 @@ struct Toolbar: View {
             Spacer()
 
             // Users button
-            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users, showBadge: false) {
+            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users, showBadge: showUsersBadge) {
                 if currentExplorer == .users {
                     onResetUsers()
                 } else {
                     currentExplorer = .users
+                    onResetUsers()  // Also clear badge when switching to users tab
                 }
             }
         }

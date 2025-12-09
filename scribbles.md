@@ -1,9 +1,30 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
-tomorrow:
-- only show ->children button when open
-- 
+notes from invite/signup test
+
+1- "done" button at the bottom of invite-created
+2- should just display link, not a message
+3- new user should push-update
+4- new post should push-update
+
+---------------
+
+couple of ideas:
+
+- represent groups: group->role->person
+- person can take multiple roles in multiple groups
+- filter by group, both incoming and outgoing
+
+eg. you can say, this post is family only, etc.
+
+visibility specifications on the *outbound* is super interesting. 
+
+"This post should only be seen by members of groups x,y,z". That lets you restrict "secrets" to groups of people, as well as "publishing" outside a group (by relaxing the filter).
+
+This is trivial to do if you reify the group->person->post type system. And I think that's totally fine.
+
+
 
 ------------------------------
 todo list:

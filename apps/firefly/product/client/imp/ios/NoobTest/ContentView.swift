@@ -42,6 +42,12 @@ struct ContentView: View {
     @State private var hasSearchBadge = false
     @State private var badgePollingTimer: Timer? = nil
 
+    // Users badge state (new user completed profile)
+    @State private var hasUsersBadge = false
+
+    // Posts badge state (new posts by other users)
+    @State private var hasPostsBadge = false
+
     // Invite count state
     @State private var numInvites: Int = 0
 
@@ -175,10 +181,22 @@ struct ContentView: View {
                 Spacer()
                 Toolbar(
                     currentExplorer: $currentExplorer,
-                    onResetMakePost: { makePostViewId = UUID() },
+                    onResetMakePost: {
+                        makePostViewId = UUID()
+                        // Clear posts badge and update last viewed timestamp
+                        hasPostsBadge = false
+                        Storage.shared.set("last_viewed_posts", ISO8601DateFormatter().string(from: Date()))
+                    },
                     onResetSearch: { searchViewId = UUID() },
-                    onResetUsers: { usersViewId = UUID() },
-                    showSearchBadge: hasSearchBadge
+                    onResetUsers: {
+                        usersViewId = UUID()
+                        // Clear users badge and update last viewed timestamp
+                        hasUsersBadge = false
+                        Storage.shared.set("last_viewed_users", ISO8601DateFormatter().string(from: Date()))
+                    },
+                    showPostsBadge: hasPostsBadge,
+                    showSearchBadge: hasSearchBadge,
+                    showUsersBadge: hasUsersBadge
                 )
                 .opacity(isAnyPostEditing ? 0 : 1)  // Fade out when editing
                 .allowsHitTesting(!isAnyPostEditing)  // Disable interaction when editing
@@ -200,10 +218,18 @@ struct ContentView: View {
             fetchUsersPosts()
             fetchInviteCount()
 
-            // Start badge polling for toolbar
-            pollSearchBadges()
+            // Initialize last viewed timestamps if not set
+            if Storage.shared.getString("last_viewed_users") == nil {
+                Storage.shared.set("last_viewed_users", ISO8601DateFormatter().string(from: Date()))
+            }
+            if Storage.shared.getString("last_viewed_posts") == nil {
+                Storage.shared.set("last_viewed_posts", ISO8601DateFormatter().string(from: Date()))
+            }
+
+            // Start unified badge polling for toolbar
+            pollAllBadges()
             badgePollingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-                pollSearchBadges()
+                pollAllBadges()
             }
         }
         .onDisappear {
@@ -248,7 +274,7 @@ struct ContentView: View {
                         self.searchPosts = fetchedPosts
                         self.isLoadingSearch = false
                         // Poll badges now that search posts are loaded
-                        self.pollSearchBadges()
+                        self.pollAllBadges()
                     }
                 }
             case .failure(let error):
@@ -342,18 +368,22 @@ struct ContentView: View {
         }
     }
 
-    func pollSearchBadges() {
-        // Only poll if we have search posts loaded
-        let queryPosts = searchPosts.filter { $0.template == "query" }
-        guard !queryPosts.isEmpty else { return }
-
-        let queryIds = queryPosts.map { $0.id }
-
+    func pollAllBadges() {
         // Get current user email
-        guard let userEmail = Storage.shared.getLoginState().email else { return }
+        guard let userEmail = Storage.shared.getLoginState().email else {
+            Logger.shared.warning("[Notifications] No user email, skipping poll")
+            return
+        }
 
         let serverURL = "http://185.96.221.52:8080"
-        guard let url = URL(string: "\(serverURL)/api/queries/badges") else { return }
+        guard let url = URL(string: "\(serverURL)/api/notifications/poll") else { return }
+
+        // Gather query IDs from search posts
+        let queryIds = searchPosts.filter { $0.template == "query" }.map { $0.id }
+
+        // Get last viewed timestamps
+        let lastViewedUsers = Storage.shared.getString("last_viewed_users") ?? ""
+        let lastViewedPosts = Storage.shared.getString("last_viewed_posts") ?? ""
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -361,25 +391,40 @@ struct ContentView: View {
 
         let body: [String: Any] = [
             "user_email": userEmail,
-            "query_ids": queryIds
+            "query_ids": queryIds,
+            "last_viewed_users": lastViewedUsers,
+            "last_viewed_posts": lastViewedPosts
         ]
 
         guard let jsonData = try? JSONSerialization.data(withJSONObject: body) else { return }
         request.httpBody = jsonData
 
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else { return }
+            if let error = error {
+                Logger.shared.error("[Notifications] Poll failed: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                Logger.shared.warning("[Notifications] No data in response")
+                return
+            }
 
             do {
-                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Bool] {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    let hasNewUsers = json["has_new_users"] as? Bool ?? false
+                    let hasNewPosts = json["has_new_posts"] as? Bool ?? false
+                    let queryBadges = json["query_badges"] as? [String: Bool] ?? [:]
+                    let hasSearchBadge = queryBadges.values.contains(true)
+
                     DispatchQueue.main.async {
-                        // Check if any query has a badge
-                        let anyBadge = json.values.contains(true)
-                        self.hasSearchBadge = anyBadge
+                        self.hasSearchBadge = hasSearchBadge
+                        self.hasUsersBadge = hasNewUsers
+                        self.hasPostsBadge = hasNewPosts
                     }
                 }
             } catch {
-                Logger.shared.error("[ContentView] Error parsing badge response: \(error.localizedDescription)")
+                Logger.shared.error("[Notifications] Error parsing response: \(error.localizedDescription)")
             }
         }.resume()
     }

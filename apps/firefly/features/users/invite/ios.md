@@ -3,73 +3,149 @@
 
 ## InviteSheet View
 
-Create new file `InviteSheet.swift`:
+File: `InviteSheet.swift`
 
 ```swift
 import SwiftUI
 
 struct InviteSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var name: String = ""
     @State private var email: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String = ""
-    @State private var showShareSheet: Bool = false
-    @State private var shareMessage: String = ""
+    @State private var showSuccess: Bool = false
+    @State private var inviteMessage: String = ""
+    @State private var testflightLink: String = ""
+    @State private var copiedMessage: Bool = false
 
     let serverURL = "http://185.96.221.52:8080"
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Text("Invite a Friend")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.top)
+            if showSuccess {
+                successView
+            } else {
+                inputView
+            }
+        }
+    }
 
-                TextField("friend@example.com", text: $email)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocapitalization(.none)
-                    .keyboardType(.emailAddress)
-                    .disabled(isLoading)
-                    .padding(.horizontal)
+    var inputView: some View {
+        VStack(spacing: 20) {
+            Text("Invite a Friend")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.top)
 
-                if !errorMessage.isEmpty {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .font(.caption)
-                        .padding(.horizontal)
-                }
-
-                Button(action: sendInvite) {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                    } else {
-                        Text("Send Invite")
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.black)
-                            .cornerRadius(10)
-                    }
-                }
-                .disabled(isLoading || email.isEmpty)
+            TextField("Friend's name", text: $name)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .autocapitalization(.words)
+                .disabled(isLoading)
                 .padding(.horizontal)
 
-                Spacer()
+            TextField("friend@example.com", text: $email)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .autocapitalization(.none)
+                .keyboardType(.emailAddress)
+                .disabled(isLoading)
+                .padding(.horizontal)
+
+            if !errorMessage.isEmpty {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .padding(.horizontal)
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
+
+            Button(action: sendInvite) {
+                if isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                } else {
+                    Text("Invite")
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.black)
+                        .cornerRadius(10)
+                }
+            }
+            .disabled(isLoading || name.isEmpty || email.isEmpty)
+            .padding(.horizontal)
+
+            Spacer()
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Cancel") {
+                    dismiss()
                 }
             }
         }
-        .sheet(isPresented: $showShareSheet) {
-            ShareSheet(activityItems: [shareMessage])
+    }
+
+    var successView: some View {
+        VStack(spacing: 24) {
+            Spacer()
+
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 60))
+                .foregroundColor(.green)
+
+            Text("Invite Created!")
+                .font(.title)
+                .fontWeight(.bold)
+
+            Text("Send this link to \(name):")
+                .font(.body)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+
+            // Link box
+            Text(testflightLink)
+                .font(.body)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+                .padding(.horizontal, 32)
+
+            Button(action: copyLink) {
+                HStack {
+                    Image(systemName: copiedMessage ? "checkmark" : "doc.on.doc")
+                    Text(copiedMessage ? "Copied!" : "Copy Link")
+                }
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(copiedMessage ? Color.green : Color.blue)
+                .cornerRadius(10)
+            }
+            .padding(.horizontal, 32)
+
+            Spacer()
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Done") {
+                    dismiss()
+                }
+            }
+        }
+    }
+
+    func copyLink() {
+        UIPasteboard.general.string = testflightLink
+        copiedMessage = true
+
+        // Reset after 2 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            copiedMessage = false
         }
     }
 
@@ -77,7 +153,7 @@ struct InviteSheet: View {
         errorMessage = ""
         isLoading = true
 
-        guard let url = URL(string: "\\(serverURL)/api/invite") else {
+        guard let url = URL(string: "\(serverURL)/api/invite") else {
             errorMessage = "Invalid server URL"
             isLoading = false
             return
@@ -89,6 +165,7 @@ struct InviteSheet: View {
 
         let deviceID = Storage.shared.getDeviceID()
         let body: [String: Any] = [
+            "name": name.trimmingCharacters(in: .whitespaces),
             "email": email.lowercased().trimmingCharacters(in: .whitespaces),
             "device_id": deviceID
         ]
@@ -99,7 +176,7 @@ struct InviteSheet: View {
                 isLoading = false
 
                 if let error = error {
-                    errorMessage = "Connection error: \\(error.localizedDescription)"
+                    errorMessage = "Connection error: \(error.localizedDescription)"
                     return
                 }
 
@@ -111,16 +188,14 @@ struct InviteSheet: View {
                 }
 
                 if status == "already_exists" {
-                    errorMessage = "User already signed up!"
-                    // Optionally: navigate to their profile or refresh users list
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        dismiss()
-                    }
+                    let existingName = json["user_name"] as? String ?? "User"
+                    errorMessage = "\(existingName) is already signed up!"
                 } else if status == "invite_created" {
-                    if let testflightLink = json["testflight_link"] as? String {
-                        shareMessage = "Join me on microclub! Download via TestFlight: \\(testflightLink)"
-                        showShareSheet = true
-                        Logger.shared.info("[Invite] Showing share sheet for \\(email)")
+                    if let message = json["invite_message"] as? String,
+                       let link = json["testflight_link"] as? String {
+                        inviteMessage = message
+                        testflightLink = link
+                        showSuccess = true
                     }
                 } else {
                     errorMessage = json["message"] as? String ?? "Failed to create invite"
@@ -131,61 +206,32 @@ struct InviteSheet: View {
 }
 ```
 
-## ShareSheet (UIKit Wrapper)
+## ContentView Integration
 
-Create new file `ShareSheet.swift`:
-
-```swift
-import SwiftUI
-import UIKit
-
-struct ShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(
-            activityItems: activityItems,
-            applicationActivities: nil
-        )
-        return controller
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
-```
-
-## Update ContentView
-
-Modify `ContentView.swift` to show InviteSheet when "invite friend" button is tapped, but only when the user has invites remaining:
+In `ContentView.swift`, show the InviteSheet when user taps "invite friend" button:
 
 ```swift
-// Add state variables
+// State variables
 @State private var showInviteSheet = false
 @State private var numInvites: Int = 0
 
-// Fetch invite count on appear and after invite sheet dismisses
-.onAppear {
-    fetchInviteCount()
-}
-
-// Modify PostsView for users tab - showAddButton depends on numInvites
+// Users tab with invite sheet
 PostsView(
     initialPosts: usersPosts,
     onPostCreated: { fetchUsersPosts() },
     showAddButton: numInvites > 0,  // Only show if user has invites
     templateName: "profile",
     customAddButtonText: "invite friend",
-    onAddButtonTapped: {
-        showInviteSheet = true
-    },
-    isAnyPostEditing: $isAnyPostEditing
+    onAddButtonTapped: { showInviteSheet = true },
+    isAnyPostEditing: $isAnyPostEditing,
+    editCurrentUserProfile: $editingNewUserProfile
 )
 .id(usersViewId)
 .sheet(isPresented: $showInviteSheet, onDismiss: { fetchInviteCount() }) {
     InviteSheet()
 }
 
-// Add fetch function
+// Fetch invite count
 func fetchInviteCount() {
     let deviceId = Storage.shared.getDeviceID()
     let serverURL = "http://185.96.221.52:8080"
@@ -204,32 +250,10 @@ func fetchInviteCount() {
 }
 ```
 
-## Update PostsView
-
-Modify `PostsView.swift` to accept optional `onAddButtonTapped` callback:
-
-```swift
-struct PostsView: View {
-    // ... existing parameters ...
-    var onAddButtonTapped: (() -> Void)? = nil
-
-    // In addPostButton:
-    Button(action: {
-        if let customAction = onAddButtonTapped {
-            customAction()
-        } else {
-            // Existing add post logic
-            createNewPost()
-        }
-    }) {
-        // ... button UI ...
-    }
-}
-```
-
 ## Notes
 
-- `InviteSheet` handles both email checking and share sheet presentation
-- `ShareSheet` wraps UIKit's `UIActivityViewController` for SwiftUI
-- The "Invite Friend" button in Users tab triggers the invite flow instead of creating a profile post
-- Share sheet allows user to choose sharing method (Messages, Email, WhatsApp, etc.)
+- Two-step flow: input view → success view (no system share sheet)
+- Success view shows just the TestFlight link with "Copy Link" button
+- "Done" button in header to dismiss (no redundant bottom button)
+- Simpler UX lets inviter write their own personal message
+- Button turns green and shows checkmark when link is copied

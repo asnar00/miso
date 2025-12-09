@@ -715,6 +715,36 @@ def get_recent_users():
             'message': f'Server error: {str(e)}'
         }), 500
 
+@app.route('/api/users/new-since', methods=['GET'])
+def get_new_users_since():
+    """Check if there are new users (with complete profiles) since a given timestamp"""
+    try:
+        since = request.args.get('since', '')
+
+        if not since:
+            return jsonify({'has_new': False, 'count': 0})
+
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cur:
+                # Check for users whose profile was completed after the timestamp
+                cur.execute("""
+                    SELECT COUNT(*) FROM users
+                    WHERE profile_complete = TRUE
+                    AND profile_completed_at > %s
+                """, (since,))
+                count = cur.fetchone()[0]
+
+                return jsonify({
+                    'has_new': count > 0,
+                    'count': count
+                })
+        finally:
+            db.return_connection(conn)
+    except Exception as e:
+        logger.error(f"Error checking new users: {e}", exc_info=True)
+        return jsonify({'has_new': False, 'count': 0})
+
 @app.route('/api/posts/recent-tagged', methods=['GET'])
 def get_recent_tagged_posts():
     """Get recent posts filtered by template tags and user"""
@@ -978,6 +1008,18 @@ def create_profile():
                 'message': 'Failed to create profile'
             }), 500
 
+        # Mark user's profile as complete with timestamp (for notifications)
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "UPDATE users SET profile_complete = TRUE, profile_completed_at = NOW() WHERE id = %s",
+                    (user_id,)
+                )
+                conn.commit()
+        finally:
+            db.return_connection(conn)
+
         logger.info(f"Created profile {post_id} for user {email} (ID: {user_id})")
 
         # Fetch the created profile to return it
@@ -1146,6 +1188,71 @@ def get_template(template_name):
         }), 500
     finally:
         db.return_connection(conn)
+
+@app.route('/api/notifications/poll', methods=['POST'])
+def poll_notifications():
+    """Unified polling endpoint for all notification badges
+    Request body: {
+        "user_email": "user@example.com",
+        "query_ids": [1, 2, 3],
+        "last_viewed_users": "2025-12-08T19:00:00Z",
+        "last_viewed_posts": "2025-12-08T19:00:00Z"
+    }
+    Response: {
+        "query_badges": {"1": true, "2": false},
+        "has_new_users": true,
+        "has_new_posts": true
+    }"""
+    try:
+        data = request.get_json() or {}
+        user_email = data.get('user_email', '')
+        query_ids = data.get('query_ids', [])
+        last_viewed_users = data.get('last_viewed_users', '')
+        last_viewed_posts = data.get('last_viewed_posts', '')
+
+        result = {
+            'query_badges': {},
+            'has_new_users': False,
+            'has_new_posts': False
+        }
+
+        # 1. Check query badges (if any query_ids provided)
+        if query_ids and user_email:
+            flags = db.get_has_new_matches_bulk(user_email, query_ids)
+            result['query_badges'] = {str(k): v for k, v in flags.items()}
+
+        conn = db.get_connection()
+        try:
+            with conn.cursor() as cur:
+                # 2. Check for new users (if timestamp provided)
+                if last_viewed_users:
+                    cur.execute("""
+                        SELECT COUNT(*) FROM users
+                        WHERE profile_complete = TRUE
+                        AND profile_completed_at > %s
+                    """, (last_viewed_users,))
+                    count = cur.fetchone()[0]
+                    result['has_new_users'] = count > 0
+
+                # 3. Check for new posts by other users (if timestamp and email provided)
+                if last_viewed_posts and user_email:
+                    cur.execute("""
+                        SELECT COUNT(*) FROM posts p
+                        JOIN users u ON p.user_id = u.id
+                        WHERE p.template_name = 'post'
+                        AND p.created_at > %s
+                        AND u.email != %s
+                    """, (last_viewed_posts, user_email))
+                    count = cur.fetchone()[0]
+                    result['has_new_posts'] = count > 0
+        finally:
+            db.return_connection(conn)
+
+        return jsonify(result), 200
+    except Exception as e:
+        logger.error(f"[NOTIFICATIONS] Error polling: {e}", exc_info=True)
+        return jsonify({'query_badges': {}, 'has_new_users': False, 'has_new_posts': False}), 200
+
 
 @app.route('/api/queries/badges', methods=['POST'])
 def get_query_badges():
