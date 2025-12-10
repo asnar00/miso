@@ -174,6 +174,27 @@ class Database:
         finally:
             self.return_connection(conn)
 
+    def migrate_add_clip_offsets(self):
+        """Add clip_offset_x and clip_offset_y columns to posts table if they don't exist"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    ALTER TABLE posts
+                    ADD COLUMN IF NOT EXISTS clip_offset_x REAL DEFAULT 0
+                """)
+                cur.execute("""
+                    ALTER TABLE posts
+                    ADD COLUMN IF NOT EXISTS clip_offset_y REAL DEFAULT 0
+                """)
+                conn.commit()
+                print("Migration: clip_offset_x and clip_offset_y columns added to posts")
+        except Exception as e:
+            conn.rollback()
+            print(f"Migration error: {e}")
+        finally:
+            self.return_connection(conn)
+
     # User operations
 
     def create_user(self, email: str) -> Optional[int]:
@@ -502,6 +523,7 @@ class Database:
                 cur.execute(
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.clip_offset_x, p.clip_offset_y,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
                            p.template_name,
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body,
@@ -530,6 +552,7 @@ class Database:
                 cur.execute(
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.clip_offset_x, p.clip_offset_y,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
                            p.template_name,
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body
@@ -556,6 +579,7 @@ class Database:
                 cur.execute(
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.clip_offset_x, p.clip_offset_y,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
                            p.template_name,
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body,
@@ -596,7 +620,8 @@ class Database:
                 cur.execute("""
                     SELECT
                         p.id, p.user_id, p.parent_id, p.title, p.summary, p.body,
-                        p.image_url, p.created_at, p.timezone, p.location_tag, p.ai_generated,
+                        p.image_url, p.clip_offset_x, p.clip_offset_y,
+                        p.created_at, p.timezone, p.location_tag, p.ai_generated,
                         p.template_name,
                         t.placeholder_title, t.placeholder_summary, t.placeholder_body,
                         p.title as author_name,
@@ -671,7 +696,9 @@ class Database:
         title: Optional[str] = None,
         summary: Optional[str] = None,
         body: Optional[str] = None,
-        image_url: Optional[str] = None
+        image_url: Optional[str] = None,
+        clip_offset_x: Optional[float] = None,
+        clip_offset_y: Optional[float] = None
     ) -> bool:
         """
         Update an existing post.
@@ -682,6 +709,8 @@ class Database:
             summary: New summary (optional)
             body: New body (optional)
             image_url: New image URL (optional)
+            clip_offset_x: Image clip X offset -1 to 1 (optional)
+            clip_offset_y: Image clip Y offset -1 to 1 (optional)
 
         Returns:
             True if successful, False otherwise
@@ -707,6 +736,14 @@ class Database:
             if image_url is not None:
                 updates.append("image_url = %s")
                 params.append(image_url)
+
+            if clip_offset_x is not None:
+                updates.append("clip_offset_x = %s")
+                params.append(max(-1.0, min(1.0, clip_offset_x)))
+
+            if clip_offset_y is not None:
+                updates.append("clip_offset_y = %s")
+                params.append(max(-1.0, min(1.0, clip_offset_y)))
 
             if not updates:
                 print("No fields to update")
@@ -779,6 +816,7 @@ class Database:
                 cur.execute(
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.clip_offset_x, p.clip_offset_y,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
                            p.template_name,
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body,
@@ -810,6 +848,7 @@ class Database:
                 cur.execute(
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.clip_offset_x, p.clip_offset_y,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
                            p.template_name,
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body,
@@ -846,6 +885,7 @@ class Database:
                 # Build query
                 query = """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
+                           p.clip_offset_x, p.clip_offset_y,
                            p.created_at, p.timezone, p.location_tag, p.ai_generated,
                            p.template_name, p.has_new_matches,
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name,

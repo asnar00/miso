@@ -10,6 +10,8 @@ struct Post: Codable, Identifiable, Hashable {
     var summary: String
     var body: String
     var imageUrl: String?
+    var clipOffsetX: Double?  // -1 to 1, default 0 (centered)
+    var clipOffsetY: Double?  // -1 to 1, default 0 (centered)
     let createdAt: String
     let timezone: String
     let locationTag: String?
@@ -32,6 +34,8 @@ struct Post: Codable, Identifiable, Hashable {
         case summary
         case body
         case imageUrl = "image_url"
+        case clipOffsetX = "clip_offset_x"
+        case clipOffsetY = "clip_offset_y"
         case createdAt = "created_at"
         case timezone
         case locationTag = "location_tag"

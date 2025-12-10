@@ -145,6 +145,10 @@ struct PostView: View {
     @State private var editableSummary: String = ""
     @State private var editableBody: String = ""
     @State private var editableImageUrl: String? = nil  // nil means image removed
+    @State private var editableClipOffsetX: Double = 0  // -1 to 1, for editing
+    @State private var editableClipOffsetY: Double = 0  // -1 to 1, for editing
+    @State private var dragStartOffsetX: Double = 0  // For drag gesture
+    @State private var dragStartOffsetY: Double = 0  // For drag gesture
     @State private var showImagePicker: Bool = false
     @State private var selectedImage: UIImage? = nil
     @State private var newImageData: Data? = nil  // Processed image data ready for upload
@@ -181,14 +185,61 @@ struct PostView: View {
     }
 
     // Calculate image height for layout (uses content width, not full available width)
+    // Images always display as squares (height = width)
     func calculatedImageHeight(contentWidth: CGFloat, imageAspectRatio: CGFloat, addImageButtonHeight: CGFloat) -> CGFloat {
         if editableImageUrl != nil {
-            return contentWidth / imageAspectRatio
+            return contentWidth  // Square: height equals width
         } else if isEditing {
             return addImageButtonHeight
         } else {
             return 0
         }
+    }
+
+    // Calculate pixel offset from normalized clip offset (-1 to 1)
+    func calculateImagePixelOffset(frameSize: CGFloat, aspectRatio: CGFloat, clipOffsetX: Double, clipOffsetY: Double) -> (CGFloat, CGFloat) {
+        if aspectRatio > 1 {
+            // Landscape: image is wider than tall, can move horizontally
+            let scaledWidth = frameSize * aspectRatio
+            let maxOffsetX = (scaledWidth - frameSize) / 2
+            return (CGFloat(clipOffsetX) * maxOffsetX, 0)
+        } else if aspectRatio < 1 {
+            // Portrait: image is taller than wide, can move vertically
+            let scaledHeight = frameSize / aspectRatio
+            let maxOffsetY = (scaledHeight - frameSize) / 2
+            return (0, CGFloat(clipOffsetY) * maxOffsetY)
+        } else {
+            // Square: no offset needed
+            return (0, 0)
+        }
+    }
+
+    // Drag gesture for adjusting clip offset when editing
+    func imageDragGesture(frameSize: CGFloat) -> some Gesture {
+        DragGesture()
+            .onChanged { value in
+                if imageAspectRatio > 1 {
+                    // Landscape: horizontal drag
+                    let scaledWidth = frameSize * imageAspectRatio
+                    let maxOffsetX = (scaledWidth - frameSize) / 2
+                    if maxOffsetX > 0 {
+                        let deltaX = value.translation.width / maxOffsetX
+                        editableClipOffsetX = max(-1, min(1, dragStartOffsetX + deltaX))
+                    }
+                } else if imageAspectRatio < 1 {
+                    // Portrait: vertical drag
+                    let scaledHeight = frameSize / imageAspectRatio
+                    let maxOffsetY = (scaledHeight - frameSize) / 2
+                    if maxOffsetY > 0 {
+                        let deltaY = value.translation.height / maxOffsetY
+                        editableClipOffsetY = max(-1, min(1, dragStartOffsetY + deltaY))
+                    }
+                }
+            }
+            .onEnded { _ in
+                dragStartOffsetX = editableClipOffsetX
+                dragStartOffsetY = editableClipOffsetY
+            }
     }
 
     // Process body text with markdown
@@ -287,7 +338,9 @@ struct PostView: View {
                 "email": userEmail,
                 "title": editableTitle,
                 "summary": editableSummary.isEmpty ? "No summary" : editableSummary,
-                "body": editableBody.isEmpty ? "No content" : editableBody
+                "body": editableBody.isEmpty ? "No content" : editableBody,
+                "clip_offset_x": String(editableClipOffsetX),
+                "clip_offset_y": String(editableClipOffsetY)
             ]
 
             // For updates, include post_id; for new posts, optionally include parent_id and template_name
@@ -323,7 +376,9 @@ struct PostView: View {
                 "email": userEmail,
                 "title": editableTitle,
                 "summary": editableSummary.isEmpty ? "No summary" : editableSummary,
-                "body": editableBody.isEmpty ? "No content" : editableBody
+                "body": editableBody.isEmpty ? "No content" : editableBody,
+                "clip_offset_x": String(editableClipOffsetX),
+                "clip_offset_y": String(editableClipOffsetY)
             ]
 
             // For updates, include post_id; for new posts, optionally include parent_id and template_name
@@ -434,18 +489,28 @@ struct PostView: View {
         }.resume()
     }
 
-    // Image display using AsyncImage
+    // Image display using AsyncImage with clip offset support
     @ViewBuilder
     private func imageView(width: CGFloat, height: CGFloat, imageUrl: String) -> some View {
         let fullUrl = imageUrl.hasPrefix("http") ? imageUrl : "\(serverURL)\(imageUrl)"
+        let (offsetX, offsetY) = calculateImagePixelOffset(
+            frameSize: width,
+            aspectRatio: imageAspectRatio,
+            clipOffsetX: editableClipOffsetX,
+            clipOffsetY: editableClipOffsetY
+        )
 
         if imageUrl == "new_image", let displayImage = newImage {
             // New image being added
             Image(uiImage: displayImage)
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .scaledToFill()
+                .offset(x: offsetX, y: offsetY)
                 .frame(width: width, height: height)
+                .clipped()  // Constrain layout bounds to frame
                 .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                .contentShape(Rectangle())
+                .gesture(isEditing ? imageDragGesture(frameSize: width) : nil)
         } else {
             // Load from URL using AsyncImage
             AsyncImage(url: URL(string: fullUrl)) { phase in
@@ -453,9 +518,13 @@ struct PostView: View {
                 case .success(let image):
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
+                        .offset(x: offsetX, y: offsetY)
                         .frame(width: width, height: height)
+                        .clipped()  // Constrain layout bounds to frame
                         .clipShape(RoundedRectangle(cornerRadius: 12 * cornerRoundness))
+                        .contentShape(Rectangle())
+                        .gesture(isEditing ? imageDragGesture(frameSize: width) : nil)
                 case .failure(_):
                     Rectangle()
                         .fill(Color.gray.opacity(0.3))
@@ -600,6 +669,12 @@ struct PostView: View {
         imageAspectRatio = resizedImage.size.width / resizedImage.size.height
         Logger.shared.info("[PostView] New image aspect ratio: \(imageAspectRatio)")
 
+        // Reset clip offset for new image (centered by default)
+        editableClipOffsetX = 0
+        editableClipOffsetY = 0
+        dragStartOffsetX = 0
+        dragStartOffsetY = 0
+
         // Set a marker URL so the display logic knows to show the new image
         editableImageUrl = "new_image"
         Logger.shared.info("[PostView] Image processed and ready for display and upload")
@@ -615,6 +690,11 @@ struct PostView: View {
                 editableSummary = post.summary
                 editableBody = post.body
                 editableImageUrl = post.imageUrl
+                // Initialize clip offsets
+                editableClipOffsetX = post.clipOffsetX ?? 0
+                editableClipOffsetY = post.clipOffsetY ?? 0
+                dragStartOffsetX = editableClipOffsetX
+                dragStartOffsetY = editableClipOffsetY
                 // Check if author has a profile
                 checkAuthorProfile()
             }
@@ -863,7 +943,7 @@ struct PostView: View {
 
                 // Expanded state: full-width centered below summary (matching content rectangle)
                 let expandedImageWidth = contentWidth
-                let expandedImageHeight = contentWidth / imageAspectRatio
+                let expandedImageHeight = contentWidth  // Square: height equals width
                 let expandedX: CGFloat = contentPadding  // Aligned with text content indent
                 // Match the spacing used in height calculation (not the 8pt in outdated docs)
                 let expandedY: CGFloat = 80  // Hardcoded: 80pt title/summary height
@@ -1169,7 +1249,7 @@ struct PostView: View {
             if newValue {
                 // Expanding - calculate and log positions
                 let logContentWidth = availableWidth - (2 * contentPadding)
-                let logImageHeight = editableImageUrl != nil ? (logContentWidth / imageAspectRatio) : 0
+                let logImageHeight = editableImageUrl != nil ? logContentWidth : 0  // Square
                 let logBodyHeight = calculateTextHeight(editableBody, width: logContentWidth, font: UIFont.preferredFont(forTextStyle: .body))
 
                 // Calculate positions when fully expanded using hardcoded title/summary height

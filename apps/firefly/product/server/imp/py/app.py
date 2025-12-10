@@ -664,6 +664,22 @@ def update_post():
         summary = request.form.get('summary', '').strip()
         body = request.form.get('body', '').strip()
 
+        # Get optional clip offsets
+        clip_offset_x_str = request.form.get('clip_offset_x', '').strip()
+        clip_offset_y_str = request.form.get('clip_offset_y', '').strip()
+        clip_offset_x = None
+        clip_offset_y = None
+        if clip_offset_x_str:
+            try:
+                clip_offset_x = max(-1.0, min(1.0, float(clip_offset_x_str)))
+            except ValueError:
+                pass
+        if clip_offset_y_str:
+            try:
+                clip_offset_y = max(-1.0, min(1.0, float(clip_offset_y_str)))
+            except ValueError:
+                pass
+
         # Validate required fields
         if not post_id_str or not email or not title or not summary or not body:
             return jsonify({
@@ -725,7 +741,9 @@ def update_post():
             title=title,
             summary=summary,
             body=body,
-            image_url=image_url
+            image_url=image_url,
+            clip_offset_x=clip_offset_x,
+            clip_offset_y=clip_offset_y
         )
 
         if not success:
@@ -2166,6 +2184,14 @@ def startup_health_check():
     except Exception as e:
         logger.critical(f"[HEALTH] Database connection test failed: {e}")
         sys.exit(1)
+
+    # Run migrations
+    logger.info("[HEALTH] Running migrations...")
+    try:
+        db.migrate_add_clip_offsets()
+        logger.info("[HEALTH] Migrations complete")
+    except Exception as e:
+        logger.warning(f"[HEALTH] Migration warning: {e}")
 
     # Check 4: Create search_cache table if needed
     logger.info("[HEALTH] Creating search_cache table if needed...")
