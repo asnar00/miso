@@ -206,8 +206,6 @@ struct PostsListView: View {
                                     .background(tunables.buttonColor().opacity(editingPostId == nil ? 1.0 : 0.4))
                                     .cornerRadius(12 * cornerRoundness)
                                 }
-                                .padding(.horizontal, 8)
-                                .padding(.top, 4)
                             }
 
                             if posts.isEmpty {

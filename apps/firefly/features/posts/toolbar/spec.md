@@ -4,18 +4,18 @@
 The `toolbar` is a sleek rounded lozenge at the bottom of the screen; it floats above the content with a subtle shadow, creating a modern, polished appearance.
 
 **Visual Design:**
-- Rounded lozenge shape (20pt corner radius)
+- Rounded lozenge shape matching posts (12pt × corner-roundness tunable)
 - Background color: tunable button color (RGB 255/178/127 modified by brightness, default 1.0)
-- Maximum width of 300pt, centered on screen
+- Same width as posts (uses same horizontal padding formula: 8pt × spacing tunable)
 - Strong shadow for depth (40% black opacity, 12pt blur, 4pt downward offset)
-- Positioned 20pt offset from safe area bottom
+- Bottom edge aligned with screen bottom (34pt offset into safe area)
 - Color matches all other UI buttons (add-post button, author button, child navigation button, edit button)
 
 **Button Sizing:**
 - Icons: 20pt font size
 - Button frames: 35x35pt with 6pt corner radius
-- Horizontal padding: 33pt
-- Vertical padding: 10pt
+- Horizontal padding: 66pt (moves outer buttons inward toward center)
+- Vertical padding: 12pt (matches add-post button height)
 
 The toolbar has three buttons:
 

@@ -2,19 +2,20 @@
 
 ## Files
 
-- `NoobTestApp.swift` - Version check on launch
+- `NoobTestApp.swift` - Version check on launch and foreground return
 - `UpdateRequiredView.swift` - Non-dismissable update modal
 
 ## NoobTestApp.swift
 
-Add state variables:
+Add state variables and environment:
 ```swift
+@Environment(\.scenePhase) private var scenePhase
 @State private var requiresUpdate = false
 @State private var testflightURL = ""
 @State private var versionCheckComplete = false
 ```
 
-Modify body to check version before showing main UI:
+Modify body to check version before showing main UI, and re-check on foreground:
 ```swift
 var body: some Scene {
     WindowGroup {
@@ -31,12 +32,26 @@ var body: some Scene {
             ContentView()
         }
     }
+    .onChange(of: scenePhase) { oldPhase, newPhase in
+        if newPhase == .active && oldPhase == .background {
+            Logger.shared.info("[APP] App returned from background, checking version")
+            checkVersion()
+        }
+    }
 }
 ```
 
-Add version check function:
+Add version check function with test user exemption:
 ```swift
 func checkVersion() {
+    // Skip version check for test users
+    let (email, _, name, _) = Storage.shared.getLoginState()
+    if email == "test@example.com" || name == "asnaroo" {
+        Logger.shared.info("[VERSION] Skipping version check for test user")
+        versionCheckComplete = true
+        return
+    }
+
     let serverURL = "http://185.96.221.52:8080"
     guard let url = URL(string: "\(serverURL)/api/version") else {
         versionCheckComplete = true

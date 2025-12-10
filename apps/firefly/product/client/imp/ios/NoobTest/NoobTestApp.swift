@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct NoobTestApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Environment(\.scenePhase) private var scenePhase
     @State private var isAuthenticated = false
     @State private var isNewUser = false
     @State private var hasSeenWelcome = false
@@ -69,9 +70,23 @@ struct NoobTestApp: App {
                 ContentView(shouldEditProfile: $shouldEditProfile)
             }
         }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            if newPhase == .active && oldPhase == .background {
+                Logger.shared.info("[APP] App returned from background, checking version")
+                checkVersion()
+            }
+        }
     }
 
     func checkVersion() {
+        // Skip version check for test users
+        let (email, _, name, _) = Storage.shared.getLoginState()
+        if email == "test@example.com" || name == "asnaroo" {
+            Logger.shared.info("[VERSION] Skipping version check for test user")
+            versionCheckComplete = true
+            return
+        }
+
         let serverURL = "http://185.96.221.52:8080"
         guard let url = URL(string: "\(serverURL)/api/version") else {
             versionCheckComplete = true

@@ -49,16 +49,15 @@ struct Toolbar: View {
                 }
             }
         }
-        .padding(.horizontal, 33)
-        .padding(.vertical, 10)     // Reduced from 14 (75% height)
+        .padding(.horizontal, 66)  // Increased to move outer buttons inward
+        .padding(.vertical, 12)     // Match add post button height
         .background(
             tunables.buttonColor()
-                .cornerRadius(20)
+                .cornerRadius(12 * tunables.getDouble("corner-roundness", default: 1.0))
                 .shadow(color: Color.black.opacity(0.4), radius: 12, x: 0, y: 4)
         )
-        .frame(maxWidth: 300)       // Limit overall toolbar width
-        .padding(.horizontal, 16)
-        .offset(y: 16)              // Move up another 4pt
+        .padding(.horizontal, 8 * tunables.getDouble("spacing", default: 1.0))  // Match posts padding
+        .offset(y: 34)  // Push down to align bottom edge with screen bottom
         .onAppear {
             // Register toolbar buttons with UI automation
             UIAutomationRegistry.shared.register(id: "toolbar-makepost") {

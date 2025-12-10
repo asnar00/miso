@@ -968,9 +968,9 @@ struct PostView: View {
                 let buttonSize: CGFloat = 42
                 let buttonOpacity: Double = expansionFactor
 
-                // Button center at availableWidth - radius + 4pt offset
+                // Button position: right side, centered in title/summary area (0 to 80pt)
                 let buttonCenterX = availableWidth - (buttonSize / 2) + 4
-                let buttonCenterY = currentHeight / 2  // Vertically centered
+                let buttonCenterY: CGFloat = 40  // Centered between top (0) and title/summary bottom (80)
 
                 childIndicatorButton
                     .frame(width: buttonSize, height: buttonSize)

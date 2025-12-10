@@ -66,16 +66,15 @@ struct Toolbar: View {
                 }
             }
         }
-        .padding(.horizontal, 33)
-        .padding(.vertical, 10)     // Reduced from 14 for thinner toolbar
+        .padding(.horizontal, 66)  // Moves outer buttons inward toward center
+        .padding(.vertical, 12)    // Matches add-post button height
         .background(
             tunables.buttonColor()  // Uses tunable RGB 255/178/127 * brightness
-                .cornerRadius(20)   // Reduced from 25
+                .cornerRadius(12 * tunables.getDouble("corner-roundness", default: 1.0))  // Matches posts
                 .shadow(color: Color.black.opacity(0.4), radius: 12, x: 0, y: 4)
         )
-        .frame(maxWidth: 300)       // Maximum toolbar width
-        .padding(.horizontal, 16)   // Screen edge insets
-        .offset(y: 20)              // Position from bottom edge
+        .padding(.horizontal, 8 * tunables.getDouble("spacing", default: 1.0))  // Same width as posts
+        .offset(y: 34)             // Bottom edge aligned with screen bottom
         .onAppear {
             // Register toolbar buttons with UI automation
             UIAutomationRegistry.shared.register(id: "toolbar-makepost") {
@@ -465,13 +464,13 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
 
 ## Visual Appearance
 
-- **Toolbar shape**: Rounded lozenge with 20pt corner radius (.cornerRadius(20))
-- **Maximum width**: 300pt (.frame(maxWidth: 300))
+- **Toolbar shape**: Rounded lozenge matching posts (12 * cornerRoundness)
+- **Width**: Same as posts (uses same horizontal padding formula: 8 * spacing tunable)
 - **Background**: Tunable button color (tunables.buttonColor() - RGB 255/178/127 * brightness)
 - **Shadow**: Strong depth shadow (40% black opacity, 12pt blur radius, 4pt y-offset)
-- **Position**: 20pt offset from safe area (.offset(y: 20))
-- **Screen insets**: 16pt horizontal padding (.padding(.horizontal, 16))
-- **Internal padding**: 33pt horizontal, 10pt vertical
+- **Position**: Bottom edge aligned with screen bottom (.offset(y: 34))
+- **Screen insets**: Same as posts (.padding(.horizontal, 8 * spacing tunable))
+- **Internal padding**: 66pt horizontal (buttons moved inward), 12pt vertical (matches add-post button)
 - **Icon size**: 20pt (.system(size: 20))
 - **Tappable area**: 35x35pt per button (.frame(width: 35, height: 35))
 - **Active button highlight**: 80% of button color brightness (tunables.buttonHighlightColor())
@@ -522,6 +521,6 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
   - Users: all users
 
 **Add Post button positioning** (in PostsListView.swift):
-  - Top padding removed from VStack (.padding(.bottom) instead of .padding(.vertical))
-  - Button now sits close to top of screen with minimal dark space above it
-  - Creates better visual balance with toolbar at bottom
+  - Same width as posts (no extra horizontal padding)
+  - No top padding (sits flush with top of scroll area)
+  - Creates visual alignment with posts and toolbar

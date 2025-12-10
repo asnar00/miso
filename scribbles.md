@@ -1,6 +1,43 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+microclub thoughts:
+
+- A invited B forms a tree
+- everyone is rank (R) [asnaroo is rank 0]
+- proximity(A, B) = number of ranks up to closest common inviter ('parent')
+- order query results and new posts by proximity (closest first), relevance and recency; so a close-by, relevant and recent post will always outmatch something older, less local or more tangential
+- randomise a little!
+
+are there other ways to do "proximity"?
+
+eg: if (A, B) are in each others' contacts, they're closer? 
+
+how do you measure proximity in real life?
+
+but I think just doing it by invitation makes a huge amount of sense; it's a heuristic, but it'll probably end up being quite useful.
+
+especially if you invite people you want to "engage" or who are good at engaging.
+
+=> that's it, right? the number of invitations a person issues and is given, is a huge measure of their "power" within the metric of the system (which is engagement). If someone invites a lot of people, they're engaged? => hm. Not really. It's also someone who posts a lot, and is mentioned a lot by other people? Hmhmhmhm.
+
+I think you want to measure this stuff but you don't want to reward people for it, else they start to try to game the system.
+
+But isn't that what you ... want? => it's a conundrum.
+
+It hinges on whether you let the system decide its own purpose, or whether you design it with a singular purpose (attract more members).
+
+do we want to measure popularity, for instance, by adding a bookmark feature? Or even a personal ranking? [also very easy to do]. Then you can also add "popularity" to the metric. But I feel like as soon as you start to do that, you get into the weeds.
+
+
+
+
+
+
+
+
+--------------------------
+
 notes from invite/signup test
 
 1- "done" button at the bottom of invite-created

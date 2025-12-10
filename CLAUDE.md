@@ -250,6 +250,7 @@ TestRegistry.register("myfeature") {
 | `./restart-app.sh` | Restart without rebuilding |
 | `./stop-app.sh` | Stop app on device |
 | `./get-logs.sh` | Download app.log to device-logs.txt |
+| `./list-devices.sh` | List connected iOS devices |
 | `./testflight-deploy.sh` | Build, archive, upload to TestFlight |
 | `./sync-tunables.sh` | Sync tunable parameters |
 
@@ -271,6 +272,8 @@ adb logcat | grep "NoobTest"               # View live logs
 | `./stop.sh` | Stop local server |
 | `./remote-shutdown.sh` | Stop remote server |
 | `./watchdog.sh` | Health check (cron uses this) |
+| `./auto-restart.sh` | Automated server restart |
+| `./emergency-restart.sh` | Force restart after crash |
 | `./regenerate_embeddings.py` | Rebuild all embeddings |
 | `./debug_search.py` | Test search queries |
 
@@ -299,15 +302,20 @@ Skills in `.claude/skills/` provide automated workflows. Invoke by name or trigg
 |-------|---------|
 | `ios-deploy-usb` | Build and deploy to iPhone (~8-10s) |
 | `ios-restart-app` | Restart without rebuilding |
+| `ios-stop-app` | Stop app on device |
 | `ios-watch-logs` | Stream real-time logs |
 | `ios-add-file` | Add Swift files to Xcode project |
 | `ios-testflight-upload` | Full TestFlight upload pipeline |
 | `iphone-screen-capture` | Mirror iPhone screen |
 | `eos-deploy-usb` | Build and deploy to Android (~2-5s) |
 | `eos-restart-app` | Restart without rebuilding |
+| `eos-stop-app` | Stop app on device |
 | `eos-watch-logs` | Stream logcat |
+| `eos-screen-capture` | Mirror Android screen via scrcpy |
 | `py-deploy-remote` | Deploy to remote server |
 | `py-start-local` | Start local Flask server |
+| `py-stop-local` | Stop local Flask server |
+| `py-server-logs` | View local/remote server logs |
 | `ui-tap` | Trigger UI elements via HTTP |
 
 ## Common Errors & Quick Fixes
@@ -322,7 +330,7 @@ Skills in `.claude/skills/` provide automated workflows. Invoke by name or trigg
 
 ## Working with This Repository
 
-1. **Start**: Read `miso.md` and relevant platform docs in `miso/platforms/{platform}/`
+1. **Start**: Read `miso/spec.md` and relevant platform docs in `miso/platforms/{platform}/`
 2. **Create features**: Follow format in `miso/features/spec.md`
 3. **Implement**: Add `pseudocode.md` and platform files (`ios.md`, `eos.md`, `py.md`) alongside `spec.md`
 4. **Deploy**: Use platform-specific scripts (`install-device.sh`, etc.)
