@@ -135,7 +135,11 @@ function fetchUsersPosts():
 
 ## Button Actions
 
-Each button either switches to that explorer OR resets it if already active:
+Each button either switches to that explorer OR resets it if already active.
+
+**CRITICAL: State preservation requires that switching tabs does NOT call reset.**
+- If already on that tab → call reset (recreates view, clears navigation)
+- If switching TO that tab → just change currentExplorer (preserves state)
 
 **Make Post Button:**
 ```

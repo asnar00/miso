@@ -22,7 +22,7 @@ struct Toolbar: View {
                     onResetMakePost()
                 } else {
                     currentExplorer = .makePost
-                    onResetMakePost()  // Also clear badge when switching to posts tab
+                    // Don't reset - preserve navigation state when switching tabs
                 }
             }
 
@@ -45,7 +45,7 @@ struct Toolbar: View {
                     onResetUsers()
                 } else {
                     currentExplorer = .users
-                    onResetUsers()  // Also clear badge when switching to users tab
+                    // Don't reset - preserve navigation state when switching tabs
                 }
             }
         }

@@ -31,16 +31,19 @@ struct Toolbar: View {
     let onResetMakePost: () -> Void
     let onResetSearch: () -> Void
     let onResetUsers: () -> Void
+    var showPostsBadge: Bool = false
     var showSearchBadge: Bool = false
+    var showUsersBadge: Bool = false
 
     var body: some View {
         HStack(spacing: 0) {
             // Make Post button
-            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost, showBadge: false) {
+            ToolbarButton(icon: "bubble.left", isActive: currentExplorer == .makePost, showBadge: showPostsBadge) {
                 if currentExplorer == .makePost {
                     onResetMakePost()
                 } else {
                     currentExplorer = .makePost
+                    // Don't reset - preserve navigation state when switching tabs
                 }
             }
 
@@ -58,16 +61,17 @@ struct Toolbar: View {
             Spacer()
 
             // Users button
-            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users, showBadge: false) {
+            ToolbarButton(icon: "person.2", isActive: currentExplorer == .users, showBadge: showUsersBadge) {
                 if currentExplorer == .users {
                     onResetUsers()
                 } else {
                     currentExplorer = .users
+                    // Don't reset - preserve navigation state when switching tabs
                 }
             }
         }
         .padding(.horizontal, 66)  // Moves outer buttons inward toward center
-        .padding(.vertical, 12)    // Matches add-post button height
+        .padding(.vertical, 16)    // 30% taller than original
         .background(
             tunables.buttonColor()  // Uses tunable RGB 255/178/127 * brightness
                 .cornerRadius(12 * tunables.getDouble("corner-roundness", default: 1.0))  // Matches posts
@@ -449,8 +453,11 @@ struct ContentView: View {
 8. **Toolbar Design**: Sleek rounded lozenge (300pt max width, 20pt corner radius, tunable button color)
 9. **Toolbar Shadow**: Strong depth shadow (40% opacity, 12pt blur, 4pt offset) for elevated appearance
 10. **Toolbar Position**: 16pt offset from bottom edge, centered with 16pt screen insets
-11. **Search Badge**: Red notification dot (10pt) with white stroke on search button when any query has new matches
-12. **Badge Polling**: Polls `/api/queries/badges` every 5 seconds and on startup after search posts load
+11. **Notification Badges**: Red notification dot (10pt) with 2pt white stroke on each toolbar button:
+    - Posts badge: new posts from other users since last viewed
+    - Search badge: any saved query has new matches
+    - Users badge: new user completed their profile since last viewed
+12. **Badge Polling**: Polls `/api/notifications/poll` every 5 seconds and on startup
 
 ## Xcode Project Integration
 
@@ -470,7 +477,7 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
 - **Shadow**: Strong depth shadow (40% black opacity, 12pt blur radius, 4pt y-offset)
 - **Position**: Bottom edge aligned with screen bottom (.offset(y: 34))
 - **Screen insets**: Same as posts (.padding(.horizontal, 8 * spacing tunable))
-- **Internal padding**: 66pt horizontal (buttons moved inward), 12pt vertical (matches add-post button)
+- **Internal padding**: 66pt horizontal (buttons moved inward), 16pt vertical (30% taller than original)
 - **Icon size**: 20pt (.system(size: 20))
 - **Tappable area**: 35x35pt per button (.frame(width: 35, height: 35))
 - **Active button highlight**: 80% of button color brightness (tunables.buttonHighlightColor())
@@ -479,9 +486,20 @@ Can use the ios-add-file skill or add manually via project.pbxproj editing
 
 ## Behavior
 
-**Make Post button**: Switches to makePost explorer showing all recent posts from all users
-**Search button**: Switches to search explorer showing current user's queries
-**Users button**: Switches to users explorer showing all users
+**Button Actions:**
+- **Make Post button**: Switches to makePost explorer showing all recent posts from all users
+- **Search button**: Switches to search explorer showing all users' saved searches
+- **Users button**: Switches to users explorer showing all users
+
+**State Preservation (switching between tabs):**
+- Switching tabs does NOT reset the view
+- Each tab remembers its navigation state, scroll position, expanded posts
+- Example: drill into post 10 on posts tab, switch to queries, switch back → still at post 10
+
+**Reset Behavior (tapping active tab again):**
+- Tapping the already-active tab resets that explorer
+- Clears navigation history, returns to top-level view
+- Also clears that tab's notification badge and updates "last viewed" timestamp
 
 **Explorer State Independence**:
 - All three PostsView instances exist simultaneously in a ZStack
