@@ -167,18 +167,15 @@ onDragGesture(post: Post, translation: Vector):
 
 **Navigate Back:**
 ```
-// Method 1: Tap custom back button
+// Tap custom back button
 onTapBackButton():
     navigateBack()
-
-// Method 2: Standard NavigationStack edge swipe
-// (Provided automatically by NavigationStack - swipe from left edge)
 ```
 
 **No Custom Swipe-Right Gesture:**
 ```
-// Removed to allow ScrollView to scroll freely without interference
-// Standard NavigationStack edge swipe works naturally
+// Removed to avoid conflict with image clip offset dragging in edit mode
+// Users tap the back button to navigate back
 ```
 
 ## Visual Indicators

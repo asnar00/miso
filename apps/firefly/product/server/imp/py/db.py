@@ -195,6 +195,62 @@ class Database:
         finally:
             self.return_connection(conn)
 
+    def migrate_add_ancestor_chains(self):
+        """Add ancestor_chain column to users table and populate for existing users"""
+        conn = self.get_connection()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Add column if not exists
+                cur.execute("""
+                    ALTER TABLE users
+                    ADD COLUMN IF NOT EXISTS ancestor_chain INTEGER[]
+                """)
+                conn.commit()
+                print("Migration: ancestor_chain column added to users")
+
+                # Get all users ordered by creation (oldest first ensures parents processed first)
+                cur.execute("""
+                    SELECT id, invited_by, ancestor_chain
+                    FROM users
+                    ORDER BY created_at ASC NULLS FIRST, id ASC
+                """)
+                users = cur.fetchall()
+
+                updated = 0
+                for user in users:
+                    if user['ancestor_chain'] is not None:
+                        continue  # Already has chain
+
+                    if user['invited_by'] is None:
+                        # Root user - chain is just themselves
+                        chain = [user['id']]
+                    else:
+                        # Get inviter's chain
+                        cur.execute(
+                            "SELECT ancestor_chain FROM users WHERE id = %s",
+                            (user['invited_by'],)
+                        )
+                        inviter = cur.fetchone()
+                        if inviter and inviter['ancestor_chain']:
+                            chain = [user['id']] + list(inviter['ancestor_chain'])
+                        else:
+                            # Inviter doesn't have chain yet, just use self + inviter
+                            chain = [user['id'], user['invited_by']]
+
+                    cur.execute(
+                        "UPDATE users SET ancestor_chain = %s WHERE id = %s",
+                        (chain, user['id'])
+                    )
+                    updated += 1
+
+                conn.commit()
+                print(f"Migration: Updated ancestor_chain for {updated} users")
+        except Exception as e:
+            conn.rollback()
+            print(f"Migration error: {e}")
+        finally:
+            self.return_connection(conn)
+
     # User operations
 
     def create_user(self, email: str) -> Optional[int]:
@@ -295,15 +351,32 @@ class Database:
             self.return_connection(conn)
 
     def create_user_from_invite(self, email: str, name: str, invited_by: int) -> Optional[int]:
-        """Create a new user from an invitation"""
+        """Create a new user from an invitation, including ancestor chain"""
         conn = self.get_connection()
         try:
             with conn.cursor() as cur:
+                # Get inviter's ancestor chain
+                cur.execute(
+                    "SELECT ancestor_chain FROM users WHERE id = %s",
+                    (invited_by,)
+                )
+                inviter = cur.fetchone()
+                inviter_chain = inviter[0] if inviter and inviter[0] else [invited_by]
+
+                # Insert new user
                 cur.execute(
                     "INSERT INTO users (email, name, invited_by, invited_at, profile_complete) VALUES (%s, %s, %s, NOW(), FALSE) RETURNING id",
                     (email, name, invited_by)
                 )
                 user_id = cur.fetchone()[0]
+
+                # Set ancestor chain: [new_user_id] + inviter's chain
+                new_chain = [user_id] + list(inviter_chain)
+                cur.execute(
+                    "UPDATE users SET ancestor_chain = %s WHERE id = %s",
+                    (new_chain, user_id)
+                )
+
                 conn.commit()
                 return user_id
         except psycopg2.IntegrityError:
@@ -314,6 +387,45 @@ class Database:
             conn.rollback()
             print(f"Error creating user from invite: {e}")
             return None
+        finally:
+            self.return_connection(conn)
+
+    def get_proximity(self, user_a_id: int, user_b_id: int) -> int:
+        """Calculate proximity between two users based on invite tree distance"""
+        if user_a_id == user_b_id:
+            return 0
+
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT id, ancestor_chain FROM users WHERE id IN (%s, %s)",
+                    (user_a_id, user_b_id)
+                )
+                rows = cur.fetchall()
+
+                if len(rows) != 2:
+                    return 9999  # User not found
+
+                chains = {row[0]: row[1] or [] for row in rows}
+                chain_a = chains.get(user_a_id, [])
+                chain_b = chains.get(user_b_id, [])
+
+                if not chain_a or not chain_b:
+                    return 9999
+
+                # Find common ancestor
+                chain_b_set = set(chain_b)
+                for i, ancestor in enumerate(chain_a):
+                    if ancestor in chain_b_set:
+                        distance_a = i
+                        distance_b = chain_b.index(ancestor)
+                        return distance_a + distance_b
+
+                return 9999  # No common ancestor
+        except Exception as e:
+            print(f"Error calculating proximity: {e}")
+            return 9999
         finally:
             self.return_connection(conn)
 
@@ -840,11 +952,23 @@ class Database:
         finally:
             self.return_connection(conn)
 
-    def get_recent_users(self) -> List[Dict[str, Any]]:
-        """Get users ordered by most recent activity, with their profile posts (parent_id = -1)"""
+    def get_recent_users(self, current_user_id: Optional[int] = None) -> List[Dict[str, Any]]:
+        """Get users ordered by proximity to current user, then by activity"""
         conn = self.get_connection()
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get current user's ancestor chain for proximity calculation
+                current_chain = []
+                if current_user_id:
+                    cur.execute(
+                        "SELECT ancestor_chain FROM users WHERE id = %s",
+                        (current_user_id,)
+                    )
+                    result = cur.fetchone()
+                    if result and result['ancestor_chain']:
+                        current_chain = result['ancestor_chain']
+
+                # Fetch all users with profiles
                 cur.execute(
                     """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
@@ -854,34 +978,72 @@ class Database:
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email,
+                           u.ancestor_chain,
+                           u.last_activity,
                            COUNT(children.id) as child_count
                     FROM users u
                     JOIN posts p ON p.user_id = u.id AND p.parent_id = -1
                     LEFT JOIN templates t ON p.template_name = t.name
                     LEFT JOIN posts children ON children.parent_id = p.id
-                    GROUP BY p.id, u.id, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body
-                    ORDER BY u.last_activity DESC
+                    GROUP BY p.id, u.id, u.email, u.name, u.ancestor_chain, u.last_activity,
+                             t.placeholder_title, t.placeholder_summary, t.placeholder_body
                     """
                 )
-                return cur.fetchall()
+                users = cur.fetchall()
+
+                # Calculate proximity for each user
+                def calc_proximity(user_chain):
+                    if not current_chain or not user_chain:
+                        return 9999
+                    chain_set = set(current_chain)
+                    for i, ancestor in enumerate(user_chain):
+                        if ancestor in chain_set:
+                            return i + current_chain.index(ancestor)
+                    return 9999
+
+                # Add proximity to each result and sort
+                for user in users:
+                    user_chain = user.get('ancestor_chain') or []
+                    user['proximity'] = calc_proximity(user_chain)
+
+                # Sort by proximity (ascending), then by last_activity (descending, None last)
+                users.sort(key=lambda u: (
+                    u['proximity'],
+                    u.get('last_activity') is None,  # None values last
+                    -(u.get('last_activity').timestamp() if u.get('last_activity') else 0)
+                ))
+
+                return users
         except Exception as e:
             print(f"Error getting recent users: {e}")
             return []
         finally:
             self.return_connection(conn)
 
-    def get_recent_tagged_posts(self, tags: List[str] = None, user_id: Optional[int] = None, limit: int = 50, current_user_email: Optional[str] = None, after: Optional[str] = None) -> List[Dict[str, Any]]:
+    def get_recent_tagged_posts(self, tags: List[str] = None, user_id: Optional[int] = None, limit: int = 50, current_user_email: Optional[str] = None, after: Optional[str] = None, current_user_id: Optional[int] = None) -> List[Dict[str, Any]]:
         """Get recent posts filtered by template tags and optionally by user.
 
         For profile posts, incomplete profiles (empty summary AND body) are hidden
-        unless they belong to the current user.
+        unless they belong to the current user. Profiles are sorted by proximity first.
 
         Args:
             after: ISO8601 timestamp - only return posts created after this time
+            current_user_id: ID of current user for proximity sorting (profiles)
         """
         conn = self.get_connection()
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get current user's ancestor chain for proximity sorting
+                current_chain = []
+                if current_user_id:
+                    cur.execute(
+                        "SELECT ancestor_chain FROM users WHERE id = %s",
+                        (current_user_id,)
+                    )
+                    result = cur.fetchone()
+                    if result and result['ancestor_chain']:
+                        current_chain = result['ancestor_chain']
+
                 # Build query
                 query = """
                     SELECT p.id, p.user_id, p.parent_id, p.title, p.summary, p.body, p.image_url,
@@ -891,6 +1053,8 @@ class Database:
                            t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name,
                            COALESCE(u.name, u.email) as author_name,
                            u.email as author_email,
+                           u.ancestor_chain,
+                           u.last_activity,
                            COUNT(children.id) as child_count
                     FROM posts p
                     LEFT JOIN users u ON p.user_id = u.id
@@ -929,26 +1093,56 @@ class Database:
                     query += " WHERE " + " AND ".join(conditions)
 
                 # Group by
-                query += " GROUP BY p.id, p.has_new_matches, u.email, u.name, t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name"
+                query += " GROUP BY p.id, p.has_new_matches, u.email, u.name, u.ancestor_chain, u.last_activity, t.placeholder_title, t.placeholder_summary, t.placeholder_body, t.plural_name"
 
-                # Sort order - if profile tag, sort by user activity, otherwise by post date
-                if tags and "profile" in tags:
-                    query += """
-                        ORDER BY (
-                            SELECT MAX(created_at)
-                            FROM posts
-                            WHERE user_id = p.user_id
-                        ) DESC
-                    """
-                else:
+                # Sort order - if profile tag, we'll sort by proximity in Python
+                # Otherwise sort by post date in SQL
+                if not (tags and "profile" in tags):
                     query += " ORDER BY p.created_at DESC"
 
-                # Add limit
-                query += " LIMIT %s"
-                params.append(limit)
+                # Add limit (but for profiles, we fetch all and sort by proximity, then limit)
+                if not (tags and "profile" in tags):
+                    query += " LIMIT %s"
+                    params.append(limit)
 
                 cur.execute(query, params)
-                return cur.fetchall()
+                posts = cur.fetchall()
+
+                # Helper to calculate proximity
+                def calc_proximity(user_chain):
+                    if not current_chain or not user_chain:
+                        return 9999
+                    chain_set = set(current_chain)
+                    for i, ancestor in enumerate(user_chain):
+                        if ancestor in chain_set:
+                            return i + current_chain.index(ancestor)
+                    return 9999
+
+                # Calculate proximity for all posts
+                for post in posts:
+                    user_chain = post.get('ancestor_chain') or []
+                    post['proximity'] = calc_proximity(user_chain)
+
+                # Sort based on content type
+                if tags and "profile" in tags:
+                    # Profiles: proximity first, then activity
+                    posts.sort(key=lambda p: (
+                        p['proximity'],
+                        p.get('last_activity') is None,
+                        -(p.get('last_activity').timestamp() if p.get('last_activity') else 0)
+                    ))
+                    posts = posts[:limit]
+                else:
+                    # Posts/queries: date (day) first, proximity as tiebreaker within same day
+                    def get_date_key(p):
+                        created = p.get('created_at')
+                        if created is None:
+                            return (1, None, 9999)  # None dates sort last
+                        # Sort by date (newest first), then proximity (closest first)
+                        return (0, -created.toordinal(), p['proximity'])
+                    posts.sort(key=get_date_key)
+
+                return posts
         except Exception as e:
             print(f"Error getting recent tagged posts: {e}")
             return []

@@ -13,7 +13,7 @@ Posts can have children, forming a tree structure. Users can navigate into child
 
 **Add Post Button**: The add button (using standard button color, lowercase text) appears at the top of child post lists, allowing users to add additional children. The button text depends on the parent post's template: "add post" for profile children, "add sub-post" for all other post types. Anyone can add children to any post, except for profile posts where only the profile owner sees the button. The button color matches all other UI buttons for visual consistency.
 
-**Navigate Back**: Either tap the back button or swipe right from anywhere on the screen (at least 50 points of horizontal movement) to return to the parent view. The swipe must be more horizontal than vertical to trigger navigation.
+**Navigate Back**: Tap the back button to return to the parent view.
 
 **Scroll Position Preserved**: When you navigate from the main posts list to view children, then return, your scroll position is preserved exactly where you left it.
 

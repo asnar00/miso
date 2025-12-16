@@ -50,7 +50,7 @@ struct Toolbar: View {
             }
         }
         .padding(.horizontal, 66)  // Increased to move outer buttons inward
-        .padding(.vertical, 12)     // Match add post button height
+        .padding(.vertical, 16)     // 30% taller than original
         .background(
             tunables.buttonColor()
                 .cornerRadius(12 * tunables.getDouble("corner-roundness", default: 1.0))

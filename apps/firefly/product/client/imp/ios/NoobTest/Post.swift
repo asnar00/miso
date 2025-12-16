@@ -124,13 +124,17 @@ class PostsAPI {
         }.resume()
     }
 
-    func fetchRecentUsers(completion: @escaping (Result<[Post], Error>) -> Void) {
-        guard let url = URL(string: "\(serverURL)/api/users/recent") else {
+    func fetchRecentUsers(email: String? = nil, completion: @escaping (Result<[Post], Error>) -> Void) {
+        var urlString = "\(serverURL)/api/users/recent"
+        if let email = email, !email.isEmpty {
+            urlString += "?email=\(email.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? email)"
+        }
+        guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return
         }
 
-        Logger.shared.info("[PostsAPI] Fetching recent users")
+        Logger.shared.info("[PostsAPI] Fetching recent users (proximity to: \(email ?? "none"))")
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
@@ -168,12 +172,10 @@ class PostsAPI {
         // Add by_user parameter
         queryItems.append(URLQueryItem(name: "by_user", value: byUser))
 
-        // If byUser is "current", add user_email parameter
-        if byUser == "current" {
-            let loginState = Storage.shared.getLoginState()
-            if let userEmail = loginState.email {
-                queryItems.append(URLQueryItem(name: "user_email", value: userEmail))
-            }
+        // Always add user_email for proximity-based sorting
+        let loginState = Storage.shared.getLoginState()
+        if let userEmail = loginState.email {
+            queryItems.append(URLQueryItem(name: "user_email", value: userEmail))
         }
 
         // Add after parameter for incremental fetch

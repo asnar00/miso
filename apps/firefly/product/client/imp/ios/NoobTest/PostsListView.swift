@@ -319,24 +319,6 @@ struct PostsListView: View {
                 }
             }
         }
-        .simultaneousGesture(
-            (parentPostId != nil || backLabel != nil) ?
-                DragGesture(minimumDistance: 30)
-                    .onChanged { value in
-                        Logger.shared.info("[PostsListView] Drag changed: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
-                    }
-                    .onEnded { value in
-                        Logger.shared.info("[PostsListView] Drag ended: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
-                        // Swipe right to go back (positive x translation, at least 50pt, and more horizontal than vertical)
-                        if value.translation.width > 50 && abs(value.translation.width) > abs(value.translation.height) {
-                            Logger.shared.info("[PostsListView] Swipe right detected! Going back...")
-                            navigationPath.removeLast()
-                        } else {
-                            Logger.shared.info("[PostsListView] Not a swipe right (width=\(value.translation.width), height=\(value.translation.height))")
-                        }
-                    }
-                : nil
-        )
         .onAppear {
             Logger.shared.info("[PostsListView] onAppear called - parentPostId=\(String(describing: parentPostId)), backLabel=\(String(describing: backLabel)), templateName=\(String(describing: templateName))")
             // Set as current viewModel for automation access (only for makePost tab - templateName="post")

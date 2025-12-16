@@ -813,9 +813,17 @@ def get_recent_posts():
 
 @app.route('/api/users/recent', methods=['GET'])
 def get_recent_users():
-    """Get users ordered by most recent activity, with their profile posts"""
+    """Get users ordered by proximity to current user, then by activity"""
     try:
-        users = db.get_recent_users()
+        # Get current user ID from email parameter for proximity sorting
+        email = request.args.get('email', '').strip().lower()
+        current_user_id = None
+        if email:
+            current_user = db.get_user_by_email(email)
+            if current_user:
+                current_user_id = current_user['id']
+
+        users = db.get_recent_users(current_user_id=current_user_id)
 
         return jsonify({
             'status': 'success',
@@ -873,15 +881,18 @@ def get_recent_tagged_posts():
 
         # Get current user ID if needed
         user_id = None
-        if by_user == 'current' and user_email:
+        current_user_id = None
+        if user_email:
             user = db.get_user_by_email(user_email)
             if user:
-                user_id = user['id']
-            logger.info(f"[RECENT-TAGGED] by_user=current, email={user_email}, user_id={user_id}")
+                current_user_id = user['id']
+                if by_user == 'current':
+                    user_id = user['id']
+            logger.info(f"[RECENT-TAGGED] email={user_email}, current_user_id={current_user_id}, by_user={by_user}")
 
-        # Fetch posts (pass current_user_email for profile filtering)
+        # Fetch posts (pass current_user_email for profile filtering, current_user_id for proximity)
         logger.info(f"[RECENT-TAGGED] Fetching: tags={tags}, user_id={user_id}, limit={limit}, user_email={user_email}, after={after}")
-        posts = db.get_recent_tagged_posts(tags=tags, user_id=user_id, limit=limit, current_user_email=user_email, after=after if after else None)
+        posts = db.get_recent_tagged_posts(tags=tags, user_id=user_id, limit=limit, current_user_email=user_email, after=after if after else None, current_user_id=current_user_id)
         logger.info(f"[RECENT-TAGGED] Found {len(posts)} posts")
 
         return jsonify({
@@ -2189,6 +2200,7 @@ def startup_health_check():
     logger.info("[HEALTH] Running migrations...")
     try:
         db.migrate_add_clip_offsets()
+        db.migrate_add_ancestor_chains()
         logger.info("[HEALTH] Migrations complete")
     except Exception as e:
         logger.warning(f"[HEALTH] Migration warning: {e}")

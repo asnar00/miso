@@ -9,7 +9,7 @@ Implements hierarchical post navigation using SwiftUI's NavigationStack. Posts w
 
 **SwiftUI Pattern:** NavigationStack with path binding (List of Int)
 **Unified Component:** PostsListView handles both root and child posts via optional parentPostId
-**Gestures:** DragGesture for swipe left on posts (standard NavigationStack back for child views)
+**Gestures:** DragGesture for swipe left on posts, back button for returning to parent
 **Custom UI:** White oval back button with parent title, chevron arrow indicator
 **State Preservation:** Root view only fetches posts when empty, preserving scroll position
 **Animations:** SwiftUI's built-in navigation transitions
@@ -562,24 +562,6 @@ struct PostsListView: View {
                 }
             }
         }
-        .simultaneousGesture(
-            parentPostId != nil ?
-                DragGesture(minimumDistance: 30)
-                    .onChanged { value in
-                        Logger.shared.info("[PostsListView] Drag changed: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
-                    }
-                    .onEnded { value in
-                        Logger.shared.info("[PostsListView] Drag ended: translation.width = \(value.translation.width), translation.height = \(value.translation.height)")
-                        // Swipe right to go back (positive x translation, at least 50pt, and more horizontal than vertical)
-                        if value.translation.width > 50 && abs(value.translation.width) > abs(value.translation.height) {
-                            Logger.shared.info("[PostsListView] Swipe right detected! Going back...")
-                            navigationPath.removeLast()
-                        } else {
-                            Logger.shared.info("[PostsListView] Not a swipe right (width=\(value.translation.width), height=\(value.translation.height))")
-                        }
-                    }
-                : nil
-        )
         .sheet(isPresented: $showNewPostEditor) {
             NewPostEditor(onPostCreated: {
                 fetchPosts()
@@ -681,13 +663,11 @@ struct PostsListView: View {
 2. **State Preservation**: Root view only fetches when `posts.isEmpty`, keeping scroll position intact when navigating back
 3. **Different Endpoints**: Root uses `/api/posts/recent?limit=50`, children use `/api/posts/{id}/children`
 4. **Custom Back Button**: Simple chevron + text without background, using `.navigationBarBackButtonHidden(true)` to hide standard button
-5. **Custom Swipe Gesture**: `.simultaneousGesture()` with DragGesture to allow swipe-right from anywhere (not just edge)
-6. **Swipe Detection**: Minimum 50pt horizontal movement, must be more horizontal than vertical (`abs(width) > abs(height)`)
-7. **Gesture Compatibility**: Uses `.simultaneousGesture()` to work alongside ScrollView's vertical scrolling
-8. **Circle Indicator Design**: Grey semi-transparent circle (RGB 128/128/128, 80% opacity) with white chevron, no border
-9. **Edge Straddling**: Indicator positioned -10pt trailing so circle straddles post edge
-10. **UI Automation**: Programmatic scroll and navigation actions registered via UIAutomationRegistry for testing
-11. **Code Organization**: ImagePicker moved inline to PostView.swift; ChildPostsView and NewPostView deleted (functionality unified)
+5. **No Swipe-Right Gesture**: Removed to avoid conflict with image clip offset dragging in edit mode - users tap back button instead
+6. **Circle Indicator Design**: Grey semi-transparent circle (RGB 128/128/128, 80% opacity) with white chevron, no border
+7. **Edge Straddling**: Indicator positioned -10pt trailing so circle straddles post edge
+8. **UI Automation**: Programmatic scroll and navigation actions registered via UIAutomationRegistry for testing
+9. **Code Organization**: ImagePicker moved inline to PostView.swift; ChildPostsView and NewPostView deleted (functionality unified)
 
 ## API Endpoints Used
 
@@ -760,19 +740,11 @@ struct PostsListView: View {
 - Condition: Post must have children (`childCount > 0`)
 - Action: Navigate to child posts view (`navigationPath.append(postId)`)
 
-**Swipe Right to Go Back:**
-- Works from anywhere on the screen (not just edge)
-- Minimum distance: 30pt (DragGesture parameter)
-- Minimum horizontal movement: 50pt
-- Must be more horizontal than vertical: `abs(width) > abs(height)`
-- Implementation: `.simultaneousGesture()` with DragGesture
-- Action: `navigationPath.removeLast()`
-- Logging: Logs drag changes and final decision for debugging
-
-**Custom Back Button:**
+**Back Button (No Swipe-Right):**
 - Tap action: `navigationPath.removeLast()`
 - Shows chevron + parent post title
 - No background (simple text button)
+- Note: Swipe-right gesture was removed to avoid conflict with image clip offset dragging in edit mode
 
 ## UI Automation
 
@@ -822,14 +794,11 @@ curl http://localhost:8081/trigger/navigate-to-children-6
 3. Swipe left on post with children (minimum 30pt) → child list appears
 4. Verify custom back button appears in navigation bar (chevron + parent title, no background)
 5. Tap back button → return to parent view
-6. Navigate to child view again
-7. Swipe right from anywhere on the screen (minimum 50pt horizontal, more horizontal than vertical) → return to parent
-8. Scroll down in root view, navigate to child, go back
-9. Verify root view scroll position is preserved (not reset to top)
-10. Verify ScrollView scrolls normally (up/down) without gesture interference
-11. Navigate multiple levels deep (verify title updates at each level)
-12. Verify smooth NavigationStack slide animations between levels
-13. Check logs for drag gesture debugging output
+6. Scroll down in root view, navigate to child, go back
+7. Verify root view scroll position is preserved (not reset to top)
+8. Navigate multiple levels deep (verify title updates at each level)
+9. Verify smooth NavigationStack slide animations between levels
+10. Edit a post with a landscape image, drag the clip region left/right - verify no accidental navigation
 
 **Programmatic Test (via UI Automation):**
 ```bash

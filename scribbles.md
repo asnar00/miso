@@ -1,6 +1,65 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+idea:
+
+miso is a *concierge* between you and and whatever bunch of agentic coding tools.
+
+miso is:
+
+    - feature-modular
+    - natural-language
+    - mobile interface
+    - aimed at non-coding domain experts
+    - make your own tools
+    - run anything anywhere
+
+miso combines the feature-modular approach (fnf) with agentic coding tools, by acting as an intermediary between the user and whatever combination of coding agents they prefer.
+
+    user <=> miso <=> claude code (for example)
+              ^
+            [fnf]
+
+miso talks to claude code on our behalf, and collaborates with the user to modify the fnf tree. 
+
+Advantage of this is that it can call a bunch of different agents, that all work in different ways, and it can learn how to use them properly. 
+
+miso can also manage the work queue (urgent/important/etc) so that tasks get done "just in time".
+
+in other words, a meta-agent.
+
+
+
+
+
+
+-------------------------------------
+
+unstructured nonsense but fun to contemplate
+
+disclosure: I have been having actual dreams where I'm sitting down with some people to create a new OS.
+
+so why not do that? there's a need to formalise it *anyway* because we're about to ship some actual code, and it's a total fucking mess.
+
+I think the *key* thing going forward is that the feature-spec tree is a tree of nodes (with internal "softlinks") and each node has spec.md -> pseudocode.md -> code.md, plus whatever other documents you want;
+
+and "miso" is a bunch of workflows between those documents and a final product; presented under a simple mobile interface that any human can use.
+
+in miso, *everything* is the semantically-searchable-and-queryable-tree-of-snippets; and we present the tree as a queryable agent which converses as a third party with whatever agent(s) are doing the work.
+
+key idea is the principal that multiple concerns can surface within the agent, and it will converse with the user and with the coding / other agents to both reflect and modify the spec.
+
+*all it is* is context fetching. That's all it is.
+
+(but obviously done under a nice interface)
+
+so it's basically what I'm writing already. It's an ... OS?
+
+Like, it just needs the ability to let you make and run your own code, and it's done. And that's kind of where it's going anyway.
+
+
+-------------------------
+
 microclub thoughts:
 
 - A invited B forms a tree
