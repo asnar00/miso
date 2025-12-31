@@ -28,7 +28,7 @@ Use this skill when:
 
 Ask the user which feature was implemented, or infer from context. Determine:
 - Feature path (e.g., `apps/firefly/features/posts/explore-posts`)
-- Which platforms were implemented (ios, eos, py)
+- Which platforms were implemented (ios, android, py)
 
 ### Step 2: Review the Implementation
 
@@ -115,7 +115,7 @@ apps/firefly/features/posts/
     ├── spec.md                <- Feature specification
     ├── pseudocode.md          <- Platform-agnostic implementation
     ├── ios.md                 <- iOS implementation (if applicable)
-    ├── eos.md                 <- Android implementation (if applicable)
+    ├── android.md             <- Android implementation (if applicable)
     ├── py.md                  <- Python implementation (if applicable)
     └── imp/                   <- Other artifacts (logs, test data, etc.)
 ```

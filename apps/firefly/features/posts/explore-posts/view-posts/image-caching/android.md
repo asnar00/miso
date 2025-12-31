@@ -1,10 +1,10 @@
-# image caching Android/e/OS implementation
+# image caching Android/Android implementation
 
 *Three-tier cache architecture using LruCache and Bitmap for efficient image storage*
 
 ## File Location
 
-`apps/firefly/product/client/imp/eos/app/src/main/kotlin/com/miso/noobtest/ImageCache.kt`
+`apps/firefly/product/client/imp/android/app/src/main/kotlin/com/miso/noobtest/ImageCache.kt`
 
 ## Three-Tier Architecture
 

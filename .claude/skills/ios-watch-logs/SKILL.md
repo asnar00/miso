@@ -7,14 +7,14 @@ description: Start real-time log streaming from connected iPhone to console and 
 
 ## Overview
 
-Streams logs from a USB-connected iPhone in real-time, filtering to show only the app's explicit log messages (those with `[APP]` prefix). Logs are displayed in the console and written to `device-logs.txt` for monitoring and debugging.
+Streams logs from a USB-connected iPhone in real-time using `pymobiledevice3`, filtering to show only the app's explicit log messages (those with `[APP]` prefix).
 
 ## When to Use
 
 Invoke this skill when the user:
-- Asks to "watch logs"
+- Asks to "watch iOS logs"
 - Wants to "see what the app is doing"
-- Says "monitor the device"
+- Says "monitor the iPhone"
 - Asks to "stream logs from iPhone"
 - Wants to debug or see real-time app behavior
 - Says "show me the logs"
@@ -26,90 +26,67 @@ Invoke this skill when the user:
 - Device must be trusted
 - App must be running on the device to see logs
 
-## Instructions
+## Option 1: Use Screen Capture App (Recommended)
 
-1. Navigate to the iOS app directory:
-   ```bash
-   cd path/to/ios/app
-   ```
+The iPhone screen capture app has an integrated console:
 
-2. Run the watch-logs.py script:
-   ```bash
-   ./watch-logs.py
-   ```
-
-3. Inform the user:
-   - The script will stream logs in real-time
-   - Only messages with `[APP]` prefix are shown (filters out system noise)
-   - Logs are written to `device-logs.txt` in the same directory
-   - Press Ctrl+C to stop watching
-   - The log file continues to grow while the script runs
-
-## Expected Output
-
+```bash
+cd miso/platforms/ios/development/screen-capture/imp
+./iphone_screencap.sh
 ```
-📱 Watching logs from NoobTest...
-📝 Writing to: /path/to/device-logs.txt
 
-Streaming logs (Ctrl+C to stop):
+Click the ">" button to open the live log console.
 
-18:31:45 [INFO] ------------ ping
-18:31:45 [DEBUG] Connection successful - status 200
-18:31:46 [INFO] ------------ ping
-18:31:46 [DEBUG] Connection successful - status 200
+## Option 2: Terminal Streaming
+
+Stream logs directly in terminal:
+
+```bash
+pymobiledevice3 syslog live 2>/dev/null | grep "\[APP\]"
+```
+
+## Option 3: Claude Reading Logs
+
+Claude can read recent logs with:
+
+```bash
+timeout 3 pymobiledevice3 syslog live 2>/dev/null | grep "\[APP\]" | tail -30
 ```
 
 ## Log Format
 
-Each log line shows:
-- **Timestamp**: HH:MM:SS (local time)
-- **Level**: DEBUG, INFO, NOTICE, WARNING, ERROR, or FAULT
-- **Message**: The actual log message
-
-## How It Works
-
-The script:
-1. Runs `pymobiledevice3 syslog live` to stream device logs
-2. Filters for lines matching the app name + `[APP]` prefix
-3. Extracts timestamp, level, and message
-4. Displays in console and writes to `device-logs.txt`
-
-## Integration with Claude Code
-
-Claude can monitor your app by reading the log file:
-```bash
-tail -20 device-logs.txt  # View recent logs
+The app's Logger class prefixes messages with `[APP]`:
+```
+NoobTest{...}[12345] <INFO>: [APP] [PostView] Loading post 14
+NoobTest{...}[12345] <DEBUG>: [APP] [Network] Response: 200 OK
 ```
 
-This enables Claude to:
-- See what the app is currently doing
-- Debug issues by checking logs
-- Verify that code changes are working
+## Adding Logs in Code
+
+Use the app's Logger class in Swift:
+```swift
+Logger.shared.info("[MyFeature] Something happened")
+Logger.shared.debug("[MyFeature] Debug info: \(value)")
+Logger.shared.error("[MyFeature] Error: \(error)")
+```
 
 ## Common Issues
 
 **No logs appearing**:
 - Ensure the app is running on the device
-- Check that Logger.shared calls use the `[APP]` prefix
+- Check that logs use `[APP]` prefix
 - Verify pymobiledevice3 is installed: `pip3 install pymobiledevice3`
 - Device must be trusted and unlocked
 
 **pymobiledevice3 not found**:
-- Install it: `pip3 install pymobiledevice3`
-- Check PATH includes Python bin directory
+- Install: `pip3 install pymobiledevice3`
 
 **Only system logs showing**:
 - The app's Logger must prefix messages with `[APP]`
 - This filters out thousands of framework/system messages
-- Update Logger.swift to add the prefix if missing
-
-## Stopping the Stream
-
-Press Ctrl+C to stop watching logs. The script will terminate cleanly and `device-logs.txt` will remain with all captured logs.
 
 ## Notes
 
-- This runs continuously in the foreground (blocks the terminal)
-- Run in a separate terminal window if you need to work while monitoring
-- The log file is overwritten each time the script starts
-- Only OSLog messages at INFO level and above appear (DEBUG may not show)
+- The `[APP]` prefix filters out thousands of system messages
+- Screen capture app console auto-scrolls to latest logs
+- Use `timeout` command to get a snapshot without blocking

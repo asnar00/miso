@@ -1,7 +1,7 @@
 # create-app
-*creating an Android/e/OS application structure*
+*creating an Android/Android application structure*
 
-An Android app built for e/OS follows the standard Android project structure using Gradle build system and Kotlin/Jetpack Compose for UI.
+An Android app built for Android follows the standard Android project structure using Gradle build system and Kotlin/Jetpack Compose for UI.
 
 ## Project Structure
 
@@ -184,7 +184,7 @@ class MainActivity : ComponentActivity() {
 - **Kotlin**: Preferred language over Java
 - **Material 3**: Latest Material Design components
 - **Gradle Kotlin DSL**: build.gradle.kts instead of Groovy
-- **e/OS compatibility**: Standard Android code works without Google services
+- **Android compatibility**: Standard Android code works without Google services
 
 ## Implementation
 

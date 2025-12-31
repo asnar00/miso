@@ -1,5 +1,5 @@
 # screen-capture
-*mirroring Android/e/OS screen on macOS*
+*mirroring Android/Android screen on macOS*
 
 Screen mirroring for Android devices uses **scrcpy** (screen copy), an open-source tool that provides real-time mirroring and control over USB or WiFi.
 
@@ -138,9 +138,9 @@ scrcpy
 - Disable audio: `scrcpy --no-audio`
 - Use USB 3.0 port
 
-## e/OS Compatibility
+## Android Compatibility
 
-scrcpy works perfectly with e/OS devices as it uses standard Android debugging protocols. No special configuration needed.
+scrcpy works perfectly with Android devices as it uses standard Android debugging protocols. No special configuration needed.
 
 ## Console Window with Live Logs
 

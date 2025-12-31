@@ -1,9 +1,9 @@
-# ping - e/OS Implementation
+# ping - Android Implementation
 *Kotlin/Jetpack Compose implementation of server ping feature*
 
 ## Overview
 
-Implement periodic server connectivity checking in the e/OS client app using OkHttp to make HTTP requests to the server's `/api/ping` endpoint.
+Implement periodic server connectivity checking in the Android client app using OkHttp to make HTTP requests to the server's `/api/ping` endpoint.
 
 ## Server Configuration
 
@@ -145,11 +145,11 @@ And reference it in AndroidManifest.xml:
 
 ## Product Integration
 
-**Target**: `apps/firefly/product/client/imp/eos/app/src/main/java/com/miso/firefly/MainActivity.kt`
+**Target**: `apps/firefly/product/client/imp/android/app/src/main/java/com/miso/firefly/MainActivity.kt`
 
 Update the MainActivity to include the ping functionality.
 
-**Target**: `apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml`
+**Target**: `apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml`
 
 Add the INTERNET permission and cleartext traffic configuration.
 
@@ -164,7 +164,7 @@ Add the INTERNET permission and cleartext traffic configuration.
 ## Testing
 
 1. Start server: `ssh microserver@192.168.1.76 "cd ~/firefly-server && ./start.sh"`
-2. Build and install e/OS app: `./gradlew assembleDebug && adb install -r app/build/outputs/apk/debug/app-debug.apk`
+2. Build and install Android app: `./gradlew assembleDebug && adb install -r app/build/outputs/apk/debug/app-debug.apk`
 3. App should show turquoise background
 4. Stop server: `curl -X POST http://192.168.1.76:8080/api/shutdown`
 5. App background should turn gray within 1 second

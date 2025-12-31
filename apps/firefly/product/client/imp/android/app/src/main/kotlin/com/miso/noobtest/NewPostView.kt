@@ -28,14 +28,17 @@ import kotlinx.coroutines.launch
  * New Post Button - shows at top of posts list
  */
 @Composable
-fun NewPostButton(onClick: () -> Unit) {
+fun NewPostButton(
+    text: String = "add post",
+    onClick: () -> Unit
+) {
     Button(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White.copy(alpha = 0.9f)
+            containerColor = AppColors.accent
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -45,10 +48,10 @@ fun NewPostButton(onClick: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "+ New Post",
+                text = text,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = AppColors.textOnAccent
             )
         }
     }
@@ -125,7 +128,7 @@ fun NewPostEditor(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = Color(0xFF40E0D0)
+        containerColor = AppColors.surface
     ) {
         Column(
             modifier = Modifier
@@ -143,11 +146,11 @@ fun NewPostEditor(
                     text = if (parentId != null) "Reply to Post" else "New Post",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = AppColors.textPrimary
                 )
 
                 TextButton(onClick = onDismiss) {
-                    Text("Close", color = Color.Black)
+                    Text("Close", color = AppColors.textSecondary)
                 }
             }
 
@@ -250,7 +253,7 @@ fun NewPostEditor(
                 enabled = title.isNotEmpty() && !isPosting,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF1976D2)
+                    containerColor = AppColors.accent
                 )
             ) {
                 if (isPosting) {
@@ -259,7 +262,7 @@ fun NewPostEditor(
                         color = Color.White
                     )
                 } else {
-                    Text("Post", fontSize = 18.sp, color = Color.White)
+                    Text("Post", fontSize = 18.sp, color = AppColors.textOnAccent)
                 }
             }
 

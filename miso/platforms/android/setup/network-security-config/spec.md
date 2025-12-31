@@ -1,5 +1,5 @@
 # Network Security Configuration
-*Configuring network security for Android/e/OS apps*
+*Configuring network security for Android/Android apps*
 
 Android's Network Security Configuration controls which network connections apps can make, similar to iOS App Transport Security.
 

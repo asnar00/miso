@@ -7,7 +7,7 @@ description: Start the iPhone screen capture app to mirror a connected iPhone's 
 
 ## Overview
 
-This skill starts the iPhone screen capture application, which mirrors a connected iPhone's screen on the Mac desktop. The app automatically detects when an iPhone is connected via USB and displays its screen in a borderless window.
+Native macOS app that mirrors a connected iPhone's screen on the Mac desktop using AVFoundation. Features an integrated console for live app logs via `pymobiledevice3`.
 
 ## When to Use
 
@@ -20,13 +20,13 @@ Invoke this skill when the user:
 
 ## Prerequisites
 
-- iPhone must be connected via USB
-- The device should be trusted (user may need to tap "Trust This Computer" on iPhone)
-- The skill runs a Swift app that requires AVFoundation and CoreMediaIO frameworks
+- iPhone connected via USB
+- Device trusted (tap "Trust This Computer" on iPhone)
+- `pymobiledevice3` installed for console logs (`pip3 install pymobiledevice3`)
 
 ## Instructions
 
-1. Navigate to the screen capture implementation directory:
+1. Navigate to the screen capture directory:
    ```bash
    cd miso/platforms/ios/development/screen-capture/imp
    ```
@@ -36,32 +36,49 @@ Invoke this skill when the user:
    ./iphone_screencap.sh
    ```
 
-3. Inform the user that:
-   - The script compiles and launches a Mac app that will display their iPhone screen
-   - A window will appear showing "Checking..." initially
-   - Once the iPhone is detected, the screen will appear in the window
-   - There's a console button (">") on the right edge to view device logs
-   - The app will continue running until they close it
+## Features
 
-## Expected Behavior
+- **Borderless window** (390x844) styled like an iPhone
+- **Console toggle**: Click ">" button in top-right to open live log panel
+- **Click to resize**: Click window to toggle between full and half size
+- **Draggable**: Move window by clicking and dragging anywhere
+- **Live logs**: Console shows `[APP]` prefixed logs via `pymobiledevice3 syslog`
 
-- The script compiles `main.swift` and runs the resulting executable
-- A borderless window (390x844) appears on screen
-- If an iPhone is connected, its screen appears within ~2 seconds
-- If no iPhone is detected, the window shows "Waiting for iPhone..."
-- The app polls for device connection every 2 seconds
+## What to Tell the User
+
+- A borderless window will appear showing their iPhone screen
+- **Click the ">" button** to open the console panel with live logs
+- **Click anywhere** on the window to toggle full/half size
+- Close window or Cmd+Q to quit
+
+## Taking Screenshots
+
+```bash
+./screenshot.sh /tmp/screenshot.png
+```
+
+## Reading Logs (for Claude)
+
+When console is open, logs stream via pymobiledevice3. Claude can also read logs with:
+```bash
+pymobiledevice3 syslog live 2>/dev/null | grep "\[APP\]" | head -20
+```
 
 ## Troubleshooting
 
-If the app doesn't show the iPhone screen:
-- Check that the iPhone is physically connected via USB
-- Ensure the iPhone is unlocked and the "Trust This Computer" prompt has been accepted
-- The device may need to be disconnected and reconnected
-- Check that no other apps are using the iPhone camera/screen capture
+**iPhone screen not showing**:
+- Check USB connection
+- Ensure iPhone is unlocked
+- Accept "Trust This Computer" prompt
+- Disconnect and reconnect device
 
-## Notes
+**Console not working**:
+- Install pymobiledevice3: `pip3 install pymobiledevice3`
+- Check device is trusted
 
-- This app runs in the foreground and blocks the terminal
-- To stop it, the user needs to quit the app or use Ctrl+C in the terminal
-- The app creates a log file at `/Users/asnaroo/Desktop/experiments/iphonecap/app.log`
-- The console feature attempts to stream device logs from the Firefly app
+## Files
+
+- `main.swift` - Native macOS app source
+- `build.sh` - Compiles the Swift app
+- `iphone_screencap.sh` - Builds (if needed) and launches
+- `screenshot.sh` - Captures device screenshot

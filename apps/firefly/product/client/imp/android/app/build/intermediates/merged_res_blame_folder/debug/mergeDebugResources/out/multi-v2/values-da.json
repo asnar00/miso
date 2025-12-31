@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.miso.noobtest.app-mergeDebugResources-29:/values-da/values-da.xml",
+            "outputFile": "com.miso.noobtest.app-mergeDebugResources-31:/values-da/values-da.xml",
             "map": [
                 {
                     "source": "/Users/asnaroo/.gradle/caches/9.1.0/transforms/6bc2eee68dcdc0181e4b0de921916b67/transformed/ui-release/res/values-da/values-da.xml",

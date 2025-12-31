@@ -40,7 +40,7 @@ fun SignInView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF40E0D0)),
+            .background(AppColors.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -54,15 +54,15 @@ fun SignInView(
             Text(
                 text = "ᕦ(ツ)ᕤ",
                 fontSize = 64.sp,
-                color = Color.Black
+                color = AppColors.accent
             )
 
             // Title
             Text(
-                text = "Welcome to Firefly",
+                text = "microclub",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = AppColors.textPrimary
             )
 
             // Content based on state
@@ -161,7 +161,7 @@ fun EmailEntryView(
     ) {
         Text(
             text = "Enter your email address",
-            color = Color.Black
+            color = AppColors.textPrimary
         )
 
         TextField(
@@ -181,10 +181,10 @@ fun EmailEntryView(
         Button(
             onClick = onSendCode,
             enabled = !isLoading && email.isNotEmpty(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.accent),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Send Code", fontWeight = FontWeight.SemiBold)
+            Text("Send Code", fontWeight = FontWeight.SemiBold, color = AppColors.textOnAccent)
         }
     }
 }
@@ -204,13 +204,13 @@ fun CodeEntryView(
     ) {
         Text(
             text = "Enter the 4-digit code",
-            color = Color.Black
+            color = AppColors.textPrimary
         )
 
         Text(
             text = "sent to $email",
             fontSize = 12.sp,
-            color = Color.Black.copy(alpha = 0.7f)
+            color = AppColors.textSecondary
         )
 
         TextField(
@@ -235,17 +235,17 @@ fun CodeEntryView(
         Button(
             onClick = onVerifyCode,
             enabled = !isLoading && code.length == 4,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.accent),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Verify Code", fontWeight = FontWeight.SemiBold)
+            Text("Verify Code", fontWeight = FontWeight.SemiBold, color = AppColors.textOnAccent)
         }
 
         TextButton(
             onClick = onBackToEmail,
             enabled = !isLoading
         ) {
-            Text("Use different email", color = Color.Black)
+            Text("Use different email", color = AppColors.textSecondary)
         }
     }
 }

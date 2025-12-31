@@ -20,7 +20,7 @@ foo/
 ├── spec.md           # the feature specification
 ├── pseudocode.md     # natural-language function definitions and patching instructions
 ├── ios.md            # iOS platform implementation
-├── eos.md            # Android/e/OS platform implementation
+├── android.md        # Android platform implementation
 ├── py.md             # Python platform implementation
 └── imp/              # other artifacts (logs, test files, debugging notes)
 ```
@@ -33,7 +33,7 @@ To keep things manageable, a feature should have no more than four to six childr
 
 - `spec.md`: The feature specification in plain language for users
 - `pseudocode.md`: Natural-language definition of functions, plus patching instructions (where in the product they should be called, or what they replace)
-- `ios.md`, `eos.md`, `py.md`: Platform-specific implementations with actual code
+- `ios.md`, `android.md`, `py.md`: Platform-specific implementations with actual code
 - `imp/`: Folder for other artifacts (logs, debugging issues, test data, etc.)
 
 All executable code lives in the `product/` folder, separate from feature specifications.

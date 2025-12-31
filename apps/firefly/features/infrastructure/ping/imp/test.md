@@ -20,4 +20,4 @@ cd apps/firefly/features/testing/imp
 ./test-feature.sh ping
 ```
 
-**Implementation**: See `ping/imp/ios/test.md` and `ping/imp/eos/test.md` for platform-specific test code.
+**Implementation**: See `ping/imp/ios/test.md` and `ping/imp/android/test.md` for platform-specific test code.

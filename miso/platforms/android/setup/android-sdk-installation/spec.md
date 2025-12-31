@@ -1,7 +1,7 @@
 # setup
 *installing Android development tools on macOS*
 
-Before you can build Android/e/OS apps, you need to install the Android SDK, Java Development Kit, and Gradle build system.
+Before you can build Android/Android apps, you need to install the Android SDK, Java Development Kit, and Gradle build system.
 
 ## Prerequisites
 
@@ -217,9 +217,9 @@ These are typically git-ignored and created automatically or manually per projec
 **Build fails with AndroidX errors**
 - Create `gradle.properties` with `android.useAndroidX=true`
 
-## e/OS Specific Notes
+## Android Specific Notes
 
-All standard Android development tools work with e/OS devices. No special configuration needed - e/OS is based on Android Open Source Project (AOSP) and maintains full compatibility with Android development workflows.
+All standard Android development tools work with Android devices. No special configuration needed - Android is based on Android Open Source Project (AOSP) and maintains full compatibility with Android development workflows.
 
 ## Implementation
 

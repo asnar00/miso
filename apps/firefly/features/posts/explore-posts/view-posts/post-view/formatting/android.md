@@ -1,4 +1,4 @@
-# formatting Android/e/OS implementation
+# formatting Android/Android implementation
 
 *Jetpack Compose text formatting and markdown processing*
 

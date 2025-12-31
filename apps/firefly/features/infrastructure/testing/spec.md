@@ -24,6 +24,10 @@ The app listens for test commands sent over the network. Your Mac sends the comm
 See `testing/imp/` for complete implementation details:
 - **usage.md** - How to run tests from your Mac
 - **ios.md** - iOS test infrastructure (TestServer, TestRegistry)
-- **eos.md** - Android test infrastructure (TestServer, TestRegistry)
+- **android.md** - Android test infrastructure (TestServer, TestRegistry)
 - **connection.md** - USB port forwarding setup
 - **test-feature.sh** - Command-line tool for running tests
+
+## Test-Driven Porting
+
+See `testing/test-driven/` for the methodology used when porting features between platforms. Each feature can have a `test.md` file that defines UI elements, logging points, and test sequences.

@@ -1,7 +1,7 @@
 # build-and-deploy
-*complete workflow to build and deploy Android/e/OS apps to connected device*
+*complete workflow to build and deploy Android/Android apps to connected device*
 
-This document describes the complete process to build and deploy an Android/e/OS app to a USB-connected device.
+This document describes the complete process to build and deploy an Android/Android app to a USB-connected device.
 
 ## Prerequisites
 
@@ -77,12 +77,12 @@ The app should appear in the device's app launcher and launch successfully.
 
 ## Complete Example Script
 
-For the Firefly Android client at `apps/firefly/product/client/imp/eos/`:
+For the Firefly Android client at `apps/firefly/product/client/imp/android/`:
 
 ```bash
 #!/bin/bash
 
-cd /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos
+cd /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android
 
 echo "📱 Checking for connected Android device..."
 

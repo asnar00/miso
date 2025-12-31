@@ -201,7 +201,7 @@ sleep 0.5  # Wait for sheet to appear
 ### Platform Support
 
 - **iOS**: Fully implemented in UIAutomationRegistry.swift and TestServer.swift
-- **Android**: Same pattern can be implemented using Kotlin coroutines and local HTTP server
+- **Android**: Fully implemented in UIAutomationRegistry.kt and TestServer.kt
 
 ### Element Registration Pattern
 
@@ -241,12 +241,28 @@ In SwiftUI views:
 
 **Note**: Manual registration is still useful for non-button elements like gesture recognizers or complex views. For buttons, prefer the modifier pattern.
 
-In Kotlin composables:
+In Kotlin composables (recommended pattern):
 ```kotlin
-LaunchedEffect(Unit) {
-    UIAutomationRegistry.register("unique-id") {
+@Composable
+fun MyButton() {
+    // Register for automation (auto-unregisters on dispose)
+    RegisterUIElement("my-button") {
         // Action to perform
     }
+
+    Button(onClick = { /* same action */ }) {
+        Text("Click")
+    }
+}
+```
+
+Or using the modifier extension:
+```kotlin
+Button(
+    onClick = { /* action */ },
+    modifier = Modifier.uiAutomationId("my-button") { /* action */ }
+) {
+    Text("Click")
 }
 ```
 
@@ -265,9 +281,32 @@ LaunchedEffect(Unit) {
 - `iphone-screen-capture` - Continuous screen mirroring
 - `update-skill` - Improve this skill based on usage
 
+## Additional Endpoints
+
+### List Registered Elements
+
+```bash
+curl http://localhost:8081/test/list-elements
+```
+
+Response:
+```json
+{"elements": ["toolbar-plus", "refresh-button"], "textFields": ["search-field"]}
+```
+
+### Set Text in a Field
+
+```bash
+curl -X POST 'http://localhost:8081/test/set-text?id=search-field&text=hello'
+```
+
+Response:
+```json
+{"status": "success", "id": "search-field", "text": "hello"}
+```
+
 ## Future Enhancements
 
-- List all registered elements via `/test/elements` endpoint
 - Support for element state queries (is button enabled? is view visible?)
 - Batch operations (trigger multiple elements in sequence)
 - Screenshot comparison (verify expected vs actual)

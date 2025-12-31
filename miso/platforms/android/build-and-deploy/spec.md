@@ -1,5 +1,5 @@
 # build-and-deploy
-*compiling Android/e/OS apps and deploying to devices*
+*compiling Android/Android apps and deploying to devices*
 
 This section covers building Android applications with Gradle and deploying them to USB-connected devices via ADB (Android Debug Bridge).
 
@@ -9,7 +9,7 @@ This section covers building Android applications with Gradle and deploying them
 Compiling Android apps using Gradle, managing dependencies, and understanding the build system (Gradle Kotlin DSL).
 
 ### [usb-deploy](build-and-deploy/usb-deploy.md)
-Deploying apps directly to USB-connected Android/e/OS devices using ADB.
+Deploying apps directly to USB-connected Android/Android devices using ADB.
 
 ### [complete-workflow](build-and-deploy/complete-workflow.md)
 End-to-end guide: build, install, and launch in one workflow.

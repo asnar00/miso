@@ -1,7 +1,7 @@
 # troubleshooting
-*common Android/e/OS development issues and solutions*
+*common Android/Android development issues and solutions*
 
-This document covers common problems encountered during Android/e/OS development and their solutions.
+This document covers common problems encountered during Android/Android development and their solutions.
 
 ## Build Issues
 
@@ -227,15 +227,15 @@ adb logcat | grep "com.miso.noobtest"
 adb logcat -s YourTag
 ```
 
-## e/OS Specific Issues
+## Android Specific Issues
 
-### e/OS compatibility
+### Android compatibility
 
-**Note**: e/OS is fully compatible with standard Android development. There are no special e/OS-specific issues - all Android tools and workflows work identically.
+**Note**: Android is fully compatible with standard Android development. There are no special Android-specific issues - all Android tools and workflows work identically.
 
 ### Privacy features
 
-e/OS includes enhanced privacy features, but they don't affect development mode. USB debugging and ADB work normally.
+Android includes enhanced privacy features, but they don't affect development mode. USB debugging and ADB work normally.
 
 ## Getting Help
 

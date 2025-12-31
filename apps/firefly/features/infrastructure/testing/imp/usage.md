@@ -25,7 +25,7 @@ xcrun devicectl device process launch --device <DEVICE_ID> com.miso.noobtest
 
 **Android** (future):
 ```bash
-cd apps/firefly/product/client/imp/eos
+cd apps/firefly/product/client/imp/android
 ./install-device.sh  # Build and install
 adb shell am start -n com.miso.noobtest/.MainActivity
 ```

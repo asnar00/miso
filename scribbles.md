@@ -1,6 +1,36 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+fast, automated composition of the feature nodes' code files is the secret sauce here.
+
+howto: xyz.
+
+---------------------------------------
+
+headslap:
+during your conversation, you are calling a set of tools to accomplish some task.
+later, you can identify repeating patterns and extract larger-scale functions and concepts.
+these then become naturally repeatable.
+it's like we're building skills as we go.
+
+so that's the interface: 
+the conversation: request, context, claude session
+
+and then we "sample" a bit of it, and use that to write the feature node.
+
+the idea is that we trace *back* from the feature node to the conversation that spawned it. It's the ultimate context.
+
+that's the architecture.
+queryable associative node-tree;
+issue commands to the "doer" (claude code)
+
+conversation includes the live app
+(state, image, sound)
+
+
+--------------------------------------------
+
+
 idea:
 
 miso is a *concierge* between you and and whatever bunch of agentic coding tools.

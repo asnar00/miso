@@ -61,7 +61,7 @@ Complex multi-step processes that benefit from delegation:
 
 **Deployment**:
 - `ios-deploy-usb` - iOS USB deployment
-- `eos-deploy-usb` - Android USB deployment
+- `android-deploy-usb` - Android USB deployment
 - `py-deploy-remote` - Remote server deployment
 
 ### Inline Skills (no delegate flag)
@@ -71,19 +71,19 @@ Simpler skills that are fine to execute directly:
 **App Control**:
 - `ios-restart-app`
 - `ios-stop-app`
-- `eos-restart-app`
-- `eos-stop-app`
+- `android-restart-app`
+- `android-stop-app`
 - `py-start-local`
 - `py-stop-local`
 
 **Monitoring**:
 - `ios-watch-logs`
-- `eos-watch-logs`
+- `android-watch-logs`
 - `py-server-logs`
 
 **Screen Capture**:
 - `iphone-screen-capture`
-- `eos-screen-capture`
+- `android-screen-capture`
 
 **Project Editing**:
 - `ios-add-file`
@@ -148,7 +148,7 @@ Watch for:
 ## Skill Naming Convention
 
 - `ios-*` - iOS platform skills
-- `eos-*` - Android/e/OS platform skills
+- `android-*` - Android platform skills
 - `py-*` - Python/server skills
 - `iphone-*` - iPhone-specific tools (legacy, consider renaming to ios-*)
 

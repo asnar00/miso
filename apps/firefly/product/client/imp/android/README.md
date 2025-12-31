@@ -8,7 +8,7 @@ A minimal Jetpack Compose app that displays "template" in the center of the scre
 Copy this template to start a new Android project:
 
 ```bash
-cp -r miso/platforms/eos/template/ MyApp/
+cp -r miso/platforms/android/template/ MyApp/
 ```
 
 Then:
@@ -31,7 +31,7 @@ Then:
 
 ## Next Steps
 
-See `miso/platforms/eos/` for documentation on:
+See `miso/platforms/android/` for documentation on:
 - Building and deploying
 - Adding app icons
 - USB deployment to devices

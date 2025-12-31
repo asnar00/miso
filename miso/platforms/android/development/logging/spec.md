@@ -1,5 +1,5 @@
 # Logging
-*Debugging Android/e/OS apps with logcat*
+*Debugging Android/Android apps with logcat*
 
 Android provides a built-in logging system accessible via `adb logcat` that captures app and system logs.
 

@@ -5,7 +5,7 @@ When the user makes a change to a feature `A/B.md`, or adds a subfeature, the `i
 
 1. **Pseudocode**: Check if `A/B/imp/pseudocode.md` is up-to-date. If not, update it to reflect feature changes using natural language function definitions and patching instructions.
 
-2. **Platform Code**: Check if platform implementations (`A/B/imp/ios.md`, `/eos.md`, `/py.md`) are up-to-date vs pseudocode. If not, update them with platform-appropriate code syntax.
+2. **Platform Code**: Check if platform implementations (`A/B/imp/ios.md`, `/android.md`, `/py.md`) are up-to-date vs pseudocode. If not, update them with platform-appropriate code syntax.
 
 3. **Product Code**: Check if actual product code is up-to-date vs platform implementations. If not, apply modifications following patching instructions.
 

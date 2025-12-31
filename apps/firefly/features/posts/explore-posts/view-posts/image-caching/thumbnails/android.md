@@ -1,4 +1,4 @@
-# thumbnails Android/e/OS implementation
+# thumbnails Android/Android implementation
 
 *Kotlin implementation of center-cropped square thumbnails using Bitmap operations*
 
@@ -433,7 +433,7 @@ fun testThumbnailGeneration() {
 
 ## Integration Points
 
-**File:** `apps/firefly/product/client/imp/eos/app/src/main/kotlin/com/miso/noobtest/ImageCache.kt`
+**File:** `apps/firefly/product/client/imp/android/app/src/main/kotlin/com/miso/noobtest/ImageCache.kt`
 
 **Method:** `private fun resizeImage(image: Bitmap, targetSize: Int = 80): Bitmap`
 

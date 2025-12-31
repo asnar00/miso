@@ -1,5 +1,5 @@
 # development
-*tools and workflows for Android/e/OS app development and debugging*
+*tools and workflows for Android/Android app development and debugging*
 
 This section covers the tools and workflows that make Android development productive: logging with Logcat, monitoring, remote control, and visual debugging.
 

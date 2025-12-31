@@ -1,9 +1,9 @@
 ---
-name: eos-stop-app
+name: android-stop-app
 description: Stop the Android app running on connected device. Cleanly terminates the app using force-stop. Use when stopping the app for debugging, testing, or cleanup.
 ---
 
-# Android/e/OS Stop App
+# Android Stop App
 
 ## Overview
 

@@ -1,9 +1,9 @@
 ---
-name: eos-restart-app
+name: android-restart-app
 description: Restart the Android app on connected device without rebuilding. Force-stops and relaunches the app remotely. Use when testing changes that don't require rebuild, or refreshing app state.
 ---
 
-# Android/e/OS Restart App
+# Android Restart App
 
 ## Overview
 
@@ -21,7 +21,7 @@ Invoke this skill when the user:
 ## Prerequisites
 
 - Android device connected via USB
-- App must be installed on the device (use eos-deploy-usb first if not)
+- App must be installed on the device (use android-deploy-usb first if not)
 - USB debugging enabled
 - ADB installed
 - Device authorized
@@ -46,7 +46,7 @@ Invoke this skill when the user:
 4. Inform the user:
    - The app has been restarted on the device
    - This does NOT rebuild - only restarts the existing installation
-   - Use eos-deploy-usb if code changes need to be deployed first
+   - Use android-deploy-usb if code changes need to be deployed first
 
 ## Expected Output
 
@@ -69,7 +69,7 @@ The script uses:
 - You just want to refresh the running app
 - Changes are external (server-side, network config, etc.)
 
-**Use eos-deploy-usb when**:
+**Use android-deploy-usb when**:
 - You changed Kotlin code
 - You added/modified UI (Compose)
 - You updated dependencies in build.gradle.kts
@@ -84,7 +84,7 @@ The script uses:
 - Try: `adb kill-server && adb start-server`
 
 **App not installed**:
-- Run eos-deploy-usb first to build and install
+- Run android-deploy-usb first to build and install
 - Verify app on device home screen or app drawer
 
 **App doesn't start**:

@@ -1,4 +1,4 @@
-# expand-and-scroll Android/e/OS implementation
+# expand-and-scroll Android/Android implementation
 
 *Jetpack Compose implementation for coordinated post expansion and scroll-to-position*
 
@@ -103,7 +103,7 @@ fun PostView(
     )
 
     // Use animatedExpansionFactor for all interpolated values
-    // ... (see post-view/imp/eos.md for full implementation)
+    // ... (see post-view/imp/android.md for full implementation)
 }
 ```
 

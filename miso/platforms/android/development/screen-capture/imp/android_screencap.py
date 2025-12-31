@@ -63,7 +63,7 @@ class ConsoleWindow:
         self.status_label.pack(side=tk.LEFT, padx=10)
 
         # Log file path
-        self.log_file_path = "/Users/asnaroo/Desktop/experiments/miso/miso/platforms/eos/development/screen-capture/imp/device-logs.txt"
+        self.log_file_path = "/Users/asnaroo/Desktop/experiments/miso/miso/platforms/android/development/screen-capture/imp/device-logs.txt"
 
         # Start log streaming
         self.log_thread = None

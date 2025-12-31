@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.miso.noobtest.app-mergeDebugResources-29:/values-zh-rCN/values-zh-rCN.xml",
+            "outputFile": "com.miso.noobtest.app-mergeDebugResources-31:/values-zh-rCN/values-zh-rCN.xml",
             "map": [
                 {
                     "source": "/Users/asnaroo/.gradle/caches/9.1.0/transforms/542eebf249ae5f3fb797611aac85ab21/transformed/core-1.15.0/res/values-zh-rCN/values-zh-rCN.xml",

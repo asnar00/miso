@@ -1,10 +1,10 @@
-# new-user Android/e/OS implementation
+# new-user Android/Android implementation
 *welcome screen for first-time users*
 
 ## File Structure
 
 Create new file:
-- `apps/firefly/product/client/imp/eos/app/src/main/kotlin/com/miso/noobtest/NewUserView.kt`
+- `apps/firefly/product/client/imp/android/app/src/main/kotlin/com/miso/noobtest/NewUserView.kt`
 
 ## NewUserView.kt
 
@@ -96,7 +96,7 @@ fun NewUserView(
 
 This view is shown after sign-in when `isNewUser` is true and `hasSeenWelcome` is false.
 
-See `sign-in/imp/eos.md` for the complete MainActivity.kt implementation showing the three-state navigation:
+See `sign-in/imp/android.md` for the complete MainActivity.kt implementation showing the three-state navigation:
 1. Not authenticated → SignInView
 2. Authenticated + new user + hasn't seen welcome → NewUserView
 3. Authenticated (or has seen welcome) → MainContentView

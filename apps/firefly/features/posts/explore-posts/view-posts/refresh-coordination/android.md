@@ -1,4 +1,4 @@
-# refresh-coordination Android/e/OS implementation
+# refresh-coordination Android/Android implementation
 
 *Kotlin/Compose implementation using lambda callbacks for coordinated refreshes across view hierarchy*
 
@@ -350,7 +350,7 @@ object PostsAPI {
     private const val SERVER_URL = "http://185.96.221.52:8080"
 
     suspend fun fetchRecentPosts(): Result<List<Post>> {
-        // Implementation from recent-posts/imp/eos.md
+        // Implementation from recent-posts/imp/android.md
     }
 
     suspend fun fetchChildren(parentId: Int): Result<List<Post>> = withContext(Dispatchers.IO) {
@@ -385,7 +385,7 @@ object PostsAPI {
         image: Bitmap?,
         parentId: Int?
     ): Result<Int> {
-        // Implementation from new-post/imp/eos.md (multipart form data)
+        // Implementation from new-post/imp/android.md (multipart form data)
     }
 
     private fun parsePostsJSONArray(jsonArray: JSONArray): List<Post> {

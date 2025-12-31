@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:2:1-19:12
-INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:2:1-19:12
-INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:2:1-19:12
-INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:2:1-19:12
+ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:2:1-19:12
 MERGED from [androidx.activity:activity:1.9.3] /Users/asnaroo/.gradle/caches/9.1.0/transforms/3ba4783ea3fcfa718b5438eb22524f58/transformed/activity-1.9.3/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.activity:activity-ktx:1.9.3] /Users/asnaroo/.gradle/caches/9.1.0/transforms/0a10ae251ac3a96e59230eb1422e05d0/transformed/activity-ktx-1.9.3/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material3:material3-android:1.4.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/ab446034169d61a96b5868d6a70356f8/transformed/material3/AndroidManifest.xml:17:1-22:12
@@ -18,6 +18,8 @@ MERGED from [androidx.compose.ui:ui-geometry-android:1.9.2] /Users/asnaroo/.grad
 MERGED from [androidx.compose.ui:ui-util-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/f8760390b5401521bbeac547dc266882/transformed/ui-util/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-text-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/b6572f20d43dac72ed819b399cbf9811/transformed/ui-text/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-graphics-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/5feeeddb679e26f660a06de4940dd939/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/asnaroo/.gradle/caches/9.1.0/transforms/f2716700de78d7650c3926556d41760d/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/asnaroo/.gradle/caches/9.1.0/transforms/e86fb3e04c0d98fceebffa22f049c3e3/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/6bc2eee68dcdc0181e4b0de921916b67/transformed/ui-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.autofill:autofill:1.0.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/b1d2e1de586f751371a436261afd977b/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/asnaroo/.gradle/caches/9.1.0/transforms/a2e5323f4c5a87000b1c791952a8ba03/transformed/graphics-path-1.0.1/AndroidManifest.xml:2:1-7:12
@@ -48,20 +50,20 @@ MERGED from [androidx.tracing:tracing:1.2.0] /Users/asnaroo/.gradle/caches/9.1.0
 MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/0c5be31b1acf37fc7480d4055f3d960e/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.core:core-viewtree:1.0.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/518e6a0ea358b5899f5d5cb7bd194afb/transformed/core-viewtree-1.0.0/AndroidManifest.xml:2:1-7:12
 	package
-		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml
 	android:versionName
-		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml
 	android:versionCode
-		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml
 	xmlns:android
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:2:11-69
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:2:11-69
 uses-permission#android.permission.INTERNET
-ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:3:5-67
+ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:3:5-67
 	android:name
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:3:22-64
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:3:22-64
 application
-ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:5:5-18:19
-INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:5:5-18:19
+ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:5:5-18:19
+INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:5:5-18:19
 MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/fd2063cf75a5299191a1d5d4a3f71432/transformed/emoji2-1.4.0/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/fd2063cf75a5299191a1d5d4a3f71432/transformed/emoji2-1.4.0/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.core:core:1.15.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/542eebf249ae5f3fb797611aac85ab21/transformed/core-1.15.0/AndroidManifest.xml:28:5-89
@@ -75,37 +77,37 @@ MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/asnaroo/.g
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/asnaroo/.gradle/caches/9.1.0/transforms/4268cb2051f703c56d047c88c401d32f/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/asnaroo/.gradle/caches/9.1.0/transforms/4268cb2051f703c56d047c88c401d32f/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
 	android:extractNativeLibs
-		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.15.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/542eebf249ae5f3fb797611aac85ab21/transformed/core-1.15.0/AndroidManifest.xml:28:18-86
 	android:label
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:6:9-41
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:6:9-41
 	android:icon
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:7:9-43
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:7:9-43
 	android:networkSecurityConfig
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:8:9-69
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:8:9-69
 activity#com.miso.noobtest.MainActivity
-ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:9:9-17:20
+ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:9:9-17:20
 	android:exported
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:11:13-36
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:11:13-36
 	android:theme
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:12:13-70
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:12:13-70
 	android:name
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:10:13-41
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:10:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:13:13-16:29
+ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:13:13-16:29
 action#android.intent.action.MAIN
-ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:14:17-69
+ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:14:17-69
 	android:name
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:14:25-66
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:14:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:15:17-77
+ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:15:17-77
 	android:name
-		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml:15:27-74
+		ADDED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml:15:27-74
 uses-sdk
-INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml
-INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml
+INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml
 MERGED from [androidx.activity:activity:1.9.3] /Users/asnaroo/.gradle/caches/9.1.0/transforms/3ba4783ea3fcfa718b5438eb22524f58/transformed/activity-1.9.3/AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity:1.9.3] /Users/asnaroo/.gradle/caches/9.1.0/transforms/3ba4783ea3fcfa718b5438eb22524f58/transformed/activity-1.9.3/AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity-ktx:1.9.3] /Users/asnaroo/.gradle/caches/9.1.0/transforms/0a10ae251ac3a96e59230eb1422e05d0/transformed/activity-ktx-1.9.3/AndroidManifest.xml:5:5-44
@@ -134,6 +136,10 @@ MERGED from [androidx.compose.ui:ui-text-android:1.9.2] /Users/asnaroo/.gradle/c
 MERGED from [androidx.compose.ui:ui-text-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/b6572f20d43dac72ed819b399cbf9811/transformed/ui-text/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-graphics-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/5feeeddb679e26f660a06de4940dd939/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-graphics-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/5feeeddb679e26f660a06de4940dd939/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/asnaroo/.gradle/caches/9.1.0/transforms/f2716700de78d7650c3926556d41760d/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/asnaroo/.gradle/caches/9.1.0/transforms/f2716700de78d7650c3926556d41760d/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/asnaroo/.gradle/caches/9.1.0/transforms/e86fb3e04c0d98fceebffa22f049c3e3/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/asnaroo/.gradle/caches/9.1.0/transforms/e86fb3e04c0d98fceebffa22f049c3e3/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/6bc2eee68dcdc0181e4b0de921916b67/transformed/ui-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-android:1.9.2] /Users/asnaroo/.gradle/caches/9.1.0/transforms/6bc2eee68dcdc0181e4b0de921916b67/transformed/ui-release/AndroidManifest.xml:5:5-44
 MERGED from [androidx.autofill:autofill:1.0.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/b1d2e1de586f751371a436261afd977b/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
@@ -193,9 +199,9 @@ MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/asnaroo/.gradle/cache
 MERGED from [androidx.core:core-viewtree:1.0.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/518e6a0ea358b5899f5d5cb7bd194afb/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-viewtree:1.0.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/518e6a0ea358b5899f5d5cb7bd194afb/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
 	android:targetSdkVersion
-		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/eos/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/client/imp/android/app/src/main/AndroidManifest.xml
 provider#androidx.startup.InitializationProvider
 ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/asnaroo/.gradle/caches/9.1.0/transforms/fd2063cf75a5299191a1d5d4a3f71432/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] /Users/asnaroo/.gradle/caches/9.1.0/transforms/295115373ca565db56e8dc464d63a448/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:24:9-32:20

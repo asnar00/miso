@@ -1,14 +1,14 @@
-# sign-in Android/e/OS implementation
+# sign-in Android/Android implementation
 *client-side authentication UI for Firefly Android app*
 
 ## File Structure
 
 Create new files:
-- `apps/firefly/product/client/imp/eos/app/src/main/kotlin/com/miso/noobtest/Storage.kt`
-- `apps/firefly/product/client/imp/eos/app/src/main/kotlin/com/miso/noobtest/SignInView.kt`
+- `apps/firefly/product/client/imp/android/app/src/main/kotlin/com/miso/noobtest/Storage.kt`
+- `apps/firefly/product/client/imp/android/app/src/main/kotlin/com/miso/noobtest/SignInView.kt`
 
 Modify existing:
-- `apps/firefly/product/client/imp/eos/app/src/main/kotlin/com/miso/noobtest/MainActivity.kt`
+- `apps/firefly/product/client/imp/android/app/src/main/kotlin/com/miso/noobtest/MainActivity.kt`
 
 ## Storage.kt
 

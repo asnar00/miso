@@ -21,7 +21,7 @@ fun NewUserView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF40E0D0)),
+            .background(AppColors.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -37,7 +37,7 @@ fun NewUserView(
             Text(
                 text = "ᕦ(ツ)ᕤ",
                 fontSize = 80.sp,
-                color = Color.Black
+                color = AppColors.accent
             )
 
             // Welcome text
@@ -45,14 +45,14 @@ fun NewUserView(
                 text = "welcome",
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = AppColors.textPrimary
             )
 
             // User email
             Text(
                 text = email,
                 fontSize = 20.sp,
-                color = Color.Black.copy(alpha = 0.8f)
+                color = AppColors.textSecondary
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -63,7 +63,7 @@ fun NewUserView(
                     Logger.log("[NewUser] User tapped Get Started")
                     onGetStarted()
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.accent),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 60.dp)
@@ -71,6 +71,7 @@ fun NewUserView(
                 Text(
                     text = "Get Started",
                     fontWeight = FontWeight.SemiBold,
+                    color = AppColors.textOnAccent,
                     modifier = Modifier.padding(8.dp)
                 )
             }

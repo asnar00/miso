@@ -1,12 +1,12 @@
 # setup
-*creating and configuring new Android/e/OS projects*
+*creating and configuring new Android/Android projects*
 
-This section covers everything needed to set up Android development, create apps, and configure them for the e/OS platform.
+This section covers everything needed to set up Android development, create apps, and configure them for the Android platform.
 
 ## Topics
 
 ### [android-sdk-installation](setup/android-sdk-installation.md)
-Installing the Android SDK, Java Development Kit, Gradle, and command-line tools on macOS. Critical for all Android/e/OS development.
+Installing the Android SDK, Java Development Kit, Gradle, and command-line tools on macOS. Critical for all Android/Android development.
 
 ### [create-app](setup/create-app.md)
 Creating a new Android app project using Gradle, Kotlin, and Jetpack Compose.
@@ -22,7 +22,7 @@ Ready-to-use Android app template project with Kotlin, Jetpack Compose, and Mate
 
 ## Quick Start
 
-For a new Android/e/OS app in the miso system:
+For a new Android/Android app in the miso system:
 
 1. Install Android SDK with `android-sdk-installation`
 2. Copy the template or create a new project with `create-app`
@@ -40,8 +40,8 @@ export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"
 
 Add these to your shell profile (`~/.zshrc` or `~/.bash_profile`) permanently.
 
-## e/OS Compatibility
+## Android Compatibility
 
-e/OS is based on Android Open Source Project (AOSP) and maintains full compatibility with standard Android development tools. No special configuration needed - everything works exactly like regular Android development.
+Android is based on Android Open Source Project (AOSP) and maintains full compatibility with standard Android development tools. No special configuration needed - everything works exactly like regular Android development.
 
 See each sub-topic for detailed instructions.

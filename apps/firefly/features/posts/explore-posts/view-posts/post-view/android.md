@@ -1,12 +1,12 @@
-# post-view Android/e/OS implementation
+# post-view Android implementation
 
-*Jetpack Compose implementation for compact/expanded post display with smooth animation*
+*Jetpack Compose implementation for compact/expanded post display with smooth animation and tunables*
 
 ## File Location
 
-`apps/firefly/product/client/imp/eos/app/src/main/kotlin/com/miso/noobtest/PostView.kt`
+`apps/firefly/product/client/imp/android/app/src/main/kotlin/com/miso/noobtest/PostView.kt`
 
-## State Variables
+## Function Signature
 
 ```kotlin
 @Composable
@@ -14,522 +14,316 @@ fun PostView(
     post: Post,
     isExpanded: Boolean,
     onTap: () -> Unit,
-    onPostCreated: () -> Unit
-) {
-    val density = LocalDensity.current  // CRITICAL: Needed for pixel-to-dp conversion
-
-    var expansionFactor by remember { mutableFloatStateOf(if (isExpanded) 1f else 0f) }
-    var imageAspectRatio by remember { mutableFloatStateOf(1f) }
-    var bodyTextHeight by remember { mutableFloatStateOf(200f) }  // Stored in dp
-    var titleSummaryHeight by remember { mutableFloatStateOf(60f) }  // Stored in dp
-    var isMeasured by remember { mutableStateOf(false) }
-
-    // Animate expansion factor
-    val animatedExpansionFactor by animateFloatAsState(
-        targetValue = if (isExpanded) 1f else 0f,
-        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
-        label = "expansion"
-    )
-
-    LaunchedEffect(isExpanded) {
-        expansionFactor = if (isExpanded) 1f else 0f
-    }
+    isEditing: Boolean = false,
+    onStartEditing: (() -> Unit)? = null,
+    onEndEditing: (() -> Unit)? = null,
+    onPostUpdated: ((Post) -> Unit)? = null
+)
 ```
+
+## Tunables Integration
+
+```kotlin
+// Observe tunables for reactivity
+val tunablesVersion = TunableConstants.version.value
+val fontScale = TunableConstants.getDouble("font-scale", 1.0).toFloat()
+val cornerRoundness = TunableConstants.getDouble("corner-roundness", 1.0).toFloat()
+val postBackgroundBrightness = TunableConstants.getDouble("post-background-brightness", 0.9).toFloat()
+val authorFontSize = TunableConstants.getDouble("author-font-size", 1.0).toFloat()
+val buttonColor = TunableConstants.buttonColor()
+```
+
+**Applied to:**
+- Title: `fontSize = (22 * fontScale).sp`
+- Summary: `fontSize = (15 * fontScale).sp`
+- Body: `fontSize = (15 * fontScale).sp`, `lineHeight = (20 * fontScale).sp`
+- Author/date: `fontSize = (15 * fontScale * authorFontSize).sp`
+- Card corners: `RoundedCornerShape((12 * cornerRoundness).dp)`
+- Card background: `Color.White.copy(alpha = postBackgroundBrightness)`
+- Buttons: `background(buttonColor, ...)`
 
 ## Constants
 
 ```kotlin
-val compactHeight = 100.dp
-val availableWidth = 350.dp
-val authorHeight = 15.dp
-val serverURL = "http://185.96.221.52:8080"
+val compactHeight = 110.dp  // Matches iOS
+val availableWidth = 350f
+val authorHeight = 15f
 ```
 
 ## Height Calculation
 
 ```kotlin
-val imageHeight = if (post.imageUrl != null) {
-    availableWidth / imageAspectRatio
-} else {
-    0f
-}
-
-// Spacing: titleSummary + 8 + image + 16 + body + 24 + author + 8
-val expandedHeight = titleSummaryHeight + 8f + imageHeight + 16f +
-                     bodyTextHeight + 24f + authorHeight + 8f
-
-val currentHeight = lerp(compactHeight.value, expandedHeight, animatedExpansionFactor)
+val expandedHeight = titleSummaryHeight + 16f + imageHeight + 16f +
+                     bodyTextHeight + 24f + authorHeight + 16f
 ```
 
-**Spacing breakdown:**
-- Title/summary to image: 8dp
+**Spacing breakdown (matching iOS):**
+- Title/summary to image: **16dp**
 - Image to body text: 16dp
 - Body text to author: 24dp
-- Author to bottom: 8dp (provided by Card padding)
+- Author to bottom: **16dp**
 
-## Image Position and Size Interpolation
+## Image Position Interpolation
 
 ```kotlin
 // Compact state (thumbnail)
-val compactWidth = 80.dp
-val compactImageHeight = 80.dp
-val compactX = availableWidth.value - 80f - 16f  // inset 16pt from right edge
-val compactY = (100f - 80f) / 2f - 8f  // vertically centered, minus Box padding
+val compactImageWidth = 80f
+val compactImageHeight = 80f
+val compactX = availableWidth - 80f - 8f  // inset 8pt from right edge (matches iOS)
+val compactY = (110f - 80f) / 2f - 8f     // vertically centered in 110dp height
 
 // Expanded state (full image)
 val expandedWidth = availableWidth
 val expandedImageHeight = availableWidth / imageAspectRatio
-val expandedX = 0f  // Aligned with Box content edge (Box already has 8dp padding)
-val expandedY = titleSummaryHeight + 8f
+val expandedX = 10f   // 10dp indent (18dp total with box padding)
+val expandedY = titleSummaryHeight + 16f
 
-// Interpolated values
-val currentWidth = lerp(compactWidth.value, expandedWidth, animatedExpansionFactor)
-val currentImageHeight = lerp(compactImageHeight.value, expandedImageHeight, animatedExpansionFactor)
+// Interpolated values using lerp()
+val currentWidth = lerp(compactImageWidth, expandedWidth, animatedExpansionFactor)
+val currentImageHeight = lerp(compactImageHeight, expandedImageHeight, animatedExpansionFactor)
 val currentX = lerp(compactX, expandedX, animatedExpansionFactor)
 val currentY = lerp(compactY, expandedY, animatedExpansionFactor)
 ```
 
-## Complete Layout Structure
+## Author Bar - Always Visible with Position Interpolation
+
+The author bar is **always visible** (not hidden in compact view), with its Y position interpolating from below title/summary to below body text:
 
 ```kotlin
-@Composable
-fun PostView(
-    post: Post,
-    isExpanded: Boolean,
-    onTap: () -> Unit,
-    onPostCreated: () -> Unit
+// Author metadata - always visible, interpolates position
+val compactAuthorY = 76f  // Below title/summary area
+val expandedAuthorY = if (isMeasured) {
+    currentY + currentImageHeight + 16f + bodyTextHeight + 24f
+} else {
+    compactAuthorY + 200f  // Fallback before measurement
+}
+val authorY = lerp(compactAuthorY, expandedAuthorY, animatedExpansionFactor)
+
+Row(
+    modifier = Modifier
+        .offset(x = 10.dp, y = authorY.dp)
+        .graphicsLayer { alpha = 1f },  // Always fully visible
+    horizontalArrangement = Arrangement.spacedBy(8.dp)
 ) {
-    val density = LocalDensity.current  // CRITICAL: Needed for pixel-to-dp conversion
+    val authorTextSize = (15 * fontScale * authorFontSize).sp
 
-    val compactHeight = 100.dp
-    val availableWidth = 350.dp
-    val authorHeight = 15.dp
-    val serverURL = "http://185.96.221.52:8080"
-
-    var expansionFactor by remember { mutableFloatStateOf(if (isExpanded) 1f else 0f) }
-    var imageAspectRatio by remember { mutableFloatStateOf(1f) }
-    var bodyTextHeight by remember { mutableFloatStateOf(200f) }  // Stored in dp
-    var titleSummaryHeight by remember { mutableFloatStateOf(60f) }  // Stored in dp
-    var isMeasured by remember { mutableStateOf(false) }
-
-    val animatedExpansionFactor by animateFloatAsState(
-        targetValue = if (isExpanded) 1f else 0f,
-        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
-        label = "expansion"
-    )
-
-    LaunchedEffect(isExpanded) {
-        expansionFactor = if (isExpanded) 1f else 0f
-    }
-
-    val imageHeight = if (post.imageUrl != null) {
-        availableWidth.value / imageAspectRatio
-    } else {
-        0f
-    }
-
-    val expandedHeight = titleSummaryHeight + 16f + imageHeight + 16f +
-                         bodyTextHeight + 24f + authorHeight.value + 16f
-
-    val currentHeight = lerp(compactHeight.value, expandedHeight, animatedExpansionFactor)
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(currentHeight.dp)
-            .clickable { onTap() },
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.9f)
-        ),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Title and Summary (always visible)
-            Column(
+    if (post.aiGenerated) {
+        Text(text = "librarian", fontSize = authorTextSize, ...)
+    } else if (post.authorName != null) {
+        // Author button only in expanded view
+        if (isExpanded) {
+            // Expanded: author as tappable button with background
+            Box(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-                    .padding(end = if (post.imageUrl != null) 96.dp else 0.dp)
-                    .onSizeChanged { size ->
-                        with(density) {
-                            titleSummaryHeight = size.height.toDp().value
-                        }
-                    }
+                    .background(buttonColor, RoundedCornerShape((6 * cornerRoundness).dp))
+                    .clickable { Logger.info("[PostView] Author button tapped: ${post.authorName}") }
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
-                Text(
-                    text = post.title,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = Color.Black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = post.summary,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 15.sp,
-                        fontStyle = FontStyle.Italic
-                    ),
-                    color = Color.Black.copy(alpha = 0.8f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Text(text = post.authorName, fontSize = authorTextSize, color = Color.Black)
             }
-
-            // Body text (tracks image position)
-            if (isExpanded && isMeasured) {
-                val compactImageHeight = 80f
-                val compactImageY = (100f - 80f) / 2f - 8f
-                val expandedImageY = titleSummaryHeight + 8f
-                val expandedImageHeightVal = availableWidth.value / imageAspectRatio
-
-                val currentImageY = lerp(compactImageY, expandedImageY, animatedExpansionFactor)
-                val currentImageHeightVal = lerp(compactImageHeight, expandedImageHeightVal, animatedExpansionFactor)
-
-                val bodyY = currentImageY + currentImageHeightVal + 16f
-                val currentBodyHeight = lerp(0f, bodyTextHeight, animatedExpansionFactor)
-
-                Box(
-                    modifier = Modifier
-                        .offset(x = 0.dp, y = bodyY.dp)
-                        .width(availableWidth)
-                        .height(bodyTextHeight.dp)
-                        .graphicsLayer {
-                            clip = true
-                            shape = RectangleShape
-                            scaleY = currentBodyHeight / bodyTextHeight
-                            transformOrigin = TransformOrigin(0f, 0f)
-                        }
-                ) {
-                    Text(
-                        text = processBodyText(post.body),
-                        color = Color.Black,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.TopStart)
-                    )
-                }
-            }
-
-            // Author metadata (tracks image + body position, fades in)
-            if (isExpanded && isMeasured) {
-                val compactImageHeight = 80f
-                val compactImageY = (100f - 80f) / 2f - 8f
-                val expandedImageY = titleSummaryHeight + 8f
-                val expandedImageHeightVal = availableWidth.value / imageAspectRatio
-
-                val currentImageY = lerp(compactImageY, expandedImageY, animatedExpansionFactor)
-                val currentImageHeightVal = lerp(compactImageHeight, expandedImageHeightVal, animatedExpansionFactor)
-                val authorY = currentImageY + currentImageHeightVal + 16f + bodyTextHeight + 24f
-
-                Row(
-                    modifier = Modifier
-                        .offset(x = 0.dp, y = authorY.dp)
-                        .fillMaxWidth()
-                        .graphicsLayer { alpha = animatedExpansionFactor }
-                ) {
-                    if (post.aiGenerated) {
-                        Text(
-                            text = "👓 librarian",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Black.copy(alpha = 0.5f)
-                        )
-                    } else if (post.authorName != null) {
-                        Text(
-                            text = post.authorName,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Black.copy(alpha = 0.5f)
-                        )
-                    }
-                }
-            }
-
-            // Animated image
-            if (post.imageUrl != null) {
-                val fullUrl = "$serverURL${post.imageUrl}"
-
-                val compactImageWidth = 80.dp
-                val compactImageHeight = 80.dp
-                val compactX = availableWidth.value - 80f + 8f
-                val compactY = (100f - 80f) / 2f + 8f
-
-                val expandedWidth = availableWidth.value
-                val expandedImageHeight = availableWidth.value / imageAspectRatio
-                val expandedX = 0f  // Aligned with Box content edge
-                val expandedY = titleSummaryHeight + 8f
-
-                val currentWidth = lerp(compactImageWidth.value, expandedWidth, animatedExpansionFactor)
-                val currentImageHeight = lerp(compactImageHeight.value, expandedImageHeight, animatedExpansionFactor)
-                val currentX = lerp(compactX, expandedX, animatedExpansionFactor)
-                val currentY = lerp(compactY, expandedY, animatedExpansionFactor)
-
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(fullUrl)
-                        .crossfade(true)
-                        .listener(
-                            onSuccess = { _, result ->
-                                if (imageAspectRatio == 1f) {
-                                    val drawable = result.drawable
-                                    imageAspectRatio = drawable.intrinsicWidth.toFloat() /
-                                                      drawable.intrinsicHeight.toFloat()
-                                }
-                            }
-                        )
-                        .build(),
-                    contentDescription = post.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .offset(x = currentX.dp, y = currentY.dp)
-                        .size(width = currentWidth.dp, height = currentImageHeight.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    placeholder = painterResource(R.drawable.placeholder),
-                    error = painterResource(R.drawable.placeholder)
-                )
-            }
+        } else {
+            // Compact: plain text
+            Text(text = post.authorName, fontSize = authorTextSize, color = Color.Black.copy(alpha = 0.5f))
         }
     }
 
-    // Measure body text once on first expand
-    if (isExpanded && !isMeasured) {
-        Box(
-            modifier = Modifier
-                .width(availableWidth)
-                .onSizeChanged { size ->
-                    with(density) {
-                        bodyTextHeight = size.height.toDp().value
-                    }
-                    isMeasured = true
-                }
-                .alpha(0f)  // Hidden but measured
-        ) {
-            Text(
-                text = processBodyText(post.body),
-                style = MaterialTheme.typography.bodyMedium
-            )
+    Text(
+        text = formattedDate,
+        fontSize = authorTextSize,
+        color = Color.Black.copy(alpha = 0.5f),
+        modifier = Modifier.padding(start = 16.dp)  // Extra 16dp before date
+    )
+}
+```
+
+## Date Formatting
+
+```kotlin
+private fun formatDate(dateString: String): String {
+    return try {
+        // Try server format first: "Wed, 15 Oct 2025 14:37:09 GMT"
+        val serverFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US)
+        var date = try { serverFormat.parse(dateString) } catch (e: Exception) { null }
+
+        // Fall back to ISO format if server format fails
+        if (date == null) {
+            val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+            isoFormat.timeZone = TimeZone.getTimeZone("UTC")
+            date = isoFormat.parse(dateString)
         }
+
+        // Output format: "d MMM yyyy" (matches iOS)
+        val outputFormat = SimpleDateFormat("d MMM yyyy", Locale.US)
+        outputFormat.format(date ?: Date())
+    } catch (e: Exception) {
+        dateString
     }
+}
+```
+
+## Edit Mode Support
+
+```kotlin
+// State for editable fields
+var editableTitle by remember { mutableStateOf(post.title) }
+var editableSummary by remember { mutableStateOf(post.summary) }
+var editableBody by remember { mutableStateOf(post.body) }
+
+// Check if current user owns this post
+val (currentUserEmail, _) = Storage.getLoginState()
+val isOwnPost = remember(post.authorEmail, currentUserEmail) {
+    currentUserEmail != null && post.authorEmail != null &&
+    post.authorEmail.lowercase() == currentUserEmail.lowercase()
+}
+
+// Edit button (pencil) - only for own posts, expanded, not editing
+if (isOwnPost && isExpanded && !isEditing && animatedExpansionFactor > 0.5f && isMeasured) {
+    Box(
+        modifier = Modifier
+            .offset(x = (availableWidth - 36f - 12f).dp, y = expandedAuthorY.dp)
+            .size(36.dp)
+            .shadow(8.dp, CircleShape)
+            .background(buttonColor, CircleShape)
+            .clickable { onStartEditing?.invoke() },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "pencil", fontSize = 16.sp, color = Color.Black)
+    }
+}
+
+// Cancel and Save buttons (when editing)
+if (isOwnPost && isExpanded && isEditing && isMeasured) {
+    Row(
+        modifier = Modifier.offset(x = buttonsX.dp, y = expandedAuthorY.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        // Cancel button
+        Box(modifier = Modifier.size(32.dp).background(buttonColor, CircleShape).clickable {
+            editableTitle = post.title
+            editableSummary = post.summary
+            editableBody = post.body
+            onEndEditing?.invoke()
+        }) { /* undo icon */ }
+
+        // Save button
+        Box(modifier = Modifier.size(32.dp).background(buttonColor, CircleShape).clickable {
+            scope.launch {
+                val result = PostsAPI.shared.updatePost(post.id, editableTitle, editableSummary, editableBody)
+                result.fold(
+                    onSuccess = { updatedPost ->
+                        onPostUpdated?.invoke(updatedPost)
+                        onEndEditing?.invoke()
+                    },
+                    onFailure = { /* handle error */ }
+                )
+            }
+        }) { /* checkmark icon */ }
+    }
+}
+```
+
+## UI Automation Registration
+
+```kotlin
+// Register post for tap automation
+RegisterUIElement("post-${post.id}") { onTap() }
+
+// Register edit button
+RegisterUIElement("edit-button-${post.id}") {
+    Logger.info("[PostView] Edit button tapped: ${post.id}")
+    onStartEditing?.invoke()
+}
+
+// Register cancel/save buttons
+RegisterUIElement("cancel-button-${post.id}") { /* cancel logic */ }
+RegisterUIElement("save-button-${post.id}") { /* save logic */ }
+```
+
+## Card Layout
+
+```kotlin
+Card(
+    modifier = Modifier
+        .fillMaxWidth()
+        .height(currentHeight.dp)
+        .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) { onTap() },
+    colors = CardDefaults.cardColors(
+        containerColor = Color.White.copy(alpha = postBackgroundBrightness)
+    ),
+    shape = RoundedCornerShape((12 * cornerRoundness).dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+) {
+    Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        // Title/Summary column
+        // Image
+        // Body text
+        // Author bar
+        // Edit buttons
+    }
+}
+
+// Hidden measurement text (outside Card, unconstrained)
+if (isExpanded && !isMeasured) {
+    Text(
+        text = processedBodyText,
+        fontSize = (15 * fontScale).sp,
+        lineHeight = (20 * fontScale).sp,
+        modifier = Modifier
+            .width(availableWidth.dp)
+            .onSizeChanged { size ->
+                with(density) { bodyTextHeight = size.height.toDp().value }
+                isMeasured = true
+            }
+            .alpha(0f)
+    )
 }
 ```
 
 ## Linear Interpolation Helper
 
 ```kotlin
-fun lerp(start: Float, end: Float, t: Float): Float {
+private fun lerp(start: Float, end: Float, t: Float): Float {
     return start + (end - start) * t
 }
 ```
 
-## Body Text Formatting
+## Key Implementation Details
 
-The `processBodyText()` function handles markdown processing with proper paragraph separation:
+1. **Author bar always visible**: Position interpolates from compact (76dp) to expanded (below body text)
+2. **Author button only when expanded**: Plain text in compact, tappable button in expanded
+3. **Tunables throughout**: All sizes, colors, and radii read from TunableConstants
+4. **Date format**: "d MMM yyyy" (e.g., "5 Nov 2025") matching iOS
+5. **Edit support**: Pencil button for own posts, save/cancel in edit mode
+6. **compactHeight = 110dp**: Matches iOS (was 100dp)
+7. **Spacing = 16dp**: Title-to-image gap and bottom padding (was 8dp)
+8. **Thumbnail padding = 8dp**: Inset from right edge (was 16dp)
 
-```kotlin
-private fun processBodyText(text: String): androidx.compose.ui.text.AnnotatedString {
-    val imagePattern = """!\[.*?\]\(.*?\)""".toRegex()
-    val cleaned = text.replace(imagePattern, "")
-
-    return buildAnnotatedString {
-        val lines = cleaned.split("\n")
-        var previousLineWasEmpty = false
-
-        for ((index, line) in lines.withIndex()) {
-            val trimmedLine = line.trim()
-
-            when {
-                trimmedLine.isEmpty() -> {
-                    // Empty line - mark for paragraph break
-                    previousLineWasEmpty = true
-                }
-                trimmedLine.startsWith("## ") -> {
-                    // H2 heading - bold and larger
-                    if (length > 0) append("\n\n")
-                    withStyle(SpanStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)) {
-                        append(trimmedLine.substring(3))
-                    }
-                    append("\n")
-                    previousLineWasEmpty = false
-                }
-                trimmedLine.startsWith("- ") -> {
-                    // Bullet point
-                    if (length > 0) append("\n")
-                    append("• ${trimmedLine.substring(2)}")
-                    append("\n")
-                    previousLineWasEmpty = false
-                }
-                else -> {
-                    // Regular paragraph text
-                    if (length > 0) {
-                        if (previousLineWasEmpty) {
-                            // New paragraph after empty line
-                            append("\n\n")
-                        } else {
-                            // Continuation of same paragraph
-                            append(" ")
-                        }
-                    }
-                    append(trimmedLine)
-                    previousLineWasEmpty = false
-                }
-            }
-        }
-    }
-}
-```
-
-**Key features:**
-- Tracks `previousLineWasEmpty` to distinguish between paragraph breaks and line continuations
-- Empty lines trigger `previousLineWasEmpty = true`
-- Next non-empty line after empty line gets `\n\n` (paragraph break)
-- Consecutive non-empty lines get ` ` (word spacing within paragraph)
-- Prevents paragraphs from running together with spurious spaces
-
-See also `post-view/formatting/imp/eos.md` for additional details.
-
-## Key Android-Specific Decisions
-
-1. **animateFloatAsState**: Smooth animation of expansion factor with FastOutSlowInEasing
-2. **Box layout with offset**: Absolute positioning using `Modifier.offset()` for interpolated positions
-3. **onSizeChanged**: Measure dynamic heights (title/summary, body text) reactively
-4. **AsyncImage with Coil**: Load images with automatic aspect ratio detection via listener
-5. **graphicsLayer for clipping**: Use `scaleY` with clip for smooth body text reveal
-6. **graphicsLayer for opacity**: Use `alpha` for smooth author fade-in
-7. **ContentScale.Crop**: Maintain aspect ratio while filling frame
-8. **Conditional rendering**: Author only rendered when `isExpanded && isMeasured`
-9. **Hidden measurement**: Use `.alpha(0f)` for off-screen height measurement
-10. **Reactive composition**: All interpolated values recompute automatically when `animatedExpansionFactor` changes
-
-## Critical: Body Text Measurement Must Be Unconstrained
-
-**THE TRAP**: The body text measurement cannot be constrained by the Card's height, or it will be clipped to that height.
-
-**The problem:**
-If the measurement Text is inside the Card, and the Card has `.height(currentHeight.dp)` which is calculated using the initial `bodyTextHeight = 200f`, the measurement will be constrained to that height and can't measure longer text properly.
-
-**The solution:**
-Move the measurement Text **outside the Card** as a sibling in a wrapping Box:
+## Required Imports
 
 ```kotlin
-Box {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(currentHeight.dp)
-            .clickable { onTap() },
-        // ... Card content
-    )
-
-    // Hidden measurement text (outside Card, unconstrained)
-    if (isExpanded && !isMeasured) {
-        Text(
-            text = processedBodyText,
-            color = Color.Black,
-            fontSize = 15.sp,
-            lineHeight = 20.sp,
-            modifier = Modifier
-                .width(availableWidth.dp)
-                .onSizeChanged { size ->
-                    with(density) {
-                        bodyTextHeight = size.height.toDp().value
-                    }
-                    isMeasured = true
-                }
-                .alpha(0f)  // Hidden
-        )
-    }
-}
-```
-
-This allows the measurement Text to expand to its full height without being clipped by the Card's constraints.
-
-## Removing Click Ripple Effect
-
-To prevent the dark highlight/selection rectangle when clicking posts, disable the ripple indication:
-
-```kotlin
-.clickable(
-    indication = null,
-    interactionSource = remember { MutableInteractionSource() }
-) { onTap() }
-```
-
-Requires import:
-```kotlin
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import java.text.SimpleDateFormat
+import java.util.*
 ```
-
-## Critical: Pixel-to-DP Conversion in onSizeChanged
-
-**THE TRAP**: `onSizeChanged` returns dimensions in **pixels**, NOT dp. If you store these values and later use them with `.dp` modifiers, they will be converted to dp AGAIN, multiplying by screen density a second time.
-
-**Example of the bug:**
-```kotlin
-// ❌ WRONG - Creates massive whitespace on high-density screens
-.onSizeChanged { size ->
-    titleSummaryHeight = size.height.toFloat()  // Gets 180 pixels
-}
-
-// Later used as:
-.offset(y = titleSummaryHeight.dp)  // 180.dp becomes 540 pixels on 3x density screen!
-```
-
-**On a 3x density screen (like Fairphone):**
-- Title/summary measures as 180 **pixels** (which is 60dp)
-- Using `180.dp` in offset converts to 540 **pixels** (180 * 3)
-- Result: Huge 360-pixel gap of whitespace
-
-**The fix - Convert to dp immediately:**
-```kotlin
-// ✅ CORRECT - Get LocalDensity and convert pixels to dp
-val density = LocalDensity.current
-
-.onSizeChanged { size ->
-    with(density) {
-        titleSummaryHeight = size.height.toDp().value  // Converts pixels → dp
-    }
-}
-
-// Later used as:
-.offset(y = titleSummaryHeight.dp)  // Now correct: 60.dp = 180 pixels
-```
-
-**Why this matters:**
-- On 1x density screens, the bug is invisible (1px = 1dp)
-- On 2x/3x/4x screens, whitespace scales dramatically
-- The bug only appears when testing on real high-density devices
-- Emulators often use lower densities, hiding the issue
-
-**Rule of thumb:**
-- **onSizeChanged returns pixels** - always convert with `toDp()`
-- **Modifiers like .dp, .offset(), .height() expect dp values** - never use raw pixels
-- Store measurements in dp units to avoid confusion
-
-## Required Dependencies
-
-In `app/build.gradle.kts`:
-
-```kotlin
-dependencies {
-    // Image loading
-    implementation("io.coil-kt:coil-compose:2.5.0")
-
-    // Animation
-    implementation("androidx.compose.animation:animation:1.5.4")
-}
-```
-
-## Performance Considerations
-
-1. **Measure once**: Body text height measured only on first expand (`isMeasured` flag)
-2. **Async aspect ratio**: Image dimensions loaded via Coil listener without blocking
-3. **Efficient interpolation**: Simple linear interpolation is fast and smooth
-4. **graphicsLayer optimization**: Hardware-accelerated transformations for smooth animation
-
-This implementation creates a smooth, continuous animation that can be interrupted and reversed at any point without visual glitches, matching the iOS behavior.

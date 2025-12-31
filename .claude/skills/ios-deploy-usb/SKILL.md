@@ -100,4 +100,4 @@ The script:
 
 ## Platform-Specific Notes
 
-This is an iOS-specific skill. For Android/e/OS deployment, use a different approach.
+This is an iOS-specific skill. For Android deployment, use the `android-deploy-usb` skill.

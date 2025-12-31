@@ -24,7 +24,7 @@ Miso specifies programs as a tree of **features**: short (<300 word) natural-lan
 Each feature lives in its own folder containing:
 - `spec.md`: The feature specification
 - `pseudocode.md`: Natural-language function definitions and patching instructions
-- `ios.md`, `eos.md`, `py.md`: Platform-specific implementations with actual code
+- `ios.md`, `android.md`, `py.md`: Platform-specific implementations with actual code
 - `imp/`: Folder for other artifacts (logs, debugging notes, test data)
 
 **Feature Hierarchy**:
@@ -44,7 +44,7 @@ When a user changes feature `A/B/spec.md` or adds a subfeature, the implementati
 - Include patching instructions (where/how to integrate into product)
 
 **Step 2: Platform Code**
-- Check if platform implementations (`ios.md`, `eos.md`, etc.) are up-to-date vs pseudocode
+- Check if platform implementations (`ios.md`, `android.md`, etc.) are up-to-date vs pseudocode
 - If not, edit them to reflect the most recent pseudocode changes
 - Use platform-appropriate actual code syntax (Swift, Kotlin, Python)
 
@@ -88,7 +88,7 @@ For each changed feature `A/B/spec.md`:
 ### 3. Update Platform Implementations
 
 For each feature with updated pseudocode:
-- Check for platform-specific implementations: `A/B/ios.md`, `A/B/eos.md`, `A/B/py.md`
+- Check for platform-specific implementations: `A/B/ios.md`, `A/B/android.md`, `A/B/py.md`
 - For each existing platform file:
   - Read the pseudocode and platform implementation
   - Determine if platform code needs updating
@@ -192,7 +192,7 @@ After visual verification succeeds and the feature works correctly, **update all
    - Update patching instructions to reflect ALL files that need changes
    - Include data structures that were added (e.g., new response types)
 
-4. **Update platform implementations** (`ios.md`, `eos.md`, etc.):
+4. **Update platform implementations** (`ios.md`, `android.md`, etc.):
    - Replace stub code with complete, working code from actual product files
    - Include ALL target files that needed changes (discovered during debugging)
    - Add exact file paths and line numbers

@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -24,9 +26,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize storage and logger
+        // Initialize storage, logger, and tunables
         Storage.init(this)
         Logger.init(this)
+        TunableConstants.initialize(this)
 
         // Start test server
         TestServer.start()
@@ -73,7 +76,92 @@ class MainActivity : ComponentActivity() {
                 })
             }
             else -> {
-                PostsView()
+                // Main app with toolbar
+                var currentExplorer by remember { mutableStateOf(ToolbarExplorer.MAKE_POST) }
+
+                // Reset triggers - incrementing these forces view recreation
+                var makePostResetKey by remember { mutableStateOf(0) }
+                var searchResetKey by remember { mutableStateOf(0) }
+                var usersResetKey by remember { mutableStateOf(0) }
+
+                // Observe tunables for reactivity
+                val tunablesVersion = TunableConstants.version.value
+                val backgroundColor = TunableConstants.backgroundColor()
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(backgroundColor)
+                ) {
+                    // All three explorers kept in memory - show/hide with alpha and zIndex
+                    // This preserves scroll position and expanded state when switching
+                    // Active view gets zIndex 1 (on top), hidden views get zIndex 0 (behind)
+
+                    // Make Post explorer
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .zIndex(if (currentExplorer == ToolbarExplorer.MAKE_POST) 1f else 0f)
+                            .alpha(if (currentExplorer == ToolbarExplorer.MAKE_POST) 1f else 0f)
+                    ) {
+                        key(makePostResetKey) {
+                            PostsView(
+                                templateName = "post",
+                                showAddButton = true,
+                                addButtonText = "add post"
+                            )
+                        }
+                    }
+
+                    // Search explorer
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .zIndex(if (currentExplorer == ToolbarExplorer.SEARCH) 1f else 0f)
+                            .alpha(if (currentExplorer == ToolbarExplorer.SEARCH) 1f else 0f)
+                    ) {
+                        key(searchResetKey) {
+                            PostsView(
+                                templateName = "query",
+                                showAddButton = true,
+                                addButtonText = "new search"
+                            )
+                        }
+                    }
+
+                    // Users explorer
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .zIndex(if (currentExplorer == ToolbarExplorer.USERS) 1f else 0f)
+                            .alpha(if (currentExplorer == ToolbarExplorer.USERS) 1f else 0f)
+                    ) {
+                        key(usersResetKey) {
+                            PostsView(
+                                templateName = "profile",
+                                showAddButton = false
+                            )
+                        }
+                    }
+
+                    // Floating toolbar at bottom - zIndex 2 to stay above explorers
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .zIndex(2f),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        Toolbar(
+                            currentExplorer = currentExplorer,
+                            onExplorerChange = { newExplorer ->
+                                currentExplorer = newExplorer
+                            },
+                            onResetMakePost = { makePostResetKey++ },
+                            onResetSearch = { searchResetKey++ },
+                            onResetUsers = { usersResetKey++ }
+                        )
+                    }
+                }
             }
         }
     }
@@ -88,7 +176,7 @@ class MainActivity : ComponentActivity() {
                     testConnection()
                 }
                 backgroundColor = if (isConnected) {
-                    Color(0xFF40E0D0)
+                    AppColors.background
                 } else {
                     Color.Gray
                 }
@@ -105,7 +193,7 @@ class MainActivity : ComponentActivity() {
             Text(
                 text = "ᕦ(ツ)ᕤ",
                 fontSize = 90.sp,
-                color = Color.Black
+                color = AppColors.textPrimary
             )
         }
     }

@@ -1,4 +1,4 @@
-# Android/e/OS Development Tools
+# Android/Android Development Tools
 
 Reusable scripts for Android development workflow. Copy these to your Android app's directory and customize the configuration variables at the top of each file.
 

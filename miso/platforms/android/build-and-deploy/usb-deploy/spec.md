@@ -1,5 +1,5 @@
 # usb-deploy
-*installing apps on physical Android/e/OS devices*
+*installing apps on physical Android/Android devices*
 
 USB deployment allows you to install APKs directly on a physical device during development for fast iteration.
 
@@ -133,9 +133,9 @@ adb -s ABC123XYZ install app-debug.apk
 **"adb: command not found"**
 - Install Android platform tools: `brew install android-platform-tools`
 
-## e/OS Specific Notes
+## Android Specific Notes
 
-e/OS is fully compatible with standard Android ADB commands. No special configuration needed beyond standard USB debugging.
+Android is fully compatible with standard Android ADB commands. No special configuration needed beyond standard USB debugging.
 
 ## Implementation
 

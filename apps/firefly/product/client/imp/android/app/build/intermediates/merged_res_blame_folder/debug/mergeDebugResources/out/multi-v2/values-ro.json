@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.miso.noobtest.app-mergeDebugResources-29:/values-ro/values-ro.xml",
+            "outputFile": "com.miso.noobtest.app-mergeDebugResources-31:/values-ro/values-ro.xml",
             "map": [
                 {
                     "source": "/Users/asnaroo/.gradle/caches/9.1.0/transforms/ab446034169d61a96b5868d6a70356f8/transformed/material3/res/values-ro/values-ro.xml",

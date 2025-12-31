@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.miso.noobtest.app-mergeDebugResources-29:/values-km/values-km.xml",
+            "outputFile": "com.miso.noobtest.app-mergeDebugResources-31:/values-km/values-km.xml",
             "map": [
                 {
                     "source": "/Users/asnaroo/.gradle/caches/9.1.0/transforms/218df17e0d2ac9e910da011942b9b1ce/transformed/foundation-release/res/values-km/values-km.xml",

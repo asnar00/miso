@@ -16,19 +16,30 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
 @Composable
-fun PostsView() {
+fun PostsView(
+    templateName: String = "post",
+    showAddButton: Boolean = true,
+    addButtonText: String = "add post",
+    onAddButtonTapped: (() -> Unit)? = null
+) {
     var posts by remember { mutableStateOf<List<Post>>(emptyList()) }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var expandedPostId by remember { mutableStateOf<Int?>(null) }
+    var editingPostId by remember { mutableStateOf<Int?>(null) }
     var showNewPostEditor by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
+    // Observe tunables for reactivity
+    val tunablesVersion = TunableConstants.version.value
+    val backgroundColor = TunableConstants.backgroundColor()
+    val buttonColor = TunableConstants.buttonColor()
+
     // Load posts on first composition
-    LaunchedEffect(Unit) {
+    LaunchedEffect(templateName) {
         isLoading = true
-        val result = PostsAPI.shared.fetchRecentPosts()
+        val result = PostsAPI.shared.fetchRecentTaggedPosts(tags = listOf(templateName))
         result.fold(
             onSuccess = { fetchedPosts ->
                 posts = fetchedPosts
@@ -44,7 +55,7 @@ fun PostsView() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF40E0D0)) // Turquoise background
+            .background(backgroundColor)
     ) {
         when {
             isLoading -> {
@@ -53,9 +64,9 @@ fun PostsView() {
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        CircularProgressIndicator(color = Color.Black)
+                        CircularProgressIndicator(color = buttonColor)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Loading posts...", color = Color.Black)
+                        Text("Loading posts...", color = AppColors.textPrimary)
                     }
                 }
             }
@@ -71,7 +82,7 @@ fun PostsView() {
                             scope.launch {
                                 isLoading = true
                                 errorMessage = null
-                                val result = PostsAPI.shared.fetchRecentPosts()
+                                val result = PostsAPI.shared.fetchRecentTaggedPosts(tags = listOf(templateName))
                                 result.fold(
                                     onSuccess = { posts = it; isLoading = false },
                                     onFailure = { errorMessage = it.message ?: "Unknown error"; isLoading = false }
@@ -88,7 +99,7 @@ fun PostsView() {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No posts yet", color = Color.Black)
+                    Text("No posts yet", color = AppColors.textPrimary)
                 }
             }
             else -> {
@@ -98,9 +109,20 @@ fun PostsView() {
                     contentPadding = PaddingValues(start = 8.dp, end = 8.dp, top = 48.dp, bottom = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // New Post Button
-                    item(key = "new_post_button") {
-                        NewPostButton { showNewPostEditor = true }
+                    // New Post Button (conditionally shown)
+                    if (showAddButton) {
+                        item(key = "new_post_button") {
+                            NewPostButton(
+                                text = addButtonText,
+                                onClick = {
+                                    if (onAddButtonTapped != null) {
+                                        onAddButtonTapped()
+                                    } else {
+                                        showNewPostEditor = true
+                                    }
+                                }
+                            )
+                        }
                     }
 
                     itemsIndexed(
@@ -111,6 +133,10 @@ fun PostsView() {
                             post = post,
                             isExpanded = expandedPostId == post.id,
                             onTap = {
+                                // Block taps when editing another post
+                                if (editingPostId != null) {
+                                    return@PostView
+                                }
                                 if (expandedPostId == post.id) {
                                     // Collapse currently expanded post
                                     expandedPostId = null
@@ -119,13 +145,27 @@ fun PostsView() {
                                     expandedPostId = post.id
                                     scope.launch {
                                         // Instant scroll - happens immediately while expand animation plays
-                                        // +1 to account for NewPostButton item
+                                        // +1 to account for NewPostButton item if shown
                                         // scrollOffset = 0 aligns post top with content area top (48dp below screen top, just below camera)
+                                        val buttonOffset = if (showAddButton) 1 else 0
                                         listState.scrollToItem(
-                                            index = index + 1,
+                                            index = index + buttonOffset,
                                             scrollOffset = 0
                                         )
                                     }
+                                }
+                            },
+                            isEditing = editingPostId == post.id,
+                            onStartEditing = {
+                                editingPostId = post.id
+                            },
+                            onEndEditing = {
+                                editingPostId = null
+                            },
+                            onPostUpdated = { updatedPost ->
+                                // Update the post in the list
+                                posts = posts.map { p ->
+                                    if (p.id == updatedPost.id) updatedPost else p
                                 }
                             }
                         )
@@ -144,7 +184,7 @@ fun PostsView() {
                 // Reload posts after creating new one
                 scope.launch {
                     isLoading = true
-                    val result = PostsAPI.shared.fetchRecentPosts()
+                    val result = PostsAPI.shared.fetchRecentTaggedPosts(tags = listOf(templateName))
                     result.fold(
                         onSuccess = { fetchedPosts ->
                             posts = fetchedPosts

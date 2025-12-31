@@ -1,13 +1,13 @@
 ---
-name: eos-deploy-usb
-description: Build and deploy Android/e/OS app to connected device via USB. Fast deployment (~2-5 seconds) using Gradle and ADB. Use when deploying, installing, or building Android apps to physical devices.
+name: android-deploy-usb
+description: Build and deploy Android app to connected device via USB. Fast deployment (~2-5 seconds) using Gradle and ADB. Use when deploying, installing, or building Android apps to physical devices.
 ---
 
-# Android/e/OS USB Deploy
+# Android USB Deploy
 
 ## Overview
 
-Builds an Android app using Gradle and installs it directly to a USB-connected Android/e/OS device via ADB (Android Debug Bridge). This is the fastest way to test on real hardware during development.
+Builds an Android app using Gradle and installs it directly to a USB-connected Android device via ADB (Android Debug Bridge). This is the fastest way to test on real hardware during development.
 
 ## When to Use
 
@@ -117,6 +117,3 @@ The script is configured for the specific app's package name (e.g., `com.miso.no
 
 Always set `JAVA_HOME` before running Gradle commands. This is a critical requirement on macOS with Homebrew-installed Java.
 
-## e/OS Compatibility
-
-e/OS is fully compatible with standard Android development tools. No special configuration needed beyond standard USB debugging.
