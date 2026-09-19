@@ -510,7 +510,7 @@ struct ContentView: View {
     }
 
     func preloadImagesOptimized(for posts: [Post], completion: @escaping () -> Void) {
-        let serverURL = "http://185.96.221.52:8080"
+        let serverURL = "https://microclub.xn--nb-lkaa.org"
         let imageUrls = posts.compactMap { post -> String? in
             guard let imageUrl = post.imageUrl else { return nil }
             return serverURL + imageUrl
@@ -576,7 +576,7 @@ struct ContentView: View {
             return
         }
 
-        let serverURL = "http://185.96.221.52:8080"
+        let serverURL = "https://microclub.xn--nb-lkaa.org"
         guard let url = URL(string: "\(serverURL)/api/notifications/poll") else { return }
 
         // Gather query IDs from search posts
@@ -632,7 +632,7 @@ struct ContentView: View {
 
     func fetchInviteCount() {
         let deviceId = Storage.shared.getDeviceID()
-        let serverURL = "http://185.96.221.52:8080"
+        let serverURL = "https://microclub.xn--nb-lkaa.org"
         guard let url = URL(string: "\(serverURL)/api/user/invites?device_id=\(deviceId)") else { return }
 
         URLSession.shared.dataTask(with: url) { data, response, error in

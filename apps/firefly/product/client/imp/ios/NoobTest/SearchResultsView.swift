@@ -8,7 +8,7 @@ struct SearchResultsView: View {
     @State private var isLoading = true
     @State private var isAnyPostEditing = false
 
-    let serverURL = "http://185.96.221.52:8080"
+    let serverURL = "https://microclub.xn--nb-lkaa.org"
 
     var body: some View {
         PostsView(

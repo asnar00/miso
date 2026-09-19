@@ -210,7 +210,7 @@ log "Watchdog check completed"
 
 1. **Create the script**:
    ```bash
-   cd ~/firefly-server
+   cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py
    # Create watchdog.sh with above content
    chmod +x watchdog.sh
    ```
@@ -219,7 +219,7 @@ log "Watchdog check completed"
    ```bash
    crontab -e
    # Add line:
-   * * * * * ~/firefly-server/watchdog.sh
+   * * * * * ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/watchdog.sh
    ```
 
 3. **Configure DNS** (required for email):
@@ -239,21 +239,21 @@ Simulate a server failure:
 
 ```bash
 # Stop the server
-cd ~/firefly-server
+cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py
 ./stop.sh
 
 # Watch the watchdog log (in another terminal)
-tail -f ~/firefly-server/watchdog.log
+tail -f ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/watchdog.log
 
 # Within 60 seconds, you should see:
 # - "ERROR: Server not responding!"
-# - "Logs saved to: ~/firefly-server/bad/YYYYMMDD_HHMMSS"
+# - "Logs saved to: ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/YYYYMMDD_HHMMSS"
 # - "Restarting Firefly server..."
 # - "SUCCESS: Server recovered"
 # - "Email notification sent to ash.nehru@gmail.com"
 
 # Check the saved logs
-ls -la ~/firefly-server/bad/
+ls -la ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/
 ```
 
 ## Key Implementation Details
@@ -374,7 +374,7 @@ nslookup smtp.office365.com
 ```
 Watchdog check started
 ERROR: Server not responding!
-Logs saved to: ~/firefly-server/bad/20251116_110511
+Logs saved to: ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/20251116_110511
 Restarting Firefly server...
 SUCCESS: Server recovered
 Email notification sent to ash.nehru@gmail.com
@@ -385,7 +385,7 @@ Watchdog check completed
 ```
 Watchdog check started
 ERROR: Server not responding!
-Logs saved to: ~/firefly-server/bad/20251116_110623
+Logs saved to: ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/20251116_110623
 ERROR: PostgreSQL is down!
 Restarting PostgreSQL...
 Restarting Firefly server...
@@ -398,7 +398,7 @@ Watchdog check completed
 ```
 Watchdog check started
 ERROR: Server not responding!
-Logs saved to: ~/firefly-server/bad/20251116_110745
+Logs saved to: ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/20251116_110745
 Restarting Firefly server...
 ERROR: Server still down after restart
 Email notification sent to ash.nehru@gmail.com
@@ -411,13 +411,13 @@ Email will indicate "FAILED TO RECOVER" for manual investigation.
 
 ### View Recent Watchdog Activity
 ```bash
-tail -50 ~/firefly-server/watchdog.log
+tail -50 ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/watchdog.log
 ```
 
 ### View Saved Failure Logs
 ```bash
-ls -la ~/firefly-server/bad/
-cd ~/firefly-server/bad/20251116_110511
+ls -la ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/
+cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/20251116_110511
 cat system_info.txt
 tail server.log
 ```
@@ -426,13 +426,13 @@ tail server.log
 ```bash
 crontab -e
 # Comment out the watchdog line:
-# * * * * * ~/firefly-server/watchdog.sh
+# * * * * * ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/watchdog.sh
 ```
 
 ### Clear Old Failure Logs
 ```bash
 # Keep only last 30 days
-find ~/firefly-server/bad -type d -mtime +30 -exec rm -rf {} \;
+find ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad -type d -mtime +30 -exec rm -rf {} \;
 ```
 
 ## Security Considerations
@@ -448,5 +448,5 @@ find ~/firefly-server/bad -type d -mtime +30 -exec rm -rf {} \;
 
 **File Permissions**: Ensure watchdog.sh is only readable by the server user:
 ```bash
-chmod 700 ~/firefly-server/watchdog.sh
+chmod 700 ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/watchdog.sh
 ```

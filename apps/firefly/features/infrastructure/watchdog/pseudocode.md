@@ -111,11 +111,11 @@ function check_postgres() -> boolean:
     return processes.contains("postgres.*postgresql@16")
 
 function check_intentional_shutdown_marker() -> boolean:
-    marker_file = "~/firefly-server/.intentional_shutdown"
+    marker_file = "~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/.intentional_shutdown"
     return file_exists(marker_file)
 
 function remove_marker_file():
-    marker_file = "~/firefly-server/.intentional_shutdown"
+    marker_file = "~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/.intentional_shutdown"
     delete_file(marker_file)
 ```
 
@@ -124,7 +124,7 @@ function remove_marker_file():
 ```
 function save_bad_logs() -> string:
     timestamp = current_datetime("%Y%m%d_%H%M%S")
-    bad_dir = "~/firefly-server/bad/" + timestamp
+    bad_dir = "~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/" + timestamp
 
     create_directory(bad_dir)
 
@@ -227,7 +227,7 @@ function log(message):
 
 Add line:
 ```
-* * * * * ~/firefly-server/watchdog.sh
+* * * * * ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/watchdog.sh
 ```
 
 This runs every minute. The `*` pattern means:
@@ -278,7 +278,7 @@ Simulate failure:
 tail -f watchdog.log
 
 # Verify logs were saved
-ls -la ~/firefly-server/bad/
+ls -la ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/
 ```
 
 Expected behavior:

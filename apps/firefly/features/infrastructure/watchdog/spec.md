@@ -14,7 +14,7 @@ The watchdog performs two checks **in this critical order**:
 ## Automatic Recovery
 
 When PostgreSQL is down:
-1. **Saves crash logs** to `~/firefly-server/bad/YYYYMMDD_HHMMSS/`
+1. **Saves crash logs** to `~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/YYYYMMDD_HHMMSS/`
 2. **Restarts PostgreSQL** and waits 3 seconds
 3. **Restarts the server** (since it likely failed without PostgreSQL)
 4. **Verifies recovery** by checking server health
@@ -22,7 +22,7 @@ When PostgreSQL is down:
 
 When server is down (but PostgreSQL is running):
 1. **Checks for intentional shutdown** (looks for `.intentional_shutdown` marker file)
-2. **Saves crash logs** to `~/firefly-server/bad/YYYYMMDD_HHMMSS/`
+2. **Saves crash logs** to `~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/bad/YYYYMMDD_HHMMSS/`
 3. **Restarts the server** and waits 3 seconds
 4. **Verifies recovery** by checking `/api/ping`
 5. **Sends email** (only if not intentional) with recovery status
@@ -56,7 +56,7 @@ Emails are sent to the administrator when **unexpected** failures occur. Each no
 
 ## Logging
 
-The watchdog maintains its own log at `~/firefly-server/watchdog.log`:
+The watchdog maintains its own log at `~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/watchdog.log`:
 - Each check is logged with timestamp
 - Health status recorded every run
 - Detailed recovery actions when failures occur
@@ -64,7 +64,7 @@ The watchdog maintains its own log at `~/firefly-server/watchdog.log`:
 
 ## Schedule
 
-Runs via cron every minute: `* * * * * ~/firefly-server/watchdog.sh`
+Runs via cron every minute: `* * * * * ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/watchdog.sh`
 
 This provides:
 - Maximum 1-minute downtime before automatic recovery

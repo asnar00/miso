@@ -28,7 +28,7 @@ Invoke this skill when the user:
       User microserver
   ```
 - Python 3 and Flask installed on remote server
-- Remote directory exists: `~/firefly-server/`
+- Remote directory exists: `~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/`
 - Server is accessible at `http://185.96.221.52:8080`
 
 ## Instructions
@@ -48,12 +48,12 @@ Invoke this skill when the user:
 
    **Step 2: Copy updated files**
    ```bash
-   scp *.py *.txt *.sh microserver@185.96.221.52:~/firefly-server/
+   scp *.py *.txt *.sh microserver@185.96.221.52:~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/
    ```
 
    **Step 3: Start the server**
    ```bash
-   ssh microserver@185.96.221.52 "cd ~/firefly-server && ./start.sh"
+   ssh microserver@185.96.221.52 "cd ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py && ./start.sh"
    ```
 
    **Step 4: Verify server is running**
@@ -119,9 +119,9 @@ Firefly server started on port 8080
 - **Host**: 185.96.221.52 (Mac mini on local network)
 - **User**: microserver
 - **Port**: 8080
-- **Directory**: ~/firefly-server/
-- **Logs**: ~/firefly-server/server.log
-- **PID file**: ~/firefly-server/server.pid
+- **Directory**: ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/
+- **Logs**: ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log
+- **PID file**: ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.pid
 
 ### Database Access
 
@@ -146,7 +146,7 @@ ssh microserver@185.96.221.52 "/opt/homebrew/Cellar/postgresql@16/16.10/bin/psql
 
 **Run database migrations**:
 ```bash
-ssh microserver@185.96.221.52 "cd ~/firefly-server && python3 migration_script.py"
+ssh microserver@185.96.221.52 "cd ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py && python3 migration_script.py"
 ```
 
 After creating new tables, grant permissions:
@@ -163,10 +163,10 @@ GRANT SELECT ON new_table TO firefly_user;
 **"Permission denied" during scp**:
 - Check SSH key authentication is set up
 - Verify SSH config alias exists
-- Try manual: `ssh microserver@185.96.221.52 "ls ~/firefly-server"`
+- Try manual: `ssh microserver@185.96.221.52 "ls ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py"`
 
 **Server not responding after restart**:
-- Check remote logs: `ssh microserver@185.96.221.52 "tail ~/firefly-server/server.log"`
+- Check remote logs: `ssh microserver@185.96.221.52 "tail ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log"`
 - Verify Python dependencies: `ssh microserver@185.96.221.52 "pip3 list | grep -i flask"`
 - Check port not blocked by firewall
 
@@ -202,7 +202,7 @@ After deployment, you can:
 
 **View logs**:
 ```bash
-ssh microserver@185.96.221.52 "tail -f ~/firefly-server/server.log"
+ssh microserver@185.96.221.52 "tail -f ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log"
 ```
 
 **Check status**:
@@ -212,7 +212,7 @@ curl http://185.96.221.52:8080/api/ping
 
 **Manual restart**:
 ```bash
-ssh microserver@185.96.221.52 "cd ~/firefly-server && ./stop.sh && ./start.sh"
+ssh microserver@185.96.221.52 "cd ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py && ./stop.sh && ./start.sh"
 ```
 
 ## Security Notes

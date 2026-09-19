@@ -33,7 +33,7 @@ else
         sleep 3
 
         echo "Restarting server..."
-        ssh $SSH_HOST "cd ~/firefly-server && ./stop.sh && ./start.sh"
+        ssh $SSH_HOST "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && ./stop.sh && ./start.sh"
         sleep 3
 
         echo ""
@@ -61,5 +61,5 @@ echo ""
 echo "=== Demo Check Complete ==="
 echo ""
 echo "Quick recovery commands if needed during demo:"
-echo "  ssh $SSH_HOST 'cd ~/firefly-server && ./stop.sh && ./start.sh'"
+echo "  ssh $SSH_HOST 'cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && ./stop.sh && ./start.sh'"
 echo "  curl $SERVER_URL/api/health"

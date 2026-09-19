@@ -90,7 +90,7 @@ struct ProfileCreateResponse: Codable {
 // API client for posts
 class PostsAPI {
     static let shared = PostsAPI()
-    let serverURL = "http://185.96.221.52:8080"
+    let serverURL = "https://microclub.xn--nb-lkaa.org"
 
     func fetchRecentPosts(limit: Int = 50, completion: @escaping (Result<[Post], Error>) -> Void) {
         guard let url = URL(string: "\(serverURL)/api/posts/recent?limit=\(limit)") else {

@@ -401,7 +401,7 @@ def get_template(template_name):
 **How to diagnose:**
 ```bash
 # Check server logs for connection pool errors
-ssh microserver@185.96.221.52 "cd ~/firefly-server && tail -100 server.log | grep -i pool"
+ssh microserver@185.96.221.52 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && tail -100 server.log | grep -i pool"
 
 # Look for "connection pool exhausted" errors
 ```

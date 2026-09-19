@@ -163,7 +163,7 @@ Add the INTERNET permission and cleartext traffic configuration.
 
 ## Testing
 
-1. Start server: `ssh microserver@192.168.1.76 "cd ~/firefly-server && ./start.sh"`
+1. Start server: `ssh microserver@192.168.1.76 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && ./start.sh"`
 2. Build and install Android app: `./gradlew assembleDebug && adb install -r app/build/outputs/apk/debug/app-debug.apk`
 3. App should show turquoise background
 4. Stop server: `curl -X POST http://192.168.1.76:8080/api/shutdown`

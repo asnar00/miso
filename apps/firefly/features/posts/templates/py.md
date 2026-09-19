@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
 **Run with:**
 ```bash
-ssh microserver@185.96.221.52 "cd ~/firefly-server && python3 create_templates.py"
+ssh microserver@185.96.221.52 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && python3 create_templates.py"
 ```
 
 ### grant_template_permissions.py
@@ -139,7 +139,7 @@ if __name__ == "__main__":
 
 **Run with:**
 ```bash
-ssh microserver@185.96.221.52 "cd ~/firefly-server && python3 grant_template_permissions.py"
+ssh microserver@185.96.221.52 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && python3 grant_template_permissions.py"
 ```
 
 ## Database Access
@@ -259,7 +259,7 @@ GRANT INSERT, UPDATE, DELETE ON templates TO firefly_user;
 ## Server Location
 
 **Remote Server**: 185.96.221.52 (Mac mini on local network)
-**Directory**: ~/firefly-server/
+**Directory**: ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/
 **Database**: PostgreSQL 5432 (localhost only, SSH required)
 
 ### PostgreSQL Client
@@ -468,7 +468,7 @@ Look for placeholder fields in response:
 
 **Fix:**
 ```bash
-ssh microserver@185.96.221.52 "cd ~/firefly-server && python3 grant_template_permissions.py"
+ssh microserver@185.96.221.52 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && python3 grant_template_permissions.py"
 ```
 
 ### Empty Posts Response
@@ -479,7 +479,7 @@ ssh microserver@185.96.221.52 "cd ~/firefly-server && python3 grant_template_per
 
 **Debug:**
 ```bash
-ssh microserver@185.96.221.52 "cd ~/firefly-server && tail -50 server.log"
+ssh microserver@185.96.221.52 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && tail -50 server.log"
 ```
 
 ### Template Not Found

@@ -87,7 +87,7 @@ struct NoobTestApp: App {
             return
         }
 
-        let serverURL = "http://185.96.221.52:8080"
+        let serverURL = "https://microclub.xn--nb-lkaa.org"
         guard let url = URL(string: "\(serverURL)/api/version") else {
             versionCheckComplete = true
             return
@@ -140,7 +140,7 @@ struct NoobTestApp: App {
     }
 
     func preloadImagesOptimized(for posts: [Post], completion: @escaping () -> Void) {
-        let serverURL = "http://185.96.221.52:8080"
+        let serverURL = "https://microclub.xn--nb-lkaa.org"
         let imageUrls = posts.compactMap { post -> String? in
             guard let imageUrl = post.imageUrl else { return nil }
             return serverURL + imageUrl

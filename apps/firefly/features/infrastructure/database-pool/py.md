@@ -207,7 +207,7 @@ Port: 8080
 Debug mode: False
 Local IP: http://192.168.1.76:8080
 Public IP: http://185.96.221.52:8080
-Upload folder: /Users/microserver/firefly-server/uploads
+Upload folder: /Users/microserver/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/uploads
 Max file size: 16MB
 ============================================================
 ```

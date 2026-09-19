@@ -33,7 +33,7 @@ ssh microserver@185.96.221.52 "/opt/homebrew/Cellar/postgresql@16/16.10/bin/psql
 #### Using Python via SSH
 
 ```bash
-ssh microserver@185.96.221.52 "cd ~/firefly-server && python3 -c \"
+ssh microserver@185.96.221.52 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && python3 -c \"
 import psycopg2
 conn = psycopg2.connect(host='localhost', port='5432', database='firefly', user='firefly_user', password='firefly123')
 cur = conn.cursor()
@@ -51,7 +51,7 @@ Run migration scripts as `microserver` user:
 ```bash
 # On remote server
 ssh microserver@185.96.221.52
-cd ~/firefly-server
+cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py
 python3 create_tables.py  # or any migration script
 ```
 

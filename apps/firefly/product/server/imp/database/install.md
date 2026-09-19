@@ -91,10 +91,10 @@ GRANT ALL PRIVILEGES ON DATABASE firefly TO firefly_user;
 
 ```bash
 # Upload schema.sql to server (from your local machine)
-scp schema.sql your-server:~/firefly-server/
+scp schema.sql your-server:~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/
 
 # On the server, run the schema
-cd ~/firefly-server
+cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py
 psql -d firefly -f schema.sql
 
 # Grant permissions on tables
@@ -105,7 +105,7 @@ psql -d firefly -c 'GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO fi
 ### 6. Install Python Dependencies
 
 ```bash
-cd ~/firefly-server
+cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py
 pip3 install -r requirements.txt
 ```
 

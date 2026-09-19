@@ -14,7 +14,7 @@ This document describes the complete process to deploy a Flask server to a remot
 
 For the Firefly server:
 - **Host**: `microserver@192.168.1.76`
-- **Remote directory**: `~/firefly-server/`
+- **Remote directory**: `~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/`
 - **Server port**: `8080`
 - **Server URL**: `http://192.168.1.76:8080`
 
@@ -29,7 +29,7 @@ curl -X POST http://192.168.1.76:8080/api/shutdown
 
 **Option B: Via SSH**
 ```bash
-ssh microserver@192.168.1.76 "cd ~/firefly-server && ./stop.sh"
+ssh microserver@192.168.1.76 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && ./stop.sh"
 ```
 
 **Option C: Find and kill process**
@@ -40,24 +40,24 @@ ssh microserver@192.168.1.76 "lsof -ti:8080 | xargs kill"
 ### 2. Copy Updated Files
 
 ```bash
-scp /local/path/to/files/* microserver@192.168.1.76:~/firefly-server/
+scp /local/path/to/files/* microserver@192.168.1.76:~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/
 ```
 
 For specific files:
 ```bash
-scp app.py requirements.txt *.sh microserver@192.168.1.76:~/firefly-server/
+scp app.py requirements.txt *.sh microserver@192.168.1.76:~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/
 ```
 
 ### 3. Install Dependencies (if requirements changed)
 
 ```bash
-ssh microserver@192.168.1.76 "cd ~/firefly-server && pip3 install -r requirements.txt"
+ssh microserver@192.168.1.76 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && pip3 install -r requirements.txt"
 ```
 
 ### 4. Start Server
 
 ```bash
-ssh microserver@192.168.1.76 "cd ~/firefly-server && ./start.sh"
+ssh microserver@192.168.1.76 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && ./start.sh"
 ```
 
 The `start.sh` script:
@@ -86,7 +86,7 @@ For the Firefly server at `apps/firefly/product/server/imp/py/`:
 
 LOCAL_DIR="/Users/asnaroo/Desktop/experiments/miso/apps/firefly/product/server/imp/py"
 REMOTE_HOST="microserver@192.168.1.76"
-REMOTE_DIR="~/firefly-server"
+REMOTE_DIR="~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py"
 SERVER_URL="http://192.168.1.76:8080"
 
 echo "🛑 Stopping remote server..."
@@ -130,7 +130,7 @@ fi
 
 **"Connection refused" when accessing server**
 - Check server is running: `ssh microserver@192.168.1.76 "ps aux | grep python"`
-- Check logs: `ssh microserver@192.168.1.76 "cat ~/firefly-server/server.log"`
+- Check logs: `ssh microserver@192.168.1.76 "cat ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/server.log"`
 - Check firewall settings on Mac mini
 
 **"Permission denied" during scp**
@@ -139,7 +139,7 @@ fi
 - Try with verbose: `scp -v ...`
 
 **Server starts but crashes immediately**
-- Check logs: `ssh microserver@192.168.1.76 "tail ~/firefly-server/server.log"`
+- Check logs: `ssh microserver@192.168.1.76 "tail ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/server.log"`
 - Verify Python dependencies: `ssh microserver@192.168.1.76 "pip3 list | grep -i flask"`
 - Check port 8080 isn't blocked or in use
 
@@ -152,7 +152,7 @@ fi
 
 **View server logs:**
 ```bash
-ssh microserver@192.168.1.76 "tail -f ~/firefly-server/server.log"
+ssh microserver@192.168.1.76 "tail -f ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/server.log"
 ```
 
 **Check server status:**
@@ -167,12 +167,12 @@ curl -X POST http://192.168.1.76:8080/api/shutdown
 
 **Get server PID:**
 ```bash
-ssh microserver@192.168.1.76 "cat ~/firefly-server/server.pid"
+ssh microserver@192.168.1.76 "cat ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/server.pid"
 ```
 
 **Manual restart:**
 ```bash
-ssh microserver@192.168.1.76 "cd ~/firefly-server && ./stop.sh && ./start.sh"
+ssh microserver@192.168.1.76 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && ./stop.sh && ./start.sh"
 ```
 
 ## Typical Deployment Time
@@ -194,7 +194,7 @@ Total deployment time: **~3-5 seconds**
 ## Remote Directory Structure
 
 ```
-~/firefly-server/
+~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/
 ├── app.py              # Main Flask application
 ├── requirements.txt    # Python dependencies
 ├── start.sh           # Start server script

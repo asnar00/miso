@@ -101,7 +101,7 @@ Output: ["Hello", "world", "How are you"]
 
 - Embeddings stored in `data/embeddings/` directory
 - Create directory on server startup if it doesn't exist
-- Directory must exist on remote server at: `~/firefly-server/data/embeddings/`
+- Directory must exist on remote server at: `~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/data/embeddings/`
 
 ## Model Details
 

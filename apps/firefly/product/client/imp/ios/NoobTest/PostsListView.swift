@@ -137,7 +137,7 @@ struct PostsListView: View {
     @State private var pollingTimer: Timer? = nil  // Timer for badge polling
     @State private var shouldBounceEditButtons: Bool = false  // Trigger bounce animation on edit buttons
 
-    let serverURL = "http://185.96.221.52:8080"
+    let serverURL = "https://microclub.xn--nb-lkaa.org"
 
     func expandPost(_ postId: Int) {
         Logger.shared.info("[PostsListView] expandPost(\(postId)) called, viewModel=\(ObjectIdentifier(viewModel))")

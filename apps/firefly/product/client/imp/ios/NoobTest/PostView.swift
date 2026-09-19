@@ -123,7 +123,7 @@ struct PostView: View {
     let onDelete: (() -> Void)?  // Called when deleting post (new or after server deletion)
     var isNewPost: Bool = false  // True for unsaved posts (id < 0), affects undo button behavior
     @Binding var shouldBounceButtons: Bool  // Trigger bounce animation on edit buttons
-    let serverURL = "http://185.96.221.52:8080"
+    let serverURL = "https://microclub.xn--nb-lkaa.org"
 
     // Font scaling helper
     private var fontScale: CGFloat {

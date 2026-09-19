@@ -108,10 +108,10 @@ Host firefly
 ./remote-shutdown.sh
 
 # Upload files using SSH alias
-scp *.py *.txt *.sh firefly:~/firefly-server/
+scp *.py *.txt *.sh firefly:~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/
 
 # Start remote server
-ssh firefly "cd ~/firefly-server && ./start.sh"
+ssh firefly "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && ./start.sh"
 
 # Verify
 curl http://185.96.221.52:8080/api/ping

@@ -174,6 +174,7 @@ def upload_to_testflight(ipa_path):
         "--upload-app",
         "--type", "ios",
         "--file", ipa_path,
+        "--apple-id", APP_ID,
         "--apiKey", KEY_ID,
         "--apiIssuer", ISSUER_ID
     ]
@@ -325,7 +326,7 @@ def update_server_version(build_number):
     # Update remote .env file via SSH
     cmd = [
         "ssh", "microserver@185.96.221.52",
-        f"sed -i '' 's/^LATEST_BUILD=.*/LATEST_BUILD={build_number}/' ~/firefly-server/.env"
+        f"sed -i '' 's/^LATEST_BUILD=.*/LATEST_BUILD={build_number}/' ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/.env"
     ]
 
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -338,7 +339,7 @@ def update_server_version(build_number):
     print("   Restarting server...")
     restart_cmd = [
         "ssh", "microserver@185.96.221.52",
-        "cd ~/firefly-server && ./stop.sh && ./start.sh"
+        "cd ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py && ./stop.sh && ./start.sh"
     ]
 
     result = subprocess.run(restart_cmd, capture_output=True, text=True)
@@ -368,7 +369,25 @@ def update_server_version(build_number):
 # Main Pipeline
 # ============================================================================
 
+def resume_from_upload():
+    """Resume pipeline at Step 5 using the already-exported IPA and current build number."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(script_dir)
+    result = subprocess.run(["agvtool", "what-version", "-terse"], capture_output=True, text=True)
+    build_number = result.stdout.strip()
+    ipa_path = f"/tmp/{PROJECT_NAME}Export/{PROJECT_NAME}.ipa"
+    print(f"Resuming at Step 5 with build {build_number}, ipa {ipa_path}")
+    if not upload_to_testflight(ipa_path): sys.exit(1)
+    if not wait_for_processing(build_number): sys.exit(1)
+    confirmed_build = distribute_to_testers(generate_jwt_token())
+    if not confirmed_build: sys.exit(1)
+    if not update_server_version(confirmed_build):
+        print(f"Warning: manually set LATEST_BUILD={confirmed_build} on the server.")
+    print(f"\nDeployment Complete! Build {confirmed_build} is available to external testers.")
+
 def main():
+    if "--resume-upload" in sys.argv:
+        return resume_from_upload()
     print("=" * 60)
     print("TestFlight Deployment Pipeline")
     print("=" * 60)

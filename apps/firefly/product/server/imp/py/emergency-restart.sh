@@ -13,7 +13,7 @@ ssh microserver@185.96.221.52 "
     fi
 
     echo 'Restarting server...'
-    cd ~/firefly-server
+    cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py
     ./stop.sh
     sleep 1
     ./start.sh

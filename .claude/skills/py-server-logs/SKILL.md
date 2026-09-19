@@ -65,17 +65,17 @@ grep "POST" server.log
 
 **Real-time streaming**:
 ```bash
-ssh microserver@185.96.221.52 "tail -f ~/firefly-server/server.log"
+ssh microserver@185.96.221.52 "tail -f ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log"
 ```
 
 **Last 20 lines**:
 ```bash
-ssh microserver@185.96.221.52 "tail -20 ~/firefly-server/server.log"
+ssh microserver@185.96.221.52 "tail -20 ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log"
 ```
 
 **Search remote logs**:
 ```bash
-ssh microserver@185.96.221.52 "grep 'ERROR' ~/firefly-server/server.log"
+ssh microserver@185.96.221.52 "grep 'ERROR' ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log"
 ```
 
 ## What to Tell User
@@ -170,7 +170,7 @@ This enables Claude to:
 
 **Can't access remote logs**:
 - Check SSH connection: `ssh microserver@185.96.221.52 "ls"`
-- Verify path: `~/firefly-server/server.log`
+- Verify path: `~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log`
 - Check permissions on remote log file
 
 ## Log Levels
@@ -197,7 +197,7 @@ touch server.log
 
 **Remote**:
 ```bash
-ssh microserver@185.96.221.52 "> ~/firefly-server/server.log"
+ssh microserver@185.96.221.52 "> ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log"
 ```
 
 This is useful before testing to see only new logs.
@@ -242,7 +242,7 @@ grep "$(date +%H:)" server.log
 ## Remote Server Path
 
 For Firefly server specifically:
-- **Path**: ~/firefly-server/server.log
+- **Path**: ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/server.log
 - **Host**: microserver@185.96.221.52
 - **Via SSH**: ssh microserver@185.96.221.52
 

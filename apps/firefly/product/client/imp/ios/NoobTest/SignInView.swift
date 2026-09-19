@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SignInView: View {
     // Server configuration
-    let serverURL = "http://185.96.221.52:8080"
+    let serverURL = "https://microclub.xn--nb-lkaa.org"
 
     // State management
     enum SignInState {

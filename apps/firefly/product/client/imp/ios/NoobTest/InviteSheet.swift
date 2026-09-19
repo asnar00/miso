@@ -11,7 +11,7 @@ struct InviteSheet: View {
     @State private var testflightLink: String = ""
     @State private var copiedMessage: Bool = false
 
-    let serverURL = "http://185.96.221.52:8080"
+    let serverURL = "https://microclub.xn--nb-lkaa.org"
 
     var body: some View {
         NavigationView {

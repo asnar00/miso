@@ -197,5 +197,5 @@ torch
 
 Create on server (both local and remote):
 ```bash
-mkdir -p ~/firefly-server/data/embeddings
+mkdir -p ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/data/embeddings
 ```

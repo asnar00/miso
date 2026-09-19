@@ -161,7 +161,7 @@ External testers (unlike internal team members) require builds to go through **B
 
 **Server version update fails:**
 - Check SSH access: `ssh microserver@185.96.221.52 "echo ok"`
-- Manually update: edit `~/firefly-server/.env` and restart server
+- Manually update: edit `~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/.env` and restart server
 
 ## Timing
 

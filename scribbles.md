@@ -1,7 +1,187 @@
 ᕦ(ツ)ᕤ
 # scribbles
 
+microclub 2.0
+
+super easy to use.
+
+PWA app: front-end (for residents)
+they open it; we use their GPS to determine their street (that's it)
+they then see "today", "last week", "last month" - video posts from the candidate they recognise, that are relevant to what people on their street care about.
+they can add their rant (transcribe or type) and it's keyed by their street.
+
+how this works from canvasser's POV:
+Martin's app: also PWA but in ios app harness, but downloads minivan lists.
+Suggests best time to go on the route
+Finds closest address to martin, shows route to it
+Martin knocks; if not in, print label and deliver out-card
+if in, give out-card and talk them through setup (explain XYZ)
+after interaction, Martin records a short video clip about the encounter (whatever comes to mind)
+clips get transcribed and Martin can edit transcription if he wants.
+they're also geotagged to that location (street res)
+post => now we have a record of that interaction.
+
+With this data:
+On any given street, we can summarise what the issues are that people care about
+a post is the transcript plus the video (we can throw away the video once transcript is correct)
+only stumbling block will be transcription quality, but it's really damn good.
+do live transcription as well. Just make it as easy as possible to capture.
+just squirt! selfie camera.
+
+geotagged video clips with transcription;
+then, martin can record "response" videos to address specific concerns or update people;
+those are matched by subject, and delivered to peoples' feeds depending on their street setting.
+
+We don't have to keep all video! Even if we did,
+
+-------------------------------------------
+
+DECISIONS:
+1. literate platform code goes in feature folder;
+    i.e. myfeature.md => myfeature.py.md (literate pycode)
+                         myfeature.ts.md (literate tscode)
+2. md => lang.md happens across many features in parallel
+3. we copy their code blocks out into product/component/lang/myfeature.lang; 
+4. then run compose on the code in product. so myfeature.lang.md remains source of truth
+5. implementation fixes, bugfixes, notes, lore get fed back to myfeature.lang.md
+6. what's left in product is "pure code" => run tests, feed back
+
+what's nice is: we can iterate-test on the "pure composed code"; which is what the agent wants to do. once the tests pass, we collect the changes and feed them up to lang.md and myfeature.md.
+
+we can use claude to modify our process docs!
+------------------------------------------
+
+
+there's only one feature group
+a product is just a different subset of features, and a platform technology choice.
+platform lore has to go somewhere - that was a good idea.
+actually, there needs to be zero <=> language lore; both ways.
+OK: THAT is what zeta holds. zeta = zero to anything => holds equivalents, by example.
+what we're doing now is actually building and linking a real product, miso.
+Since we're in the real world, we want to be able to ship watertight units that don't depend on each other. And that is fine. one is just another product. So we're on the right track.
+We want to keep any platform code out of the feature tree. The instinct to have all that code in the product is a good one. Then what we ship is all tightly controlled and defined.
+
+actually, the product we are trying to make for the website is... the website.
+It's not the same as microclub, it's not the same as explorer, it wants to be its own thing.
+
+Ultimately we are building PRODUCTS; that definition is good.
+Right now we are building the noob website; and that is ultimately the OS.
+the website is just the explorer product.
+but microclub is a separate product.
+Does it make sense to build muon as a library in target code?
+=> well, yes, because you can just import muon and use it. All that work is done.
+
+So it really is a design goal to have one group of features => many products.
+The key is that you have clusters. You have to be able to orthogonalise composition and compilation.
+
+So then it makes total sense to store object code in imp.
+
+----------------------------
+
+
+what are we making? we're making miso. so that's what this is called.
+and that's what we're looking at.
+
+what is miso?
+miso is a feature-modular operating system
+
+miso desktop / phonetop:
+
+logo in center; 3D rectilinear space around it (frames coming closer)
+status and messages go above ("speech/thinking bubble")
+tools below
+closer = most recently used
+tools appear as screenshots or zoomed-in-sections of screenshots
+tap them to fullscreen
+swipe to switch between active ones
+
+miso engineer dashboard:
+idea is, you use the tools on the main phone
+when you want to make a feature request or change, you pull out the engineer phone
+and hit the "fixit" button; this grabs context from main phone,
+you then have convo with agent; either live-fix or not
+use the main phone as the playback/etc.
+
+explorer is a tool.
+
+--------------------------------------------------
+
+miso: make your own tools
+
+left window: the app itself (or simulator)
+right window: the dashboard
+
+mobile: app on one phone, developer on another. super easy.
+user experience on main phone doesn't change; we use the second phone to mod it.
+so we have a nice, clean interface.
+
+OK so what's running in noob is actually *one* - or muon. That's exactly what it is.
+muon is just the feature manager.
+
+I have these tools: run these tools. it's your work surface.
+
+muon is your toolset;
+miso is the tool modifier.
+
+maybe miso should just be the name of the OS. it's just one product.
+you just port the whole thing to whatever.
+
+ok, so right, that's much easier. you just go, these are my devices, this is what they run.
+and we make them work. there has to be a server, and that component runs on the mini.
+
+so I'd say: I have:
+
+    main = iphone 17 (runs my actual tools)
+    dev = iphone 16 (runs miso)
+
+naming is super critical here. 
+
+
+
+
+--------------------------------------------------
+
+have to think about how to parallelise development as much as possible
+- writing code: lookups
+- translate functions in parallel, (=> keep them small)
+- inline target code aggressively, using comments to show provenance
+- the key is to be able to recompose super fast and incrementally
+- doing multiple features in parallel = victory
+
+so your strategy is:
+in response to a user request, write a ton of features.
+
+1. write features in a flat folder: spec only
+2. insert features into main feature tree
+3. sort features into best composition order
+4. write zero code in sequence (including tests and audits);
+5. translate all features (parallel; pass unit tests and audits)
+6. in order: compose, pass acceptance test and audit
+
+i.e. get all features solid internally in parallel
+then wire them in one at a time, making sure we stay solid.
+
+it should be:
+
+sequential:
+
+    for each: (point) in (points)
+
+parallel:
+
+    for all (point) in (points)
+
+
+specify -> define -> tests -> (translate->test)* -> audit
+
+use of anaphors!! to do x; split it stick it drop it fade it.
+
+---------------------------------
+
+
 fast, automated composition of the feature nodes' code files is the secret sauce here.
+
+----------------------------------
 
 howto: xyz.
 

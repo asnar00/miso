@@ -57,7 +57,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
     private func registerDeviceToken(_ token: String) {
         let deviceId = Storage.shared.getDeviceID()
-        let serverURL = "http://185.96.221.52:8080"
+        let serverURL = "https://microclub.xn--nb-lkaa.org"
         guard let url = URL(string: "\(serverURL)/api/notifications/register-device") else { return }
 
         var request = URLRequest(url: url)

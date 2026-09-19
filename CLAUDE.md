@@ -28,8 +28,8 @@ export JAVA_HOME="/opt/homebrew/opt/openjdk"
 
 # Deploy Python server to remote
 cd apps/firefly/product/server/imp/py
-./remote-shutdown.sh && scp *.py *.txt *.sh microserver@185.96.221.52:~/firefly-server/
-ssh microserver@185.96.221.52 "cd ~/firefly-server && ./start.sh"
+./remote-shutdown.sh && scp *.py *.txt *.sh microserver@185.96.221.52:~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/
+ssh microserver@185.96.221.52 "cd ~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py && ./start.sh"
 
 # Test a feature (requires port forwarding: pymobiledevice3 usbmux forward 8081 8081 &)
 cd apps/firefly/features/infrastructure/testing/imp && ./test-feature.sh <feature-name>
@@ -103,7 +103,7 @@ adb logcat | grep "NoobTest"               # Live logs
 
 ### Python/Flask
 
-**Remote server** (`185.96.221.52:8080`): PostgreSQL backend, watchdog monitoring (cron), crash recovery with evidence in `~/firefly-server/bad/`.
+**Remote server** (`185.96.221.52:8080`): PostgreSQL backend, watchdog monitoring (cron), crash recovery with evidence in `~/nøøb/experiments/firefly/apps/firefly/product/server/imp/py/bad/`.
 
 | Script | Purpose |
 |--------|---------|

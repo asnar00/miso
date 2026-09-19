@@ -11,7 +11,7 @@ class RemoteLogUploader {
 
     private init() {
         // Hardcoded server URL (same as used throughout the app)
-        serverURL = "http://185.96.221.52:8080"
+        serverURL = "https://microclub.xn--nb-lkaa.org"
 
         // Get or create persistent device ID
         if let existingId = UserDefaults.standard.string(forKey: "remoteLogDeviceId") {

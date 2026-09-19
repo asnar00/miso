@@ -362,7 +362,7 @@ def create_user_profile():
 ### 1. Add database column
 ```bash
 ssh microserver@185.96.221.52
-cd ~/firefly-server
+cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py
 PGPASSWORD=firefly_pass psql -h localhost -U firefly_user -d firefly -c \
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS apns_device_token VARCHAR(255);"
 ```
@@ -374,7 +374,7 @@ pip3 install apns2
 ```
 
 ### 3. Upload APNs key
-- Upload .p8 file to server: `scp AuthKey_XXX.p8 microserver@185.96.221.52:~/firefly-server/`
+- Upload .p8 file to server: `scp AuthKey_XXX.p8 microserver@185.96.221.52:~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/`
 - Add environment variables to .env
 
 ### 4. Create apns_client.py
@@ -392,8 +392,8 @@ Add `update_user_apns_token`, `get_all_users_with_tokens`, `get_queries_matching
 ### 7. Deploy
 ```bash
 ./remote-shutdown.sh
-scp *.py *.txt *.sh *.p8 microserver@185.96.221.52:~/firefly-server/
-ssh microserver@185.96.221.52 "cd ~/firefly-server && ./start.sh"
+scp *.py *.txt *.sh *.p8 microserver@185.96.221.52:~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py/
+ssh microserver@185.96.221.52 "cd ~/Desktop/nøøb/microclub/apps/firefly/product/server/imp/py && ./start.sh"
 ```
 
 ---

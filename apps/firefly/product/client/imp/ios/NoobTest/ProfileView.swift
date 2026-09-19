@@ -41,7 +41,7 @@ struct ProfileView: View {
 
                         // Image if present
                         if let imageUrl = profile.imageUrl {
-                            AsyncImage(url: URL(string: "http://185.96.221.52:8080\(imageUrl)")) { image in
+                            AsyncImage(url: URL(string: "https://microclub.xn--nb-lkaa.org\(imageUrl)")) { image in
                                 image
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)

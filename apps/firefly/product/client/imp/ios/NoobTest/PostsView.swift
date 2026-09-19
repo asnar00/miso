@@ -94,7 +94,7 @@ struct ChildPostsListViewWrapper: View {
     @State private var parentPost: Post? = nil
     @State private var isLoading = true
 
-    let serverURL = "http://185.96.221.52:8080"
+    let serverURL = "https://microclub.xn--nb-lkaa.org"
 
     var shouldShowAddPostButton: Bool {
         guard let parent = parentPost else {
@@ -192,7 +192,7 @@ struct QueryResultsViewWrapper: View {
     @State private var posts: [Post] = []
     @State private var isLoading = true
 
-    let serverURL = "http://185.96.221.52:8080"
+    let serverURL = "https://microclub.xn--nb-lkaa.org"
 
     var body: some View {
         Group {
